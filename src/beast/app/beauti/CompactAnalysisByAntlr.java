@@ -52,13 +52,29 @@ import beast.evolution.tree.TreeInterface;
 import beast.math.distributions.MRCAPrior;
 
 public class CompactAnalysisByAntlr extends CABaseListener {
+	BeautiDoc doc = null;
 
+	public CompactAnalysisByAntlr() {
+		this.doc = new BeautiDoc();
+		this.doc.beautiConfig = new BeautiConfig();
+		this.doc.beautiConfig.initAndValidate();
+	}
+
+	public CompactAnalysisByAntlr(BeautiDoc doc) {
+		this.doc = doc;
+		if (this.doc == null) {
+			this.doc = new BeautiDoc();
+			this.doc.beautiConfig = new BeautiConfig();
+			this.doc.beautiConfig.initAndValidate();
+		}
+	}
+	
 	public void enterCAsentence(CasentenceContext ctx) {
 		System.out.println(ctx.getText());
 	}
 	
 	
-	void parseCA(String CASentence) {
+	public void parseCA(String CASentence) {
         // Custom parse/lexer error listener
         BaseErrorListener errorListener = new BaseErrorListener() {
             @Override
@@ -94,7 +110,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 
 
         // Traverse parse tree, constructing BEAST tree along the way
-        CAASTVisitor visitor = new CAASTVisitor();
+        CAASTVisitor visitor = new CAASTVisitor(doc);
 
         visitor.visit(parseTree);
 	}
@@ -103,13 +119,9 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	public class CAASTVisitor extends CABaseVisitor<BEASTInterface> {
 		
 		private Set<PartitionContext> partitionContext;
-		BeautiDoc doc;
 		
-		public CAASTVisitor() {
+		public CAASTVisitor(BeautiDoc doc) {
 			partitionContext = new LinkedHashSet<>();
-			doc = new BeautiDoc();
-			doc.beautiConfig = new BeautiConfig();
-			doc.beautiConfig.initAndValidate();
 		}
 		
 		@Override
@@ -671,51 +683,6 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	
 	
 	
-    public class CAParsingException extends RuntimeException {
-        String message;
-        Integer characterNum, lineNum;
-
-        /**
-         * Create new parsing exception.
-         *
-         * @param message      Human-readable error message.
-         * @param characterNum Character offset of error.
-         * @param lineNum      Line offset of error.
-         */
-        CAParsingException(String message, Integer characterNum, Integer lineNum) {
-            this.message = message;
-            this.characterNum = characterNum;
-            this.lineNum = lineNum;
-        }
-
-        /**
-         * Create new parsing exception
-         *
-         * @param message Human-readable error message.
-         */
-        CAParsingException(String message) {
-            this(message, null, null);
-        }
-
-        @Override
-        public String getMessage() {
-            return message + " line " + lineNum + " character " + characterNum;
-        }
-
-        /**
-         * @return location of error on line.  (May be null for non-lexer errors.)
-         */
-        public Integer getCharacterNum() {
-            return characterNum;
-        }
-
-        /**
-         * @return line number offset of error. (May be null for non-lexer errors.)
-         */
-        public Integer getLineNum() {
-            return lineNum;
-        }
-    }
 
 	public static void main(String[] args) {
 		String cmds = "template Standard;\n" +
