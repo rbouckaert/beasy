@@ -1,4 +1,4 @@
-package compactanalysis;
+package beasy;
 
 import java.io.*;
 
@@ -19,6 +19,10 @@ public class REPL {
 		doc.beautiConfig = new BeautiConfig();
 		doc.beautiConfig.initAndValidate();
 	}
+	
+	public REPL(BeautiDoc doc) {
+		this.doc = doc;
+	}
 
 	public void doREPL() {
 		while (true) {
@@ -32,7 +36,7 @@ public class REPL {
 		}
 	}
 	
-	private void processCmd(String cmd) {
+	public void processCmd(String cmd) {
 		if (cmd.startsWith("?") || cmd.startsWith("help")) {
 			showHelp(cmd);
 		} else if (cmd.startsWith("quit") || cmd.startsWith("end") || cmd == null) {
