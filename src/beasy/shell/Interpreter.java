@@ -33,8 +33,6 @@
 
 package beasy.shell;
 
-import java.io.PrintStream;
-
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beasy.JConsole;

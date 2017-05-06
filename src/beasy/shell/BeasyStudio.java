@@ -182,7 +182,8 @@ public class BeasyStudio extends JSplitPane {
 	Action a_new =  new MyAction("New", "Start new editor", "new", KeyEvent.VK_N) {
         private static final long serialVersionUID = 1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	editorPanel.doNew();
         }
     };
@@ -190,7 +191,8 @@ public class BeasyStudio extends JSplitPane {
 	Action a_open =  new MyAction("Load", "Open file for editing", "open", KeyEvent.VK_O) {
         private static final long serialVersionUID = 1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	editorPanel.doOpen();
         }
     };
@@ -198,11 +200,13 @@ public class BeasyStudio extends JSplitPane {
     Action a_save =  new MyAction("Save", "Save Editor", "save", KeyEvent.VK_S) {
         private static final long serialVersionUID = 1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	editorPanel.doSave();
         } // actionPerformed
         
-        public boolean isEnabled() {
+        @Override
+		public boolean isEnabled() {
         	return editorPanel.hasEditors();
         };
     }; // class ActionSave
@@ -210,11 +214,13 @@ public class BeasyStudio extends JSplitPane {
     Action a_saveall =  new MyAction("Save All", "Save All Editors", "saveall", -1) {
         private static final long serialVersionUID = 1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	editorPanel.doSaveAll();
         } // actionPerformed
         
-        public boolean isEnabled() {
+        @Override
+		public boolean isEnabled() {
         	return editorPanel.hasEditors();
         };
     }; // class ActionSave
@@ -222,11 +228,13 @@ public class BeasyStudio extends JSplitPane {
     Action a_saveas =  new MyAction("Save As", "Save Model As", "saveas", -1) {
         private static final long serialVersionUID = 1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	editorPanel.saveAs();
         } // actionPerformed
         
-        public boolean isEnabled() {
+        @Override
+		public boolean isEnabled() {
         	return editorPanel.hasEditors();
         };
     }; // class ActionSaveAs
@@ -234,6 +242,7 @@ public class BeasyStudio extends JSplitPane {
     MyAction a_quit = new MyAction("Exit", "Exit Program", "exit", KeyEvent.VK_F4) {
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void actionPerformed(ActionEvent ae) {
             // if (!m_doc.m_bIsSaved) {
             if (!quit()) {
@@ -246,7 +255,8 @@ public class BeasyStudio extends JSplitPane {
 	Action a_find =  new MyAction("Find", "Find in text", "find", KeyEvent.VK_F) {
         private static final long serialVersionUID = 1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	Component focusOwner = frame.getFocusOwner();
         	while (focusOwner != null) {
 	        	if (editorPanel == focusOwner) {
@@ -276,7 +286,8 @@ public class BeasyStudio extends JSplitPane {
 	Action a_findReplace=  new MyAction("Find/Replace", "Find and replace text", "findreplace", KeyEvent.VK_H) {
         private static final long serialVersionUID = 1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
        		editorPanel.doSearchReplace();
         }
 
@@ -295,7 +306,8 @@ public class BeasyStudio extends JSplitPane {
     MyAction a_run = new MyAction("Run", "Run script in current editor", "run", KeyEvent.VK_R) {
         private static final long serialVersionUID = -1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	editorPanel.runCurrent();
         }
     };
@@ -303,7 +315,8 @@ public class BeasyStudio extends JSplitPane {
     MyAction a_runselection = new MyAction("Run selection", "Run selection in current editor", "runselection", -1) {
         private static final long serialVersionUID = -1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	editorPanel.runCurrentSelection();
         }
     };
@@ -311,7 +324,8 @@ public class BeasyStudio extends JSplitPane {
     MyAction a_about = new MyAction("About", "Help about", "about", -1) {
         private static final long serialVersionUID = -1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	Help.help("doc/html/about.html");
         }
     }; // class ActionAbout
@@ -319,7 +333,8 @@ public class BeasyStudio extends JSplitPane {
     MyAction a_help = new MyAction("Help", "Help on current panel", "help", -1) {
         private static final long serialVersionUID = -1;
 
-        public void actionPerformed(ActionEvent ae) {
+        @Override
+		public void actionPerformed(ActionEvent ae) {
         	Help.help("doc/html/index.html");
         }
     }; // class ActionHelp
@@ -427,7 +442,8 @@ public class BeasyStudio extends JSplitPane {
 		frame.setVisible(true);
 		studio.setDividerLocation(0.5);
 		frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
+            @Override
+			public void windowClosing(WindowEvent e) {
             	studio.doQuit();
             }
         });

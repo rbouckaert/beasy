@@ -7,18 +7,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -133,8 +128,9 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
         
 		btnPrev = new JButton("");
 		btnPrev.setIcon(new ImageIcon(EditorPanel.class
-				.getResource("/beast/app/shell/icons/prev.png")));
+				.getResource("/beasy/shell/icons/prev.png")));
 		btnPrev.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				goPrev();
 			}
@@ -145,20 +141,22 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 		
 		btnNext = new JButton("");
 		btnNext.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				goNext();
 			}
 		});
 		btnNext.setIcon(new ImageIcon(EditorPanel.class
-				.getResource("/beast/app/shell/icons/next.png")));
+				.getResource("/beasy/shell/icons/next.png")));
 		btnNext.setToolTipText("Show next help page");
 		toolBar.add(btnNext);
 
 		btnHome = new JButton("");
 		btnHome.setIcon(new ImageIcon(EditorPanel.class
-				.getResource("/beast/app/shell/icons/home.png")));
+				.getResource("/beasy/shell/icons/home.png")));
 		btnHome.setToolTipText("Goto home of help");
 		btnHome.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				goHome();
 			}
@@ -169,7 +167,7 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 		
 //		btnExport = new JButton("");
 //		btnExport.setIcon(new ImageIcon(EditorPanel.class
-//				.getResource("/beast/app/shell/icons/export.png")));
+//				.getResource("/beasy/shell/icons/export.png")));
 //		btnExport.setToolTipText("Export current chart to bitmap or pdf");
 //		btnExport.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
@@ -180,9 +178,12 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 
 
 		
-		image = new ImageIcon(HistoryPanel.class.getResource("/beast/app/shell/icons/search.png")).getImage();
+		image = new ImageIcon(HistoryPanel.class.getResource("/beasy/shell/icons/search.png")).getImage();
 		searchField = new JTextField() {
-	            protected void paintComponent(Graphics g) {  
+			private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void paintComponent(Graphics g) {  
 	                super.paintComponent(g);  
 	                int y = (getHeight() - image.getHeight(null))/2;
 	                int x = getWidth() - 17;
@@ -213,13 +214,13 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 		
 		JButton prevButton = new JButton("");
 		prevButton.setToolTipText("Find Previous");
-		prevButton.setIcon(new ImageIcon(EditorPanel.class.getResource("/beast/app/shell/icons/findup.png")));
+		prevButton.setIcon(new ImageIcon(EditorPanel.class.getResource("/beasy/shell/icons/findup.png")));
 		prevButton.setActionCommand("FindPrev");
 		prevButton.addActionListener(this);
 		toolBar.add(prevButton);
 
 		final JButton nextButton = new JButton("");
-		nextButton.setIcon(new ImageIcon(EditorPanel.class.getResource("/beast/app/shell/icons/finddown.png")));
+		nextButton.setIcon(new ImageIcon(EditorPanel.class.getResource("/beasy/shell/icons/finddown.png")));
 		nextButton.setToolTipText("Find Next");
 		nextButton.setActionCommand("FindNext");
 		nextButton.addActionListener(this);
@@ -260,6 +261,7 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
     }
     
     boolean backward = false;
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
 		backward = "FindPrev".equals(command);
@@ -351,7 +353,7 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
                             };
 
                             org.w3c.dom.Document doc = engine.getDocument();
-                            Element el = doc.getElementById("a");
+                            //Element el = doc.getElementById("a");
                             NodeList lista = doc.getElementsByTagName("a");
                             for (int i=0; i<lista.getLength(); i++)
                                 ((org.w3c.dom.events.EventTarget)lista.item(i)).addEventListener("click", listener, false);
@@ -413,7 +415,8 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
                         .exceptionProperty()
                         .addListener(new ChangeListener<Throwable>() {
  
-                            public void changed(ObservableValue<? extends Throwable> o, Throwable old, final Throwable value) {
+                            @Override
+							public void changed(ObservableValue<? extends Throwable> o, Throwable old, final Throwable value) {
                                 if (engine.getLoadWorker().getState() == FAILED) {
                                     SwingUtilities.invokeLater(new Runnable() {
                                         @Override public void run() {
@@ -541,7 +544,8 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 //      Out("currentIndex = "+currentIndex);
 //      Out(entryList.toString().replace("],","]\n"));
 
-      Platform.runLater(new Runnable() { public void run() { history.go(-1); } });
+      Platform.runLater(new Runnable() { @Override
+	public void run() { history.go(-1); } });
       entryList.get(currentIndex>0?currentIndex-1:currentIndex).getUrl();
       zoom(zoom);
     }
@@ -554,7 +558,8 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 //      Out("currentIndex = "+currentIndex);
 //      Out(entryList.toString().replace("],","]\n"));
 
-      Platform.runLater(new Runnable() { public void run() { history.go(1); } });
+      Platform.runLater(new Runnable() { @Override
+	public void run() { history.go(1); } });
       entryList.get(currentIndex<entryList.size()-1?currentIndex+1:currentIndex).getUrl();
       zoom(zoom);
     }    

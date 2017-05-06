@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 /**
  * Adapted from https://www.ssl.berkeley.edu/~mlampton/MTE.java
@@ -71,14 +72,14 @@ public class SearchDialog extends JDialog {
 
 		JRadioButton fwdJRB = new JRadioButton("forward", true);
 		fwdJRB.setActionCommand("fwd");
-		fwdJRB.setVerticalTextPosition(AbstractButton.CENTER);
-		fwdJRB.setHorizontalTextPosition(AbstractButton.LEFT);
+		fwdJRB.setVerticalTextPosition(SwingConstants.CENTER);
+		fwdJRB.setHorizontalTextPosition(SwingConstants.LEFT);
 		dirBG.add(fwdJRB);
 
 		JRadioButton revJRB = new JRadioButton("reverse", true);
 		revJRB.setActionCommand("rev");
-		revJRB.setVerticalTextPosition(AbstractButton.CENTER);
-		revJRB.setHorizontalTextPosition(AbstractButton.RIGHT);
+		revJRB.setVerticalTextPosition(SwingConstants.CENTER);
+		revJRB.setHorizontalTextPosition(SwingConstants.RIGHT);
 		dirBG.add(revJRB);
 
 		jp3.add(Box.createGlue());
@@ -96,14 +97,14 @@ public class SearchDialog extends JDialog {
 
 		JRadioButton ignoreJRB = new JRadioButton("ignore case", true);
 		ignoreJRB.setActionCommand("ignore");
-		ignoreJRB.setVerticalTextPosition(AbstractButton.CENTER);
-		ignoreJRB.setHorizontalTextPosition(AbstractButton.LEFT);
+		ignoreJRB.setVerticalTextPosition(SwingConstants.CENTER);
+		ignoreJRB.setHorizontalTextPosition(SwingConstants.LEFT);
 		sensBG.add(ignoreJRB);
 
 		JRadioButton matchJRB = new JRadioButton("match case", true);
 		matchJRB.setActionCommand("match");
-		matchJRB.setVerticalTextPosition(AbstractButton.CENTER);
-		matchJRB.setHorizontalTextPosition(AbstractButton.RIGHT);
+		matchJRB.setVerticalTextPosition(SwingConstants.CENTER);
+		matchJRB.setHorizontalTextPosition(SwingConstants.RIGHT);
 		sensBG.add(matchJRB);
 
 		jp4.add(Box.createGlue());
@@ -121,6 +122,7 @@ public class SearchDialog extends JDialog {
 
 		JButton nextButton = new JButton("Next");
 		nextButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				int ix = getNextPosition(false);
 				setTitle((ix >= 0) ? "Found" : "Not found");
@@ -132,6 +134,7 @@ public class SearchDialog extends JDialog {
 		// must replace possible current selection, and then search to next
 		// selection.
 				{
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						int ix = getNextPosition(true);
 						setTitle((ix >= 0) ? "Found" : "Not found");
@@ -140,6 +143,7 @@ public class SearchDialog extends JDialog {
 
 		JButton allButton = new JButton(" All ");
 		allButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				int ix = 0, n = 0;
 				while (ix >= 0) {
@@ -153,6 +157,7 @@ public class SearchDialog extends JDialog {
 
 		JButton closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
 			}

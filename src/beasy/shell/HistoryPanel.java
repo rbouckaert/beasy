@@ -59,6 +59,7 @@ public class HistoryPanel extends JPanel implements KeyListener {
 		
 		JButton toConsoleButton = new JButton("");
 		toConsoleButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String text = textPane.getSelectedText();
 				StringSelection stringSelection = new StringSelection (text);
@@ -68,23 +69,25 @@ public class HistoryPanel extends JPanel implements KeyListener {
 			}
 		});
 		toConsoleButton.setToolTipText("Send selected commands to the console and clipboard");
-		toConsoleButton.setIcon(new ImageIcon(HistoryPanel.class.getResource("/beast/app/shell/icons/toconsole.png")));
+		toConsoleButton.setIcon(new ImageIcon(HistoryPanel.class.getResource("/beasy/shell/icons/toconsole.png")));
 		toolBar.add(toConsoleButton);
 		
 		JButton btnNewButton_1 = new JButton("");
 		btnNewButton_1.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				textPane.setText("");
 				history.clear();
 			}
 		});
 		btnNewButton_1.setToolTipText("remove everything from history");
-		btnNewButton_1.setIcon(new ImageIcon(HistoryPanel.class.getResource("/beast/app/shell/icons/removeall.png")));
+		btnNewButton_1.setIcon(new ImageIcon(HistoryPanel.class.getResource("/beasy/shell/icons/removeall.png")));
 		toolBar.add(btnNewButton_1);
 		
-		image = new ImageIcon(HistoryPanel.class.getResource("/beast/app/shell/icons/search.png")).getImage();
+		image = new ImageIcon(HistoryPanel.class.getResource("/beasy/shell/icons/search.png")).getImage();
 		searchField = new JTextField() {
-	            protected void paintComponent(Graphics g) {  
+	            @Override
+				protected void paintComponent(Graphics g) {  
 	                super.paintComponent(g);  
 	                int y = (getHeight() - image.getHeight(null))/2;
 	                int x = getWidth() - 17;
@@ -113,12 +116,13 @@ public class HistoryPanel extends JPanel implements KeyListener {
 		
 		JButton btnNewButton_2 = new JButton("");
 		btnNewButton_2.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				searchField.setText("");
 			}
 		});
 		btnNewButton_2.setToolTipText("clear filter history");
-		btnNewButton_2.setIcon(new ImageIcon(HistoryPanel.class.getResource("/beast/app/shell/icons/clear.png")));
+		btnNewButton_2.setIcon(new ImageIcon(HistoryPanel.class.getResource("/beasy/shell/icons/clear.png")));
 		toolBar.add(btnNewButton_2);
 		
 		new Thread() {
