@@ -33,6 +33,7 @@ import beast.app.draw.MyAction;
 import beast.app.util.Utils;
 import beast.app.util.Utils6;
 import beast.util.AddOnManager;
+import beasy.Help;
 import beasy.JConsole;
 
 public class BeasyStudio extends JSplitPane {
@@ -48,7 +49,7 @@ public class BeasyStudio extends JSplitPane {
 
 	//JTabbedPane helpPaneTab;
 	JTabbedPane rightUpperPaneTab;
-	JTabbedPane rightLowerPaneTab;
+	public JTabbedPane rightLowerPaneTab;
 	//VariablesPanel variablesPane;
 	HistoryPanel historyPane;
 	public EditorPanel editorPanel;

@@ -3,7 +3,7 @@
     <!-- Source, JUnit test code and jar library locations. -->
     <property name="src" location="src"/>
     <property name="test" location="test"/>
-    <!--property name="lib" location="lib"/-->
+    <property name="lib" location="lib"/>
 
     <!-- Location to check for local copy of beast2 repository -->
     <property name="beastDir" location="../beast2"/>
@@ -52,9 +52,9 @@
         <mkdir dir="${build-lib}"/>
         <mkdir dir="${dist}"/>
 
-        <!--copy todir="${build-lib}">
+        <copy todir="${build-lib}">
             <fileset dir="${lib}" includes="*.jar"/>
-        </copy-->
+        </copy>
     </target>
 
     <!-- Get beast -->
@@ -181,10 +181,10 @@
 
         <jar jarfile="${pack}/${fullName}.src.jar" basedir="${src}" />
 
-        <!--mkdir dir="${lib}" />
+        <mkdir dir="${lib}" />
         <copy todir="${pack}/lib">
             <fileset dir="${lib}" includes="*.jar" />
-        </copy-->
+        </copy>
         <jar jarfile="${pack}/lib/${fullName}.jar" basedir="${build}" />
 
         <copy file="README.md" tofile="${pack}/README" />

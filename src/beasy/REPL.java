@@ -77,16 +77,7 @@ public class REPL {
 	}
 
 	private void showHelp(String cmd) {
-		Log.info("Commands are one per line, and must be one of the following");
-		Log.info("template <template name>     instantiate a template (e.g. StarBeast)");
-		Log.info("import <subtemplate>? file   import data using template <subtemplate> if non-standard template is required");
-		Log.info("(idpattern =)? sub <subtemplate>(key1=value1,key2=value2,...)");
-		Log.info("partition partitionpattern");
-		Log.info("link (clock|site|tree)       link selected partitions");
-		Log.info("unlink (clock|site|tree)     unlink selected partitions");
-		Log.info("? or help                    show help message");
-		Log.info("save <filename>              save file");
-		Log.info("quit or end                  exit program");
+		Help.doHelp(doc, cmd);
 	}
 
 	public static void main(String[] args) {
