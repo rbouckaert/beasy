@@ -1,5 +1,6 @@
 // Generated from CA.g4 by ANTLR 4.5
 package beast.app.beauti.compactanalysis;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -117,16 +118,6 @@ public interface CAListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArg(CAParser.ArgContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CAParser#partition}.
-	 * @param ctx the parse tree
-	 */
-	void enterPartition(CAParser.PartitionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CAParser#partition}.
-	 * @param ctx the parse tree
-	 */
-	void exitPartition(CAParser.PartitionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CAParser#partitionpattern}.
 	 * @param ctx the parse tree

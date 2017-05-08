@@ -4,7 +4,7 @@ grammar CA;
  
 // parser rules
   
-casentence : ((template | subtemplate | import_ | partition | link | unlink | set) SEMI)*;
+casentence : ((template | subtemplate | import_ | /* partition |*/ link | unlink | set) SEMI)*;
 
 // template
 template : TEMPLATETOKEN templatename;
@@ -13,7 +13,7 @@ templatename : STRING;
 
 
 // subtemplate
-subtemplate : (idpattern EQ)? SUBTOKEN STRING ( OPENP key EQ value (COMMA key EQ value)* CLOSEP )?;
+subtemplate : SUBTOKEN (idpattern EQ)? STRING ( OPENP key EQ value (COMMA key EQ value)* CLOSEP )?;
 
 idpattern : STRING;
 
@@ -29,13 +29,13 @@ alignmentprovider : STRING;
 //
 arg : STRING;
 //
-partition : PARTITIONTOKEN partitionpattern;
+//partition : PARTITIONTOKEN partitionpattern;
 //
 partitionpattern : STRING;
 
-link : LINKTOKEN STRING;
-
-unlink : UNLINKTOKEN STRING;
+link : LINKTOKEN LINKTYPE partitionpattern?;
+ 
+unlink : UNLINKTOKEN LINKTYPE partitionpattern?;
 
 set : SETTOKEN STRING EQ STRING;
 
@@ -57,6 +57,7 @@ LINKTOKEN : 'link';
 UNLINKTOKEN : 'unlink';
 SETTOKEN : 'set';
 SUBTOKEN : 'sub';
+LINKTYPE : 'clock' | 'tree' | 'site';
 
 STRING :
     [a-zA-Z0-9|#*%/.\-+_&]+  // these chars don't need quotes

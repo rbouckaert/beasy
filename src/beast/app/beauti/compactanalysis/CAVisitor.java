@@ -1,5 +1,6 @@
 // Generated from CA.g4 by ANTLR 4.5
 package beast.app.beauti.compactanalysis;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -76,12 +77,6 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitArg(CAParser.ArgContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CAParser#partition}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPartition(CAParser.PartitionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CAParser#partitionpattern}.
 	 * @param ctx the parse tree

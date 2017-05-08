@@ -90,6 +90,7 @@ public class Help {
 		if (cmd.startsWith("help")) {
 			cmd = cmd.substring(4);
 		}
+		cmd = cmd.trim();
 		switch (cmd.toLowerCase()) {
 		case "template":
 			helpTemplate(doc, cmd);

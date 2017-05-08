@@ -138,16 +138,24 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 		
 		
-		@Override
-		public BEASTInterface visitPartition(beast.app.beauti.compactanalysis.CAParser.PartitionContext ctx) {
-			String pattern = ctx.getChild(1).getText();
+//		@Override
+//		public BEASTInterface visitPartition(beast.app.beauti.compactanalysis.CAParser.PartitionContext ctx) {
+//		String pattern = ctx.getChild(1).getText();
+//		partitionContext.clear();
+//		for (PartitionContext p : doc.partitionNames) {
+//			if (p.partition.matches(pattern)) {
+//				partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
+//			}
+//		}
+//		return super.visitPartition(ctx);
+
+		private void processPattern(String pattern) {
 			partitionContext.clear();
 			for (PartitionContext p : doc.partitionNames) {
 				if (p.partition.matches(pattern)) {
 					partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
 				}
 			}
-			return super.visitPartition(ctx);
 		}
 		
 		@Override
@@ -231,8 +239,13 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		
 		@Override
 		public BEASTInterface visitLink(LinkContext ctx) {
+			if (ctx.getChildCount() == 2) {
+				processPattern(".*");
+			} else {
+				processPattern(ctx.getChild(2).getText());
+			}
 			if (partitionContext.size() <= 1) {
-				throw new IllegalArgumentException("Link command : At least two partitions must be selected before '" + ctx.getText() + "'");
+				throw new IllegalArgumentException("Link command : At least two partitions must be selected '" + ctx.getText() + "'");
 			}
 			PartitionContext [] contexts = partitionContext.toArray(new PartitionContext[]{});
 			GenericTreeLikelihood [] treelikelihood = new GenericTreeLikelihood[contexts.length];
@@ -468,6 +481,9 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			// collect parameters
 			List<String> param = new ArrayList<>();
 			List<String> value = new ArrayList<>();
+			if (partitionContext.size() == 0) {
+				processPattern(".*");
+			}
 			if (partitionContext.size() != 1) {
 				throw new IllegalArgumentException("Command sub: partition context does not contain exactly 1 partition but " + partitionContext.size()  + " " + partitionContext.toString());
 			}
