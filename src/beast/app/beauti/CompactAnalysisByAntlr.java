@@ -1,6 +1,7 @@
 package beast.app.beauti;
 
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,22 +22,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.PartitionContext;
-import beast.app.beauti.compactanalysis.CABaseListener;
-import beast.app.beauti.compactanalysis.CABaseVisitor;
-import beast.app.beauti.compactanalysis.CALexer;
-import beast.app.beauti.compactanalysis.CAParser;
-import beast.app.beauti.compactanalysis.CAParser.ArgContext;
-import beast.app.beauti.compactanalysis.CAParser.CasentenceContext;
-import beast.app.beauti.compactanalysis.CAParser.FilenameContext;
-import beast.app.beauti.compactanalysis.CAParser.IdpatternContext;
-import beast.app.beauti.compactanalysis.CAParser.Import_Context;
-import beast.app.beauti.compactanalysis.CAParser.KeyContext;
-import beast.app.beauti.compactanalysis.CAParser.LinkContext;
-import beast.app.beauti.compactanalysis.CAParser.SetContext;
-import beast.app.beauti.compactanalysis.CAParser.SubtemplateContext;
-import beast.app.beauti.compactanalysis.CAParser.TemplateContext;
-import beast.app.beauti.compactanalysis.CAParser.TemplatenameContext;
-import beast.app.beauti.compactanalysis.CAParser.UnlinkContext;
+import beast.app.beauti.compactanalysis.*;
+import beast.app.beauti.compactanalysis.CAParser.*;
 import beast.core.BEASTInterface;
 import beast.core.Distribution;
 import beast.core.Input;
@@ -263,7 +250,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			}
 
 			switch (ctx.getChild(1).getText()) {
-			case "site" :
+			case "sitemodel" :
 				SiteModelInterface sitemodel = treelikelihood[0].siteModelInput.get();
 				for (int i = 1; i < contexts.length; i++) {
 					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
@@ -400,7 +387,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				}
 
 				switch (ctx.getChild(1).getText()) {
-				case "site" :
+				case "sitemodel" :
 					SiteModelInterface sitemodel = treelikelihood[0].siteModelInput.get();
 					for (int i = 1; i < contexts.length; i++) {
 						PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
@@ -464,12 +451,12 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 
 		@Override
-		public BEASTInterface visitSubtemplate(SubtemplateContext ctx) {
+		public BEASTInterface visitUsetemplate(UsetemplateContext ctx) {
 			// assume this specifies a subtemplate
 			// [<id pattern> =]? <SubTemplate>[(param1=value[,param2=value,...])];
 			String pattern;
 			String subTemplateName;
-			if (ctx.getChild(1) instanceof IdpatternContext) {
+			if (ctx.getChild(1) instanceof InputidentifierContext) {
 				pattern = ctx.getChild(1).getText();
 				subTemplateName = ctx.getChild(3).getText();
 			} else {

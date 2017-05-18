@@ -4,57 +4,45 @@ grammar CA;
  
 // parser rules
   
-casentence : ((((template | usetemplate | import_ | /* partition |*/ link | unlink | set)? SEMI) | SINGLELINE_COMMENT ) | C_COMMENT) * ;
+casentence : (cmd | SINGLELINE_COMMENT | C_COMMENT) * ;
 
+cmd : (template | usetemplate | import_ | link | unlink | set)? ';' ;
 
-// template
-template : TEMPLATETOKEN templatename;
+template : TEMPLATETOKEN templatename ;
 
-templatename : STRING;
+templatename : STRING ;
 
+usetemplate : USETOKEN (inputidentifier '=')? STRING ( '(' key '=' value (',' key '=' value)* ')' )? ;
 
-// subtemplate
-usetemplate : USETOKEN (idpattern EQ)? STRING ( OPENP key EQ value (COMMA key EQ value)* CLOSEP )?;
+key : STRING ;
 
-idpattern : STRING;
+value : STRING ;
 
-key : STRING;
+import_ : IMPORTTOKEN alignmentprovider? filename ( '(' arg (',' arg)* ')' )? ;
 
-value : STRING;
+filename :  STRING ;
 
-import_ : IMPORTTOKEN alignmentprovider? filename ( OPENP arg (COMMA arg)* CLOSEP )?;
-//
-filename :  STRING;
-//
-alignmentprovider : STRING;
-//
-arg : STRING;
-//
-//partition : PARTITIONTOKEN partitionpattern;
-//
-partitionpattern : STRING;
+alignmentprovider : STRING ;
 
-link : LINKTOKEN LINKTYPE partitionpattern?;
+arg : STRING ;
+
+partitionpattern : STRING ;
+
+link : LINKTOKEN LINKTYPE partitionpattern? ;
  
-unlink : UNLINKTOKEN LINKTYPE partitionpattern?;
+unlink : UNLINKTOKEN LINKTYPE partitionpattern? ;
 
-set : SETTOKEN STRING EQ STRING;
+set : SETTOKEN inputidentifier '=' STRING ;
 
-C_COMMENT : '/*' ().*? '*/' ;
+inputidentifier : (inputname (attributeconditions) '.')? inputname ;
 
-SINGLELINE_COMMENT : '//' ~('\r' | '\n')* ;
- 
+attributeconditions : '[' attributecondition (',' attributecondition )* ']' ;
+
+attributecondition : inputname '=' value attributeconditions? ;
+
+inputname : STRING ;
 
 // Lexer Rules
-
-// lexer grammar CALexer;
-
-SEMI: ';' ;
-COMMA: ',' ;
-OPENP: '(' ;
-CLOSEP: ')' ;
-EQ: '=' ;
-
 TEMPLATETOKEN : 'template';
 IMPORTTOKEN : 'import';
 PARTITIONTOKEN : 'partition';
@@ -62,7 +50,7 @@ LINKTOKEN : 'link';
 UNLINKTOKEN : 'unlink';
 SETTOKEN : 'set';
 USETOKEN : 'use';
-LINKTYPE : 'clock' | 'tree' | 'site';
+LINKTYPE : 'clock' | 'tree' | 'sitemodel';
 
 STRING :
     [a-zA-Z0-9|#*%/.\-+_&]+  // these chars don't need quotes
@@ -71,3 +59,7 @@ STRING :
     ;
 
 WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ -> skip ;
+
+C_COMMENT : '/*' ().*? '*/' ;
+
+SINGLELINE_COMMENT : '//' ~('\r' | '\n')* ;
