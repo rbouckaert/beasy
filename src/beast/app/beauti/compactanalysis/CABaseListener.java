@@ -53,13 +53,13 @@ public class CABaseListener implements CAListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSubtemplate(CAParser.SubtemplateContext ctx) { }
+	@Override public void enterUsetemplate(CAParser.UsetemplateContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSubtemplate(CAParser.SubtemplateContext ctx) { }
+	@Override public void exitUsetemplate(CAParser.UsetemplateContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

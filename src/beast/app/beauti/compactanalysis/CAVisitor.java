@@ -30,11 +30,11 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTemplatename(CAParser.TemplatenameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CAParser#subtemplate}.
+	 * Visit a parse tree produced by {@link CAParser#usetemplate}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSubtemplate(CAParser.SubtemplateContext ctx);
+	T visitUsetemplate(CAParser.UsetemplateContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CAParser#idpattern}.
 	 * @param ctx the parse tree

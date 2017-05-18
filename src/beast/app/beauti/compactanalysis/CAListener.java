@@ -39,15 +39,15 @@ public interface CAListener extends ParseTreeListener {
 	 */
 	void exitTemplatename(CAParser.TemplatenameContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CAParser#subtemplate}.
+	 * Enter a parse tree produced by {@link CAParser#usetemplate}.
 	 * @param ctx the parse tree
 	 */
-	void enterSubtemplate(CAParser.SubtemplateContext ctx);
+	void enterUsetemplate(CAParser.UsetemplateContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CAParser#subtemplate}.
+	 * Exit a parse tree produced by {@link CAParser#usetemplate}.
 	 * @param ctx the parse tree
 	 */
-	void exitSubtemplate(CAParser.SubtemplateContext ctx);
+	void exitUsetemplate(CAParser.UsetemplateContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CAParser#idpattern}.
 	 * @param ctx the parse tree

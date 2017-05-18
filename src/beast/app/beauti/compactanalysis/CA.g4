@@ -4,7 +4,8 @@ grammar CA;
  
 // parser rules
   
-casentence : ((template | subtemplate | import_ | /* partition |*/ link | unlink | set) SEMI)*;
+casentence : ((((template | usetemplate | import_ | /* partition |*/ link | unlink | set)? SEMI) | SINGLELINE_COMMENT ) | C_COMMENT) * ;
+
 
 // template
 template : TEMPLATETOKEN templatename;
@@ -13,7 +14,7 @@ templatename : STRING;
 
 
 // subtemplate
-subtemplate : SUBTOKEN (idpattern EQ)? STRING ( OPENP key EQ value (COMMA key EQ value)* CLOSEP )?;
+usetemplate : USETOKEN (idpattern EQ)? STRING ( OPENP key EQ value (COMMA key EQ value)* CLOSEP )?;
 
 idpattern : STRING;
 
@@ -39,6 +40,10 @@ unlink : UNLINKTOKEN LINKTYPE partitionpattern?;
 
 set : SETTOKEN STRING EQ STRING;
 
+C_COMMENT : '/*' ().*? '*/' ;
+
+SINGLELINE_COMMENT : '//' ~('\r' | '\n')* ;
+ 
 
 // Lexer Rules
 
@@ -56,7 +61,7 @@ PARTITIONTOKEN : 'partition';
 LINKTOKEN : 'link';
 UNLINKTOKEN : 'unlink';
 SETTOKEN : 'set';
-SUBTOKEN : 'sub';
+USETOKEN : 'use';
 LINKTYPE : 'clock' | 'tree' | 'site';
 
 STRING :
