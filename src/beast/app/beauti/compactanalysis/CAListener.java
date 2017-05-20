@@ -19,6 +19,16 @@ public interface CAListener extends ParseTreeListener {
 	 */
 	void exitCasentence(CAParser.CasentenceContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CAParser#cmd}.
+	 * @param ctx the parse tree
+	 */
+	void enterCmd(CAParser.CmdContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#cmd}.
+	 * @param ctx the parse tree
+	 */
+	void exitCmd(CAParser.CmdContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CAParser#template}.
 	 * @param ctx the parse tree
 	 */
@@ -48,16 +58,6 @@ public interface CAListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUsetemplate(CAParser.UsetemplateContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CAParser#idpattern}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdpattern(CAParser.IdpatternContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CAParser#idpattern}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdpattern(CAParser.IdpatternContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CAParser#key}.
 	 * @param ctx the parse tree
@@ -158,4 +158,44 @@ public interface CAListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSet(CAParser.SetContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CAParser#inputidentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterInputidentifier(CAParser.InputidentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#inputidentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitInputidentifier(CAParser.InputidentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CAParser#elemntName}.
+	 * @param ctx the parse tree
+	 */
+	void enterElemntName(CAParser.ElemntNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#elemntName}.
+	 * @param ctx the parse tree
+	 */
+	void exitElemntName(CAParser.ElemntNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CAParser#idPattern}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdPattern(CAParser.IdPatternContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#idPattern}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdPattern(CAParser.IdPatternContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CAParser#inputname}.
+	 * @param ctx the parse tree
+	 */
+	void enterInputname(CAParser.InputnameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#inputname}.
+	 * @param ctx the parse tree
+	 */
+	void exitInputname(CAParser.InputnameContext ctx);
 }

@@ -4,7 +4,7 @@ grammar CA;
  
 // parser rules
   
-casentence : (cmd | SINGLELINE_COMMENT | C_COMMENT) * ;
+casentence : cmd * ;
 
 cmd : (template | usetemplate | import_ | link | unlink | set)? ';' ;
 
@@ -34,15 +34,20 @@ unlink : UNLINKTOKEN LINKTYPE partitionpattern? ;
 
 set : SETTOKEN inputidentifier '=' STRING ;
 
-inputidentifier : (inputname (attributeconditions) '.')? inputname ;
+inputidentifier : idPattern | elemntName? inputname idPattern?;
 
-attributeconditions : '[' attributecondition (',' attributecondition )* ']' ;
+elemntName : STRING '@';
 
-attributecondition : inputname '=' value attributeconditions? ;
+idPattern : '[' STRING ']' ;
+
+//attributeconditions : '[' attributecondition (',' attributecondition )* ']' ;
+
+//attributecondition : inputname '=' value attributeconditions? ;
 
 inputname : STRING ;
 
 // Lexer Rules
+
 TEMPLATETOKEN : 'template';
 IMPORTTOKEN : 'import';
 PARTITIONTOKEN : 'partition';
@@ -60,6 +65,10 @@ STRING :
 
 WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ -> skip ;
 
-C_COMMENT : '/*' ().*? '*/' ;
+COMMENT
+    :   '/*' ().*? '*/' -> channel(HIDDEN)
+    ;
 
-SINGLELINE_COMMENT : '//' ~('\r' | '\n')* ;
+LINE_COMMENT
+    :   '//' ~[\r\n]* -> channel(HIDDEN)
+;

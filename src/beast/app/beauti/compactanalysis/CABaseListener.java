@@ -29,6 +29,18 @@ public class CABaseListener implements CAListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCmd(CAParser.CmdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCmd(CAParser.CmdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTemplate(CAParser.TemplateContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -60,18 +72,6 @@ public class CABaseListener implements CAListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitUsetemplate(CAParser.UsetemplateContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIdpattern(CAParser.IdpatternContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIdpattern(CAParser.IdpatternContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -192,6 +192,54 @@ public class CABaseListener implements CAListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSet(CAParser.SetContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInputidentifier(CAParser.InputidentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInputidentifier(CAParser.InputidentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterElemntName(CAParser.ElemntNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitElemntName(CAParser.ElemntNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdPattern(CAParser.IdPatternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdPattern(CAParser.IdPatternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInputname(CAParser.InputnameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInputname(CAParser.InputnameContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -17,28 +17,30 @@ public class CAParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		C_COMMENT=1, SINGLELINE_COMMENT=2, SEMI=3, COMMA=4, OPENP=5, CLOSEP=6, 
-		EQ=7, TEMPLATETOKEN=8, IMPORTTOKEN=9, PARTITIONTOKEN=10, LINKTOKEN=11, 
-		UNLINKTOKEN=12, SETTOKEN=13, USETOKEN=14, LINKTYPE=15, STRING=16, WHITESPACE=17;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, TEMPLATETOKEN=9, 
+		IMPORTTOKEN=10, PARTITIONTOKEN=11, LINKTOKEN=12, UNLINKTOKEN=13, SETTOKEN=14, 
+		USETOKEN=15, LINKTYPE=16, STRING=17, WHITESPACE=18, COMMENT=19, LINE_COMMENT=20;
 	public static final int
-		RULE_casentence = 0, RULE_template = 1, RULE_templatename = 2, RULE_usetemplate = 3, 
-		RULE_idpattern = 4, RULE_key = 5, RULE_value = 6, RULE_import_ = 7, RULE_filename = 8, 
-		RULE_alignmentprovider = 9, RULE_arg = 10, RULE_partitionpattern = 11, 
-		RULE_link = 12, RULE_unlink = 13, RULE_set = 14;
+		RULE_casentence = 0, RULE_cmd = 1, RULE_template = 2, RULE_templatename = 3, 
+		RULE_usetemplate = 4, RULE_key = 5, RULE_value = 6, RULE_import_ = 7, 
+		RULE_filename = 8, RULE_alignmentprovider = 9, RULE_arg = 10, RULE_partitionpattern = 11, 
+		RULE_link = 12, RULE_unlink = 13, RULE_set = 14, RULE_inputidentifier = 15, 
+		RULE_elemntName = 16, RULE_idPattern = 17, RULE_inputname = 18;
 	public static final String[] ruleNames = {
-		"casentence", "template", "templatename", "usetemplate", "idpattern", 
-		"key", "value", "import_", "filename", "alignmentprovider", "arg", "partitionpattern", 
-		"link", "unlink", "set"
+		"casentence", "cmd", "template", "templatename", "usetemplate", "key", 
+		"value", "import_", "filename", "alignmentprovider", "arg", "partitionpattern", 
+		"link", "unlink", "set", "inputidentifier", "elemntName", "idPattern", 
+		"inputname"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, null, null, "';'", "','", "'('", "')'", "'='", "'template'", "'import'", 
-		"'partition'", "'link'", "'unlink'", "'set'", "'use'"
+		null, "';'", "'='", "'('", "','", "')'", "'@'", "'['", "']'", "'template'", 
+		"'import'", "'partition'", "'link'", "'unlink'", "'set'", "'use'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "C_COMMENT", "SINGLELINE_COMMENT", "SEMI", "COMMA", "OPENP", "CLOSEP", 
-		"EQ", "TEMPLATETOKEN", "IMPORTTOKEN", "PARTITIONTOKEN", "LINKTOKEN", "UNLINKTOKEN", 
-		"SETTOKEN", "USETOKEN", "LINKTYPE", "STRING", "WHITESPACE"
+		null, null, null, null, null, null, null, null, null, "TEMPLATETOKEN", 
+		"IMPORTTOKEN", "PARTITIONTOKEN", "LINKTOKEN", "UNLINKTOKEN", "SETTOKEN", 
+		"USETOKEN", "LINKTYPE", "STRING", "WHITESPACE", "COMMENT", "LINE_COMMENT"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -90,53 +92,11 @@ public class CAParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class CasentenceContext extends ParserRuleContext {
-		public List<TerminalNode> C_COMMENT() { return getTokens(CAParser.C_COMMENT); }
-		public TerminalNode C_COMMENT(int i) {
-			return getToken(CAParser.C_COMMENT, i);
+		public List<CmdContext> cmd() {
+			return getRuleContexts(CmdContext.class);
 		}
-		public List<TerminalNode> SINGLELINE_COMMENT() { return getTokens(CAParser.SINGLELINE_COMMENT); }
-		public TerminalNode SINGLELINE_COMMENT(int i) {
-			return getToken(CAParser.SINGLELINE_COMMENT, i);
-		}
-		public List<TerminalNode> SEMI() { return getTokens(CAParser.SEMI); }
-		public TerminalNode SEMI(int i) {
-			return getToken(CAParser.SEMI, i);
-		}
-		public List<TemplateContext> template() {
-			return getRuleContexts(TemplateContext.class);
-		}
-		public TemplateContext template(int i) {
-			return getRuleContext(TemplateContext.class,i);
-		}
-		public List<UsetemplateContext> usetemplate() {
-			return getRuleContexts(UsetemplateContext.class);
-		}
-		public UsetemplateContext usetemplate(int i) {
-			return getRuleContext(UsetemplateContext.class,i);
-		}
-		public List<Import_Context> import_() {
-			return getRuleContexts(Import_Context.class);
-		}
-		public Import_Context import_(int i) {
-			return getRuleContext(Import_Context.class,i);
-		}
-		public List<LinkContext> link() {
-			return getRuleContexts(LinkContext.class);
-		}
-		public LinkContext link(int i) {
-			return getRuleContext(LinkContext.class,i);
-		}
-		public List<UnlinkContext> unlink() {
-			return getRuleContexts(UnlinkContext.class);
-		}
-		public UnlinkContext unlink(int i) {
-			return getRuleContext(UnlinkContext.class,i);
-		}
-		public List<SetContext> set() {
-			return getRuleContexts(SetContext.class);
-		}
-		public SetContext set(int i) {
-			return getRuleContext(SetContext.class,i);
+		public CmdContext cmd(int i) {
+			return getRuleContext(CmdContext.class,i);
 		}
 		public CasentenceContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -164,106 +124,122 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(45);
+			setState(41);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << C_COMMENT) | (1L << SINGLELINE_COMMENT) | (1L << SEMI) | (1L << TEMPLATETOKEN) | (1L << IMPORTTOKEN) | (1L << LINKTOKEN) | (1L << UNLINKTOKEN) | (1L << SETTOKEN) | (1L << USETOKEN))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << TEMPLATETOKEN) | (1L << IMPORTTOKEN) | (1L << LINKTOKEN) | (1L << UNLINKTOKEN) | (1L << SETTOKEN) | (1L << USETOKEN))) != 0)) {
 				{
+				{
+				setState(38);
+				cmd();
+				}
+				}
 				setState(43);
-				switch (_input.LA(1)) {
-				case SINGLELINE_COMMENT:
-				case SEMI:
-				case TEMPLATETOKEN:
-				case IMPORTTOKEN:
-				case LINKTOKEN:
-				case UNLINKTOKEN:
-				case SETTOKEN:
-				case USETOKEN:
-					{
-					setState(40);
-					switch (_input.LA(1)) {
-					case SEMI:
-					case TEMPLATETOKEN:
-					case IMPORTTOKEN:
-					case LINKTOKEN:
-					case UNLINKTOKEN:
-					case SETTOKEN:
-					case USETOKEN:
-						{
-						{
-						setState(36);
-						switch (_input.LA(1)) {
-						case TEMPLATETOKEN:
-							{
-							setState(30);
-							template();
-							}
-							break;
-						case USETOKEN:
-							{
-							setState(31);
-							usetemplate();
-							}
-							break;
-						case IMPORTTOKEN:
-							{
-							setState(32);
-							import_();
-							}
-							break;
-						case LINKTOKEN:
-							{
-							setState(33);
-							link();
-							}
-							break;
-						case UNLINKTOKEN:
-							{
-							setState(34);
-							unlink();
-							}
-							break;
-						case SETTOKEN:
-							{
-							setState(35);
-							set();
-							}
-							break;
-						case SEMI:
-							break;
-						default:
-							throw new NoViableAltException(this);
-						}
-						setState(38);
-						match(SEMI);
-						}
-						}
-						break;
-					case SINGLELINE_COMMENT:
-						{
-						setState(39);
-						match(SINGLELINE_COMMENT);
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
-					}
-					}
-					break;
-				case C_COMMENT:
-					{
-					setState(42);
-					match(C_COMMENT);
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
-				}
-				}
-				setState(47);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class CmdContext extends ParserRuleContext {
+		public TemplateContext template() {
+			return getRuleContext(TemplateContext.class,0);
+		}
+		public UsetemplateContext usetemplate() {
+			return getRuleContext(UsetemplateContext.class,0);
+		}
+		public Import_Context import_() {
+			return getRuleContext(Import_Context.class,0);
+		}
+		public LinkContext link() {
+			return getRuleContext(LinkContext.class,0);
+		}
+		public UnlinkContext unlink() {
+			return getRuleContext(UnlinkContext.class,0);
+		}
+		public SetContext set() {
+			return getRuleContext(SetContext.class,0);
+		}
+		public CmdContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_cmd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).enterCmd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).exitCmd(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).visitCmd(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final CmdContext cmd() throws RecognitionException {
+		CmdContext _localctx = new CmdContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_cmd);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(50);
+			switch (_input.LA(1)) {
+			case TEMPLATETOKEN:
+				{
+				setState(44);
+				template();
+				}
+				break;
+			case USETOKEN:
+				{
+				setState(45);
+				usetemplate();
+				}
+				break;
+			case IMPORTTOKEN:
+				{
+				setState(46);
+				import_();
+				}
+				break;
+			case LINKTOKEN:
+				{
+				setState(47);
+				link();
+				}
+				break;
+			case UNLINKTOKEN:
+				{
+				setState(48);
+				unlink();
+				}
+				break;
+			case SETTOKEN:
+				{
+				setState(49);
+				set();
+				}
+				break;
+			case T__0:
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			setState(52);
+			match(T__0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -303,13 +279,13 @@ public class CAParser extends Parser {
 
 	public final TemplateContext template() throws RecognitionException {
 		TemplateContext _localctx = new TemplateContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_template);
+		enterRule(_localctx, 4, RULE_template);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(48);
+			setState(54);
 			match(TEMPLATETOKEN);
-			setState(49);
+			setState(55);
 			templatename();
 			}
 		}
@@ -347,11 +323,11 @@ public class CAParser extends Parser {
 
 	public final TemplatenameContext templatename() throws RecognitionException {
 		TemplatenameContext _localctx = new TemplatenameContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_templatename);
+		enterRule(_localctx, 6, RULE_templatename);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(51);
+			setState(57);
 			match(STRING);
 			}
 		}
@@ -369,14 +345,9 @@ public class CAParser extends Parser {
 	public static class UsetemplateContext extends ParserRuleContext {
 		public TerminalNode USETOKEN() { return getToken(CAParser.USETOKEN, 0); }
 		public TerminalNode STRING() { return getToken(CAParser.STRING, 0); }
-		public IdpatternContext idpattern() {
-			return getRuleContext(IdpatternContext.class,0);
+		public InputidentifierContext inputidentifier() {
+			return getRuleContext(InputidentifierContext.class,0);
 		}
-		public List<TerminalNode> EQ() { return getTokens(CAParser.EQ); }
-		public TerminalNode EQ(int i) {
-			return getToken(CAParser.EQ, i);
-		}
-		public TerminalNode OPENP() { return getToken(CAParser.OPENP, 0); }
 		public List<KeyContext> key() {
 			return getRuleContexts(KeyContext.class);
 		}
@@ -388,11 +359,6 @@ public class CAParser extends Parser {
 		}
 		public ValueContext value(int i) {
 			return getRuleContext(ValueContext.class,i);
-		}
-		public TerminalNode CLOSEP() { return getToken(CAParser.CLOSEP, 0); }
-		public List<TerminalNode> COMMA() { return getTokens(CAParser.COMMA); }
-		public TerminalNode COMMA(int i) {
-			return getToken(CAParser.COMMA, i);
 		}
 		public UsetemplateContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -415,105 +381,63 @@ public class CAParser extends Parser {
 
 	public final UsetemplateContext usetemplate() throws RecognitionException {
 		UsetemplateContext _localctx = new UsetemplateContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_usetemplate);
+		enterRule(_localctx, 8, RULE_usetemplate);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(53);
+			setState(59);
 			match(USETOKEN);
-			setState(57);
-			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
+			setState(63);
+			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				{
-				setState(54);
-				idpattern();
-				setState(55);
-				match(EQ);
+				setState(60);
+				inputidentifier();
+				setState(61);
+				match(T__1);
 				}
 				break;
 			}
-			setState(59);
+			setState(65);
 			match(STRING);
-			setState(76);
+			setState(82);
 			_la = _input.LA(1);
-			if (_la==OPENP) {
+			if (_la==T__2) {
 				{
-				setState(60);
-				match(OPENP);
-				setState(61);
+				setState(66);
+				match(T__2);
+				setState(67);
 				key();
-				setState(62);
-				match(EQ);
-				setState(63);
+				setState(68);
+				match(T__1);
+				setState(69);
 				value();
-				setState(71);
+				setState(77);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while (_la==COMMA) {
+				while (_la==T__3) {
 					{
 					{
-					setState(64);
-					match(COMMA);
-					setState(65);
+					setState(70);
+					match(T__3);
+					setState(71);
 					key();
-					setState(66);
-					match(EQ);
-					setState(67);
+					setState(72);
+					match(T__1);
+					setState(73);
 					value();
 					}
 					}
-					setState(73);
+					setState(79);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(74);
-				match(CLOSEP);
+				setState(80);
+				match(T__4);
 				}
 			}
 
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class IdpatternContext extends ParserRuleContext {
-		public TerminalNode STRING() { return getToken(CAParser.STRING, 0); }
-		public IdpatternContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_idpattern; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CAListener ) ((CAListener)listener).enterIdpattern(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CAListener ) ((CAListener)listener).exitIdpattern(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).visitIdpattern(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final IdpatternContext idpattern() throws RecognitionException {
-		IdpatternContext _localctx = new IdpatternContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_idpattern);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(78);
-			match(STRING);
 			}
 		}
 		catch (RecognitionException re) {
@@ -554,7 +478,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(80);
+			setState(84);
 			match(STRING);
 			}
 		}
@@ -596,7 +520,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(82);
+			setState(86);
 			match(STRING);
 			}
 		}
@@ -619,17 +543,11 @@ public class CAParser extends Parser {
 		public AlignmentproviderContext alignmentprovider() {
 			return getRuleContext(AlignmentproviderContext.class,0);
 		}
-		public TerminalNode OPENP() { return getToken(CAParser.OPENP, 0); }
 		public List<ArgContext> arg() {
 			return getRuleContexts(ArgContext.class);
 		}
 		public ArgContext arg(int i) {
 			return getRuleContext(ArgContext.class,i);
-		}
-		public TerminalNode CLOSEP() { return getToken(CAParser.CLOSEP, 0); }
-		public List<TerminalNode> COMMA() { return getTokens(CAParser.COMMA); }
-		public TerminalNode COMMA(int i) {
-			return getToken(CAParser.COMMA, i);
 		}
 		public Import_Context(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -657,45 +575,45 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(84);
+			setState(88);
 			match(IMPORTTOKEN);
-			setState(86);
-			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
+			setState(90);
+			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				{
-				setState(85);
+				setState(89);
 				alignmentprovider();
 				}
 				break;
 			}
-			setState(88);
+			setState(92);
 			filename();
-			setState(100);
+			setState(104);
 			_la = _input.LA(1);
-			if (_la==OPENP) {
+			if (_la==T__2) {
 				{
-				setState(89);
-				match(OPENP);
-				setState(90);
+				setState(93);
+				match(T__2);
+				setState(94);
 				arg();
-				setState(95);
+				setState(99);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while (_la==COMMA) {
+				while (_la==T__3) {
 					{
 					{
-					setState(91);
-					match(COMMA);
-					setState(92);
+					setState(95);
+					match(T__3);
+					setState(96);
 					arg();
 					}
 					}
-					setState(97);
+					setState(101);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(98);
-				match(CLOSEP);
+				setState(102);
+				match(T__4);
 				}
 			}
 
@@ -739,7 +657,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(102);
+			setState(106);
 			match(STRING);
 			}
 		}
@@ -781,7 +699,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(104);
+			setState(108);
 			match(STRING);
 			}
 		}
@@ -823,7 +741,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(106);
+			setState(110);
 			match(STRING);
 			}
 		}
@@ -865,7 +783,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(108);
+			setState(112);
 			match(STRING);
 			}
 		}
@@ -912,15 +830,15 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(110);
+			setState(114);
 			match(LINKTOKEN);
-			setState(111);
+			setState(115);
 			match(LINKTYPE);
-			setState(113);
+			setState(117);
 			_la = _input.LA(1);
 			if (_la==STRING) {
 				{
-				setState(112);
+				setState(116);
 				partitionpattern();
 				}
 			}
@@ -970,15 +888,15 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(115);
+			setState(119);
 			match(UNLINKTOKEN);
-			setState(116);
+			setState(120);
 			match(LINKTYPE);
-			setState(118);
+			setState(122);
 			_la = _input.LA(1);
 			if (_la==STRING) {
 				{
-				setState(117);
+				setState(121);
 				partitionpattern();
 				}
 			}
@@ -998,11 +916,10 @@ public class CAParser extends Parser {
 
 	public static class SetContext extends ParserRuleContext {
 		public TerminalNode SETTOKEN() { return getToken(CAParser.SETTOKEN, 0); }
-		public List<TerminalNode> STRING() { return getTokens(CAParser.STRING); }
-		public TerminalNode STRING(int i) {
-			return getToken(CAParser.STRING, i);
+		public InputidentifierContext inputidentifier() {
+			return getRuleContext(InputidentifierContext.class,0);
 		}
-		public TerminalNode EQ() { return getToken(CAParser.EQ, 0); }
+		public TerminalNode STRING() { return getToken(CAParser.STRING, 0); }
 		public SetContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1028,13 +945,228 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(120);
+			setState(124);
 			match(SETTOKEN);
-			setState(121);
+			setState(125);
+			inputidentifier();
+			setState(126);
+			match(T__1);
+			setState(127);
 			match(STRING);
-			setState(122);
-			match(EQ);
-			setState(123);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class InputidentifierContext extends ParserRuleContext {
+		public IdPatternContext idPattern() {
+			return getRuleContext(IdPatternContext.class,0);
+		}
+		public InputnameContext inputname() {
+			return getRuleContext(InputnameContext.class,0);
+		}
+		public ElemntNameContext elemntName() {
+			return getRuleContext(ElemntNameContext.class,0);
+		}
+		public InputidentifierContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_inputidentifier; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).enterInputidentifier(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).exitInputidentifier(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).visitInputidentifier(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final InputidentifierContext inputidentifier() throws RecognitionException {
+		InputidentifierContext _localctx = new InputidentifierContext(_ctx, getState());
+		enterRule(_localctx, 30, RULE_inputidentifier);
+		int _la;
+		try {
+			setState(137);
+			switch (_input.LA(1)) {
+			case T__6:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(129);
+				idPattern();
+				}
+				break;
+			case STRING:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(131);
+				switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
+				case 1:
+					{
+					setState(130);
+					elemntName();
+					}
+					break;
+				}
+				setState(133);
+				inputname();
+				setState(135);
+				_la = _input.LA(1);
+				if (_la==T__6) {
+					{
+					setState(134);
+					idPattern();
+					}
+				}
+
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ElemntNameContext extends ParserRuleContext {
+		public TerminalNode STRING() { return getToken(CAParser.STRING, 0); }
+		public ElemntNameContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_elemntName; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).enterElemntName(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).exitElemntName(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).visitElemntName(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ElemntNameContext elemntName() throws RecognitionException {
+		ElemntNameContext _localctx = new ElemntNameContext(_ctx, getState());
+		enterRule(_localctx, 32, RULE_elemntName);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(139);
+			match(STRING);
+			setState(140);
+			match(T__5);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class IdPatternContext extends ParserRuleContext {
+		public TerminalNode STRING() { return getToken(CAParser.STRING, 0); }
+		public IdPatternContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_idPattern; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).enterIdPattern(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).exitIdPattern(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).handleIdPattern(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final IdPatternContext idPattern() throws RecognitionException {
+		IdPatternContext _localctx = new IdPatternContext(_ctx, getState());
+		enterRule(_localctx, 34, RULE_idPattern);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(142);
+			match(T__6);
+			setState(143);
+			match(STRING);
+			setState(144);
+			match(T__7);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class InputnameContext extends ParserRuleContext {
+		public TerminalNode STRING() { return getToken(CAParser.STRING, 0); }
+		public InputnameContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_inputname; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).enterInputname(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).exitInputname(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).visitInputname(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final InputnameContext inputname() throws RecognitionException {
+		InputnameContext _localctx = new InputnameContext(_ctx, getState());
+		enterRule(_localctx, 36, RULE_inputname);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(146);
 			match(STRING);
 			}
 		}
@@ -1050,37 +1182,45 @@ public class CAParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\23\u0080\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\26\u0097\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
-		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\3\2\3\2\3\2\3\2\3"+
-		"\2\3\2\5\2\'\n\2\3\2\3\2\5\2+\n\2\3\2\7\2.\n\2\f\2\16\2\61\13\2\3\3\3"+
-		"\3\3\3\3\4\3\4\3\5\3\5\3\5\3\5\5\5<\n\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3"+
-		"\5\3\5\3\5\7\5H\n\5\f\5\16\5K\13\5\3\5\3\5\5\5O\n\5\3\6\3\6\3\7\3\7\3"+
-		"\b\3\b\3\t\3\t\5\tY\n\t\3\t\3\t\3\t\3\t\3\t\7\t`\n\t\f\t\16\tc\13\t\3"+
-		"\t\3\t\5\tg\n\t\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16\3\16\5\16"+
-		"t\n\16\3\17\3\17\3\17\5\17y\n\17\3\20\3\20\3\20\3\20\3\20\3\20\2\2\21"+
-		"\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36\2\2\u0081\2/\3\2\2\2\4\62\3\2"+
-		"\2\2\6\65\3\2\2\2\b\67\3\2\2\2\nP\3\2\2\2\fR\3\2\2\2\16T\3\2\2\2\20V\3"+
-		"\2\2\2\22h\3\2\2\2\24j\3\2\2\2\26l\3\2\2\2\30n\3\2\2\2\32p\3\2\2\2\34"+
-		"u\3\2\2\2\36z\3\2\2\2 \'\5\4\3\2!\'\5\b\5\2\"\'\5\20\t\2#\'\5\32\16\2"+
-		"$\'\5\34\17\2%\'\5\36\20\2& \3\2\2\2&!\3\2\2\2&\"\3\2\2\2&#\3\2\2\2&$"+
-		"\3\2\2\2&%\3\2\2\2&\'\3\2\2\2\'(\3\2\2\2(+\7\5\2\2)+\7\4\2\2*&\3\2\2\2"+
-		"*)\3\2\2\2+.\3\2\2\2,.\7\3\2\2-*\3\2\2\2-,\3\2\2\2.\61\3\2\2\2/-\3\2\2"+
-		"\2/\60\3\2\2\2\60\3\3\2\2\2\61/\3\2\2\2\62\63\7\n\2\2\63\64\5\6\4\2\64"+
-		"\5\3\2\2\2\65\66\7\22\2\2\66\7\3\2\2\2\67;\7\20\2\289\5\n\6\29:\7\t\2"+
-		"\2:<\3\2\2\2;8\3\2\2\2;<\3\2\2\2<=\3\2\2\2=N\7\22\2\2>?\7\7\2\2?@\5\f"+
-		"\7\2@A\7\t\2\2AI\5\16\b\2BC\7\6\2\2CD\5\f\7\2DE\7\t\2\2EF\5\16\b\2FH\3"+
-		"\2\2\2GB\3\2\2\2HK\3\2\2\2IG\3\2\2\2IJ\3\2\2\2JL\3\2\2\2KI\3\2\2\2LM\7"+
-		"\b\2\2MO\3\2\2\2N>\3\2\2\2NO\3\2\2\2O\t\3\2\2\2PQ\7\22\2\2Q\13\3\2\2\2"+
-		"RS\7\22\2\2S\r\3\2\2\2TU\7\22\2\2U\17\3\2\2\2VX\7\13\2\2WY\5\24\13\2X"+
-		"W\3\2\2\2XY\3\2\2\2YZ\3\2\2\2Zf\5\22\n\2[\\\7\7\2\2\\a\5\26\f\2]^\7\6"+
-		"\2\2^`\5\26\f\2_]\3\2\2\2`c\3\2\2\2a_\3\2\2\2ab\3\2\2\2bd\3\2\2\2ca\3"+
-		"\2\2\2de\7\b\2\2eg\3\2\2\2f[\3\2\2\2fg\3\2\2\2g\21\3\2\2\2hi\7\22\2\2"+
-		"i\23\3\2\2\2jk\7\22\2\2k\25\3\2\2\2lm\7\22\2\2m\27\3\2\2\2no\7\22\2\2"+
-		"o\31\3\2\2\2pq\7\r\2\2qs\7\21\2\2rt\5\30\r\2sr\3\2\2\2st\3\2\2\2t\33\3"+
-		"\2\2\2uv\7\16\2\2vx\7\21\2\2wy\5\30\r\2xw\3\2\2\2xy\3\2\2\2y\35\3\2\2"+
-		"\2z{\7\17\2\2{|\7\22\2\2|}\7\t\2\2}~\7\22\2\2~\37\3\2\2\2\16&*-/;INXa"+
-		"fsx";
+		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
+		"\4\23\t\23\4\24\t\24\3\2\7\2*\n\2\f\2\16\2-\13\2\3\3\3\3\3\3\3\3\3\3\3"+
+		"\3\5\3\65\n\3\3\3\3\3\3\4\3\4\3\4\3\5\3\5\3\6\3\6\3\6\3\6\5\6B\n\6\3\6"+
+		"\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\7\6N\n\6\f\6\16\6Q\13\6\3\6\3\6\5"+
+		"\6U\n\6\3\7\3\7\3\b\3\b\3\t\3\t\5\t]\n\t\3\t\3\t\3\t\3\t\3\t\7\td\n\t"+
+		"\f\t\16\tg\13\t\3\t\3\t\5\tk\n\t\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16"+
+		"\3\16\3\16\5\16x\n\16\3\17\3\17\3\17\5\17}\n\17\3\20\3\20\3\20\3\20\3"+
+		"\20\3\21\3\21\5\21\u0086\n\21\3\21\3\21\5\21\u008a\n\21\5\21\u008c\n\21"+
+		"\3\22\3\22\3\22\3\23\3\23\3\23\3\23\3\24\3\24\3\24\2\2\25\2\4\6\b\n\f"+
+		"\16\20\22\24\26\30\32\34\36 \"$&\2\2\u0095\2+\3\2\2\2\4\64\3\2\2\2\68"+
+		"\3\2\2\2\b;\3\2\2\2\n=\3\2\2\2\fV\3\2\2\2\16X\3\2\2\2\20Z\3\2\2\2\22l"+
+		"\3\2\2\2\24n\3\2\2\2\26p\3\2\2\2\30r\3\2\2\2\32t\3\2\2\2\34y\3\2\2\2\36"+
+		"~\3\2\2\2 \u008b\3\2\2\2\"\u008d\3\2\2\2$\u0090\3\2\2\2&\u0094\3\2\2\2"+
+		"(*\5\4\3\2)(\3\2\2\2*-\3\2\2\2+)\3\2\2\2+,\3\2\2\2,\3\3\2\2\2-+\3\2\2"+
+		"\2.\65\5\6\4\2/\65\5\n\6\2\60\65\5\20\t\2\61\65\5\32\16\2\62\65\5\34\17"+
+		"\2\63\65\5\36\20\2\64.\3\2\2\2\64/\3\2\2\2\64\60\3\2\2\2\64\61\3\2\2\2"+
+		"\64\62\3\2\2\2\64\63\3\2\2\2\64\65\3\2\2\2\65\66\3\2\2\2\66\67\7\3\2\2"+
+		"\67\5\3\2\2\289\7\13\2\29:\5\b\5\2:\7\3\2\2\2;<\7\23\2\2<\t\3\2\2\2=A"+
+		"\7\21\2\2>?\5 \21\2?@\7\4\2\2@B\3\2\2\2A>\3\2\2\2AB\3\2\2\2BC\3\2\2\2"+
+		"CT\7\23\2\2DE\7\5\2\2EF\5\f\7\2FG\7\4\2\2GO\5\16\b\2HI\7\6\2\2IJ\5\f\7"+
+		"\2JK\7\4\2\2KL\5\16\b\2LN\3\2\2\2MH\3\2\2\2NQ\3\2\2\2OM\3\2\2\2OP\3\2"+
+		"\2\2PR\3\2\2\2QO\3\2\2\2RS\7\7\2\2SU\3\2\2\2TD\3\2\2\2TU\3\2\2\2U\13\3"+
+		"\2\2\2VW\7\23\2\2W\r\3\2\2\2XY\7\23\2\2Y\17\3\2\2\2Z\\\7\f\2\2[]\5\24"+
+		"\13\2\\[\3\2\2\2\\]\3\2\2\2]^\3\2\2\2^j\5\22\n\2_`\7\5\2\2`e\5\26\f\2"+
+		"ab\7\6\2\2bd\5\26\f\2ca\3\2\2\2dg\3\2\2\2ec\3\2\2\2ef\3\2\2\2fh\3\2\2"+
+		"\2ge\3\2\2\2hi\7\7\2\2ik\3\2\2\2j_\3\2\2\2jk\3\2\2\2k\21\3\2\2\2lm\7\23"+
+		"\2\2m\23\3\2\2\2no\7\23\2\2o\25\3\2\2\2pq\7\23\2\2q\27\3\2\2\2rs\7\23"+
+		"\2\2s\31\3\2\2\2tu\7\16\2\2uw\7\22\2\2vx\5\30\r\2wv\3\2\2\2wx\3\2\2\2"+
+		"x\33\3\2\2\2yz\7\17\2\2z|\7\22\2\2{}\5\30\r\2|{\3\2\2\2|}\3\2\2\2}\35"+
+		"\3\2\2\2~\177\7\20\2\2\177\u0080\5 \21\2\u0080\u0081\7\4\2\2\u0081\u0082"+
+		"\7\23\2\2\u0082\37\3\2\2\2\u0083\u008c\5$\23\2\u0084\u0086\5\"\22\2\u0085"+
+		"\u0084\3\2\2\2\u0085\u0086\3\2\2\2\u0086\u0087\3\2\2\2\u0087\u0089\5&"+
+		"\24\2\u0088\u008a\5$\23\2\u0089\u0088\3\2\2\2\u0089\u008a\3\2\2\2\u008a"+
+		"\u008c\3\2\2\2\u008b\u0083\3\2\2\2\u008b\u0085\3\2\2\2\u008c!\3\2\2\2"+
+		"\u008d\u008e\7\23\2\2\u008e\u008f\7\b\2\2\u008f#\3\2\2\2\u0090\u0091\7"+
+		"\t\2\2\u0091\u0092\7\23\2\2\u0092\u0093\7\n\2\2\u0093%\3\2\2\2\u0094\u0095"+
+		"\7\23\2\2\u0095\'\3\2\2\2\17+\64AOT\\ejw|\u0085\u0089\u008b";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

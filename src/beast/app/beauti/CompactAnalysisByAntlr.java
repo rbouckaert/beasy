@@ -30,6 +30,7 @@ import beast.core.Input;
 import beast.core.MCMC;
 import beast.core.parameter.Parameter;
 import beast.core.util.CompoundDistribution;
+import beast.core.util.Log;
 import beast.evolution.alignment.Alignment;
 import beast.evolution.branchratemodel.BranchRateModel;
 import beast.evolution.likelihood.GenericTreeLikelihood;
@@ -224,6 +225,35 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			return null;
 		}
 		
+		
+		Set<Input<?>> inputSet;
+		Map<Input<?>, BEASTInterface> mapInputToObject;
+		
+		@Override
+		public BEASTInterface visitInputidentifier(InputidentifierContext ctx) {
+			String idPattern = null;
+			String elementPattern = null;
+			String inputPattern = null;
+			
+			// collect all possible inputs
+			for (Object o : ctx.children) {
+				if (o instanceof IdPatternContext) {
+					idPattern = ((IdPatternContext) o).getText();
+				}
+				if (o instanceof ElemntNameContext) {
+					elementPattern = ((ElemntNameContext) o).getText();
+				}
+				if (o instanceof InputnameContext) {
+					inputPattern = ((InputnameContext) o).getText();
+				}
+			}
+			mapInputToObject = InputFilter.initInputMap(doc);
+			InputFilter filter = new InputFilter();
+			inputSet = filter.getInputSet(doc, idPattern, elementPattern, inputPattern);
+			
+			return null;
+		}
+		
 		@Override
 		public BEASTInterface visitLink(LinkContext ctx) {
 			if (ctx.getChildCount() == 2) {
@@ -359,7 +389,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				}
 				break;
 			default:
-				throw new IllegalArgumentException("Command link: expected 'link [site|clock|tree] but got " + ctx.getText());
+				throw new IllegalArgumentException("Command link: expected 'link [sitemodel|clock|tree] but got " + ctx.getText());
 			}
 			doc.determinePartitions();
 			doc.scrubAll(true, false);
@@ -421,7 +451,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 					}
 					break;
 				default:
-					throw new IllegalArgumentException("Command unlink: expected 'unlink [site|clock|tree] but got " + ctx.getText());
+					throw new IllegalArgumentException("Command unlink: expected 'unlink [sitemodel|clock|tree] but got " + ctx.getText());
 				}
 				doc.determinePartitions();
 				doc.scrubAll(true, false);
@@ -431,20 +461,21 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		@Override
 		public BEASTInterface visitSet(SetContext ctx) {
 			// set <identifier> = <value>;
-			String pattern = ctx.getChild(1).getText();
 			String value = ctx.getChild(3).getText();;
 			
+			// set up inputSet member variable:
+			visitChildren(ctx);
 			
-			Map<Input<?>, BEASTInterface> inputMap = getMatchingInputs(pattern + ".*.value");
-			if (inputMap.size() == 0) {
-				inputMap = getMatchingInputs(pattern);
-			}
-			for(Input<?> in : inputMap.keySet()) {
-				BEASTInterface o = inputMap.get(in);
-				in.setValue(value, o);
+			
+			for(Input<?> in : inputSet) {				
+				if (in.get() instanceof Parameter) {
+					in = ((Parameter.Base<?>)in.get()).valuesInput;
+				}
+				Log.info("Setting [" + mapInputToObject.get(in).getID() + "]" + in.getName() + " = " + value);
+				in.set(value);
 			}
 
-			if (inputMap.size() == 0) {
+			if (inputSet.size() == 0) {
 				throw new IllegalArgumentException("Command set: cannot find suitable match for " + ctx.getText());
 			}
 			return null;
@@ -452,16 +483,20 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 
 		@Override
 		public BEASTInterface visitUsetemplate(UsetemplateContext ctx) {
+			// set up inputSet
+			mapInputToObject = InputFilter.initInputMap(doc);
+			super.visitUsetemplate(ctx);
+			if (inputSet == null) {
+				setupInputSet();
+			}
+
 			// assume this specifies a subtemplate
 			// [<id pattern> =]? <SubTemplate>[(param1=value[,param2=value,...])];
-			String pattern;
 			String subTemplateName;
 			if (ctx.getChild(1) instanceof InputidentifierContext) {
-				pattern = ctx.getChild(1).getText();
 				subTemplateName = ctx.getChild(3).getText();
 			} else {
 				// match anything
-				pattern =".*";
 				subTemplateName = ctx.getChild(1).getText();
 			}
 			
@@ -472,7 +507,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				processPattern(".*");
 			}
 			if (partitionContext.size() != 1) {
-				throw new IllegalArgumentException("Command sub: partition context does not contain exactly 1 partition but " + partitionContext.size()  + " " + partitionContext.toString());
+				throw new IllegalArgumentException("Command use: partition context does not contain exactly 1 partition but " + partitionContext.size()  + " " + partitionContext.toString());
 			}
 			
 			PartitionContext pc = partitionContext.toArray(new PartitionContext[]{})[0];
@@ -493,9 +528,6 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				}
 				subTemplateName = subTemplateName.substring(0, subTemplateName.indexOf('('));
 			}
-
-			
-			
 			
 			
 			BEASTInterface bo = null;
@@ -518,19 +550,13 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			pc.partition = oldId;
 
 	        if (bo == null) {
-				throw new IllegalArgumentException("Command sub: cannot find template '" + subTemplateName + "'");
+				throw new IllegalArgumentException("Command use: cannot find template '" + subTemplateName + "'");
 			}
 
-			Map<Input<?>, BEASTInterface> inputMap = getMatchingInputs(pattern, bo);
+			//Map<Input<?>, BEASTInterface> inputMap = getMatchingInputs(pattern, bo);
 			
-			if (inputMap.size() == 0) {
-				throw new IllegalArgumentException("Command sub: cannot find suitable match for " + ctx.getText());
-			} else {
-				doc.scrubAll(false, false);
-			}
-
-			for(Input<?> in : inputMap.keySet()) {
-				BEASTInterface o = inputMap.get(in);
+			for(Input<?> in : inputSet) {
+				BEASTInterface o = mapInputToObject.get(in);
 				if (o instanceof CompoundDistribution && in.getName().equals("distribution") && bo instanceof TreeDistribution) {
 					// may need to replace existing distribution
 					CompoundDistribution dist = (CompoundDistribution) o;
@@ -545,7 +571,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 						dist.pDistributions.get().remove(treeDist);
 					}
 				}
-				if (in.get() instanceof Collection<?>) {
+				if (in.getType() != null) {
+				if (in.get() instanceof List<?>) {
 					boolean found = false;
 					for (Object o2 : (Collection<?>) in.get()) {
 						if (o2 == bo) {
@@ -553,15 +580,42 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 						}
 					}
 					if (!found) {
-						in.setValue(bo, o);
+						if (in.getType().isAssignableFrom(bo.getClass()) && 
+								in.canSetValue(bo, o)) {
+							in.setValue(bo, o);
+						}
 					}
 				} else {
-					in.setValue(bo, o);
+					if (in.getType().isAssignableFrom(bo.getClass()) && 
+							in.canSetValue(bo, o)) {
+						in.setValue(bo, o);
+					}
 				}
-			}	
+				}
+			}
+			
+			if (inputSet.size() == 0) {
+				throw new IllegalArgumentException("Command use: cannot find suitable match for " + ctx.getText());
+			} else {
+				doc.scrubAll(false, false);
+			}
+
+
 			return null;
 		}
 		
+		 private void setupInputSet() {
+				inputSet = new LinkedHashSet<>();
+				for (BEASTInterface o : InputFilter.getDocumentObjects(doc)) {
+					for (Input<?> input : o.listInputs()) {
+						inputSet.add(input);
+						if (input.getType() == null) {
+							input.determineClass(o);
+						}
+					}
+				}
+			}
+
 		
 		private Map<Input<?>, BEASTInterface> getMatchingInputs(String pattern) {
 			Map<Input<?>, BEASTInterface> inputMap = new LinkedHashMap<>();

@@ -37,6 +37,9 @@ public class REPL {
 	}
 	
 	public void processCmd(String cmd) {
+		if (cmd == null) {
+			return;
+		}
 		if (cmd.startsWith("?") || cmd.startsWith("help")) {
 			showHelp(cmd);
 		} else if (cmd.startsWith("quit") || cmd.startsWith("end") || cmd == null) {

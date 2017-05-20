@@ -25,6 +25,13 @@ public class CABaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CAV
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitCmd(CAParser.CmdContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitTemplate(CAParser.TemplateContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -40,13 +47,6 @@ public class CABaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CAV
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitUsetemplate(CAParser.UsetemplateContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitIdpattern(CAParser.IdpatternContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -117,4 +117,32 @@ public class CABaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CAV
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitSet(CAParser.SetContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitInputidentifier(CAParser.InputidentifierContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitElemntName(CAParser.ElemntNameContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T handleIdPattern(CAParser.IdPatternContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitInputname(CAParser.InputnameContext ctx) { return visitChildren(ctx); }
 }

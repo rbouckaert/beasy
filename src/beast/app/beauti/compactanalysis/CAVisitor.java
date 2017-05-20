@@ -18,6 +18,12 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCasentence(CAParser.CasentenceContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CAParser#cmd}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCmd(CAParser.CmdContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CAParser#template}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -35,12 +41,6 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUsetemplate(CAParser.UsetemplateContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CAParser#idpattern}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIdpattern(CAParser.IdpatternContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CAParser#key}.
 	 * @param ctx the parse tree
@@ -101,4 +101,28 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSet(CAParser.SetContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CAParser#inputidentifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInputidentifier(CAParser.InputidentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CAParser#elemntName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElemntName(CAParser.ElemntNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CAParser#idPattern}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T handleIdPattern(CAParser.IdPatternContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CAParser#inputname}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInputname(CAParser.InputnameContext ctx);
 }
