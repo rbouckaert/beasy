@@ -54,6 +54,7 @@ import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.InputFilter;
 import beast.core.BEASTInterface;
 import beast.core.Input;
+import beast.core.parameter.Parameter;
 import beast.core.util.Log;
 import beasy.shell.BeasyStudio;
 import beasy.shell.HistoryPanel;
@@ -98,7 +99,7 @@ public class JConsole extends JScrollPane
 
     private JPopupMenu menu;
     public JTextPane text;
-    private DefaultStyledDocument doc;
+    private DefaultStyledDocument docStyle;
 
 //	NameCompletion nameCompletion;
 	final int SHOW_AMBIG_MAX = 10;
@@ -124,7 +125,7 @@ public class JConsole extends JScrollPane
 
 		// Special TextPane which catches for cut and paste, both L&F keys and
 		// programmatic	behaviour
-		text = new JTextPane( doc=new DefaultStyledDocument() ) 
+		text = new JTextPane( docStyle=new DefaultStyledDocument() ) 
 			{
 				@Override
 				public void	cut() {
@@ -302,12 +303,12 @@ public class JConsole extends JScrollPane
 				break;
 
 			case ( KeyEvent.VK_TAB ):
+				e.consume();
 			    if (e.getID() == KeyEvent.KEY_RELEASED) {
 					String part = text.getText().substring( cmdStart );
 					doCommandCompletion( part );
-					append(part);
+					//append(part);
 				}
-				//e.consume();
 				break;
 
 			default:
@@ -337,37 +338,60 @@ public class JConsole extends JScrollPane
 	}
 
 	private void doCommandCompletion(final String part0 ) {
-		Log.info(part0);
+//		Log.info(part0);
 		if (part0.trim().startsWith("set")) {
 			String part = part0.trim().substring(3).trim();
+			int len = part.length();
 			String elementPattern = null;
 			String idPattern = null;
 			String inputPattern = null;
 			if (part.matches("\\[")) {
 				int k = part.indexOf("[");
-				idPattern = part.substring(k + 1).trim();
+				idPattern = part.substring(k + 1).trim() + ".*";
 				part = part.substring(0, k);
 			}
 			if (part.matches("/")) {
 				int k = part.indexOf("/");
-				inputPattern = part.substring(0, k);
+				inputPattern = part.substring(0, k) + ".*";
 				part = part.substring(k + 1).trim();
 			}
 			if (part.trim().length() > 0) {
-				inputPattern = part;
+				inputPattern = part + ".*";
 			}
-			if (elementPattern != null || idPattern != null || inputPattern != null) {
-				InputFilter filter = new InputFilter();
-				BeautiDoc doc = studio.interpreter.doc;
-				Map<Input<?>, BEASTInterface> map = InputFilter.initInputMap(doc);
-				Set<Input<?>> inputs = filter.getInputSet(doc, idPattern, elementPattern, inputPattern);
-				
-				for (Input<?> input : inputs) {
-					BEASTInterface o = map.get(input);
+			if (elementPattern == null && idPattern == null && inputPattern == null) {
+				inputPattern = ".*";
+			}
+			InputFilter filter = new InputFilter();
+			BeautiDoc doc = studio.interpreter.doc;
+			Map<Input<?>, BEASTInterface> map = InputFilter.initInputMap(doc);
+			Set<Input<?>> inputs = filter.getInputSet(doc, idPattern, elementPattern, inputPattern);
+			
+			for (Input<?> input : inputs) {
+				BEASTInterface o = map.get(input);
+				if (o instanceof Parameter.Base) {
+					Log.info(input.getName() + "[" + o.getID() + "] = " + ((Parameter.Base<?>) input.get()).valuesInput.get());
+				} else {
 					Log.info(input.getName() + "[" + o.getID() + "] = " + input.get());
 				}
 			}
 			
+			if (inputs.size() == 1) {
+			    // unique identifier, so we can complete the pattern
+
+				// delete "tab" in text
+				int slen = text.getDocument().getLength();
+				try {
+					text.getDocument().remove(slen-1, 1);
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				for (Input<?> input : inputs) {
+				    BEASTInterface o = map.get(input);
+					append((input.getName() + "[" + o.getID() + "]").substring(len) + " = ");
+				}
+			}
 			
 		}
 		
@@ -566,6 +590,7 @@ public class JConsole extends JScrollPane
 
 	
 	ByteArrayOutputStream boas = null;
+	
 	private	void acceptLine( String	line ) 
 	{
 		if (boas == null) {
@@ -574,21 +599,21 @@ public class JConsole extends JScrollPane
         		public synchronized void write(byte[] b, int off, int len) {
         			super.write(b, off, len);
     				for (int i = off; i < off + len; i++) {
-    					print("" + (char) b[i], Color.blue);
+    					printHint("" + (char) b[i], Color.blue);
     				}
         		};
 
-        		@Override
+				@Override
         		public synchronized void write(int b) {
         			super.write(b);
-					print("" + (char) b, Color.blue);
+					printHint("" + (char) b, Color.blue);
         		};
 
         		@Override
         		public void write(byte[] b) throws java.io.IOException {
         			super.write(b);
     				for (int i = 0; i < b.length; i++) {
-    					print("" + (char) b[i], Color.blue);
+    					printHint("" + (char) b[i], Color.blue);
     				}
         		};
 
@@ -610,21 +635,21 @@ public class JConsole extends JScrollPane
         		public synchronized void write(byte[] b, int off, int len) {
         			super.write(b, off, len);
     				for (int i = off; i < off + len; i++) {
-    					print("" + (char) b[i], Color.red);
+    					printHint("" + (char) b[i], Color.red);
     				}
         		};
 
         		@Override
         		public synchronized void write(int b) {
         			super.write(b);
-					print("" + (char) b, Color.red);
+					printHint("" + (char) b, Color.red);
         		};
 
         		@Override
         		public void write(byte[] b) throws java.io.IOException {
         			super.write(b);
     				for (int i = 0; i < b.length; i++) {
-    					print("" + (char) b[i], Color.red);
+    					printHint("" + (char) b[i], Color.red);
     				}
         		};
 
@@ -737,6 +762,26 @@ public class JConsole extends JScrollPane
 			}
 		});	
     }
+
+	private void printHint(String string, Color color) {
+		invokeAndWait(new Runnable() {
+			@Override
+			public void run() {
+				JTextPane text = studio.hintsPane;
+				AttributeSet oldAttr = studio.hintsPane.getCharacterAttributes(); 
+				MutableAttributeSet attr = new SimpleAttributeSet();
+				if (color!=null)
+					StyleConstants.setForeground(attr, color);
+				text.setCharacterAttributes(attr, false);
+
+				int slen = text.getDocument().getLength();
+				text.select(slen, slen);
+			    text.replaceSelection(string);
+				
+				text.setCharacterAttributes(oldAttr, false);
+			}
+		});	
+	}
 
 	public void print(
 	    Object s,

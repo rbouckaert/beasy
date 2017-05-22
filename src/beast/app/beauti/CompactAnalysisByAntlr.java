@@ -467,12 +467,17 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			visitChildren(ctx);
 			
 			
-			for(Input<?> in : inputSet) {				
+			for(Input<?> in : inputSet) {
+				BEASTInterface p = null;
 				if (in.get() instanceof Parameter) {
+					p = (BEASTInterface) in.get();
 					in = ((Parameter.Base<?>)in.get()).valuesInput;
 				}
 				Log.info("Setting [" + mapInputToObject.get(in).getID() + "]" + in.getName() + " = " + value);
 				in.set(value);
+				if (p != null) {
+					p.initAndValidate();
+				}
 			}
 
 			if (inputSet.size() == 0) {

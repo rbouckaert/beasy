@@ -24,8 +24,12 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -57,6 +61,7 @@ public class BeasyStudio extends JSplitPane {
 //	public JPanel plotPane;
 	JConsole console;
 	public HelpBrowser helpPane;
+	public JTextPane hintsPane;
 	//ClassBrowser classBrowser;
 	public Interpreter interpreter;
 
@@ -89,6 +94,12 @@ public class BeasyStudio extends JSplitPane {
 		
 		helpPane = new HelpBrowser();
 		rightLowerPaneTab.addTab("Help", helpPane);
+		
+		JPanel panel = new JPanel(new BorderLayout());
+		JScrollPane scroller = new JScrollPane(panel);
+		hintsPane = new JTextPane();
+		panel.add(hintsPane);
+		rightLowerPaneTab.addTab("Hints", scroller);
 
 //		classBrowser = new ClassBrowser();
 //		//TODO: let the splitter pane determine size
