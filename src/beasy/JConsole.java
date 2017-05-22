@@ -44,10 +44,16 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.awt.Cursor;
 
 import javax.swing.text.*;
 
+import beast.app.beauti.BeautiDoc;
+import beast.app.beauti.InputFilter;
+import beast.core.BEASTInterface;
+import beast.core.Input;
 import beast.core.util.Log;
 import beasy.shell.BeasyStudio;
 import beasy.shell.HistoryPanel;
@@ -299,8 +305,9 @@ public class JConsole extends JScrollPane
 			    if (e.getID() == KeyEvent.KEY_RELEASED) {
 					String part = text.getText().substring( cmdStart );
 					doCommandCompletion( part );
+					append(part);
 				}
-				e.consume();
+				//e.consume();
 				break;
 
 			default:
@@ -330,6 +337,40 @@ public class JConsole extends JScrollPane
 	}
 
 	private void doCommandCompletion(final String part0 ) {
+		Log.info(part0);
+		if (part0.trim().startsWith("set")) {
+			String part = part0.trim().substring(3).trim();
+			String elementPattern = null;
+			String idPattern = null;
+			String inputPattern = null;
+			if (part.matches("\\[")) {
+				int k = part.indexOf("[");
+				idPattern = part.substring(k + 1).trim();
+				part = part.substring(0, k);
+			}
+			if (part.matches("/")) {
+				int k = part.indexOf("/");
+				inputPattern = part.substring(0, k);
+				part = part.substring(k + 1).trim();
+			}
+			if (part.trim().length() > 0) {
+				inputPattern = part;
+			}
+			if (elementPattern != null || idPattern != null || inputPattern != null) {
+				InputFilter filter = new InputFilter();
+				BeautiDoc doc = studio.interpreter.doc;
+				Map<Input<?>, BEASTInterface> map = InputFilter.initInputMap(doc);
+				Set<Input<?>> inputs = filter.getInputSet(doc, idPattern, elementPattern, inputPattern);
+				
+				for (Input<?> input : inputs) {
+					BEASTInterface o = map.get(input);
+					Log.info(input.getName() + "[" + o.getID() + "] = " + input.get());
+				}
+			}
+			
+			
+		}
+		
 //		if ( nameCompletion == null )
 //			return;
 //

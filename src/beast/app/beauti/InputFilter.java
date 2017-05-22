@@ -32,7 +32,7 @@ public class InputFilter {
 		return inputSet;
 	}
 
-	 static Map<Input<?>, BEASTInterface>  initInputMap(BeautiDoc doc) {
+	 public static Map<Input<?>, BEASTInterface>  initInputMap(BeautiDoc doc) {
 		Map<Input<?>, BEASTInterface> mapInputToObject= new LinkedHashMap<>();
 		for (BEASTInterface o : getDocumentObjects(doc)) {
 			for (Input<?> input : o.listInputs()) {
