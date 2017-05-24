@@ -161,20 +161,13 @@ public class InputFilter {
 					} else {
 						Object o2 = input.get();
 						if (o2 instanceof BEASTInterface) {
-							BEASTInterface bo = (BEASTInterface) o;
+							BEASTInterface bo = (BEASTInterface) o2;
 							for (Input<?> input2: bo.listInputs()) {
 								inputSet.add(input2);
 								if (input2.getType() == null) {
 									input2.determineClass(o);
 								}
 							}
-//						} else if (o instanceof Collection) {
-//							for (Object o2 : (Collection<?>) o ) {
-//								if (o2 instanceof BEASTInterface) {
-//									BEASTInterface bo = (BEASTInterface) o2;
-//									filterInput(bo, inputPattern, newInputSet);
-//								}
-//							}
 						}
 					}
 				}
@@ -185,8 +178,6 @@ public class InputFilter {
 
 	 static public Collection<BEASTInterface> getDocumentObjects(BEASTInterface o) {
 		List<BEASTInterface> predecessors = new ArrayList<>();
-		//Input<?> distribution = ((BEASTInterface)doc.mcmc.get()).getInput("distribution");
-		//BEASTInterface o = (BEASTInterface) distribution.get();
 		BeautiDoc.collectPredecessors(o, predecessors);
 		return predecessors;
 	}

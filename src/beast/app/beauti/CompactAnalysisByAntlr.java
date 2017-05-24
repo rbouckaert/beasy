@@ -358,6 +358,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
 
 					TreeInterface oldTree = treelikelihood[i].treeInput.get();
+					((BEASTInterface)oldTree).setInputValue("estimate", false);
 					treelikelihood[i].treeInput.setValue(tree, treelikelihood[i]);
 					contexts[i].tree = contexts[0].tree;
 					

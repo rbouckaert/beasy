@@ -347,13 +347,13 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 	   }	
 	
 	public void doOpen() {
-//	    Platform.runLater(new Runnable() { 
-//	    	@Override
-//			public void run() { 
+	    Platform.runLater(new Runnable() { 
+	    	@Override
+			public void run() { 
 	    		File file = beasy.shell.Utils.getLoadFile("Open Beasy file", new File(cwd), "Beasy script files", "*.bea");
 	    		doOpen(file);
-//	    	} 
-//	    });
+	    	} 
+	    });
 	}
 	
 	private void doOpen(File file) {

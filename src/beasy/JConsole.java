@@ -350,9 +350,9 @@ public class JConsole extends JScrollPane
 				idPattern = part.substring(k + 1).trim() + ".*";
 				part = part.substring(0, k);
 			}
-			if (part.matches(" ")) {
-				int k = part.indexOf(" ");
-				inputPattern = part.substring(0, k).trim() + ".*";
+			if (part.indexOf("@") >= 0) {
+				int k = part.indexOf("@");
+				elementPattern = part.substring(0, k).trim() + ".*";
 				part = part.substring(k + 1).trim();
 			}
 			if (part.trim().length() > 0) {
@@ -368,7 +368,7 @@ public class JConsole extends JScrollPane
 			
 			for (Input<?> input : inputs) {
 				BEASTInterface o = map.get(input);
-				if (o instanceof Parameter.Base) {
+				if (input.get() instanceof Parameter.Base) {
 					Log.info(input.getName() + "[" + o.getID() + "] = " + ((Parameter.Base<?>) input.get()).valuesInput.get());
 				} else {
 					Log.info(input.getName() + "[" + o.getID() + "] = " + input.get());

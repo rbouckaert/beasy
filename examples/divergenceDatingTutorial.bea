@@ -8,7 +8,7 @@ link sitemodel;
 
 // HKY + 4G
 use substModel[noncoding] = HKY;
-set categoryCount = 4;
+set gammaCategoryCount = 4;
 set shape@estimate = true;
 set mutationRate@estimate = true;
 unlink sitemodel;
