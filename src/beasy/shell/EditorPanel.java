@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -346,13 +347,13 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 	   }	
 	
 	public void doOpen() {
-	    Platform.runLater(new Runnable() { 
-	    	@Override
-			public void run() { 
-	    		File file = beasy.shell.Utils.getLoadFile("Open BEASTScript file", new File(cwd), "BEAST shell script files", "*.bsh");
+//	    Platform.runLater(new Runnable() { 
+//	    	@Override
+//			public void run() { 
+	    		File file = beasy.shell.Utils.getLoadFile("Open Beasy file", new File(cwd), "Beasy script files", "*.bea");
 	    		doOpen(file);
-	    	} 
-	    });
+//	    	} 
+//	    });
 	}
 	
 	private void doOpen(File file) {
@@ -408,18 +409,13 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 	}
 
 	public void saveAs() {
-	    Platform.runLater(new Runnable() { 
-	    	@Override
-			public void run() { 
-	    		int i = tabbedPane.getSelectedIndex();
-				File file = Utils.getSaveFile("Open BEASTscript file", new File(cwd), "BEAST shell script files", "bsh");
-				if (file != null) {
-					cwd = file.getParent();
-					fileNames.set(i, file.getAbsolutePath());
-					doSave(i);
-				}
-	    	}
-	    });
+		int i = tabbedPane.getSelectedIndex();
+		File file = Utils.getSaveFile("Save Beasy file", new File(cwd), "Beasy script files", "bea");
+		if (file != null) {
+			cwd = file.getParent();
+			fileNames.set(i, file.getAbsolutePath());
+			doSave(i);
+		}
 	}
 	
 	private void doSave(int i) {

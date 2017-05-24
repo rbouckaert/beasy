@@ -306,7 +306,7 @@ public class JConsole extends JScrollPane
 				e.consume();
 			    if (e.getID() == KeyEvent.KEY_RELEASED) {
 					String part = text.getText().substring( cmdStart );
-					doCommandCompletion( part );
+					completeCommand( part );
 					//append(part);
 				}
 				break;
@@ -337,22 +337,22 @@ public class JConsole extends JScrollPane
 		}
 	}
 
-	private void doCommandCompletion(final String part0 ) {
+	private void completeCommand(final String part0 ) {
 //		Log.info(part0);
-		if (part0.trim().startsWith("set")) {
+		if (part0.trim().startsWith("set") || part0.trim().startsWith("use")) {
 			String part = part0.trim().substring(3).trim();
 			int len = part.length();
 			String elementPattern = null;
 			String idPattern = null;
 			String inputPattern = null;
-			if (part.matches("\\[")) {
+			if (part.indexOf("[") >= 0) {
 				int k = part.indexOf("[");
 				idPattern = part.substring(k + 1).trim() + ".*";
 				part = part.substring(0, k);
 			}
-			if (part.matches("/")) {
-				int k = part.indexOf("/");
-				inputPattern = part.substring(0, k) + ".*";
+			if (part.matches(" ")) {
+				int k = part.indexOf(" ");
+				inputPattern = part.substring(0, k).trim() + ".*";
 				part = part.substring(k + 1).trim();
 			}
 			if (part.trim().length() > 0) {
@@ -374,121 +374,50 @@ public class JConsole extends JScrollPane
 					Log.info(input.getName() + "[" + o.getID() + "] = " + input.get());
 				}
 			}
+			studio.rightLowerPaneTab.setSelectedIndex(1);
 			
-			if (inputs.size() == 1) {
+
+			// calc greatest common denominator for all matching inputs
+			String gcd = null;
+			int gcdlen = 0;
+			for (Input<?> input : inputs) {
+			    BEASTInterface o = map.get(input);
+				if (gcd == null) {
+					gcd = (input.getName() + "[" + o.getID() + "]");
+					gcdlen = gcd.length();
+				} else {
+					gcd = gcd(gcd, input.getName() + "[" + o.getID() + "]");
+				}
+			}
+			if (gcd != null && gcd.length() > len) {
 			    // unique identifier, so we can complete the pattern
 
 				// delete "tab" in text
 				int slen = text.getDocument().getLength();
 				try {
-					text.getDocument().remove(slen-1, 1);
+					text.getDocument().remove(slen-1, 0);
 				} catch (BadLocationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
-				for (Input<?> input : inputs) {
-				    BEASTInterface o = map.get(input);
-					append((input.getName() + "[" + o.getID() + "]").substring(len) + " = ");
-				}
+				append(gcd.substring(len) + (gcdlen == gcd.length() ? " = " : ""));
 			}
-			
 		}
-		
-//		if ( nameCompletion == null )
-//			return;
-//
-//		int i=part0.length()-1;
-//
-//		// Character.isJavaIdentifierPart()  How convenient for us!! 
-//		while (i >= 0 &&
-//				( Character.isJavaIdentifierPart(part0.charAt(i)))) { 
-//				//|| part0.charAt(i) == '.' )) { 
-//			i--;
-//		}
-//		
-//		String [] complete = new String[0];
-//		String part = null;
-//		
-//		// complete method or member of object
-//		if (studio != null && i > 0 && part0.charAt(i) == '.') {
-//			String part1 = part0.substring(i+1);
-//			int j = i;
-//			i--;
-//			while (i >= 0 &&
-//					( Character.isJavaIdentifierPart(part0.charAt(i)))) { 
-//					//|| part0.charAt(i) == '.' )) { 
-//				i--;
-//			}
-//			part = part0.substring(i+1);
-//			String name = part0.substring(i+1, j);
-//			List<String> candidates = new ArrayList();
-//			try {
-//				Object o = studio.interpreter.get(name);
-//				Field [] fields = o.getClass().getDeclaredFields();
-//				for (Field field : fields) {
-//					String n = field.getName();
-//					if (n.startsWith(part1) && !candidates.contains(n)) {
-//						candidates.add(n);
-//					}
-//				}
-//				Method [] methods = o.getClass().getDeclaredMethods();
-//				for (Method method : methods) {
-//					String n = method.getName();
-//					if (n.startsWith(part1) && !candidates.contains(n)) {
-//						candidates.add(n);
-//					}
-//				}
-//				complete = candidates.toArray(new String[]{});
-//
-//			} catch (EvalError e) {
-//				e.printStackTrace();
-//				return;
-//			}
-//			
-//			
-//		} else {
-//
-//			part = part0.substring(i+1);
-//
-//			if ( part.length() < 2 )  // reasonable completion length
-//				return;
-//
-//		//System.out.println("completing part: "+part);
-//
-//		// no completion
-//			complete = nameCompletion.completeName(part);
-//		}
-//		if ( complete.length == 0 ) {
-//			java.awt.Toolkit.getDefaultToolkit().beep();
-//			return;
-//		}
-//
-//		// Found one completion (possibly what we already have)
-//		if ( complete.length == 1 && !complete.equals(part) ) {
-//			String append = complete[0].substring(part.length());
-//			append( append );
-//			return;
-//		}
-//
-//		// Found ambiguous, show (some of) them
-//
-//		String line = text.getText();
-//		String command = line.substring( cmdStart );
-//		// Find prompt
-//		for(i=cmdStart; line.charAt(i) != '\n' && i > 0; i--);
-//		String prompt = line.substring( i+1, cmdStart );
-//
-//		// Show ambiguous
-//		StringBuilder sb = new StringBuilder("\n");
-//		for( i=0; i<complete.length && i<SHOW_AMBIG_MAX; i++)
-//			sb.append( complete[i] +"\n" );
-//		if ( i == SHOW_AMBIG_MAX )
-//			sb.append("...\n");
-//
-//		print( sb, Color.gray );
-//		print( prompt ); // print resets command start
-//		append( command ); // append does not reset command start
+	}
+
+	private String gcd(String gcd, String str) {
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < gcd.length() && i < gcd.length(); i++) {
+			char c1 = gcd.charAt(i);
+			char c2 = str.charAt(i);
+			if (c1 == c2) {
+				b.append(c1);
+			} else {
+				return b.toString();
+			}
+		}
+		return b.toString();
 	}
 
 	private void resetCommandStart() {

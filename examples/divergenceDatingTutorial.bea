@@ -1,0 +1,19 @@
+template Standard;
+
+// nexus file contains 4 partitions and 1 calibration
+import examples/nexus/primate-mtDNA.nex;
+link tree;
+link clock;
+link sitemodel;
+
+// HKY + 4G
+use substModel[noncoding] = HKY;
+set categoryCount = 4;
+set shape@estimate = true;
+set mutationRate@estimate = true;
+unlink sitemodel;
+
+// UCLN
+use RelaxedClockLogNormal;
+
+

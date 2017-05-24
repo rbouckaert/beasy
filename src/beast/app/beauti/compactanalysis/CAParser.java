@@ -1109,7 +1109,7 @@ public class CAParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).handleIdPattern(this);
+			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).visitIdPattern(this);
 			else return visitor.visitChildren(this);
 		}
 	}

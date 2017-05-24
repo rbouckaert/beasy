@@ -34,7 +34,7 @@ public class InputFilter {
 
 	 public static Map<Input<?>, BEASTInterface>  initInputMap(BeautiDoc doc) {
 		Map<Input<?>, BEASTInterface> mapInputToObject= new LinkedHashMap<>();
-		for (BEASTInterface o : getDocumentObjects(doc)) {
+		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
 			for (Input<?> input : o.listInputs()) {
 				mapInputToObject.put(input, o);
 			}				
@@ -87,9 +87,9 @@ public class InputFilter {
 
 	 public Set<Input<?>> handleIdPattern(String idPattern) {
 		Set<Input<?>> newInputSet = new LinkedHashSet<>();
-		for (BEASTInterface o : getDocumentObjects(doc)) {
-			for (Input<?> input : o.listInputs()) {
-				if (input.getName().matches(idPattern)) {
+		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
+			if (o.getID().matches(idPattern)) {
+				for (Input<?> input : o.listInputs()) {
 					newInputSet.add(input);
 				}
 			}
@@ -99,7 +99,7 @@ public class InputFilter {
 	
 	 public Set<Input<?>> handleInputname(String inputPattern, Set<Input<?>> inputSet) {
 		if (inputSet == null) {
-			inputSet = setupInputSet(inputPattern, doc);
+			inputSet = setupInputSet(inputPattern, doc, false);
 		} else {
 			inputSet = filterInputSet(inputPattern, inputSet);
 		}
@@ -112,7 +112,7 @@ public class InputFilter {
 		}
 		elementPattern = normaliseString(elementPattern);
 		if (inputSet == null) {
-			inputSet = setupInputSet(elementPattern, doc);
+			inputSet = setupInputSet(elementPattern, doc, true);
 		} else {
 			inputSet = filterInputSet(elementPattern, inputSet);
 		}
@@ -132,17 +132,8 @@ public class InputFilter {
 	 private Set<Input<?>> filterInputSet(String inputPattern, Set<Input<?>> inputSet) {
 		Set<Input<?>> newInputSet = new LinkedHashSet<>();
 		for (Input<?> input : inputSet) {
-			Object o = input.get();
-			if (o instanceof BEASTInterface) {
-				BEASTInterface bo = (BEASTInterface) o;
-				filterInput(bo, inputPattern, newInputSet);
-			} else if (o instanceof Collection) {
-				for (Object o2 : (Collection<?>) o ) {
-					if (o2 instanceof BEASTInterface) {
-						BEASTInterface bo = (BEASTInterface) o2;
-						filterInput(bo, inputPattern, newInputSet);
-					}
-				}
+			if (input.getName().matches(inputPattern)) {
+				newInputSet.add(input);
 			}
 		}
 //		inputSet = newInputSet;
@@ -157,14 +148,34 @@ public class InputFilter {
 		}
 	}
 
-	 static public Set<Input<?>>  setupInputSet(String inputPattern, BeautiDoc doc) {
+	 static public Set<Input<?>>  setupInputSet(String inputPattern, BeautiDoc doc, boolean useChildren) {
 		Set<Input<?>> inputSet = new LinkedHashSet<>();
-		for (BEASTInterface o : getDocumentObjects(doc)) {
+		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
 			for (Input<?> input : o.listInputs()) {
 				if (input.getName().matches(inputPattern)) {
-					inputSet.add(input);
-					if (input.getType() == null) {
-						input.determineClass(o);
+					if (!useChildren) {
+						inputSet.add(input);
+						if (input.getType() == null) {
+							input.determineClass(o);
+						}
+					} else {
+						Object o2 = input.get();
+						if (o2 instanceof BEASTInterface) {
+							BEASTInterface bo = (BEASTInterface) o;
+							for (Input<?> input2: bo.listInputs()) {
+								inputSet.add(input2);
+								if (input2.getType() == null) {
+									input2.determineClass(o);
+								}
+							}
+//						} else if (o instanceof Collection) {
+//							for (Object o2 : (Collection<?>) o ) {
+//								if (o2 instanceof BEASTInterface) {
+//									BEASTInterface bo = (BEASTInterface) o2;
+//									filterInput(bo, inputPattern, newInputSet);
+//								}
+//							}
+						}
 					}
 				}
 			}
@@ -172,10 +183,10 @@ public class InputFilter {
 		return inputSet;
 	}
 
-	 static public Collection<BEASTInterface> getDocumentObjects(BeautiDoc doc) {
+	 static public Collection<BEASTInterface> getDocumentObjects(BEASTInterface o) {
 		List<BEASTInterface> predecessors = new ArrayList<>();
-		Input<?> distribution = ((BEASTInterface)doc.mcmc.get()).getInput("distribution");
-		BEASTInterface o = (BEASTInterface) distribution.get();
+		//Input<?> distribution = ((BEASTInterface)doc.mcmc.get()).getInput("distribution");
+		//BEASTInterface o = (BEASTInterface) distribution.get();
 		BeautiDoc.collectPredecessors(o, predecessors);
 		return predecessors;
 	}

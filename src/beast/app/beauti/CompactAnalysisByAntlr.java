@@ -238,13 +238,15 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			// collect all possible inputs
 			for (Object o : ctx.children) {
 				if (o instanceof IdPatternContext) {
-					idPattern = ((IdPatternContext) o).getText();
+					idPattern = ((IdPatternContext) o).getText().trim();
+					// remove brackets
+					idPattern = idPattern.substring(1, idPattern.length() - 1);
 				}
 				if (o instanceof ElemntNameContext) {
-					elementPattern = ((ElemntNameContext) o).getText();
+					elementPattern = ((ElemntNameContext) o).getText().trim();
 				}
 				if (o instanceof InputnameContext) {
-					inputPattern = ((InputnameContext) o).getText();
+					inputPattern = ((InputnameContext) o).getText().trim();
 				}
 			}
 			mapInputToObject = InputFilter.initInputMap(doc);
@@ -399,7 +401,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		@Override
 		public BEASTInterface visitUnlink(UnlinkContext ctx) {
 				if (partitionContext.size() <= 1) {
-					throw new IllegalArgumentException("Command unlink: At least two partitions must be selected " + ctx.getText());
+					throw new IllegalArgumentException("Command unlink: At least one partition must be selected " + ctx.getText());
 				}
 				PartitionContext [] contexts = partitionContext.toArray(new PartitionContext[]{});
 				GenericTreeLikelihood [] treelikelihood = new GenericTreeLikelihood[contexts.length];
@@ -473,7 +475,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 					p = (BEASTInterface) in.get();
 					in = ((Parameter.Base<?>)in.get()).valuesInput;
 				}
-				Log.info("Setting [" + mapInputToObject.get(in).getID() + "]" + in.getName() + " = " + value);
+				Log.info("Setting " + in.getName() + "[" + mapInputToObject.get(in).getID() + "]" + " = " + value);
 				in.set(value);
 				if (p != null) {
 					p.initAndValidate();
@@ -492,7 +494,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			mapInputToObject = InputFilter.initInputMap(doc);
 			super.visitUsetemplate(ctx);
 			if (inputSet == null) {
-				setupInputSet();
+				setupInputSet(((MCMC)doc.mcmc.get()).posteriorInput.get());
 			}
 
 			// assume this specifies a subtemplate
@@ -531,6 +533,9 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 						value.add(val.trim());
 					}
 				}
+			}
+			
+			if (subTemplateName.indexOf('(') >= 0) {
 				subTemplateName = subTemplateName.substring(0, subTemplateName.indexOf('('));
 			}
 			
@@ -609,9 +614,9 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			return null;
 		}
 		
-		 private void setupInputSet() {
+		 private void setupInputSet(BEASTInterface object) {
 				inputSet = new LinkedHashSet<>();
-				for (BEASTInterface o : InputFilter.getDocumentObjects(doc)) {
+				for (BEASTInterface o : InputFilter.getDocumentObjects(object)) {
 					for (Input<?> input : o.listInputs()) {
 						inputSet.add(input);
 						if (input.getType() == null) {

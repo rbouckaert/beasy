@@ -118,7 +118,7 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T handleIdPattern(CAParser.IdPatternContext ctx);
+	T visitIdPattern(CAParser.IdPatternContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CAParser#inputname}.
 	 * @param ctx the parse tree
