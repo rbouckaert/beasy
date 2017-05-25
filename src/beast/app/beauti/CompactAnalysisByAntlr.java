@@ -188,11 +188,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				throw new IllegalArgumentException("Could not match '" + providerID+"' to one of these providers: " + providers);
 			}
 			
-			//provider.template.setValue(doc.beautiConfig.partitionTemplate.get(), provider);
 	        List<BEASTInterface> beastObjects = provider.getAlignments(doc, new File[]{new File(fileName)}, args.toArray(new String[]{}));
-//	        if (!provider.getClass().equals(BeautiAlignmentProvider.class)) {
-//	            provider.addAlignments(doc, beastObjects);
-//	        }
 
 	        if (beastObjects != null) {
 		        for (BEASTInterface o : beastObjects) {
@@ -497,9 +493,130 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (inputSet == null) {
 				setupInputSet(((MCMC)doc.mcmc.get()).posteriorInput.get());
 			}
+			if (inputSet.size() == 0) {
+				throw new IllegalArgumentException("Command use: cannot find suitable match for " + ctx.getText());
+			}
+			
+			BeautiSubTemplate subTemplate = getSubTemplateName(ctx);
+			
+			// collect parameters
+			List<String> param = new ArrayList<>();
+			List<String> value = new ArrayList<>();
+			String newID = collectParameters(ctx, param, value);
+			
+			int instantCount = 0;
+			for(Input<?> in : inputSet) {
+				BEASTInterface o = mapInputToObject.get(in);
+				if (o instanceof CompoundDistribution && in.getName().equals("distribution") && 
+						subTemplate._class.isAssignableFrom(TreeDistribution.class)) {
+					// may need to replace existing distribution
+					CompoundDistribution dist = (CompoundDistribution) o;
+					Distribution treeDist = null;
+					Alignment a = doc.getPartition(o);
+					for (Distribution d : dist.pDistributions.get()) {
+						if (d instanceof TreeDistribution && doc.getPartition(d).equals(a)) {
+							treeDist = d;
+						}
+					}
+					if (treeDist != null) {
+						dist.pDistributions.get().remove(treeDist);
+					}
+				}
+				if (in.getType() != null) {
+					if (in.get() instanceof List<?>) {
+						if (in.getType().isAssignableFrom(subTemplate._class)) {
+							BEASTInterface bo = createSubnet(subTemplate, param, value, newID, o);
+							boolean found = false;
+							for (Object o2 : (Collection<?>) in.get()) {
+								if (o2 == bo) {
+									found = true;
+								}
+							}
+							if (!found) {
+								if (in.canSetValue(bo, o)) {
+									in.setValue(bo, o);
+									instantCount++;
+								}
+							}
+						}
+					} else {
+						if (in.getType().isAssignableFrom(subTemplate._class)) { 
+							BEASTInterface bo = createSubnet(subTemplate, param, value, newID, o);
+							if (in.canSetValue(bo, o)) {
+								in.setValue(bo, o);
+								instantCount++;
+							}
+						}
+					}
+				}
+			}
 
-			// assume this specifies a subtemplate
-			// [<id pattern> =]? <SubTemplate>[(param1=value[,param2=value,...])];
+			if (instantCount == 0) {
+				throw new IllegalArgumentException("Command use: cannot find suitable input to match for " + ctx.getText());				
+			} else {
+				doc.scrubAll(false, false);
+			}
+
+
+			return null;
+		}
+		
+		private BEASTInterface createSubnet(BeautiSubTemplate subTemplate, List<String> param, List<String> value,
+				String id, BEASTInterface o) {
+			PartitionContext pc = getPartitionContext(o);
+			BEASTInterface bo = subTemplate.createSubNet(pc, true);
+    		for (int i = 0; i < param.size(); i++) {
+    			Input<?> in = bo.getInput(param.get(i));
+    			if (in.get() instanceof Parameter.Base) {
+    				Parameter.Base<?>  p = (Parameter.Base<?>) in.get();
+    				p.valuesInput.setValue(value.get(i), p);
+    			} else {
+    				bo.setInputValue(param.get(i), value.get(i));
+    			}
+    		}
+    		if (id != null) {
+    			bo.setID(id);
+    		}
+    		return bo;
+		}
+
+		/** determine partition context for a beast object
+		 * by parsing its ID. 
+		 * **/
+		private PartitionContext getPartitionContext(BEASTInterface o) {
+			String id = o.getID();
+	        String partition = id.substring(id.indexOf('.') + 1);
+        	char c = 'x';
+	        if (partition.indexOf(':') >= 0) {
+	        	c = partition.charAt(0);
+	        	partition = partition.substring(partition.indexOf(':') + 1);
+	        }
+	        
+            for (PartitionContext p : doc.possibleContexts) {
+            	switch (c) {
+            	case 's': if (p.siteModel.equals(partition)) {
+            		return p;
+            	}
+            	case 't': if (p.tree.equals(partition)) {
+            		return p;
+            	}
+            	case 'c': if (p.clockModel.equals(partition)) {
+            		return p;
+            	}
+            	default :
+            	}
+            }
+            if (doc.possibleContexts.size() == 1) {
+                for (PartitionContext p : doc.possibleContexts) {
+                	return p;
+                }
+            }
+            throw new IllegalArgumentException("Could not determine partition context for '"+o.getID()+"': a more specific ID would help");
+		}
+
+		// assume this specifies a subtemplate
+		// [<id pattern> =]? <SubTemplate>[(param1=value[,param2=value,...])];
+		private BeautiSubTemplate getSubTemplateName(UsetemplateContext ctx) {
 			String subTemplateName;
 			if (ctx.getChild(1) instanceof InputidentifierContext) {
 				subTemplateName = ctx.getChild(3).getText();
@@ -507,21 +624,19 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				// match anything
 				subTemplateName = ctx.getChild(1).getText();
 			}
-			
-			// collect parameters
-			List<String> param = new ArrayList<>();
-			List<String> value = new ArrayList<>();
-			if (partitionContext.size() == 0) {
-				processPattern(".*");
+			if (subTemplateName.indexOf('(') >= 0) {
+				subTemplateName = subTemplateName.substring(0, subTemplateName.indexOf('('));
 			}
-			if (partitionContext.size() != 1) {
-				throw new IllegalArgumentException("Command use: partition context does not contain exactly 1 partition but " + partitionContext.size()  + " " + partitionContext.toString());
-			}
-			
-			PartitionContext pc = partitionContext.toArray(new PartitionContext[]{})[0];
-			String oldId = pc.partition;
-			String id = pc.partition;
+	        for (BeautiSubTemplate subTemplate : doc.beautiConfig.subTemplates) {
+	        	if (subTemplate.getID().matches(subTemplateName)) {
+	        		return subTemplate;
+	        	}
+	        }
+			throw new IllegalArgumentException("Command use: cannot find matching template for " + subTemplateName);
+		}
 
+		private String collectParameters(UsetemplateContext ctx, List<String> param, List<String> value) {
+			 String id = null;
 			for (int i = 2; i < ctx.getChildCount(); i++) {
 				if (ctx.getChild(i) instanceof KeyContext) {
 					String key = ctx.getChild(i).getText();
@@ -535,87 +650,10 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 					}
 				}
 			}
-			
-			if (subTemplateName.indexOf('(') >= 0) {
-				subTemplateName = subTemplateName.substring(0, subTemplateName.indexOf('('));
-			}
-			
-			
-			BEASTInterface bo = null;
-			
-			pc.partition = id;
-	        for (BeautiSubTemplate subTemplate : doc.beautiConfig.subTemplates) {
-	        	if (subTemplate.getID().matches(subTemplateName)) {
-	        		bo = subTemplate.createSubNet(pc, true);
-	        		for (int i = 0; i < param.size(); i++) {
-	        			Input<?> in = bo.getInput(param.get(i));
-	        			if (in.get() instanceof Parameter.Base) {
-	        				Parameter.Base<?>  p = (Parameter.Base<?>) in.get();
-	        				p.valuesInput.setValue(value.get(i), p);
-	        			} else {
-	        				bo.setInputValue(param.get(i), value.get(i));
-	        			}
-	        		}
-	        	}
-	        }
-			pc.partition = oldId;
-
-	        if (bo == null) {
-				throw new IllegalArgumentException("Command use: cannot find template '" + subTemplateName + "'");
-			}
-
-			//Map<Input<?>, BEASTInterface> inputMap = getMatchingInputs(pattern, bo);
-			
-			for(Input<?> in : inputSet) {
-				BEASTInterface o = mapInputToObject.get(in);
-				if (o instanceof CompoundDistribution && in.getName().equals("distribution") && bo instanceof TreeDistribution) {
-					// may need to replace existing distribution
-					CompoundDistribution dist = (CompoundDistribution) o;
-					Distribution treeDist = null;
-					Alignment a = doc.getPartition(bo);
-					for (Distribution d : dist.pDistributions.get()) {
-						if (d instanceof TreeDistribution && doc.getPartition(d).equals(a)) {
-							treeDist = d;
-						}
-					}
-					if (treeDist != null) {
-						dist.pDistributions.get().remove(treeDist);
-					}
-				}
-				if (in.getType() != null) {
-				if (in.get() instanceof List<?>) {
-					boolean found = false;
-					for (Object o2 : (Collection<?>) in.get()) {
-						if (o2 == bo) {
-							found = true;
-						}
-					}
-					if (!found) {
-						if (in.getType().isAssignableFrom(bo.getClass()) && 
-								in.canSetValue(bo, o)) {
-							in.setValue(bo, o);
-						}
-					}
-				} else {
-					if (in.getType().isAssignableFrom(bo.getClass()) && 
-							in.canSetValue(bo, o)) {
-						in.setValue(bo, o);
-					}
-				}
-				}
-			}
-			
-			if (inputSet.size() == 0) {
-				throw new IllegalArgumentException("Command use: cannot find suitable match for " + ctx.getText());
-			} else {
-				doc.scrubAll(false, false);
-			}
-
-
-			return null;
+			return id;
 		}
-		
-		 private void setupInputSet(BEASTInterface object) {
+
+		private void setupInputSet(BEASTInterface object) {
 				inputSet = new LinkedHashSet<>();
 				for (BEASTInterface o : InputFilter.getDocumentObjects(object)) {
 					for (Input<?> input : o.listInputs()) {

@@ -15,7 +15,7 @@ public class InputFilter {
 	BeautiDoc doc;
 	
 	 public Set<Input<?>> getInputSet(BeautiDoc doc, String idPattern, String elementPattern, String inputPattern) {
-		 this.doc = doc;		
+		this.doc = doc;		
 		Set<Input<?>> inputSet = null;
 		// first handle idPattern if any
 		if (idPattern != null) {
