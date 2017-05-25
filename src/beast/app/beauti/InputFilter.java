@@ -10,6 +10,10 @@ import java.util.Set;
 
 import beast.core.BEASTInterface;
 import beast.core.Input;
+import beast.evolution.alignment.Alignment;
+import beast.evolution.alignment.FilteredAlignment;
+import beast.evolution.likelihood.ThreadedTreeLikelihood;
+import beast.evolution.likelihood.TreeLikelihood;
 
 public class InputFilter {
 	BeautiDoc doc;
@@ -178,9 +182,29 @@ public class InputFilter {
 
 	 static public Collection<BEASTInterface> getDocumentObjects(BEASTInterface o) {
 		List<BEASTInterface> predecessors = new ArrayList<>();
-		BeautiDoc.collectPredecessors(o, predecessors);
+		collectPredecessors(o, predecessors);
 		return predecessors;
 	}
+
+    static private void collectPredecessors(BEASTInterface bo, List<BEASTInterface> predecessors) {
+        predecessors.add(bo);
+        if (bo instanceof Alignment || bo instanceof FilteredAlignment) {
+            return;
+        }
+        try {
+            for (BEASTInterface bo2 : bo.listActiveBEASTObjects()) {
+            	// hack to deal with ThreadedTreeLikelihood instantiating itself with TreeLikelihoods
+            	// in a private input
+            	if (!(bo instanceof ThreadedTreeLikelihood) ||  !(bo2 instanceof TreeLikelihood)) {
+            		if (!predecessors.contains(bo2)) {
+            			collectPredecessors(bo2, predecessors);
+            		}
+            	}
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

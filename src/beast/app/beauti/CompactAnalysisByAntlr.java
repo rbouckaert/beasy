@@ -397,65 +397,70 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		
 		@Override
 		public BEASTInterface visitUnlink(UnlinkContext ctx) {
-				if (partitionContext.size() <= 1) {
-					throw new IllegalArgumentException("Command unlink: At least one partition must be selected " + ctx.getText());
-				}
-				PartitionContext [] contexts = partitionContext.toArray(new PartitionContext[]{});
-				GenericTreeLikelihood [] treelikelihood = new GenericTreeLikelihood[contexts.length];
-				CompoundDistribution likelihoods = (CompoundDistribution) doc.pluginmap.get("likelihood");
-
-				for (int i = 0; i < partitionContext.size(); i++) {
-					String partition = contexts[i].partition;
-					for (int j = 0; j < likelihoods.pDistributions.get().size(); j++) {
-						GenericTreeLikelihood likelihood = (GenericTreeLikelihood) likelihoods.pDistributions.get().get(i);
-						assert (likelihood != null);
-						if (likelihood.dataInput.get().getID().equals(partition)) {
-							treelikelihood[i] = likelihood;
-						}
-					}
-				}
-
-				switch (ctx.getChild(1).getText()) {
-				case "sitemodel" :
-					SiteModelInterface sitemodel = treelikelihood[0].siteModelInput.get();
-					for (int i = 1; i < contexts.length; i++) {
-						PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
-						contexts[i].siteModel = contexts[i].partition;
-
-						SiteModelInterface newSitemodel = (SiteModelInterface) BeautiDoc.deepCopyPlugin((BEASTInterface) sitemodel, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
-						treelikelihood[i].siteModelInput.setValue(newSitemodel, treelikelihood[i]);
-						repartition(contexts[i]);
-					}
-					break;
-				case "clock" :
-					BranchRateModel clockModel = treelikelihood[0].branchRateModelInput.get();
-					for (int i = 1; i < contexts.length; i++) {
-						PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
-						contexts[i].clockModel = contexts[i].partition;
-
-						BranchRateModel newClockmodel = (BranchRateModel) BeautiDoc.deepCopyPlugin((BEASTInterface) clockModel, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
-						treelikelihood[i].siteModelInput.setValue(newClockmodel, treelikelihood[i]);
-						repartition(contexts[i]);
-					}
-					break;
-				case "tree" :
-					TreeInterface tree = treelikelihood[0].treeInput.get();
-					for (int i = 1; i < contexts.length; i++) {
-						PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
-						contexts[i].tree = contexts[i].partition;
-
-						TreeInterface newTree = (TreeInterface) BeautiDoc.deepCopyPlugin((BEASTInterface) tree, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
-						treelikelihood[i].treeInput.setValue(newTree, treelikelihood[i]);
-						repartition(contexts[i]);
-					}
-					break;
-				default:
-					throw new IllegalArgumentException("Command unlink: expected 'unlink [sitemodel|clock|tree] but got " + ctx.getText());
-				}
-				doc.determinePartitions();
-				doc.scrubAll(true, false);
-				return null;
+			if (ctx.getChildCount() == 2) {
+				processPattern(".*");
+			} else {
+				processPattern(ctx.getChild(2).getText());
 			}
+			if (partitionContext.size() <= 1) {
+				throw new IllegalArgumentException("Command unlink: At least one partition must be selected " + ctx.getText());
+			}
+			PartitionContext [] contexts = partitionContext.toArray(new PartitionContext[]{});
+			GenericTreeLikelihood [] treelikelihood = new GenericTreeLikelihood[contexts.length];
+			CompoundDistribution likelihoods = (CompoundDistribution) doc.pluginmap.get("likelihood");
+
+			for (int i = 0; i < partitionContext.size(); i++) {
+				String partition = contexts[i].partition;
+				for (int j = 0; j < likelihoods.pDistributions.get().size(); j++) {
+					GenericTreeLikelihood likelihood = (GenericTreeLikelihood) likelihoods.pDistributions.get().get(i);
+					assert (likelihood != null);
+					if (likelihood.dataInput.get().getID().equals(partition)) {
+						treelikelihood[i] = likelihood;
+					}
+				}
+			}
+
+			switch (ctx.getChild(1).getText()) {
+			case "sitemodel" :
+				SiteModelInterface sitemodel = treelikelihood[0].siteModelInput.get();
+				for (int i = 1; i < contexts.length; i++) {
+					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
+					contexts[i].siteModel = contexts[i].partition;
+
+					SiteModelInterface newSitemodel = (SiteModelInterface) BeautiDoc.deepCopyPlugin((BEASTInterface) sitemodel, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
+					treelikelihood[i].siteModelInput.setValue(newSitemodel, treelikelihood[i]);
+					repartition(contexts[i]);
+				}
+				break;
+			case "clock" :
+				BranchRateModel clockModel = treelikelihood[0].branchRateModelInput.get();
+				for (int i = 1; i < contexts.length; i++) {
+					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
+					contexts[i].clockModel = contexts[i].partition;
+
+					BranchRateModel newClockmodel = (BranchRateModel) BeautiDoc.deepCopyPlugin((BEASTInterface) clockModel, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
+					treelikelihood[i].siteModelInput.setValue(newClockmodel, treelikelihood[i]);
+					repartition(contexts[i]);
+				}
+				break;
+			case "tree" :
+				TreeInterface tree = treelikelihood[0].treeInput.get();
+				for (int i = 1; i < contexts.length; i++) {
+					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
+					contexts[i].tree = contexts[i].partition;
+
+					TreeInterface newTree = (TreeInterface) BeautiDoc.deepCopyPlugin((BEASTInterface) tree, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
+					treelikelihood[i].treeInput.setValue(newTree, treelikelihood[i]);
+					repartition(contexts[i]);
+				}
+				break;
+			default:
+				throw new IllegalArgumentException("Command unlink: expected 'unlink [sitemodel|clock|tree] but got " + ctx.getText());
+			}
+			doc.determinePartitions();
+			doc.scrubAll(true, false);
+			return null;
+		}
 		
 		@Override
 		public BEASTInterface visitSet(SetContext ctx) {
@@ -534,6 +539,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 							}
 							if (!found) {
 								if (in.canSetValue(bo, o)) {
+									Log.info("Using " + in.getName() + "[" +o.getID() +"] = " + bo.getID());
 									in.setValue(bo, o);
 									instantCount++;
 								}
@@ -543,6 +549,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 						if (in.getType().isAssignableFrom(subTemplate._class)) { 
 							BEASTInterface bo = createSubnet(subTemplate, param, value, newID, o);
 							if (in.canSetValue(bo, o)) {
+								Log.info("Using " + in.getName() + "[" +o.getID() +"] = " + bo.getID());
 								in.setValue(bo, o);
 								instantCount++;
 							}
@@ -564,6 +571,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		private BEASTInterface createSubnet(BeautiSubTemplate subTemplate, List<String> param, List<String> value,
 				String id, BEASTInterface o) {
 			PartitionContext pc = getPartitionContext(o);
+			Log.info(pc.toString());
 			BEASTInterface bo = subTemplate.createSubNet(pc, true);
     		for (int i = 0; i < param.size(); i++) {
     			Input<?> in = bo.getInput(param.get(i));
@@ -597,13 +605,18 @@ public class CompactAnalysisByAntlr extends CABaseListener {
             	case 's': if (p.siteModel.equals(partition)) {
             		return p;
             	}
+            	break;
             	case 't': if (p.tree.equals(partition)) {
             		return p;
             	}
+            	break;
             	case 'c': if (p.clockModel.equals(partition)) {
             		return p;
             	}
-            	default :
+            	break;
+            	default : if (p.partition.equals(partition)) {
+            		return p;
+            	}
             	}
             }
             if (doc.possibleContexts.size() == 1) {
