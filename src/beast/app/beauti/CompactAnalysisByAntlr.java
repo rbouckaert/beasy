@@ -512,29 +512,16 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			int instantCount = 0;
 			for(Input<?> in : inputSet) {
 				BEASTInterface o = mapInputToObject.get(in);
-				if (o instanceof CompoundDistribution && in.getName().equals("distribution") && 
-						subTemplate._class.isAssignableFrom(TreeDistribution.class)) {
-					// may need to replace existing distribution
-					CompoundDistribution dist = (CompoundDistribution) o;
-					Distribution treeDist = null;
-					Alignment a = doc.getPartition(o);
-					for (Distribution d : dist.pDistributions.get()) {
-						if (d instanceof TreeDistribution && doc.getPartition(d).equals(a)) {
-							treeDist = d;
-						}
-					}
-					if (treeDist != null) {
-						dist.pDistributions.get().remove(treeDist);
-					}
-				}
 				if (in.getType() != null) {
 					if (in.get() instanceof List<?>) {
 						if (in.getType().isAssignableFrom(subTemplate._class)) {
-							BEASTInterface bo = createSubnet(subTemplate, param, value, newID, o);
+							BEASTInterface bo = createSubnet(subTemplate, param, value, newID, o, in);
 							boolean found = false;
 							for (Object o2 : (Collection<?>) in.get()) {
 								if (o2 == bo) {
 									found = true;
+									instantCount++;
+									Log.info("Already using " + bo.getID());
 								}
 							}
 							if (!found) {
@@ -547,7 +534,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 						}
 					} else {
 						if (in.getType().isAssignableFrom(subTemplate._class)) { 
-							BEASTInterface bo = createSubnet(subTemplate, param, value, newID, o);
+							BEASTInterface bo = createSubnet(subTemplate, param, value, newID, o, in);
 							if (in.canSetValue(bo, o)) {
 								Log.info("Using " + in.getName() + "[" +o.getID() +"] = " + bo.getID());
 								in.setValue(bo, o);
@@ -568,10 +555,45 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			return null;
 		}
 		
+		
+		// hack to replace tree prior
+		private void purgeTreeDistribution(BeautiSubTemplate subTemplate, PartitionContext pc, Input<?> in, BEASTInterface o) {
+			if (o instanceof CompoundDistribution && in.getName().equals("distribution") && 
+					TreeDistribution.class.isAssignableFrom(subTemplate._class)) {
+				// may need to replace existing distribution
+				CompoundDistribution dist = (CompoundDistribution) o;
+				Distribution treeDist = null;
+				//Alignment a = doc.getPartition(o);
+				for (Distribution d : dist.pDistributions.get()) {
+					if (d instanceof TreeDistribution) {
+						String partition = doc.getPartition(d).getID();
+						String tree = "";
+						for (PartitionContext p : doc.possibleContexts) {
+							if (p.partition.equals(partition)) {
+								tree = p.tree;
+								break;
+							}
+						}
+						if (tree.equals(pc.tree)) {
+							treeDist = d;
+						}
+					}
+				}
+				if (treeDist != null) {
+					dist.pDistributions.get().remove(treeDist);
+				}
+			}
+			
+		}
+
 		private BEASTInterface createSubnet(BeautiSubTemplate subTemplate, List<String> param, List<String> value,
-				String id, BEASTInterface o) {
-			PartitionContext pc = getPartitionContext(o);
-			Log.info(pc.toString());
+				String id, BEASTInterface o, Input<?> input) {
+			PartitionContext pc = getPartitionContext(o, subTemplate);
+			if (!pc.partition.equals("null")) {
+				Log.info(pc.toString());
+				purgeTreeDistribution(subTemplate, pc, input, o);
+			}
+			
 			BEASTInterface bo = subTemplate.createSubNet(pc, true);
     		for (int i = 0; i < param.size(); i++) {
     			Input<?> in = bo.getInput(param.get(i));
@@ -591,8 +613,47 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		/** determine partition context for a beast object
 		 * by parsing its ID. 
 		 * **/
-		private PartitionContext getPartitionContext(BEASTInterface o) {
+		private PartitionContext getPartitionContext(BEASTInterface o, BeautiSubTemplate subTemplate) {
 			String id = o.getID();
+			if (id.indexOf('.') == -1) {
+				// determine partition from mainID of subtemplate
+	            id = subTemplate.mainInput.get();
+				if (id.indexOf('.') == -1) {
+		            if (doc.possibleContexts.size() == 1) {
+		            	return (PartitionContext) doc.possibleContexts.toArray()[0];
+		            }
+		            return new PartitionContext("null", "null", "null", "null");
+		            //throw new IllegalArgumentException("Could not determine partition context for '"+o.getID()+"': a more specific ID would help");
+				}
+		        char c = id.charAt(id.indexOf('.') + 1);
+		        PartitionContext base = (PartitionContext) doc.possibleContexts.toArray()[0];
+		        for (PartitionContext p : doc.possibleContexts) {
+	            	switch (c) {
+	            	case 's': 
+	            		if (!p.siteModel.equals(base.siteModel)) {
+	    		            throw new IllegalArgumentException("Could not determine partition context based on site model");
+	            		}
+	            	break;
+	            	case 't': 
+	            		if (!p.tree.equals(base.tree)) {
+	    		            throw new IllegalArgumentException("Could not determine partition context based on tree model");
+	            		}
+	            	break;
+	            	case 'c': 
+	            		if (!p.clockModel.equals(base.clockModel)) {
+	    		            throw new IllegalArgumentException("Could not determine partition context based on clock model");
+	            		}
+	            	break;
+	            	default : 
+	            		if (!p.partition.equals(base.partition)) {
+	    		            throw new IllegalArgumentException("Could not determine partition context based on partition");
+	            		}
+	            	}
+	            }
+		        return base;
+			}
+			
+			// determine partition from ID of receiving object
 	        String partition = id.substring(id.indexOf('.') + 1);
         	char c = 'x';
 	        if (partition.indexOf(':') >= 0) {
@@ -620,10 +681,10 @@ public class CompactAnalysisByAntlr extends CABaseListener {
             	}
             }
             if (doc.possibleContexts.size() == 1) {
-                for (PartitionContext p : doc.possibleContexts) {
-                	return p;
-                }
+            	return (PartitionContext) doc.possibleContexts.toArray()[0];
             }
+
+            
             throw new IllegalArgumentException("Could not determine partition context for '"+o.getID()+"': a more specific ID would help");
 		}
 

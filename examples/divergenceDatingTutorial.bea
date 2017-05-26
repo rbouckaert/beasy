@@ -4,6 +4,7 @@ template Standard;
 import examples/nexus/primate-mtDNA.nex;
 link tree;
 link clock;
+
 // TODO: rename tree & clock partition
 // link sitemodel;
 
@@ -12,9 +13,11 @@ use substModel = HKY;
 set gammaCategoryCount = 4;
 set shape@estimate = true;
 set mutationRate@estimate = true;
+
 // unlink sitemodel;
 
-use YuleModel;
+use [mcmc]=FixMeanRate;
+use [prior]=YuleModel;
 
 // UCLN
 use RelaxedClockLogNormal;
