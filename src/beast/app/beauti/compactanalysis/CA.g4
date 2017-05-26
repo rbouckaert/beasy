@@ -6,7 +6,7 @@ grammar CA;
   
 casentence : cmd * ;
 
-cmd : (template | usetemplate | import_ | link | unlink | set | rename)? ';' ;
+cmd : (template | usetemplate | import_ | link | unlink | set | rename | rm)? ';' ;
 
 template : TEMPLATETOKEN templatename ;
 
@@ -34,7 +34,7 @@ unlink : UNLINKTOKEN LINKTYPE partitionpattern? ;
 
 set : SETTOKEN inputidentifier '=' STRING ;
 
-inputidentifier : idPattern | elemntName? inputname idPattern?;
+inputidentifier : idPattern | elemntName? inputname idPattern? ;
 
 elemntName : STRING '@';
 
@@ -46,19 +46,22 @@ rename : RENAMETOKEN LINKTYPE oldName? '=' newName ;
 
 // HACK: since 'tree' and 'clock' are popular names to switch to
 // we allow STRINGs and LINKTYPE
-oldName : STRING | LINKTYPE;
-newName : STRING | LINKTYPE;
+oldName : STRING | LINKTYPE ;
+newName : STRING | LINKTYPE ;
+
+rm : RMTOKEN inputidentifier ;
 
 // Lexer Rules
-TEMPLATETOKEN : 'template';
-IMPORTTOKEN : 'import';
-LINKTOKEN : 'link';
-UNLINKTOKEN : 'unlink';
-SETTOKEN : 'set';
-USETOKEN : 'use';
-RENAMETOKEN : 'rename';
+TEMPLATETOKEN : 'template' ;
+IMPORTTOKEN : 'import' ;
+LINKTOKEN : 'link' ;
+UNLINKTOKEN : 'unlink' ;
+SETTOKEN : 'set' ;
+USETOKEN : 'use' ;
+RENAMETOKEN : 'rename' ;
+RMTOKEN : 'rm' ;
 
-LINKTYPE : 'clock' | 'tree' | 'sitemodel';
+LINKTYPE : 'clock' | 'tree' | 'sitemodel' ;
 
 STRING :
     [a-zA-Z0-9|#*%/.\-+_&:$]+  // these chars don't need quotes

@@ -2,6 +2,7 @@ package beast.app.beauti;
 
 
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,13 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
-//import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
@@ -902,36 +904,91 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			
 			return super.visitRename(ctx);
 		}
-	
+		
+		
+		@Override
+		public BEASTInterface visitRm(RmContext ctx) {
+			// set up inputSet
+			mapInputToObject = InputFilter.initInputMap(doc);
+			super.visitRm(ctx);
+			
+			// remove matching inputs
+			for (Input<?> in : inputSet) {
+				BEASTInterface bo = mapInputToObject.get(in);
+				if (in.getType() == null) {
+					in.determineClass(bo);
+				}
+				if (in.get() instanceof Alignment) {
+					Log.info("Removing partition " + ((BEASTInterface)in.get()).getID());	
+					// remove partition
+					removePartition((Alignment)in.get());
+					return null;
+				} 
+			}
+			
+			int instances = 0;
+			for (Input<?> in : inputSet) {
+				BEASTInterface bo = mapInputToObject.get(in);
+				if (in.get() instanceof List) {
+					Log.info("Refusing to remove " + in.getName() + "[" + bo.getID() + "]");	
+				} else {
+					Log.info("Setting " + in.getName() + "[" + bo.getID() + "] to null (fingers crossed)");	
+					in.setValue(null, bo);
+					instances++;
+				}
+			}
+			if (instances == 0) {
+				Log.info("Failed to remove anything");
+			}
+			return null;
+		}
+
+		private void removePartition(Alignment data) {
+			Object o = doc.pluginmap.get("likelihood");
+			if (o != null && o instanceof CompoundDistribution) {
+				CompoundDistribution likelihood = (CompoundDistribution) o;
+				List<Distribution> distrs = likelihood.pDistributions.get();
+				BEASTInterface bo = null;
+				for (Distribution d : distrs) {
+					if (d instanceof GenericTreeLikelihood && ((GenericTreeLikelihood)d).dataInput.get() == data) {
+						bo = d;
+					}
+				}
+				distrs.remove(bo);
+			}
+			MRCAPriorInputEditor.customConnector(doc);
+			doc.determinePartitions();
+			doc.scrubAll(true, false);
+		} // removePartition
 	}
 	
 	
 	
 	
 
-	public static void main(String[] args) {
-		String cmds = "template Standard;\n" +
-				"import ../beast2/examples/nexus/Primates.nex;"
-				+ "partition .*;" 
-				+ "link site;";
-;
-		
-		String cmds1 = "template Standard;\n" +
-		"import ../beast-geo/examples/nexus/HBV.nex;\n" + 
-		"import 'Spherical Geography' ../beast-geo/examples/nexus/HBV_locations.dat(geo,HBV);";
-//		"partition dna;\n" +
-//		"link clock dna;\n" +
-//		"unlink site dna;\n" + 
-//		"set gamma = 0.1;\n" + 
-//		"sub RelaxedClock;";
+//	public static void main(String[] args) {
+//		String cmds = "template Standard;\n" +
+//				"import ../beast2/examples/nexus/Primates.nex;"
+//				+ "partition .*;" 
+//				+ "link site;";
+//;
+//		
+//		String cmds1 = "template Standard;\n" +
+//		"import ../beast-geo/examples/nexus/HBV.nex;\n" + 
+//		"import 'Spherical Geography' ../beast-geo/examples/nexus/HBV_locations.dat(geo,HBV);";
+////		"partition dna;\n" +
+////		"link clock dna;\n" +
+////		"unlink site dna;\n" + 
+////		"set gamma = 0.1;\n" + 
+////		"sub RelaxedClock;";
+////
+////		String cmds2 = "template Standar;\nimport ../beast-geo/examples/nexus/HBV.nex;" +
+////				"import Spherical Geography ../beast-geo/examples/nexus/HBV_locations.dat(geo,HBV);";
+//		
+//		
+//		CompactAnalysisByAntlr x = new CompactAnalysisByAntlr();
+//		x.parseCA(cmds);
+//		System.out.println("Done");
 //
-//		String cmds2 = "template Standar;\nimport ../beast-geo/examples/nexus/HBV.nex;" +
-//				"import Spherical Geography ../beast-geo/examples/nexus/HBV_locations.dat(geo,HBV);";
-		
-		
-		CompactAnalysisByAntlr x = new CompactAnalysisByAntlr();
-		x.parseCA(cmds);
-		System.out.println("Done");
-
-	}
+//	}
 }

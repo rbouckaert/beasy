@@ -276,6 +276,18 @@ public class CABaseListener implements CAListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNewName(CAParser.NewNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRm(CAParser.RmContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRm(CAParser.RmContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

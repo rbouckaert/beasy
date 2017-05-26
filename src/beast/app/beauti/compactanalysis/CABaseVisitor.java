@@ -166,4 +166,11 @@ public class CABaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CAV
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitNewName(CAParser.NewNameContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitRm(CAParser.RmContext ctx) { return visitChildren(ctx); }
 }

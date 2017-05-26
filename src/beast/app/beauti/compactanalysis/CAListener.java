@@ -228,4 +228,14 @@ public interface CAListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNewName(CAParser.NewNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CAParser#rm}.
+	 * @param ctx the parse tree
+	 */
+	void enterRm(CAParser.RmContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#rm}.
+	 * @param ctx the parse tree
+	 */
+	void exitRm(CAParser.RmContext ctx);
 }
