@@ -48,6 +48,10 @@ public class BeasyStudio extends JSplitPane {
 	private static final long serialVersionUID = 1L;
 
 	JFrame frame;
+	public JFrame getFrame() {
+		return frame;
+	}
+
 	JSplitPane splitpaneleft;
 	JSplitPane splitpaneright;
 

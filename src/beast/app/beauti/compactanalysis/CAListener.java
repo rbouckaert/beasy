@@ -198,4 +198,34 @@ public interface CAListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInputname(CAParser.InputnameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CAParser#rename}.
+	 * @param ctx the parse tree
+	 */
+	void enterRename(CAParser.RenameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#rename}.
+	 * @param ctx the parse tree
+	 */
+	void exitRename(CAParser.RenameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CAParser#oldName}.
+	 * @param ctx the parse tree
+	 */
+	void enterOldName(CAParser.OldNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#oldName}.
+	 * @param ctx the parse tree
+	 */
+	void exitOldName(CAParser.OldNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CAParser#newName}.
+	 * @param ctx the parse tree
+	 */
+	void enterNewName(CAParser.NewNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#newName}.
+	 * @param ctx the parse tree
+	 */
+	void exitNewName(CAParser.NewNameContext ctx);
 }

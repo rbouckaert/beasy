@@ -469,7 +469,11 @@ public class JConsole extends JScrollPane
 
 		append("\n");
 		histLine = 0;
+		studio.getFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		text.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		acceptLine( s );
+		studio.getFrame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		text.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		text.repaint();
 	}
 

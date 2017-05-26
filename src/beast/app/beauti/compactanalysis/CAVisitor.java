@@ -125,4 +125,22 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitInputname(CAParser.InputnameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CAParser#rename}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRename(CAParser.RenameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CAParser#oldName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOldName(CAParser.OldNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CAParser#newName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNewName(CAParser.NewNameContext ctx);
 }

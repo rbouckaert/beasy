@@ -5,19 +5,22 @@ import examples/nexus/primate-mtDNA.nex;
 link tree;
 link clock;
 
-// TODO: rename tree & clock partition
+rename tree = tree;
+rename clock = clock;
+
 // link sitemodel;
 
 // HKY + 4G
 use substModel = HKY;
 set gammaCategoryCount = 4;
 set shape@estimate = true;
-set mutationRate@estimate = true;
 
 // unlink sitemodel;
 
+set mutationRate@estimate = true;
 use [mcmc]=FixMeanRate;
-use [prior]=YuleModel;
+
+//use [prior]=YuleModel;
 
 // UCLN
 use RelaxedClockLogNormal;

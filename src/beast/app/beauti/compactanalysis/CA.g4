@@ -6,7 +6,7 @@ grammar CA;
   
 casentence : cmd * ;
 
-cmd : (template | usetemplate | import_ | link | unlink | set)? ';' ;
+cmd : (template | usetemplate | import_ | link | unlink | set | rename)? ';' ;
 
 template : TEMPLATETOKEN templatename ;
 
@@ -40,21 +40,24 @@ elemntName : STRING '@';
 
 idPattern : '[' STRING ']' ;
 
-//attributeconditions : '[' attributecondition (',' attributecondition )* ']' ;
-
-//attributecondition : inputname '=' value attributeconditions? ;
-
 inputname : STRING ;
 
-// Lexer Rules
+rename : RENAMETOKEN LINKTYPE oldName? '=' newName ;
 
+// HACK: since 'tree' and 'clock' are popular names to switch to
+// we allow STRINGs and LINKTYPE
+oldName : STRING | LINKTYPE;
+newName : STRING | LINKTYPE;
+
+// Lexer Rules
 TEMPLATETOKEN : 'template';
 IMPORTTOKEN : 'import';
-PARTITIONTOKEN : 'partition';
 LINKTOKEN : 'link';
 UNLINKTOKEN : 'unlink';
 SETTOKEN : 'set';
 USETOKEN : 'use';
+RENAMETOKEN : 'rename';
+
 LINKTYPE : 'clock' | 'tree' | 'sitemodel';
 
 STRING :

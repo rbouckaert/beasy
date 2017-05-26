@@ -858,6 +858,51 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			} while (n != doc.posteriorPredecessors.size());
 			doc.determinePartitions();		
 		}
+		
+		@Override
+		public BEASTInterface visitRename(RenameContext ctx) {
+			String partition = ctx.getChild(1).getText();
+
+			String oldName = null, newName;
+			if (ctx.getChildCount() > 4) {
+				oldName = ctx.getChild(2).getText();
+				newName = ctx.getChild(4).getText();
+			} else {
+				switch (partition) {
+				case "sitemodel" : 
+					oldName = ((PartitionContext)doc.possibleContexts.toArray()[0]).siteModel;
+					break;
+				case "tree" : 
+					oldName = ((PartitionContext)doc.possibleContexts.toArray()[0]).tree;
+					break;
+				case "clock" : 
+					oldName = ((PartitionContext)doc.possibleContexts.toArray()[0]).clockModel;
+					break;
+				default:
+					oldName = ((PartitionContext)doc.possibleContexts.toArray()[0]).partition;
+				}
+				
+				newName = ctx.getChild(3).getText();
+			}
+			int partitionID;
+			switch (partition) {
+			case "sitemodel" : 
+				partitionID = BeautiDoc.SITEMODEL_PARTITION;
+				break;
+			case "tree" : 
+				partitionID = BeautiDoc.TREEMODEL_PARTITION;
+				break;
+			case "clock" : 
+				partitionID = BeautiDoc.CLOCKMODEL_PARTITION;
+				break;
+			default:
+				partitionID = BeautiDoc.ALIGNMENT_PARTITION;
+			}
+			doc.renamePartition(partitionID, oldName, newName);
+			
+			return super.visitRename(ctx);
+		}
+	
 	}
 	
 	
