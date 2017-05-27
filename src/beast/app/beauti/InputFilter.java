@@ -10,10 +10,12 @@ import java.util.Set;
 
 import beast.core.BEASTInterface;
 import beast.core.Input;
+import beast.core.util.Log;
 import beast.evolution.alignment.Alignment;
 import beast.evolution.alignment.FilteredAlignment;
 import beast.evolution.likelihood.ThreadedTreeLikelihood;
 import beast.evolution.likelihood.TreeLikelihood;
+import beast.util.Randomizer;
 
 public class InputFilter {
 	BeautiDoc doc;
@@ -39,6 +41,14 @@ public class InputFilter {
 	 public static Map<Input<?>, BEASTInterface>  initInputMap(BeautiDoc doc) {
 		Map<Input<?>, BEASTInterface> mapInputToObject= new LinkedHashMap<>();
 		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
+			if (o.getID() == null) {  
+				// hack to ensure any object has an ID
+				o.setID(o.getClass().getName() + Randomizer.nextInt(1000));
+				Log.info("Setting ID: " + o.getID());
+				doc.registerPlugin(o);
+				doc.pluginmap.remove(null);
+			}
+			
 			for (Input<?> input : o.listInputs()) {
 				mapInputToObject.put(input, o);
 			}				

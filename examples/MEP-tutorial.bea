@@ -1,0 +1,31 @@
+// MEP tuturial
+template Standard;
+
+// nexus file specifies tip dates & codon partitions
+import examples/nexus/RSV2.nex;
+
+link tree;
+link clock;
+
+rename clock = clock;
+rename tree = tree;
+
+// UCLN clock
+use RelaxedClockLogNormal;
+
+// link sitemodel;
+// Set the site model to HKY (empirical frequencies)
+use HKY;
+set mutationRate@estimate = true;
+use [mcmc] = FixMeanRate;
+use frequencies = Empirical;
+// unlink sitemodel;
+
+// constance coalescent prior
+use [prior] = CoalescentConstantPopulation;
+
+// Change clock prior to Log Normal with M = -5, S = 1.25
+use [MeanRatePrior] = LogNormal(M=-5,S=1.25);
+
+
+

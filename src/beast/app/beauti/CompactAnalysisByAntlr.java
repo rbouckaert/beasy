@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
-
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -238,7 +236,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				if (o instanceof IdPatternContext) {
 					idPattern = ((IdPatternContext) o).getText().trim();
 					// remove brackets
-					idPattern = idPattern.substring(1, idPattern.length() - 1);
+					idPattern = idPattern.substring(1, idPattern.length() - 1) + ".*";
 				}
 				if (o instanceof ElemntNameContext) {
 					elementPattern = ((ElemntNameContext) o).getText().trim();
