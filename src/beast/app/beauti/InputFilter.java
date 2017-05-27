@@ -56,49 +56,6 @@ public class InputFilter {
 		return mapInputToObject;
 	}
 
-/*
-	@Override
-	public BEASTInterface visitIdPattern(IdPatternContext ctx) {
-		String idPattern = ctx.getText();
-		Set<Input<?>> newInputSet = new LinkedHashSet<>();
-		for (BEASTInterface o : getDocumentObjects(doc)) {
-			for (Input<?> input : o.listInputs()) {
-				if (input.getName().matches(idPattern)) {
-					newInputSet.add(input);
-				}
-			}
-		}
-		inputSet = newInputSet;
-		return super.visitIdPattern(ctx);
-	}
-	
-	@Override
-	public BEASTInterface visitInputname(InputnameContext ctx) {
-		String inputPattern = ctx.getText();
-		if (inputSet == null) {
-			setupInputSet(inputPattern);
-		} else {
-			filterInputSet(inputPattern);
-		}
-		return super.visitInputname(ctx);
-	}
-	
-	@Override
-	public BEASTInterface visitElemntName(ElemntNameContext ctx) {
-		String elementPattern = ctx.getText();
-		if (elementPattern.endsWith("@")) {
-			elementPattern = elementPattern.substring(0, elementPattern.length() - 1);
-		}
-		elementPattern = normaliseString(elementPattern);
-		if (inputSet == null) {
-			setupInputSet(elementPattern);
-		} else {
-			filterInputSet(elementPattern);
-		}
-		return super.visitElemntName(ctx);
-	}
-*/		
-
 	 public Set<Input<?>> handleIdPattern(String idPattern) {
 		Set<Input<?>> newInputSet = new LinkedHashSet<>();
 		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
@@ -150,19 +107,10 @@ public class InputFilter {
 				newInputSet.add(input);
 			}
 		}
-//		inputSet = newInputSet;
 		return newInputSet;
 	}
 
-	 private void filterInput(BEASTInterface o, String pattern, Set<Input<?>> newInputSet) {
-		for (Input<?> input : o.listInputs()) {
-			if (input.getName().matches(pattern)) {
-				newInputSet.add(input);
-			}
-		}
-	}
-
-	 static public Set<Input<?>>  setupInputSet(String inputPattern, BeautiDoc doc, boolean useChildren) {
+	static public Set<Input<?>> setupInputSet(String inputPattern, BeautiDoc doc, boolean useChildren) {
 		Set<Input<?>> inputSet = new LinkedHashSet<>();
 		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
 			for (Input<?> input : o.listInputs()) {
@@ -190,7 +138,7 @@ public class InputFilter {
 		return inputSet;
 	}
 
-	 static public Collection<BEASTInterface> getDocumentObjects(BEASTInterface o) {
+	static public Collection<BEASTInterface> getDocumentObjects(BEASTInterface o) {
 		List<BEASTInterface> predecessors = new ArrayList<>();
 		collectPredecessors(o, predecessors);
 		return predecessors;

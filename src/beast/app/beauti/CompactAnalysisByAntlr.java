@@ -6,7 +6,6 @@ package beast.app.beauti;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +31,7 @@ import beast.core.parameter.Parameter;
 import beast.core.util.CompoundDistribution;
 import beast.core.util.Log;
 import beast.evolution.alignment.Alignment;
-import beast.evolution.branchratemodel.BranchRateModel;
-import beast.evolution.likelihood.GenericTreeLikelihood;
-import beast.evolution.sitemodel.SiteModelInterface;
 import beast.evolution.tree.TreeDistribution;
-import beast.evolution.tree.TreeInterface;
 import beast.math.distributions.MRCAPrior;
 
 public class CompactAnalysisByAntlr extends CABaseListener {
@@ -262,136 +257,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (partitionContext.size() <= 1) {
 				throw new IllegalArgumentException("Link command : At least two partitions must be selected '" + ctx.getText() + "'");
 			}
-			PartitionContext [] contexts = partitionContext.toArray(new PartitionContext[]{});
-			GenericTreeLikelihood [] treelikelihood = new GenericTreeLikelihood[contexts.length];
-			CompoundDistribution likelihoods = (CompoundDistribution) doc.pluginmap.get("likelihood");
-
-			for (int i = 0; i < partitionContext.size(); i++) {
-				String partition = contexts[i].partition;
-				for (int j = 0; j < likelihoods.pDistributions.get().size(); j++) {
-					GenericTreeLikelihood likelihood = (GenericTreeLikelihood) likelihoods.pDistributions.get().get(i);
-					assert (likelihood != null);
-					if (likelihood.dataInput.get().getID().equals(partition)) {
-						treelikelihood[i] = likelihood;
-					}
-				}
-			}
-
-			switch (ctx.getChild(1).getText()) {
-			case "sitemodel" :
-				SiteModelInterface sitemodel = treelikelihood[0].siteModelInput.get();
-				for (int i = 1; i < contexts.length; i++) {
-					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
-
-					SiteModelInterface oldSiteModel = treelikelihood[i].siteModelInput.get();
-					for (Object beastObject : BEASTInterface.getOutputs(oldSiteModel).toArray()) { //.toArray(new BEASTInterface[0])) {
-						for (Input<?> input : ((BEASTInterface)beastObject).listInputs()) {
-							try {
-							if (input.get() == oldSiteModel) {
-								if (input.getRule() != Input.Validate.REQUIRED) {
-									input.setValue(sitemodel /*null*/, (BEASTInterface) beastObject);
-								//} else {
-									//input.setValue(tree, (BEASTInterface) beastObject);
-								}
-							} else if (input.get() instanceof List) {
-								List list = (List) input.get();
-								if (list.contains(oldSiteModel)) { // && input.getRule() != Validate.REQUIRED) {
-									list.remove(oldSiteModel);
-									if (!list.contains(sitemodel)) {
-										list.add(sitemodel);
-									}
-								}
-							}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}
-					
-					treelikelihood[i].siteModelInput.setValue(sitemodel, treelikelihood[i]);
-					contexts[i].siteModel = contexts[0].siteModel;
-					repartition(oldContext);
-				}
-				break;
-			case "clock" :
-				BranchRateModel clockmodel = treelikelihood[0].branchRateModelInput.get();
-				for (int i = 1; i < contexts.length; i++) {
-					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
-
-					BranchRateModel oldClock = treelikelihood[i].branchRateModelInput.get();
-					for (Object beastObject : BEASTInterface.getOutputs(oldClock).toArray()) { //.toArray(new BEASTInterface[0])) {
-						for (Input<?> input : ((BEASTInterface)beastObject).listInputs()) {
-							try {
-							if (input.get() == oldClock) {
-								if (input.getRule() != Input.Validate.REQUIRED) {
-									input.setValue(clockmodel /*null*/, (BEASTInterface) beastObject);
-								//} else {
-									//input.setValue(tree, (BEASTInterface) beastObject);
-								}
-							} else if (input.get() instanceof List) {
-								List list = (List) input.get();
-								if (list.contains(oldClock)) { // && input.getRule() != Validate.REQUIRED) {
-									list.remove(oldClock);
-									if (!list.contains(clockmodel)) {
-										list.add(clockmodel);
-									}
-								}
-							}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}
-					
-					treelikelihood[i].branchRateModelInput.setValue(clockmodel, treelikelihood[i]);
-					contexts[i].clockModel = contexts[0].clockModel;
-					repartition(oldContext);
-				}
-				break;
-			case "tree" :
-				TreeInterface tree = treelikelihood[0].treeInput.get();
-				for (int i = 1; i < contexts.length; i++) {
-					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
-
-					TreeInterface oldTree = treelikelihood[i].treeInput.get();
-					((BEASTInterface)oldTree).setInputValue("estimate", false);
-					treelikelihood[i].treeInput.setValue(tree, treelikelihood[i]);
-					contexts[i].tree = contexts[0].tree;
-					
-	            	// use toArray to prevent ConcurrentModificationException
-					for (Object beastObject : BEASTInterface.getOutputs(oldTree).toArray()) { //.toArray(new BEASTInterface[0])) {
-						for (Input<?> input : ((BEASTInterface)beastObject).listInputs()) {
-							try {
-							if (input.get() == oldTree) {
-								if (input.getRule() != Input.Validate.REQUIRED) {
-									input.setValue(tree/*null*/, (BEASTInterface) beastObject);
-								//} else {
-									//input.setValue(tree, (BEASTInterface) beastObject);
-								}
-							} else if (input.get() instanceof List) {
-								@SuppressWarnings("unchecked")
-								List<TreeInterface> list = (List<TreeInterface>) input.get();
-								if (list.contains(oldTree)) { // && input.getRule() != Validate.REQUIRED) {
-									list.remove(oldTree);
-									if (!list.contains(tree)) {
-										list.add(tree);
-									}
-								}
-							}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}
-					repartition(oldContext);
-
-				}
-				break;
-			default:
-				throw new IllegalArgumentException("Command link: expected 'link [sitemodel|clock|tree] but got " + ctx.getText());
-			}
-			doc.determinePartitions();
-			doc.scrubAll(true, false);
+			DocumentEditor.link(doc, ctx.getChild(1).getText(), partitionContext);
 			return null;
 		}
 		
@@ -405,60 +271,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (partitionContext.size() <= 1) {
 				throw new IllegalArgumentException("Command unlink: At least one partition must be selected " + ctx.getText());
 			}
-			PartitionContext [] contexts = partitionContext.toArray(new PartitionContext[]{});
-			GenericTreeLikelihood [] treelikelihood = new GenericTreeLikelihood[contexts.length];
-			CompoundDistribution likelihoods = (CompoundDistribution) doc.pluginmap.get("likelihood");
-
-			for (int i = 0; i < partitionContext.size(); i++) {
-				String partition = contexts[i].partition;
-				for (int j = 0; j < likelihoods.pDistributions.get().size(); j++) {
-					GenericTreeLikelihood likelihood = (GenericTreeLikelihood) likelihoods.pDistributions.get().get(i);
-					assert (likelihood != null);
-					if (likelihood.dataInput.get().getID().equals(partition)) {
-						treelikelihood[i] = likelihood;
-					}
-				}
-			}
-
-			switch (ctx.getChild(1).getText()) {
-			case "sitemodel" :
-				SiteModelInterface sitemodel = treelikelihood[0].siteModelInput.get();
-				for (int i = 1; i < contexts.length; i++) {
-					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
-					contexts[i].siteModel = contexts[i].partition;
-
-					SiteModelInterface newSitemodel = (SiteModelInterface) BeautiDoc.deepCopyPlugin((BEASTInterface) sitemodel, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
-					treelikelihood[i].siteModelInput.setValue(newSitemodel, treelikelihood[i]);
-					repartition(contexts[i]);
-				}
-				break;
-			case "clock" :
-				BranchRateModel clockModel = treelikelihood[0].branchRateModelInput.get();
-				for (int i = 1; i < contexts.length; i++) {
-					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
-					contexts[i].clockModel = contexts[i].partition;
-
-					BranchRateModel newClockmodel = (BranchRateModel) BeautiDoc.deepCopyPlugin((BEASTInterface) clockModel, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
-					treelikelihood[i].siteModelInput.setValue(newClockmodel, treelikelihood[i]);
-					repartition(contexts[i]);
-				}
-				break;
-			case "tree" :
-				TreeInterface tree = treelikelihood[0].treeInput.get();
-				for (int i = 1; i < contexts.length; i++) {
-					PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
-					contexts[i].tree = contexts[i].partition;
-
-					TreeInterface newTree = (TreeInterface) BeautiDoc.deepCopyPlugin((BEASTInterface) tree, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
-					treelikelihood[i].treeInput.setValue(newTree, treelikelihood[i]);
-					repartition(contexts[i]);
-				}
-				break;
-			default:
-				throw new IllegalArgumentException("Command unlink: expected 'unlink [sitemodel|clock|tree] but got " + ctx.getText());
-			}
-			doc.determinePartitions();
-			doc.scrubAll(true, false);
+			DocumentEditor.unlink(doc, ctx.getChild(1).getText(), partitionContext);
 			return null;
 		}
 		
@@ -710,7 +523,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 
 		private String collectParameters(UsetemplateContext ctx, List<String> param, List<String> value) {
-			 String id = null;
+			String id = null;
 			for (int i = 2; i < ctx.getChildCount(); i++) {
 				if (ctx.getChild(i) instanceof KeyContext) {
 					String key = ctx.getChild(i).getText();
@@ -728,135 +541,15 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 
 		private void setupInputSet(BEASTInterface object) {
-				inputSet = new LinkedHashSet<>();
-				for (BEASTInterface o : InputFilter.getDocumentObjects(object)) {
-					for (Input<?> input : o.listInputs()) {
-						inputSet.add(input);
-						if (input.getType() == null) {
-							input.determineClass(o);
-						}
+			inputSet = new LinkedHashSet<>();
+			for (BEASTInterface o : InputFilter.getDocumentObjects(object)) {
+				for (Input<?> input : o.listInputs()) {
+					inputSet.add(input);
+					if (input.getType() == null) {
+						input.determineClass(o);
 					}
 				}
 			}
-
-		
-		private Map<Input<?>, BEASTInterface> getMatchingInputs(String pattern) {
-			Map<Input<?>, BEASTInterface> inputMap = new LinkedHashMap<>();
-			for (String id : doc.pluginmap.keySet()) {
-				BEASTInterface o = doc.pluginmap.get(id);
-				for (String name : o.getInputs().keySet()) {
-					if ((id + "." + name).matches(pattern)) { // <=== match id + name
-						Input<?> in = o.getInputs().get(name);
-						testMatch(o, in, inputMap);
-					}
-				}
-			}
-			if (inputMap.size() == 0) {
-				// no match found -- try matching id only
-				for (String id : doc.pluginmap.keySet()) {
-					BEASTInterface o = doc.pluginmap.get(id);
-					for (String name : o.getInputs().keySet()) {
-						if ((id).matches(pattern)) { // <=== match id only
-							Input<?> in = o.getInputs().get(name);
-							testMatch(o, in, inputMap);
-						}
-					}
-				}
-			}
-			if (inputMap.size() == 0) {
-				// no match found -- try matching input name only
-				for (String id : doc.pluginmap.keySet()) {
-					BEASTInterface o = doc.pluginmap.get(id);
-					for (String name : o.getInputs().keySet()) {
-						if ((name).matches(pattern)) { // <=== match name only
-							Input<?> in = o.getInputs().get(name);
-							testMatch(o, in, inputMap);
-						}
-					}
-				}
-			}
-			return inputMap;
-		}
-
-		private void testMatch(BEASTInterface o, Input<?> in, Map<Input<?>, BEASTInterface> inputMap) {
-			if (in.get() instanceof Parameter.Base) {
-				BEASTInterface o2 = (BEASTInterface) in.get();
-				Input<?> in2 = ((Parameter.Base<?>) o).valuesInput;
-				if (in.getType() != null && isAssignableFromString(in.getType())) {
-					inputMap.put(in2, o2);
-				} else if (in.getType() != null && isAssignableFromString(in.getType())) {
-					inputMap.put(in, o);
-				}
-				return;
-			}
-			if (in.getType() == null) {
-				in.determineClass(o);
-			}
-			
-			if (in.getType() != null && isAssignableFromString(in.getType())) {
-				inputMap.put(in, o);
-			}
-		}
-
-		private boolean isAssignableFromString(Class<?> type) {
-			if (String.class.isAssignableFrom(type) ||
-					Boolean.class.isAssignableFrom(type) ||
-					Number.class.isAssignableFrom(type)) {
-				return true;
-			}
-			return false;
-		}
-
-
-		private Map<Input<?>, BEASTInterface> getMatchingInputs(String pattern, BEASTInterface bo) {
-			Map<Input<?>, BEASTInterface> inputMap = new LinkedHashMap<>();
-			if (bo instanceof Distribution) {
-				CompoundDistribution distr = (CompoundDistribution) doc.pluginmap.get("prior");
-				inputMap.put(distr.pDistributions, distr);
-				return inputMap;
-			}
-			
-			for (String id : doc.pluginmap.keySet()) {
-				BEASTInterface o = doc.pluginmap.get(id);
-				for (String name : o.getInputs().keySet()) {
-					if ((id + "." + name).matches(pattern)) { // <=== match id + name
-						Input<?> in = o.getInputs().get(name);
-						if (in.getType() != null && in.getType().isAssignableFrom(bo.getClass()) && in.canSetValue(bo, o)) {
-							inputMap.put(in, o);
-						}
-					}
-				}
-			}
-			if (inputMap.size() == 0) {
-				// no match found -- try matching id only
-				for (String id : doc.pluginmap.keySet()) {
-					BEASTInterface o = doc.pluginmap.get(id);
-					for (String name : o.getInputs().keySet()) {
-						if ((id).matches(pattern)) { // <=== match id only
-							Input<?> in = o.getInputs().get(name);
-							if (in.getType() != null && in.getType().isAssignableFrom(bo.getClass()) && in.canSetValue(bo, o)) {
-								inputMap.put(in, o);
-							}
-						}
-					}
-				}
-			}
-			return inputMap;
-		}
-
-		private void repartition(PartitionContext oldContext) {
-			List<BeautiSubTemplate> templates = new ArrayList<>();
-			templates.add(doc.beautiConfig.partitionTemplate.get());
-			templates.addAll(doc.beautiConfig.subTemplates);
-			// keep applying rules till model does not change
-			doc.setUpActivePlugins();
-			int n;
-			do {
-				n = doc.posteriorPredecessors.size();
-				doc.applyBeautiRules(templates, false, oldContext);
-				doc.setUpActivePlugins();
-			} while (n != doc.posteriorPredecessors.size());
-			doc.determinePartitions();		
 		}
 		
 		@Override
@@ -919,7 +612,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				if (in.get() instanceof Alignment) {
 					Log.info("Removing partition " + ((BEASTInterface)in.get()).getID());	
 					// remove partition
-					removePartition((Alignment)in.get());
+					DocumentEditor.removePartition(doc, (Alignment)in.get());
 					return null;
 				} 
 			}
@@ -941,52 +634,6 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			return null;
 		}
 
-		private void removePartition(Alignment data) {
-			Object o = doc.pluginmap.get("likelihood");
-			if (o != null && o instanceof CompoundDistribution) {
-				CompoundDistribution likelihood = (CompoundDistribution) o;
-				List<Distribution> distrs = likelihood.pDistributions.get();
-				BEASTInterface bo = null;
-				for (Distribution d : distrs) {
-					if (d instanceof GenericTreeLikelihood && ((GenericTreeLikelihood)d).dataInput.get() == data) {
-						bo = d;
-					}
-				}
-				distrs.remove(bo);
-			}
-			MRCAPriorInputEditor.customConnector(doc);
-			doc.determinePartitions();
-			doc.scrubAll(true, false);
-		} // removePartition
 	}
 	
-	
-	
-	
-
-//	public static void main(String[] args) {
-//		String cmds = "template Standard;\n" +
-//				"import ../beast2/examples/nexus/Primates.nex;"
-//				+ "partition .*;" 
-//				+ "link site;";
-//;
-//		
-//		String cmds1 = "template Standard;\n" +
-//		"import ../beast-geo/examples/nexus/HBV.nex;\n" + 
-//		"import 'Spherical Geography' ../beast-geo/examples/nexus/HBV_locations.dat(geo,HBV);";
-////		"partition dna;\n" +
-////		"link clock dna;\n" +
-////		"unlink site dna;\n" + 
-////		"set gamma = 0.1;\n" + 
-////		"sub RelaxedClock;";
-////
-////		String cmds2 = "template Standar;\nimport ../beast-geo/examples/nexus/HBV.nex;" +
-////				"import Spherical Geography ../beast-geo/examples/nexus/HBV_locations.dat(geo,HBV);";
-//		
-//		
-//		CompactAnalysisByAntlr x = new CompactAnalysisByAntlr();
-//		x.parseCA(cmds);
-//		System.out.println("Done");
-//
-//	}
 }

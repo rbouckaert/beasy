@@ -906,16 +906,16 @@ public class JConsole extends JScrollPane
 	 * If not in the event thread run via SwingUtilities.invokeAndWait()
 	 */
 	private void invokeAndWait(Runnable run) {
-//		if(!SwingUtilities.isEventDispatchThread()) {
-//			try {
-//				SwingUtilities.invokeAndWait(run);
-//			} catch(Exception e) {
-//				// shouldn't happen
-//				e.printStackTrace();
-//			}
-//		} else {
+		if(!SwingUtilities.isEventDispatchThread()) {
+			try {
+				SwingUtilities.invokeAndWait(run);
+			} catch(Exception e) {
+				// shouldn't happen
+				e.printStackTrace();
+			}
+		} else {
 			run.run();
-//		}
+		}
 	}
 
 	/**
