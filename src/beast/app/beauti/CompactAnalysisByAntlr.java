@@ -31,6 +31,8 @@ import beast.core.parameter.Parameter;
 import beast.core.util.CompoundDistribution;
 import beast.core.util.Log;
 import beast.evolution.alignment.Alignment;
+import beast.evolution.alignment.Taxon;
+import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TreeDistribution;
 import beast.math.distributions.MRCAPrior;
 
@@ -634,6 +636,32 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			return null;
 		}
 
+		@Override
+		public BEASTInterface visitTaxonset(TaxonsetContext ctx) {
+			String setID = ctx.getChild(1).getText();
+			TaxonSet taxonset;
+			if (doc.taxaset.containsKey(setID) && doc.taxaset.get(setID) instanceof TaxonSet) {
+				taxonset = (TaxonSet) doc.taxaset.get(setID);
+				taxonset.taxonsetInput.get().clear();
+			} else {			
+				taxonset = new TaxonSet();
+				taxonset.setID(setID);
+			}
+			for (int i = 3; i < ctx.getChildCount(); i++) {
+				String id = ctx.getChild(i).getText();
+				Taxon taxon;
+				if (doc.taxaset.containsKey(id)) {
+					taxon = doc.taxaset.get(id);
+				} else {
+					taxon = new Taxon(id);
+					doc.registerPlugin(taxon);	
+				}
+				taxonset.taxonsetInput.setValue(taxon, taxonset);
+			}
+			doc.registerPlugin(taxonset);
+			return super.visitTaxonset(ctx);
+		}
+		
 	}
 	
 }

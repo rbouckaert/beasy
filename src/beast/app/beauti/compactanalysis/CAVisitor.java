@@ -149,4 +149,10 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitRm(CAParser.RmContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CAParser#taxonset}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTaxonset(CAParser.TaxonsetContext ctx);
 }

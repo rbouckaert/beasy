@@ -6,7 +6,7 @@ grammar CA;
   
 casentence : cmd * ;
 
-cmd : (template | usetemplate | import_ | link | unlink | set | rename | rm)? ';' ;
+cmd : (template | usetemplate | import_ | link | unlink | set | rename | rm | taxonset)? ';' ;
 
 template : TEMPLATETOKEN templatename ;
 
@@ -51,6 +51,8 @@ newName : STRING | LINKTYPE ;
 
 rm : RMTOKEN inputidentifier ;
 
+taxonset : TAXONSETTOKEN STRING '=' STRING + ;
+
 // Lexer Rules
 TEMPLATETOKEN : 'template' ;
 IMPORTTOKEN : 'import' ;
@@ -60,6 +62,7 @@ SETTOKEN : 'set' ;
 USETOKEN : 'use' ;
 RENAMETOKEN : 'rename' ;
 RMTOKEN : 'rm' ;
+TAXONSETTOKEN: 'taxonset' ;
 
 LINKTYPE : 'clock' | 'tree' | 'sitemodel' ;
 

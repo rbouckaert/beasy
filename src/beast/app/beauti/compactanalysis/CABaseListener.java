@@ -288,6 +288,18 @@ public class CABaseListener implements CAListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRm(CAParser.RmContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTaxonset(CAParser.TaxonsetContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTaxonset(CAParser.TaxonsetContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
