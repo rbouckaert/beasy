@@ -1,4 +1,4 @@
-// Generated from CA.g4 by ANTLR 4.5
+// Generated from CA.g4 by ANTLR 4.4
 package beast.app.beauti.compactanalysis;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -17,312 +17,324 @@ public class CABaseListener implements CAListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCasentence(CAParser.CasentenceContext ctx) { }
+	@Override public void enterTemplate(@NotNull CAParser.TemplateContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCasentence(CAParser.CasentenceContext ctx) { }
+	@Override public void exitTemplate(@NotNull CAParser.TemplateContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCmd(CAParser.CmdContext ctx) { }
+	@Override public void enterTaxonset(@NotNull CAParser.TaxonsetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCmd(CAParser.CmdContext ctx) { }
+	@Override public void exitTaxonset(@NotNull CAParser.TaxonsetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTemplate(CAParser.TemplateContext ctx) { }
+	@Override public void enterUse(@NotNull CAParser.UseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTemplate(CAParser.TemplateContext ctx) { }
+	@Override public void exitUse(@NotNull CAParser.UseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTemplatename(CAParser.TemplatenameContext ctx) { }
+	@Override public void enterLink(@NotNull CAParser.LinkContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTemplatename(CAParser.TemplatenameContext ctx) { }
+	@Override public void exitLink(@NotNull CAParser.LinkContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUsetemplate(CAParser.UsetemplateContext ctx) { }
+	@Override public void enterInputidentifier(@NotNull CAParser.InputidentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUsetemplate(CAParser.UsetemplateContext ctx) { }
+	@Override public void exitInputidentifier(@NotNull CAParser.InputidentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterKey(CAParser.KeyContext ctx) { }
+	@Override public void enterAlignmentprovider(@NotNull CAParser.AlignmentproviderContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitKey(CAParser.KeyContext ctx) { }
+	@Override public void exitAlignmentprovider(@NotNull CAParser.AlignmentproviderContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValue(CAParser.ValueContext ctx) { }
+	@Override public void enterImport_(@NotNull CAParser.Import_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitValue(CAParser.ValueContext ctx) { }
+	@Override public void exitImport_(@NotNull CAParser.Import_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterImport_(CAParser.Import_Context ctx) { }
+	@Override public void enterArg(@NotNull CAParser.ArgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitImport_(CAParser.Import_Context ctx) { }
+	@Override public void exitArg(@NotNull CAParser.ArgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFilename(CAParser.FilenameContext ctx) { }
+	@Override public void enterOldName(@NotNull CAParser.OldNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFilename(CAParser.FilenameContext ctx) { }
+	@Override public void exitOldName(@NotNull CAParser.OldNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAlignmentprovider(CAParser.AlignmentproviderContext ctx) { }
+	@Override public void enterCasentence(@NotNull CAParser.CasentenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAlignmentprovider(CAParser.AlignmentproviderContext ctx) { }
+	@Override public void exitCasentence(@NotNull CAParser.CasentenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArg(CAParser.ArgContext ctx) { }
+	@Override public void enterTemplatename(@NotNull CAParser.TemplatenameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArg(CAParser.ArgContext ctx) { }
+	@Override public void exitTemplatename(@NotNull CAParser.TemplatenameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPartitionpattern(CAParser.PartitionpatternContext ctx) { }
+	@Override public void enterPartitionpattern(@NotNull CAParser.PartitionpatternContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPartitionpattern(CAParser.PartitionpatternContext ctx) { }
+	@Override public void exitPartitionpattern(@NotNull CAParser.PartitionpatternContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLink(CAParser.LinkContext ctx) { }
+	@Override public void enterInputname(@NotNull CAParser.InputnameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLink(CAParser.LinkContext ctx) { }
+	@Override public void exitInputname(@NotNull CAParser.InputnameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnlink(CAParser.UnlinkContext ctx) { }
+	@Override public void enterValue(@NotNull CAParser.ValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUnlink(CAParser.UnlinkContext ctx) { }
+	@Override public void exitValue(@NotNull CAParser.ValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSet(CAParser.SetContext ctx) { }
+	@Override public void enterKey(@NotNull CAParser.KeyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSet(CAParser.SetContext ctx) { }
+	@Override public void exitKey(@NotNull CAParser.KeyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInputidentifier(CAParser.InputidentifierContext ctx) { }
+	@Override public void enterAdd(@NotNull CAParser.AddContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInputidentifier(CAParser.InputidentifierContext ctx) { }
+	@Override public void exitAdd(@NotNull CAParser.AddContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterElemntName(CAParser.ElemntNameContext ctx) { }
+	@Override public void enterSet(@NotNull CAParser.SetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitElemntName(CAParser.ElemntNameContext ctx) { }
+	@Override public void exitSet(@NotNull CAParser.SetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdPattern(CAParser.IdPatternContext ctx) { }
+	@Override public void enterIdPattern(@NotNull CAParser.IdPatternContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIdPattern(CAParser.IdPatternContext ctx) { }
+	@Override public void exitIdPattern(@NotNull CAParser.IdPatternContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInputname(CAParser.InputnameContext ctx) { }
+	@Override public void enterFilename(@NotNull CAParser.FilenameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInputname(CAParser.InputnameContext ctx) { }
+	@Override public void exitFilename(@NotNull CAParser.FilenameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRename(CAParser.RenameContext ctx) { }
+	@Override public void enterElemntName(@NotNull CAParser.ElemntNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRename(CAParser.RenameContext ctx) { }
+	@Override public void exitElemntName(@NotNull CAParser.ElemntNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOldName(CAParser.OldNameContext ctx) { }
+	@Override public void enterNewName(@NotNull CAParser.NewNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOldName(CAParser.OldNameContext ctx) { }
+	@Override public void exitNewName(@NotNull CAParser.NewNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNewName(CAParser.NewNameContext ctx) { }
+	@Override public void enterUnlink(@NotNull CAParser.UnlinkContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNewName(CAParser.NewNameContext ctx) { }
+	@Override public void exitUnlink(@NotNull CAParser.UnlinkContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRm(CAParser.RmContext ctx) { }
+	@Override public void enterRename(@NotNull CAParser.RenameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRm(CAParser.RmContext ctx) { }
+	@Override public void exitRename(@NotNull CAParser.RenameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTaxonset(CAParser.TaxonsetContext ctx) { }
+	@Override public void enterCmd(@NotNull CAParser.CmdContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTaxonset(CAParser.TaxonsetContext ctx) { }
+	@Override public void exitCmd(@NotNull CAParser.CmdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRm(@NotNull CAParser.RmContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRm(@NotNull CAParser.RmContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEveryRule(ParserRuleContext ctx) { }
+	@Override public void enterEveryRule(@NotNull ParserRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEveryRule(ParserRuleContext ctx) { }
+	@Override public void exitEveryRule(@NotNull ParserRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void visitTerminal(TerminalNode node) { }
+	@Override public void visitTerminal(@NotNull TerminalNode node) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void visitErrorNode(ErrorNode node) { }
+	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
 }

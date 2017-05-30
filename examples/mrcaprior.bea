@@ -1,0 +1,11 @@
+template Standard;
+import ../beast2/examples/nexus/dna.nex;
+use HKY;
+use frequencies = Empirical;
+
+taxonset MR = Mouse Rat;
+
+add MRCAPrior(MR);
+set monophyletic[MR.prior] = true
+use distr[MR.prior] = Normal(mean=37,sigma=1);
+

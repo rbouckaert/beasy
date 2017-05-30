@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 import java.awt.Cursor;
 
 import javax.swing.text.*;
@@ -100,6 +101,8 @@ public class JConsole extends JScrollPane
     private JPopupMenu menu;
     public JTextPane text;
     private DefaultStyledDocument docStyle;
+    
+    static Semaphore mutex = new Semaphore(1);
 
 //	NameCompletion nameCompletion;
 	final int SHOW_AMBIG_MAX = 10;
@@ -339,7 +342,7 @@ public class JConsole extends JScrollPane
 
 	private void completeCommand(final String part0 ) {
 //		Log.info(part0);
-		if (part0.trim().startsWith("set") || part0.trim().startsWith("use")) {
+		if (part0.trim().startsWith("set") || part0.trim().startsWith("use") || part0.trim().startsWith("rm")) {
 			String part = part0.trim().substring(3).trim();
 			int len = part.length();
 			String elementPattern = null;
@@ -616,13 +619,28 @@ public class JConsole extends JScrollPane
 			print("Console internal	error: cannot output ...", Color.red);
 		else
 			try {
-				outPipe.write( line.getBytes() );
+				byte [] bytes = line.getBytes();
+				// RRB: following line can block the EventThread
+				//outPipe.write( bytes );
 				outPipe.flush();
 			} catch	( IOException e	) {
 				outPipe	= null;
 				throw new RuntimeException("Console pipe broken...");
 			}
-		studio.interpreter.run(line);
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					mutex.acquire();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					mutex.release();
+				}
+				studio.interpreter.run(line);
+				mutex.release();
+			}
+		}.start();
 		//text.repaint();
 	}
 
@@ -906,16 +924,16 @@ public class JConsole extends JScrollPane
 	 * If not in the event thread run via SwingUtilities.invokeAndWait()
 	 */
 	private void invokeAndWait(Runnable run) {
-		if(!SwingUtilities.isEventDispatchThread()) {
-			try {
-				SwingUtilities.invokeAndWait(run);
-			} catch(Exception e) {
-				// shouldn't happen
-				e.printStackTrace();
-			}
-		} else {
+//		if(!SwingUtilities.isEventDispatchThread()) {
+//			try {
+//				SwingUtilities.invokeAndWait(run);
+//			} catch(Exception e) {
+//				// shouldn't happen
+//				e.printStackTrace();
+//			}
+//		} else {
 			run.run();
-		}
+//		}
 	}
 
 	/**

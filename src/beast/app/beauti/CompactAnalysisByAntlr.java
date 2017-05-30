@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.PartitionContext;
+import beast.app.beauti.PriorListInputEditor.MRCAPriorProvider;
 import beast.app.beauti.compactanalysis.*;
 import beast.app.beauti.compactanalysis.CAParser.*;
 import beast.core.BEASTInterface;
@@ -35,6 +36,7 @@ import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TreeDistribution;
 import beast.math.distributions.MRCAPrior;
+import beast.util.AddOnManager;
 
 public class CompactAnalysisByAntlr extends CABaseListener {
 	BeautiDoc doc = null;
@@ -306,10 +308,10 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 
 		@Override
-		public BEASTInterface visitUsetemplate(UsetemplateContext ctx) {
+		public BEASTInterface visitUse(UseContext ctx) {
 			// set up inputSet
 			mapInputToObject = InputFilter.initInputMap(doc);
-			super.visitUsetemplate(ctx);
+			super.visitUse(ctx);
 			if (inputSet == null) {
 				setupInputSet(((MCMC)doc.mcmc.get()).posteriorInput.get());
 			}
@@ -321,7 +323,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			
 			// collect parameters
 			List<String> param = new ArrayList<>();
-			List<String> value = new ArrayList<>();
+			List<Object> value = new ArrayList<>();
 			String newID = collectParameters(ctx, param, value);
 			
 			int instantCount = 0;
@@ -359,7 +361,12 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 					}
 				}
 			}
-
+			
+			if (ctx.getParent() instanceof ValueContext) {
+				BEASTInterface bo = createSubnet(subTemplate, param, value, newID, null, null);
+				return bo;
+			}
+			
 			if (instantCount == 0) {
 				throw new IllegalArgumentException("Command use: cannot find suitable input to match for " + ctx.getText());				
 			} else {
@@ -401,7 +408,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			
 		}
 
-		private BEASTInterface createSubnet(BeautiSubTemplate subTemplate, List<String> param, List<String> value,
+		private BEASTInterface createSubnet(BeautiSubTemplate subTemplate, List<String> param, List<Object> value,
 				String id, BEASTInterface o, Input<?> input) {
 			PartitionContext pc = getPartitionContext(o, subTemplate);
 			if (!pc.partition.equals("null")) {
@@ -429,6 +436,10 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		 * by parsing its ID. 
 		 * **/
 		private PartitionContext getPartitionContext(BEASTInterface o, BeautiSubTemplate subTemplate) {
+			if (o == null) {
+	            return new PartitionContext("null", "null", "null", "null");
+			}
+			
 			String id = o.getID();
 			if (id.indexOf('.') == -1) {
 				// determine partition from mainID of subtemplate
@@ -505,7 +516,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 
 		// assume this specifies a subtemplate
 		// [<id pattern> =]? <SubTemplate>[(param1=value[,param2=value,...])];
-		private BeautiSubTemplate getSubTemplateName(UsetemplateContext ctx) {
+		private BeautiSubTemplate getSubTemplateName(UseContext ctx) {
 			String subTemplateName;
 			if (ctx.getChild(1) instanceof InputidentifierContext) {
 				subTemplateName = ctx.getChild(3).getText();
@@ -524,7 +535,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			throw new IllegalArgumentException("Command use: cannot find matching template for " + subTemplateName);
 		}
 
-		private String collectParameters(UsetemplateContext ctx, List<String> param, List<String> value) {
+		private String collectParameters(UseContext ctx, List<String> param, List<Object> value) {
 			String id = null;
 			for (int i = 2; i < ctx.getChildCount(); i++) {
 				if (ctx.getChild(i) instanceof KeyContext) {
@@ -535,7 +546,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 						id = val.trim();
 					} else {
 						param.add(key.trim());
-						value.add(val.trim());
+						if (doc.pluginmap.containsKey(val)) {
+							value.add(doc.pluginmap.get(val));
+						} else {
+							value.add(val.trim());
+						}
 					}
 				}
 			}
@@ -599,6 +614,97 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 		
 		
+	    List<PriorProvider> priorProviders;
+	    
+	    private void initProviders() {
+	    	priorProviders = new ArrayList<>();
+	    	PriorListInputEditor p = new PriorListInputEditor(doc);
+	    	priorProviders.add(p.new MRCAPriorProvider());
+	    	
+	        // build up list of data types
+	        List<String> importerClasses = AddOnManager.find(PriorProvider.class, new String[]{"beast.app"});
+	        for (String _class: importerClasses) {
+	        	try {
+	        		if (!_class.startsWith(this.getClass().getName())) {
+	        			PriorProvider priorProvider = (PriorProvider) Class.forName(_class).newInstance();
+						priorProviders.add(priorProvider);
+	        		}
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        }
+	    }
+		@Override
+		public BEASTInterface visitAdd(AddContext ctx) {
+			PriorProvider provider = getProvider(ctx);
+			
+			// grab arguments
+			List<Object> args = new ArrayList<>();
+			for (int i = 2; i < ctx.children.size(); i++) {
+				if (ctx.getChild(i) instanceof ArgContext) {
+					String value = ctx.getChild(i).getText();
+					if (doc.pluginmap.containsKey(value)) {
+						args.add(doc.pluginmap.get(value));
+					} else {
+						args.add(value);
+					}
+				}
+			}
+
+			List<Distribution> newObjects = provider.createDistribution(doc, args);
+
+			if (newObjects == null) {
+				Log.info("No objects created");
+			} else {
+				BEASTInterface p = doc.pluginmap.get("prior");
+				if (p != null && p instanceof CompoundDistribution) {
+					CompoundDistribution prior = (CompoundDistribution) p;
+					for (Distribution distr : newObjects) {
+						Log.info("Created " + distr.getID());
+						prior.pDistributions.set(distr);
+					}
+				}
+			}
+
+			return super.visitAdd(ctx);
+		}
+		
+		private PriorProvider getProvider(AddContext ctx) {
+	    	if (priorProviders == null) {
+	    		initProviders();
+	    	}
+	    	List<PriorProvider> matches = new ArrayList<>();
+			String priorProviderName = ".*" + ctx.getChild(1).getText() + ".*";
+	    	for (PriorProvider provider : priorProviders) {
+	    		if (provider.getClass().getName().matches(priorProviderName)) {
+	    			matches.add(provider);
+	    		}
+	    	}
+			
+	    	if (matches.size() > 1) {
+	    		priorProviderName = ctx.getChild(1).getText();
+	    		matches.clear();
+		    	for (PriorProvider provider : priorProviders) {
+		    		if (provider.getClass().getName().equals(priorProviderName)) {
+		    			matches.add(provider);
+		    		}
+		    	}
+	    	}
+	    	
+	    	if (matches.size() != 1) {
+	    		String providers = "";
+	    		for (int i = 0; i < priorProviders.size(); i++) {
+	    			providers += priorProviders.get(i).getClass().getName();
+	    			if (i < priorProviders.size() - 1) {
+	    				providers += ", ";
+	    			}
+	    		}
+	    		throw new IllegalArgumentException("Could not find provider. Use one of " + providers + ".");
+	    	}
+	    	return matches.get(0);
+		}
+
 		@Override
 		public BEASTInterface visitRm(RmContext ctx) {
 			// set up inputSet

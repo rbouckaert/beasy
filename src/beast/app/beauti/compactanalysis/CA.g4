@@ -6,19 +6,21 @@ grammar CA;
   
 casentence : cmd * ;
 
-cmd : (template | usetemplate | import_ | link | unlink | set | rename | rm | taxonset)? ';' ;
+cmd : (template | import_ | use | set | link | unlink | rename | add | rm | taxonset )? ';' ;
 
 template : TEMPLATETOKEN templatename ;
 
 templatename : STRING ;
 
-usetemplate : USETOKEN (inputidentifier '=')? STRING ( '(' key '=' value (',' key '=' value)* ')' )? ;
+use : USETOKEN (inputidentifier '=')? STRING ( '(' key '=' value (',' key '=' value)* ')' )? ;
 
-key : STRING ;
+key : STRING | TAXONSETTOKEN;
 
 value : STRING ;
 
 import_ : IMPORTTOKEN alignmentprovider? filename ( '(' arg (',' arg)* ')' )? ;
+
+add : ADDTOKEN STRING ( '(' arg (',' arg)* ')' )? ;
 
 filename :  STRING ;
 
@@ -60,6 +62,7 @@ LINKTOKEN : 'link' ;
 UNLINKTOKEN : 'unlink' ;
 SETTOKEN : 'set' ;
 USETOKEN : 'use' ;
+ADDTOKEN : 'add' ;
 RENAMETOKEN : 'rename' ;
 RMTOKEN : 'rm' ;
 TAXONSETTOKEN: 'taxonset' ;
