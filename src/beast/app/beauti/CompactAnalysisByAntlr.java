@@ -14,6 +14,7 @@ import java.util.Set;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -103,7 +104,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	}
 	
 
-	public class CAASTVisitor extends CABaseVisitor<BEASTInterface> {
+	public class CAASTVisitor extends CABaseVisitor<Object> {
 		
 		private Set<PartitionContext> partitionContext;
 		
@@ -112,7 +113,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 		
 		@Override
-		public BEASTInterface visitTemplate(TemplateContext ctx) {
+		public Object visitTemplate(TemplateContext ctx) {
 			TemplatenameContext name = (TemplatenameContext) ctx.children.get(ctx.children.size() - 1);
 
 			String template = name.getText();
@@ -146,7 +147,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 		
 		@Override
-		public BEASTInterface visitImport_(Import_Context ctx) {
+		public Object visitImport_(Import_Context ctx) {
 			String providerID = "Import Alignment";
 			String fileName = null;
 			List<String> args = new ArrayList<>();
@@ -225,7 +226,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		Map<Input<?>, BEASTInterface> mapInputToObject;
 		
 		@Override
-		public BEASTInterface visitInputidentifier(InputidentifierContext ctx) {
+		public Object visitInputidentifier(InputidentifierContext ctx) {
 			String idPattern = null;
 			String elementPattern = null;
 			String inputPattern = null;
@@ -252,7 +253,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 		
 		@Override
-		public BEASTInterface visitLink(LinkContext ctx) {
+		public Object visitLink(LinkContext ctx) {
 			if (ctx.getChildCount() == 2) {
 				processPattern(".*");
 			} else {
@@ -266,7 +267,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 		
 		@Override
-		public BEASTInterface visitUnlink(UnlinkContext ctx) {
+		public Object visitUnlink(UnlinkContext ctx) {
 			if (ctx.getChildCount() == 2) {
 				processPattern(".*");
 			} else {
@@ -280,7 +281,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 		
 		@Override
-		public BEASTInterface visitSet(SetContext ctx) {
+		public Object visitSet(SetContext ctx) {
 			// set <identifier> = <value>;
 			String value = ctx.getChild(3).getText();;
 			
@@ -308,7 +309,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 
 		@Override
-		public BEASTInterface visitUse(UseContext ctx) {
+		public Object visitUse(UseContext ctx) {
 			// set up inputSet
 			mapInputToObject = InputFilter.initInputMap(doc);
 			super.visitUse(ctx);
@@ -516,13 +517,16 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 
 		// assume this specifies a subtemplate
 		// [<id pattern> =]? <SubTemplate>[(param1=value[,param2=value,...])];
-		private BeautiSubTemplate getSubTemplateName(UseContext ctx) {
+		private BeautiSubTemplate getSubTemplateName(ParserRuleContext ctx) {
 			String subTemplateName;
 			if (ctx.getChild(1) instanceof InputidentifierContext) {
 				subTemplateName = ctx.getChild(3).getText();
 			} else {
 				// match anything
-				subTemplateName = ctx.getChild(1).getText();
+				subTemplateName = ctx.getChild(0).getText();
+				if (subTemplateName.equals("use")) {
+					subTemplateName = ctx.getChild(1).getText();
+				}
 			}
 			if (subTemplateName.indexOf('(') >= 0) {
 				subTemplateName = subTemplateName.substring(0, subTemplateName.indexOf('('));
@@ -535,7 +539,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			throw new IllegalArgumentException("Command use: cannot find matching template for " + subTemplateName);
 		}
 
-		private String collectParameters(UseContext ctx, List<String> param, List<Object> value) {
+		private String collectParameters(ParserRuleContext ctx, List<String> param, List<Object> value) {
 			String id = null;
 			for (int i = 2; i < ctx.getChildCount(); i++) {
 				if (ctx.getChild(i) instanceof KeyContext) {
@@ -570,7 +574,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 		
 		@Override
-		public BEASTInterface visitRename(RenameContext ctx) {
+		public Object visitRename(RenameContext ctx) {
 			String partition = ctx.getChild(1).getText();
 
 			String oldName = null, newName;
@@ -635,20 +639,39 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				}
 	        }
 	    }
+	    
+	    @Override
+	    public Object visitValue(ValueContext ctx) {
+			String value = ctx.getText();
+			if (doc.pluginmap.containsKey(value)) {
+				return doc.pluginmap.get(value);
+			} else {
+				return value;
+			}
+	    }
+	    
+	    @Override
+	    public Object visitSubtemplate(SubtemplateContext ctx) {
+			BeautiSubTemplate subTemplate = getSubTemplateName(ctx);
+			
+			// collect parameters
+			List<String> param = new ArrayList<>();
+			List<Object> value = new ArrayList<>();
+			String newID = collectParameters(ctx, param, value);
+
+			BEASTInterface bo = createSubnet(subTemplate, param, value, newID, null, null);
+			return bo;
+	    }
+	    
 		@Override
-		public BEASTInterface visitAdd(AddContext ctx) {
+		public Object visitAdd(AddContext ctx) {
 			PriorProvider provider = getProvider(ctx);
 			
 			// grab arguments
 			List<Object> args = new ArrayList<>();
 			for (int i = 2; i < ctx.children.size(); i++) {
-				if (ctx.getChild(i) instanceof ArgContext) {
-					String value = ctx.getChild(i).getText();
-					if (doc.pluginmap.containsKey(value)) {
-						args.add(doc.pluginmap.get(value));
-					} else {
-						args.add(value);
-					}
+				if (ctx.getChild(i) instanceof ArgOrUseContext) {
+					args.add(visit(ctx.getChild(i)));
 				}
 			}
 
@@ -706,7 +729,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 
 		@Override
-		public BEASTInterface visitRm(RmContext ctx) {
+		public Object visitRm(RmContext ctx) {
 			// set up inputSet
 			mapInputToObject = InputFilter.initInputMap(doc);
 			super.visitRm(ctx);
@@ -743,7 +766,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 
 		@Override
-		public BEASTInterface visitTaxonset(TaxonsetContext ctx) {
+		public Object visitTaxonset(TaxonsetContext ctx) {
 			String setID = ctx.getChild(1).getText();
 			TaxonSet taxonset;
 			if (doc.taxaset.containsKey(setID) && doc.taxaset.get(setID) instanceof TaxonSet) {

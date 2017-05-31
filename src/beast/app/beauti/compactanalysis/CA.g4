@@ -20,7 +20,11 @@ value : STRING ;
 
 import_ : IMPORTTOKEN alignmentprovider? filename ( '(' arg (',' arg)* ')' )? ;
 
-add : ADDTOKEN STRING ( '(' arg (',' arg)* ')' )? ;
+add : ADDTOKEN STRING ( '(' argOrUse (',' argOrUse)* ')' )? ;
+
+argOrUse : value | subtemplate ;
+
+subtemplate : STRING '(' key '=' value (',' key '=' value)* ')';
 
 filename :  STRING ;
 

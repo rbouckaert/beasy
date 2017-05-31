@@ -1,4 +1,4 @@
-// Generated from CA.g4 by ANTLR 4.4
+// Generated from CA.g4 by ANTLR 4.5
 package beast.app.beauti.compactanalysis;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
@@ -18,173 +18,187 @@ public class CABaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CAV
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTemplate(@NotNull CAParser.TemplateContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCasentence(CAParser.CasentenceContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTaxonset(@NotNull CAParser.TaxonsetContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCmd(CAParser.CmdContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitUse(@NotNull CAParser.UseContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTemplate(CAParser.TemplateContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLink(@NotNull CAParser.LinkContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTemplatename(CAParser.TemplatenameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitInputidentifier(@NotNull CAParser.InputidentifierContext ctx) { return visitChildren(ctx); }
+	@Override public T visitUse(CAParser.UseContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAlignmentprovider(@NotNull CAParser.AlignmentproviderContext ctx) { return visitChildren(ctx); }
+	@Override public T visitKey(CAParser.KeyContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitImport_(@NotNull CAParser.Import_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitValue(CAParser.ValueContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArg(@NotNull CAParser.ArgContext ctx) { return visitChildren(ctx); }
+	@Override public T visitImport_(CAParser.Import_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitOldName(@NotNull CAParser.OldNameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAdd(CAParser.AddContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCasentence(@NotNull CAParser.CasentenceContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArgOrUse(CAParser.ArgOrUseContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTemplatename(@NotNull CAParser.TemplatenameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSubtemplate(CAParser.SubtemplateContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPartitionpattern(@NotNull CAParser.PartitionpatternContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFilename(CAParser.FilenameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitInputname(@NotNull CAParser.InputnameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAlignmentprovider(CAParser.AlignmentproviderContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitValue(@NotNull CAParser.ValueContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArg(CAParser.ArgContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitKey(@NotNull CAParser.KeyContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPartitionpattern(CAParser.PartitionpatternContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAdd(@NotNull CAParser.AddContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLink(CAParser.LinkContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSet(@NotNull CAParser.SetContext ctx) { return visitChildren(ctx); }
+	@Override public T visitUnlink(CAParser.UnlinkContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitIdPattern(@NotNull CAParser.IdPatternContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSet(CAParser.SetContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFilename(@NotNull CAParser.FilenameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInputidentifier(CAParser.InputidentifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitElemntName(@NotNull CAParser.ElemntNameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitElemntName(CAParser.ElemntNameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNewName(@NotNull CAParser.NewNameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitIdPattern(CAParser.IdPatternContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitUnlink(@NotNull CAParser.UnlinkContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInputname(CAParser.InputnameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitRename(@NotNull CAParser.RenameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitRename(CAParser.RenameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCmd(@NotNull CAParser.CmdContext ctx) { return visitChildren(ctx); }
+	@Override public T visitOldName(CAParser.OldNameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitRm(@NotNull CAParser.RmContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNewName(CAParser.NewNameContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitRm(CAParser.RmContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitTaxonset(CAParser.TaxonsetContext ctx) { return visitChildren(ctx); }
 }

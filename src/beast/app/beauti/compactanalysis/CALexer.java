@@ -1,4 +1,4 @@
-// Generated from CA.g4 by ANTLR 4.4
+// Generated from CA.g4 by ANTLR 4.5
 package beast.app.beauti.compactanalysis;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -11,13 +11,13 @@ import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class CALexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.4", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__7=1, T__6=2, T__5=3, T__4=4, T__3=5, T__2=6, T__1=7, T__0=8, TEMPLATETOKEN=9, 
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, TEMPLATETOKEN=9, 
 		IMPORTTOKEN=10, LINKTOKEN=11, UNLINKTOKEN=12, SETTOKEN=13, USETOKEN=14, 
 		ADDTOKEN=15, RENAMETOKEN=16, RMTOKEN=17, TAXONSETTOKEN=18, LINKTYPE=19, 
 		STRING=20, WHITESPACE=21, COMMENT=22, LINE_COMMENT=23;
@@ -25,18 +25,56 @@ public class CALexer extends Lexer {
 		"DEFAULT_MODE"
 	};
 
-	public static final String[] tokenNames = {
-		"'\\u0000'", "'\\u0001'", "'\\u0002'", "'\\u0003'", "'\\u0004'", "'\\u0005'", 
-		"'\\u0006'", "'\\u0007'", "'\b'", "'\t'", "'\n'", "'\\u000B'", "'\f'", 
-		"'\r'", "'\\u000E'", "'\\u000F'", "'\\u0010'", "'\\u0011'", "'\\u0012'", 
-		"'\\u0013'", "'\\u0014'", "'\\u0015'", "'\\u0016'", "'\\u0017'"
-	};
 	public static final String[] ruleNames = {
-		"T__7", "T__6", "T__5", "T__4", "T__3", "T__2", "T__1", "T__0", "TEMPLATETOKEN", 
+		"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "TEMPLATETOKEN", 
 		"IMPORTTOKEN", "LINKTOKEN", "UNLINKTOKEN", "SETTOKEN", "USETOKEN", "ADDTOKEN", 
 		"RENAMETOKEN", "RMTOKEN", "TAXONSETTOKEN", "LINKTYPE", "STRING", "WHITESPACE", 
 		"COMMENT", "LINE_COMMENT"
 	};
+
+	private static final String[] _LITERAL_NAMES = {
+		null, "';'", "'='", "'('", "','", "')'", "'@'", "'['", "']'", "'template'", 
+		"'import'", "'link'", "'unlink'", "'set'", "'use'", "'add'", "'rename'", 
+		"'rm'", "'taxonset'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, null, null, null, null, null, null, null, null, "TEMPLATETOKEN", 
+		"IMPORTTOKEN", "LINKTOKEN", "UNLINKTOKEN", "SETTOKEN", "USETOKEN", "ADDTOKEN", 
+		"RENAMETOKEN", "RMTOKEN", "TAXONSETTOKEN", "LINKTYPE", "STRING", "WHITESPACE", 
+		"COMMENT", "LINE_COMMENT"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
+
+	@Override
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
 
 
 	public CALexer(CharStream input) {
@@ -46,9 +84,6 @@ public class CALexer extends Lexer {
 
 	@Override
 	public String getGrammarFileName() { return "CA.g4"; }
-
-	@Override
-	public String[] getTokenNames() { return tokenNames; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -89,9 +124,9 @@ public class CALexer extends Lexer {
 		"\67\3\2\2\2\139\3\2\2\2\r;\3\2\2\2\17=\3\2\2\2\21?\3\2\2\2\23A\3\2\2\2"+
 		"\25J\3\2\2\2\27Q\3\2\2\2\31V\3\2\2\2\33]\3\2\2\2\35a\3\2\2\2\37e\3\2\2"+
 		"\2!i\3\2\2\2#p\3\2\2\2%s\3\2\2\2\'\u008e\3\2\2\2)\u00a5\3\2\2\2+\u00a8"+
-		"\3\2\2\2-\u00ae\3\2\2\2/\u00bd\3\2\2\2\61\62\7B\2\2\62\4\3\2\2\2\63\64"+
-		"\7*\2\2\64\6\3\2\2\2\65\66\7+\2\2\66\b\3\2\2\2\678\7]\2\28\n\3\2\2\29"+
-		":\7=\2\2:\f\3\2\2\2;<\7.\2\2<\16\3\2\2\2=>\7_\2\2>\20\3\2\2\2?@\7?\2\2"+
+		"\3\2\2\2-\u00ae\3\2\2\2/\u00bd\3\2\2\2\61\62\7=\2\2\62\4\3\2\2\2\63\64"+
+		"\7?\2\2\64\6\3\2\2\2\65\66\7*\2\2\66\b\3\2\2\2\678\7.\2\28\n\3\2\2\29"+
+		":\7+\2\2:\f\3\2\2\2;<\7B\2\2<\16\3\2\2\2=>\7]\2\2>\20\3\2\2\2?@\7_\2\2"+
 		"@\22\3\2\2\2AB\7v\2\2BC\7g\2\2CD\7o\2\2DE\7r\2\2EF\7n\2\2FG\7c\2\2GH\7"+
 		"v\2\2HI\7g\2\2I\24\3\2\2\2JK\7k\2\2KL\7o\2\2LM\7r\2\2MN\7q\2\2NO\7t\2"+
 		"\2OP\7v\2\2P\26\3\2\2\2QR\7n\2\2RS\7k\2\2ST\7p\2\2TU\7m\2\2U\30\3\2\2"+
