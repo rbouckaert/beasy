@@ -272,7 +272,7 @@ calibrate USALongs56 = fixed(1956)
 end;
 
 begin assumptions;
-charset codon1 = 2-629/3;
-charset codon2 = 3-629/3;
-charset codon3 = 1-629/3;
+charset codon1 = 2-629\3;
+charset codon2 = 3-629\3;
+charset codon3 = 1-629\3;
 end;

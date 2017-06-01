@@ -389,14 +389,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				//Alignment a = doc.getPartition(o);
 				for (Distribution d : dist.pDistributions.get()) {
 					if (d instanceof TreeDistribution) {
-						String partition = doc.getPartition(d).getID();
-						String tree = "";
-						for (PartitionContext p : doc.possibleContexts) {
-							if (p.partition.equals(partition)) {
-								tree = p.tree;
-								break;
-							}
-						}
+						String distID = d.getID();
+						String tree = distID.substring(distID.indexOf('.') + 3);
 						if (tree.equals(pc.tree)) {
 							treeDist = d;
 						}

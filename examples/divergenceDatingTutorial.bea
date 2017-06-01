@@ -1,9 +1,10 @@
 template Standard;
 
 // nexus file contains 4 partitions and 1 calibration
-import ../beast2/examples/nexus/primate-mtDNA.nex;
+//import ../beast2/examples/nexus/primate-mtDNA.nex;
+import examples/nexus/primate-mtDNA.nex;
 
-rm [treeLikelihood.coding];
+//rm [treeLikelihood.coding];
 
 link tree;
 link clock;
@@ -29,4 +30,6 @@ use [mcmc]=FixMeanRate;
 use RelaxedClockLogNormal;
 
 
-// TODO add calibration
+// add calibration
+taxonset HC = Human Chimp;
+add MRCAPrior(HC, Normal(mean=6,sigma=0.5));
