@@ -1,0 +1,27 @@
+template StarBeast;
+import ../beast2/examples/nexus/26.nex;
+import ../beast2/examples/nexus/29.nex;
+import ../beast2/examples/nexus/47.nex;
+
+use substModel{16,19,47} = HKY;
+use frequencies{16,19,47} = Empirical;
+
+
+set chainLength = 5000000;
+set logEvery[screenlog] = 1000;
+set logEvery[tracelog] = 10000;
+
+
+// set up taxon sets
+taxonset townsendii = Thomomys_townsendii_townsendii Thomomys_townsendii_relictus;
+taxonset talpoides = Thomomys_talpoides_ocius Thomomys_talpoides_yakimensis Thomomys_talpoides_bridgeri;
+taxonset idahoensis = Thomomys_idahoensis_pygmaeus_a Thomomys_idahoensis_pygmaeus_b;
+taxonset umbrinus = Thomomys_umbrinus_chihuahuae Thomomys_umbrinus_atroavarius;
+taxonset monticola = Thomomys_monticola_a Thomomys_monticola_b;
+taxonset bottae = Thomomys_bottae_xerophilus Thomomys_bottae_ruidosae Thomomys_bottae_bottae Thomomys_bottae_cactophilus Thomomys_bottae_laticeps Thomomys_bottae_alpinus Thomomys_bottae_awahnee_b Thomomys_bottae_saxatilis Thomomys_bottae_albatus Thomomys_bottae_awahnee_a Thomomys_bottae_riparius Thomomys_bottae_mewa;
+taxonset heterodus = Orthogeomys_heterodus;
+taxonset mazama = Thomomys_mazama_mazama Thomomys_mazama_nasicus;
+
+taxonset taxonsuperset = townsendii talpoides idahoensis umbrinus monticola bottae heterodus mazama;
+
+

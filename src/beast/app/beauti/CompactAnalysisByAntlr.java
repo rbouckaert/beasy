@@ -228,6 +228,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		@Override
 		public Object visitInputidentifier(InputidentifierContext ctx) {
 			String idPattern = null;
+			String partitionPattern = null;
 			String elementPattern = null;
 			String inputPattern = null;
 			
@@ -244,14 +245,32 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				if (o instanceof InputnameContext) {
 					inputPattern = ((InputnameContext) o).getText().trim();
 				}
+				if (o instanceof PartitionPatternContext) {
+					partitionPattern = ((PartitionPatternContext)o).getText().trim();
+					// remove braces
+					partitionPattern = partitionPattern.substring(1, partitionPattern.length()-1);
+				}
 			}
 			mapInputToObject = InputFilter.initInputMap(doc);
 			InputFilter filter = new InputFilter();
-			inputSet = filter.getInputSet(doc, idPattern, elementPattern, inputPattern);
+			if (partitionPattern != null) {
+				inputSet = filter.getInputSet(doc, partitionPattern, '*', null, null);
+			} else {
+				inputSet = filter.getInputSet(doc, idPattern, elementPattern, inputPattern);
+			}
 			
 			return null;
 		}
+
+		@Override
+		public Object visitPartitionPattern(PartitionPatternContext ctx) {
+			String partitionPattern = ctx.getText().trim();
+			InputFilter filter = new InputFilter();
+			inputSet = filter.getInputSet(doc, partitionPattern, '*', null, null);
+			return inputSet;
+		}
 		
+
 		@Override
 		public Object visitLink(LinkContext ctx) {
 			if (ctx.getChildCount() == 2) {

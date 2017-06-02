@@ -149,16 +149,6 @@ public interface CAListener extends ParseTreeListener {
 	 */
 	void exitArg(CAParser.ArgContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CAParser#partitionpattern}.
-	 * @param ctx the parse tree
-	 */
-	void enterPartitionpattern(CAParser.PartitionpatternContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CAParser#partitionpattern}.
-	 * @param ctx the parse tree
-	 */
-	void exitPartitionpattern(CAParser.PartitionpatternContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link CAParser#link}.
 	 * @param ctx the parse tree
 	 */
@@ -218,6 +208,16 @@ public interface CAListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIdPattern(CAParser.IdPatternContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CAParser#partitionPattern}.
+	 * @param ctx the parse tree
+	 */
+	void enterPartitionPattern(CAParser.PartitionPatternContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#partitionPattern}.
+	 * @param ctx the parse tree
+	 */
+	void exitPartitionPattern(CAParser.PartitionPatternContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CAParser#inputname}.
 	 * @param ctx the parse tree

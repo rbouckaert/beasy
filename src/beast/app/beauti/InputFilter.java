@@ -38,6 +38,24 @@ public class InputFilter {
 		return inputSet;
 	}
 
+	 public Set<Input<?>> getInputSet(BeautiDoc doc, String partitionPattern, char context, String elementPattern, String inputPattern) {
+		this.doc = doc;		
+		Set<Input<?>> inputSet = null;
+		// first handle partitionPattern if any
+		if (partitionPattern != null) {
+			inputSet = handlePartitionPattern(partitionPattern, context);
+		}
+		// then the elementPattern
+		if (elementPattern != null) {
+			inputSet = handleElemntName(elementPattern, inputSet);
+		}
+		// and finally the input pattern
+		if (inputPattern != null) {
+			inputSet = handleInputname(inputPattern, inputSet);
+		}
+		return inputSet;
+	}
+
 	 public static Map<Input<?>, BEASTInterface>  initInputMap(BeautiDoc doc) {
 		Map<Input<?>, BEASTInterface> mapInputToObject= new LinkedHashMap<>();
 		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
@@ -56,7 +74,7 @@ public class InputFilter {
 		return mapInputToObject;
 	}
 
-	 public Set<Input<?>> handleIdPattern(String idPattern) {
+	public Set<Input<?>> handleIdPattern(String idPattern) {
 		Set<Input<?>> newInputSet = new LinkedHashSet<>();
 		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
 			if (o.getID().matches(idPattern)) {
@@ -68,7 +86,35 @@ public class InputFilter {
 		return newInputSet;
 	}
 	
-	 public Set<Input<?>> handleInputname(String inputPattern, Set<Input<?>> inputSet) {
+	public Set<Input<?>> handlePartitionPattern(String partitionPattern, char context) {
+		String [] matches = partitionPattern.split(",");
+		for (int i = 0; i < matches.length; i++) {
+			matches[i] = matches[i].trim();
+			matches[i] = matches[i].replaceAll("\\*", ".*");
+		}
+		Set<Input<?>> newInputSet = new LinkedHashSet<>();
+		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
+			String id = o.getID();
+			String p = id;
+			char currentContext = 'p';
+			if (id.indexOf(':') > 1) {
+				p = id.substring(id.indexOf(':') + 1);
+				currentContext = id.charAt(id.indexOf(':') - 1);
+			}
+			for (String match : matches) {
+				if (p.matches(match) || id.matches(match)) {
+					if (context == '*' || currentContext == context) {
+						for (Input<?> input : o.listInputs()) {
+							newInputSet.add(input);
+						}
+					}
+				}
+			}
+		}
+		return newInputSet;
+	}
+	 
+	public Set<Input<?>> handleInputname(String inputPattern, Set<Input<?>> inputSet) {
 		if (inputSet == null) {
 			inputSet = setupInputSet(inputPattern, doc, false);
 		} else {

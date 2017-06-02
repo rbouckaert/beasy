@@ -17,33 +17,33 @@ public class CAParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, TEMPLATETOKEN=9, 
-		IMPORTTOKEN=10, LINKTOKEN=11, UNLINKTOKEN=12, SETTOKEN=13, USETOKEN=14, 
-		ADDTOKEN=15, RENAMETOKEN=16, RMTOKEN=17, TAXONSETTOKEN=18, LINKTYPE=19, 
-		STRING=20, WHITESPACE=21, COMMENT=22, LINE_COMMENT=23;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
+		T__9=10, TEMPLATETOKEN=11, IMPORTTOKEN=12, LINKTOKEN=13, UNLINKTOKEN=14, 
+		SETTOKEN=15, USETOKEN=16, ADDTOKEN=17, RENAMETOKEN=18, RMTOKEN=19, TAXONSETTOKEN=20, 
+		LINKTYPE=21, STRING=22, WHITESPACE=23, COMMENT=24, LINE_COMMENT=25;
 	public static final int
 		RULE_casentence = 0, RULE_cmd = 1, RULE_template = 2, RULE_templatename = 3, 
 		RULE_use = 4, RULE_key = 5, RULE_value = 6, RULE_import_ = 7, RULE_add = 8, 
 		RULE_argOrUse = 9, RULE_subtemplate = 10, RULE_filename = 11, RULE_alignmentprovider = 12, 
-		RULE_arg = 13, RULE_partitionpattern = 14, RULE_link = 15, RULE_unlink = 16, 
-		RULE_set = 17, RULE_inputidentifier = 18, RULE_elemntName = 19, RULE_idPattern = 20, 
+		RULE_arg = 13, RULE_link = 14, RULE_unlink = 15, RULE_set = 16, RULE_inputidentifier = 17, 
+		RULE_elemntName = 18, RULE_idPattern = 19, RULE_partitionPattern = 20, 
 		RULE_inputname = 21, RULE_rename = 22, RULE_oldName = 23, RULE_newName = 24, 
 		RULE_rm = 25, RULE_taxonset = 26;
 	public static final String[] ruleNames = {
 		"casentence", "cmd", "template", "templatename", "use", "key", "value", 
 		"import_", "add", "argOrUse", "subtemplate", "filename", "alignmentprovider", 
-		"arg", "partitionpattern", "link", "unlink", "set", "inputidentifier", 
-		"elemntName", "idPattern", "inputname", "rename", "oldName", "newName", 
-		"rm", "taxonset"
+		"arg", "link", "unlink", "set", "inputidentifier", "elemntName", "idPattern", 
+		"partitionPattern", "inputname", "rename", "oldName", "newName", "rm", 
+		"taxonset"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "';'", "'='", "'('", "','", "')'", "'@'", "'['", "']'", "'template'", 
-		"'import'", "'link'", "'unlink'", "'set'", "'use'", "'add'", "'rename'", 
-		"'rm'", "'taxonset'"
+		null, "';'", "'='", "'('", "','", "')'", "'@'", "'['", "']'", "'{'", "'}'", 
+		"'template'", "'import'", "'link'", "'unlink'", "'set'", "'use'", "'add'", 
+		"'rename'", "'rm'", "'taxonset'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, null, null, null, null, null, "TEMPLATETOKEN", 
+		null, null, null, null, null, null, null, null, null, null, null, "TEMPLATETOKEN", 
 		"IMPORTTOKEN", "LINKTOKEN", "UNLINKTOKEN", "SETTOKEN", "USETOKEN", "ADDTOKEN", 
 		"RENAMETOKEN", "RMTOKEN", "TAXONSETTOKEN", "LINKTYPE", "STRING", "WHITESPACE", 
 		"COMMENT", "LINE_COMMENT"
@@ -1030,53 +1030,11 @@ public class CAParser extends Parser {
 		return _localctx;
 	}
 
-	public static class PartitionpatternContext extends ParserRuleContext {
-		public TerminalNode STRING() { return getToken(CAParser.STRING, 0); }
-		public PartitionpatternContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_partitionpattern; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CAListener ) ((CAListener)listener).enterPartitionpattern(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CAListener ) ((CAListener)listener).exitPartitionpattern(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).visitPartitionpattern(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final PartitionpatternContext partitionpattern() throws RecognitionException {
-		PartitionpatternContext _localctx = new PartitionpatternContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_partitionpattern);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(168);
-			match(STRING);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
 	public static class LinkContext extends ParserRuleContext {
 		public TerminalNode LINKTOKEN() { return getToken(CAParser.LINKTOKEN, 0); }
 		public TerminalNode LINKTYPE() { return getToken(CAParser.LINKTYPE, 0); }
-		public PartitionpatternContext partitionpattern() {
-			return getRuleContext(PartitionpatternContext.class,0);
+		public PartitionPatternContext partitionPattern() {
+			return getRuleContext(PartitionPatternContext.class,0);
 		}
 		public LinkContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1099,21 +1057,21 @@ public class CAParser extends Parser {
 
 	public final LinkContext link() throws RecognitionException {
 		LinkContext _localctx = new LinkContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_link);
+		enterRule(_localctx, 28, RULE_link);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(170);
+			setState(168);
 			match(LINKTOKEN);
-			setState(171);
+			setState(169);
 			match(LINKTYPE);
-			setState(173);
+			setState(171);
 			_la = _input.LA(1);
-			if (_la==STRING) {
+			if (_la==T__8) {
 				{
-				setState(172);
-				partitionpattern();
+				setState(170);
+				partitionPattern();
 				}
 			}
 
@@ -1133,8 +1091,8 @@ public class CAParser extends Parser {
 	public static class UnlinkContext extends ParserRuleContext {
 		public TerminalNode UNLINKTOKEN() { return getToken(CAParser.UNLINKTOKEN, 0); }
 		public TerminalNode LINKTYPE() { return getToken(CAParser.LINKTYPE, 0); }
-		public PartitionpatternContext partitionpattern() {
-			return getRuleContext(PartitionpatternContext.class,0);
+		public PartitionPatternContext partitionPattern() {
+			return getRuleContext(PartitionPatternContext.class,0);
 		}
 		public UnlinkContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1157,21 +1115,21 @@ public class CAParser extends Parser {
 
 	public final UnlinkContext unlink() throws RecognitionException {
 		UnlinkContext _localctx = new UnlinkContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_unlink);
+		enterRule(_localctx, 30, RULE_unlink);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(175);
+			setState(173);
 			match(UNLINKTOKEN);
-			setState(176);
+			setState(174);
 			match(LINKTYPE);
-			setState(178);
+			setState(176);
 			_la = _input.LA(1);
-			if (_la==STRING) {
+			if (_la==T__8) {
 				{
-				setState(177);
-				partitionpattern();
+				setState(175);
+				partitionPattern();
 				}
 			}
 
@@ -1215,17 +1173,17 @@ public class CAParser extends Parser {
 
 	public final SetContext set() throws RecognitionException {
 		SetContext _localctx = new SetContext(_ctx, getState());
-		enterRule(_localctx, 34, RULE_set);
+		enterRule(_localctx, 32, RULE_set);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(180);
+			setState(178);
 			match(SETTOKEN);
-			setState(181);
+			setState(179);
 			inputidentifier();
-			setState(182);
+			setState(180);
 			match(T__1);
-			setState(183);
+			setState(181);
 			match(STRING);
 			}
 		}
@@ -1250,6 +1208,9 @@ public class CAParser extends Parser {
 		public ElemntNameContext elemntName() {
 			return getRuleContext(ElemntNameContext.class,0);
 		}
+		public PartitionPatternContext partitionPattern() {
+			return getRuleContext(PartitionPatternContext.class,0);
+		}
 		public InputidentifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1271,41 +1232,48 @@ public class CAParser extends Parser {
 
 	public final InputidentifierContext inputidentifier() throws RecognitionException {
 		InputidentifierContext _localctx = new InputidentifierContext(_ctx, getState());
-		enterRule(_localctx, 36, RULE_inputidentifier);
+		enterRule(_localctx, 34, RULE_inputidentifier);
 		int _la;
 		try {
-			setState(193);
+			setState(192);
 			switch (_input.LA(1)) {
 			case T__6:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(185);
+				setState(183);
 				idPattern();
 				}
 				break;
 			case STRING:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(187);
+				setState(185);
 				switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 				case 1:
 					{
-					setState(186);
+					setState(184);
 					elemntName();
 					}
 					break;
 				}
-				setState(189);
+				setState(187);
 				inputname();
-				setState(191);
+				setState(189);
 				_la = _input.LA(1);
 				if (_la==T__6) {
 					{
-					setState(190);
+					setState(188);
 					idPattern();
 					}
 				}
 
+				}
+				break;
+			case T__8:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(191);
+				partitionPattern();
 				}
 				break;
 			default:
@@ -1346,13 +1314,13 @@ public class CAParser extends Parser {
 
 	public final ElemntNameContext elemntName() throws RecognitionException {
 		ElemntNameContext _localctx = new ElemntNameContext(_ctx, getState());
-		enterRule(_localctx, 38, RULE_elemntName);
+		enterRule(_localctx, 36, RULE_elemntName);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(195);
+			setState(194);
 			match(STRING);
-			setState(196);
+			setState(195);
 			match(T__5);
 			}
 		}
@@ -1390,16 +1358,82 @@ public class CAParser extends Parser {
 
 	public final IdPatternContext idPattern() throws RecognitionException {
 		IdPatternContext _localctx = new IdPatternContext(_ctx, getState());
-		enterRule(_localctx, 40, RULE_idPattern);
+		enterRule(_localctx, 38, RULE_idPattern);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(198);
+			setState(197);
 			match(T__6);
-			setState(199);
+			setState(198);
 			match(STRING);
-			setState(200);
+			setState(199);
 			match(T__7);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PartitionPatternContext extends ParserRuleContext {
+		public List<TerminalNode> STRING() { return getTokens(CAParser.STRING); }
+		public TerminalNode STRING(int i) {
+			return getToken(CAParser.STRING, i);
+		}
+		public PartitionPatternContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_partitionPattern; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).enterPartitionPattern(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).exitPartitionPattern(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).visitPartitionPattern(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PartitionPatternContext partitionPattern() throws RecognitionException {
+		PartitionPatternContext _localctx = new PartitionPatternContext(_ctx, getState());
+		enterRule(_localctx, 40, RULE_partitionPattern);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(201);
+			match(T__8);
+			setState(202);
+			match(STRING);
+			setState(207);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__3) {
+				{
+				{
+				setState(203);
+				match(T__3);
+				setState(204);
+				match(STRING);
+				}
+				}
+				setState(209);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(210);
+			match(T__9);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1440,7 +1474,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(202);
+			setState(212);
 			match(STRING);
 			}
 		}
@@ -1490,22 +1524,22 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(204);
+			setState(214);
 			match(RENAMETOKEN);
-			setState(205);
+			setState(215);
 			match(LINKTYPE);
-			setState(207);
+			setState(217);
 			_la = _input.LA(1);
 			if (_la==LINKTYPE || _la==STRING) {
 				{
-				setState(206);
+				setState(216);
 				oldName();
 				}
 			}
 
-			setState(209);
+			setState(219);
 			match(T__1);
-			setState(210);
+			setState(220);
 			newName();
 			}
 		}
@@ -1549,7 +1583,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(212);
+			setState(222);
 			_la = _input.LA(1);
 			if ( !(_la==LINKTYPE || _la==STRING) ) {
 			_errHandler.recoverInline(this);
@@ -1598,7 +1632,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(214);
+			setState(224);
 			_la = _input.LA(1);
 			if ( !(_la==LINKTYPE || _la==STRING) ) {
 			_errHandler.recoverInline(this);
@@ -1648,9 +1682,9 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(216);
+			setState(226);
 			match(RMTOKEN);
-			setState(217);
+			setState(227);
 			inputidentifier();
 			}
 		}
@@ -1697,23 +1731,23 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(219);
+			setState(229);
 			match(TAXONSETTOKEN);
-			setState(220);
+			setState(230);
 			match(STRING);
-			setState(221);
+			setState(231);
 			match(T__1);
-			setState(223); 
+			setState(233); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(222);
+				setState(232);
 				match(STRING);
 				}
 				}
-				setState(225); 
+				setState(235); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==STRING );
@@ -1731,7 +1765,7 @@ public class CAParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\31\u00e6\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\33\u00f0\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -1743,64 +1777,69 @@ public class CAParser extends Parser {
 		"\n\3\n\3\n\3\n\7\n\u0087\n\n\f\n\16\n\u008a\13\n\3\n\3\n\5\n\u008e\n\n"+
 		"\3\13\3\13\5\13\u0092\n\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\7\f"+
 		"\u009e\n\f\f\f\16\f\u00a1\13\f\3\f\3\f\3\r\3\r\3\16\3\16\3\17\3\17\3\20"+
-		"\3\20\3\21\3\21\3\21\5\21\u00b0\n\21\3\22\3\22\3\22\5\22\u00b5\n\22\3"+
-		"\23\3\23\3\23\3\23\3\23\3\24\3\24\5\24\u00be\n\24\3\24\3\24\5\24\u00c2"+
-		"\n\24\5\24\u00c4\n\24\3\25\3\25\3\25\3\26\3\26\3\26\3\26\3\27\3\27\3\30"+
-		"\3\30\3\30\5\30\u00d2\n\30\3\30\3\30\3\30\3\31\3\31\3\32\3\32\3\33\3\33"+
-		"\3\33\3\34\3\34\3\34\3\34\6\34\u00e2\n\34\r\34\16\34\u00e3\3\34\2\2\35"+
-		"\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\66\2\4\4\2\24"+
-		"\24\26\26\3\2\25\26\u00e6\2;\3\2\2\2\4H\3\2\2\2\6L\3\2\2\2\bO\3\2\2\2"+
-		"\nQ\3\2\2\2\fj\3\2\2\2\16l\3\2\2\2\20n\3\2\2\2\22\u0080\3\2\2\2\24\u0091"+
+		"\3\20\3\20\5\20\u00ae\n\20\3\21\3\21\3\21\5\21\u00b3\n\21\3\22\3\22\3"+
+		"\22\3\22\3\22\3\23\3\23\5\23\u00bc\n\23\3\23\3\23\5\23\u00c0\n\23\3\23"+
+		"\5\23\u00c3\n\23\3\24\3\24\3\24\3\25\3\25\3\25\3\25\3\26\3\26\3\26\3\26"+
+		"\7\26\u00d0\n\26\f\26\16\26\u00d3\13\26\3\26\3\26\3\27\3\27\3\30\3\30"+
+		"\3\30\5\30\u00dc\n\30\3\30\3\30\3\30\3\31\3\31\3\32\3\32\3\33\3\33\3\33"+
+		"\3\34\3\34\3\34\3\34\6\34\u00ec\n\34\r\34\16\34\u00ed\3\34\2\2\35\2\4"+
+		"\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\66\2\4\4\2\26\26"+
+		"\30\30\3\2\27\30\u00f2\2;\3\2\2\2\4H\3\2\2\2\6L\3\2\2\2\bO\3\2\2\2\nQ"+
+		"\3\2\2\2\fj\3\2\2\2\16l\3\2\2\2\20n\3\2\2\2\22\u0080\3\2\2\2\24\u0091"+
 		"\3\2\2\2\26\u0093\3\2\2\2\30\u00a4\3\2\2\2\32\u00a6\3\2\2\2\34\u00a8\3"+
-		"\2\2\2\36\u00aa\3\2\2\2 \u00ac\3\2\2\2\"\u00b1\3\2\2\2$\u00b6\3\2\2\2"+
-		"&\u00c3\3\2\2\2(\u00c5\3\2\2\2*\u00c8\3\2\2\2,\u00cc\3\2\2\2.\u00ce\3"+
-		"\2\2\2\60\u00d6\3\2\2\2\62\u00d8\3\2\2\2\64\u00da\3\2\2\2\66\u00dd\3\2"+
+		"\2\2\2\36\u00aa\3\2\2\2 \u00af\3\2\2\2\"\u00b4\3\2\2\2$\u00c2\3\2\2\2"+
+		"&\u00c4\3\2\2\2(\u00c7\3\2\2\2*\u00cb\3\2\2\2,\u00d6\3\2\2\2.\u00d8\3"+
+		"\2\2\2\60\u00e0\3\2\2\2\62\u00e2\3\2\2\2\64\u00e4\3\2\2\2\66\u00e7\3\2"+
 		"\2\28:\5\4\3\298\3\2\2\2:=\3\2\2\2;9\3\2\2\2;<\3\2\2\2<\3\3\2\2\2=;\3"+
-		"\2\2\2>I\5\6\4\2?I\5\20\t\2@I\5\n\6\2AI\5$\23\2BI\5 \21\2CI\5\"\22\2D"+
-		"I\5.\30\2EI\5\22\n\2FI\5\64\33\2GI\5\66\34\2H>\3\2\2\2H?\3\2\2\2H@\3\2"+
-		"\2\2HA\3\2\2\2HB\3\2\2\2HC\3\2\2\2HD\3\2\2\2HE\3\2\2\2HF\3\2\2\2HG\3\2"+
-		"\2\2HI\3\2\2\2IJ\3\2\2\2JK\7\3\2\2K\5\3\2\2\2LM\7\13\2\2MN\5\b\5\2N\7"+
-		"\3\2\2\2OP\7\26\2\2P\t\3\2\2\2QU\7\20\2\2RS\5&\24\2ST\7\4\2\2TV\3\2\2"+
-		"\2UR\3\2\2\2UV\3\2\2\2VW\3\2\2\2Wh\7\26\2\2XY\7\5\2\2YZ\5\f\7\2Z[\7\4"+
+		"\2\2\2>I\5\6\4\2?I\5\20\t\2@I\5\n\6\2AI\5\"\22\2BI\5\36\20\2CI\5 \21\2"+
+		"DI\5.\30\2EI\5\22\n\2FI\5\64\33\2GI\5\66\34\2H>\3\2\2\2H?\3\2\2\2H@\3"+
+		"\2\2\2HA\3\2\2\2HB\3\2\2\2HC\3\2\2\2HD\3\2\2\2HE\3\2\2\2HF\3\2\2\2HG\3"+
+		"\2\2\2HI\3\2\2\2IJ\3\2\2\2JK\7\3\2\2K\5\3\2\2\2LM\7\r\2\2MN\5\b\5\2N\7"+
+		"\3\2\2\2OP\7\30\2\2P\t\3\2\2\2QU\7\22\2\2RS\5$\23\2ST\7\4\2\2TV\3\2\2"+
+		"\2UR\3\2\2\2UV\3\2\2\2VW\3\2\2\2Wh\7\30\2\2XY\7\5\2\2YZ\5\f\7\2Z[\7\4"+
 		"\2\2[c\5\16\b\2\\]\7\6\2\2]^\5\f\7\2^_\7\4\2\2_`\5\16\b\2`b\3\2\2\2a\\"+
 		"\3\2\2\2be\3\2\2\2ca\3\2\2\2cd\3\2\2\2df\3\2\2\2ec\3\2\2\2fg\7\7\2\2g"+
-		"i\3\2\2\2hX\3\2\2\2hi\3\2\2\2i\13\3\2\2\2jk\t\2\2\2k\r\3\2\2\2lm\7\26"+
-		"\2\2m\17\3\2\2\2np\7\f\2\2oq\5\32\16\2po\3\2\2\2pq\3\2\2\2qr\3\2\2\2r"+
-		"~\5\30\r\2st\7\5\2\2ty\5\34\17\2uv\7\6\2\2vx\5\34\17\2wu\3\2\2\2x{\3\2"+
-		"\2\2yw\3\2\2\2yz\3\2\2\2z|\3\2\2\2{y\3\2\2\2|}\7\7\2\2}\177\3\2\2\2~s"+
-		"\3\2\2\2~\177\3\2\2\2\177\21\3\2\2\2\u0080\u0081\7\21\2\2\u0081\u008d"+
-		"\7\26\2\2\u0082\u0083\7\5\2\2\u0083\u0088\5\24\13\2\u0084\u0085\7\6\2"+
+		"i\3\2\2\2hX\3\2\2\2hi\3\2\2\2i\13\3\2\2\2jk\t\2\2\2k\r\3\2\2\2lm\7\30"+
+		"\2\2m\17\3\2\2\2np\7\16\2\2oq\5\32\16\2po\3\2\2\2pq\3\2\2\2qr\3\2\2\2"+
+		"r~\5\30\r\2st\7\5\2\2ty\5\34\17\2uv\7\6\2\2vx\5\34\17\2wu\3\2\2\2x{\3"+
+		"\2\2\2yw\3\2\2\2yz\3\2\2\2z|\3\2\2\2{y\3\2\2\2|}\7\7\2\2}\177\3\2\2\2"+
+		"~s\3\2\2\2~\177\3\2\2\2\177\21\3\2\2\2\u0080\u0081\7\23\2\2\u0081\u008d"+
+		"\7\30\2\2\u0082\u0083\7\5\2\2\u0083\u0088\5\24\13\2\u0084\u0085\7\6\2"+
 		"\2\u0085\u0087\5\24\13\2\u0086\u0084\3\2\2\2\u0087\u008a\3\2\2\2\u0088"+
 		"\u0086\3\2\2\2\u0088\u0089\3\2\2\2\u0089\u008b\3\2\2\2\u008a\u0088\3\2"+
 		"\2\2\u008b\u008c\7\7\2\2\u008c\u008e\3\2\2\2\u008d\u0082\3\2\2\2\u008d"+
 		"\u008e\3\2\2\2\u008e\23\3\2\2\2\u008f\u0092\5\16\b\2\u0090\u0092\5\26"+
 		"\f\2\u0091\u008f\3\2\2\2\u0091\u0090\3\2\2\2\u0092\25\3\2\2\2\u0093\u0094"+
-		"\7\26\2\2\u0094\u0095\7\5\2\2\u0095\u0096\5\f\7\2\u0096\u0097\7\4\2\2"+
+		"\7\30\2\2\u0094\u0095\7\5\2\2\u0095\u0096\5\f\7\2\u0096\u0097\7\4\2\2"+
 		"\u0097\u009f\5\16\b\2\u0098\u0099\7\6\2\2\u0099\u009a\5\f\7\2\u009a\u009b"+
 		"\7\4\2\2\u009b\u009c\5\16\b\2\u009c\u009e\3\2\2\2\u009d\u0098\3\2\2\2"+
 		"\u009e\u00a1\3\2\2\2\u009f\u009d\3\2\2\2\u009f\u00a0\3\2\2\2\u00a0\u00a2"+
 		"\3\2\2\2\u00a1\u009f\3\2\2\2\u00a2\u00a3\7\7\2\2\u00a3\27\3\2\2\2\u00a4"+
-		"\u00a5\7\26\2\2\u00a5\31\3\2\2\2\u00a6\u00a7\7\26\2\2\u00a7\33\3\2\2\2"+
-		"\u00a8\u00a9\7\26\2\2\u00a9\35\3\2\2\2\u00aa\u00ab\7\26\2\2\u00ab\37\3"+
-		"\2\2\2\u00ac\u00ad\7\r\2\2\u00ad\u00af\7\25\2\2\u00ae\u00b0\5\36\20\2"+
-		"\u00af\u00ae\3\2\2\2\u00af\u00b0\3\2\2\2\u00b0!\3\2\2\2\u00b1\u00b2\7"+
-		"\16\2\2\u00b2\u00b4\7\25\2\2\u00b3\u00b5\5\36\20\2\u00b4\u00b3\3\2\2\2"+
-		"\u00b4\u00b5\3\2\2\2\u00b5#\3\2\2\2\u00b6\u00b7\7\17\2\2\u00b7\u00b8\5"+
-		"&\24\2\u00b8\u00b9\7\4\2\2\u00b9\u00ba\7\26\2\2\u00ba%\3\2\2\2\u00bb\u00c4"+
-		"\5*\26\2\u00bc\u00be\5(\25\2\u00bd\u00bc\3\2\2\2\u00bd\u00be\3\2\2\2\u00be"+
-		"\u00bf\3\2\2\2\u00bf\u00c1\5,\27\2\u00c0\u00c2\5*\26\2\u00c1\u00c0\3\2"+
-		"\2\2\u00c1\u00c2\3\2\2\2\u00c2\u00c4\3\2\2\2\u00c3\u00bb\3\2\2\2\u00c3"+
-		"\u00bd\3\2\2\2\u00c4\'\3\2\2\2\u00c5\u00c6\7\26\2\2\u00c6\u00c7\7\b\2"+
-		"\2\u00c7)\3\2\2\2\u00c8\u00c9\7\t\2\2\u00c9\u00ca\7\26\2\2\u00ca\u00cb"+
-		"\7\n\2\2\u00cb+\3\2\2\2\u00cc\u00cd\7\26\2\2\u00cd-\3\2\2\2\u00ce\u00cf"+
-		"\7\22\2\2\u00cf\u00d1\7\25\2\2\u00d0\u00d2\5\60\31\2\u00d1\u00d0\3\2\2"+
-		"\2\u00d1\u00d2\3\2\2\2\u00d2\u00d3\3\2\2\2\u00d3\u00d4\7\4\2\2\u00d4\u00d5"+
-		"\5\62\32\2\u00d5/\3\2\2\2\u00d6\u00d7\t\3\2\2\u00d7\61\3\2\2\2\u00d8\u00d9"+
-		"\t\3\2\2\u00d9\63\3\2\2\2\u00da\u00db\7\23\2\2\u00db\u00dc\5&\24\2\u00dc"+
-		"\65\3\2\2\2\u00dd\u00de\7\24\2\2\u00de\u00df\7\26\2\2\u00df\u00e1\7\4"+
-		"\2\2\u00e0\u00e2\7\26\2\2\u00e1\u00e0\3\2\2\2\u00e2\u00e3\3\2\2\2\u00e3"+
-		"\u00e1\3\2\2\2\u00e3\u00e4\3\2\2\2\u00e4\67\3\2\2\2\25;HUchpy~\u0088\u008d"+
-		"\u0091\u009f\u00af\u00b4\u00bd\u00c1\u00c3\u00d1\u00e3";
+		"\u00a5\7\30\2\2\u00a5\31\3\2\2\2\u00a6\u00a7\7\30\2\2\u00a7\33\3\2\2\2"+
+		"\u00a8\u00a9\7\30\2\2\u00a9\35\3\2\2\2\u00aa\u00ab\7\17\2\2\u00ab\u00ad"+
+		"\7\27\2\2\u00ac\u00ae\5*\26\2\u00ad\u00ac\3\2\2\2\u00ad\u00ae\3\2\2\2"+
+		"\u00ae\37\3\2\2\2\u00af\u00b0\7\20\2\2\u00b0\u00b2\7\27\2\2\u00b1\u00b3"+
+		"\5*\26\2\u00b2\u00b1\3\2\2\2\u00b2\u00b3\3\2\2\2\u00b3!\3\2\2\2\u00b4"+
+		"\u00b5\7\21\2\2\u00b5\u00b6\5$\23\2\u00b6\u00b7\7\4\2\2\u00b7\u00b8\7"+
+		"\30\2\2\u00b8#\3\2\2\2\u00b9\u00c3\5(\25\2\u00ba\u00bc\5&\24\2\u00bb\u00ba"+
+		"\3\2\2\2\u00bb\u00bc\3\2\2\2\u00bc\u00bd\3\2\2\2\u00bd\u00bf\5,\27\2\u00be"+
+		"\u00c0\5(\25\2\u00bf\u00be\3\2\2\2\u00bf\u00c0\3\2\2\2\u00c0\u00c3\3\2"+
+		"\2\2\u00c1\u00c3\5*\26\2\u00c2\u00b9\3\2\2\2\u00c2\u00bb\3\2\2\2\u00c2"+
+		"\u00c1\3\2\2\2\u00c3%\3\2\2\2\u00c4\u00c5\7\30\2\2\u00c5\u00c6\7\b\2\2"+
+		"\u00c6\'\3\2\2\2\u00c7\u00c8\7\t\2\2\u00c8\u00c9\7\30\2\2\u00c9\u00ca"+
+		"\7\n\2\2\u00ca)\3\2\2\2\u00cb\u00cc\7\13\2\2\u00cc\u00d1\7\30\2\2\u00cd"+
+		"\u00ce\7\6\2\2\u00ce\u00d0\7\30\2\2\u00cf\u00cd\3\2\2\2\u00d0\u00d3\3"+
+		"\2\2\2\u00d1\u00cf\3\2\2\2\u00d1\u00d2\3\2\2\2\u00d2\u00d4\3\2\2\2\u00d3"+
+		"\u00d1\3\2\2\2\u00d4\u00d5\7\f\2\2\u00d5+\3\2\2\2\u00d6\u00d7\7\30\2\2"+
+		"\u00d7-\3\2\2\2\u00d8\u00d9\7\24\2\2\u00d9\u00db\7\27\2\2\u00da\u00dc"+
+		"\5\60\31\2\u00db\u00da\3\2\2\2\u00db\u00dc\3\2\2\2\u00dc\u00dd\3\2\2\2"+
+		"\u00dd\u00de\7\4\2\2\u00de\u00df\5\62\32\2\u00df/\3\2\2\2\u00e0\u00e1"+
+		"\t\3\2\2\u00e1\61\3\2\2\2\u00e2\u00e3\t\3\2\2\u00e3\63\3\2\2\2\u00e4\u00e5"+
+		"\7\25\2\2\u00e5\u00e6\5$\23\2\u00e6\65\3\2\2\2\u00e7\u00e8\7\26\2\2\u00e8"+
+		"\u00e9\7\30\2\2\u00e9\u00eb\7\4\2\2\u00ea\u00ec\7\30\2\2\u00eb\u00ea\3"+
+		"\2\2\2\u00ec\u00ed\3\2\2\2\u00ed\u00eb\3\2\2\2\u00ed\u00ee\3\2\2\2\u00ee"+
+		"\67\3\2\2\2\26;HUchpy~\u0088\u008d\u0091\u009f\u00ad\u00b2\u00bb\u00bf"+
+		"\u00c2\u00d1\u00db\u00ed";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

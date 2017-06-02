@@ -1,0 +1,16 @@
+template Standard;
+import ../beast2/examples/nexus/dna.nex;
+
+use substModel{dna} = HKY;
+// == "use HKY;"
+
+use frequencies{dna} = Empirical;
+// == "use Empirical;"
+
+taxonset MR = Mouse Rat;
+add MRCAPrior(MR, Normal(mean=37,sigma=1), monophyletic);
+
+// alternative way to set distribution:
+// add MRCAPrior(MR)
+// use distr[MR.prior] = Normal(mean=37,sigma=1) 
+// set monophyletic[MR.prior] = true;

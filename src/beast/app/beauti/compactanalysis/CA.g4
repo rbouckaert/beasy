@@ -32,22 +32,23 @@ alignmentprovider : STRING ;
 
 arg : STRING ;
 
-partitionpattern : STRING ;
-
-link : LINKTOKEN LINKTYPE partitionpattern? ;
+link : LINKTOKEN LINKTYPE partitionPattern? ;
  
-unlink : UNLINKTOKEN LINKTYPE partitionpattern? ;
+unlink : UNLINKTOKEN LINKTYPE partitionPattern? ;
 
 set : SETTOKEN inputidentifier '=' STRING ;
 
-inputidentifier : idPattern | elemntName? inputname idPattern? ;
+inputidentifier : idPattern | elemntName? inputname idPattern? | partitionPattern;
 
 elemntName : STRING '@';
 
 idPattern : '[' STRING ']' ;
 
+partitionPattern : '{' STRING  (',' STRING ) * '}' ;
+
 inputname : STRING ;
 
+//rename : RENAMETOKEN LINKTYPE partitionPattern? newName ;
 rename : RENAMETOKEN LINKTYPE oldName? '=' newName ;
 
 // HACK: since 'tree' and 'clock' are popular names to switch to

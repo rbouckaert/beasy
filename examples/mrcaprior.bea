@@ -1,13 +1,8 @@
 template Standard;
 import ../beast2/examples/nexus/dna.nex;
+
 use HKY;
 use frequencies = Empirical;
 
 taxonset MR = Mouse Rat;
-
-add MRCAPrior(MR, Normal(mean=37,sigma=1));
-set monophyletic[MR.prior] = true
-
-// alternative way to set distribution:
-// use distr[MR.prior] = 
-
+add MRCAPrior(MR, Normal(mean=37,sigma=1),monophyletic);

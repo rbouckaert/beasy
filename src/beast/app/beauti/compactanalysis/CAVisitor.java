@@ -96,12 +96,6 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArg(CAParser.ArgContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CAParser#partitionpattern}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPartitionpattern(CAParser.PartitionpatternContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link CAParser#link}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -137,6 +131,12 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIdPattern(CAParser.IdPatternContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CAParser#partitionPattern}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPartitionPattern(CAParser.PartitionPatternContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CAParser#inputname}.
 	 * @param ctx the parse tree

@@ -348,6 +348,12 @@ public class JConsole extends JScrollPane
 			String elementPattern = null;
 			String idPattern = null;
 			String inputPattern = null;
+			String partitionPattern = null;
+			if (part.indexOf("{") >= 0) {
+				int k = part.indexOf("{");
+				partitionPattern = part.substring(k + 1).trim() + "*";
+				part = part.substring(0, k);				
+			}
 			if (part.indexOf("[") >= 0) {
 				int k = part.indexOf("[");
 				idPattern = part.substring(k + 1).trim() + ".*";
@@ -367,8 +373,11 @@ public class JConsole extends JScrollPane
 			InputFilter filter = new InputFilter();
 			BeautiDoc doc = studio.interpreter.doc;
 			Map<Input<?>, BEASTInterface> map = InputFilter.initInputMap(doc);
-			Set<Input<?>> inputs = filter.getInputSet(doc, idPattern, elementPattern, inputPattern);
+			Set<Input<?>> inputs = partitionPattern == null ? 
+					filter.getInputSet(doc, idPattern, elementPattern, inputPattern):
+					filter.getInputSet(doc, partitionPattern, '*', elementPattern, inputPattern);
 			
+			Log.info("");
 			for (Input<?> input : inputs) {
 				BEASTInterface o = map.get(input);
 				if (input.get() instanceof Parameter.Base) {

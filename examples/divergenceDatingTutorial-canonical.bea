@@ -1,0 +1,35 @@
+template Standard;
+
+// nexus file contains 4 partitions and 1 calibration
+//import ../beast2/examples/nexus/primate-mtDNA.nex;
+import examples/nexus/primate-mtDNA.nex;
+
+//rm [treeLikelihood.coding];
+
+link tree {noncoding,1stpos,2ndpos,3rdpos};
+link clock {noncoding,1stpos,2ndpos,3rdpos};
+
+rename tree {noncoding} tree;
+rename clock {noncoding} clock;
+
+// link sitemodel;
+
+// HKY + 4G
+use substModel {noncoding,1stpos,2ndpos,3rdpos} = HKY;
+set gammaCategoryCount {noncoding,1stpos,2ndpos,3rdpos} = 4;
+set shape@estimate {noncoding,1stpos,2ndpos,3rdpos} = true;
+
+// unlink sitemodel;
+
+set mutationRate@estimate {noncoding,1stpos,2ndpos,3rdpos} = true;
+use [mcmc]=FixMeanRate;
+
+//use [prior]=YuleModel;
+
+// UCLN
+use branchRateModel{clock} = RelaxedClockLogNormal;
+
+
+// add calibration
+taxonset HC = Human Chimp;
+add MRCAPrior(HC, Normal(mean=6,sigma=0.5));

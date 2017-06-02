@@ -185,18 +185,6 @@ public class CABaseListener implements CAListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPartitionpattern(CAParser.PartitionpatternContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPartitionpattern(CAParser.PartitionpatternContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterLink(CAParser.LinkContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -264,6 +252,18 @@ public class CABaseListener implements CAListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIdPattern(CAParser.IdPatternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPartitionPattern(CAParser.PartitionPatternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPartitionPattern(CAParser.PartitionPatternContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
