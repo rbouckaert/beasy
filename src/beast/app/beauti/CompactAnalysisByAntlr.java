@@ -232,12 +232,14 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			String elementPattern = null;
 			String inputPattern = null;
 			
+			inputSet = null;
 			// collect all possible inputs
-			for (Object o : ctx.children) {
-				if (o instanceof IdPatternContext) {
-					idPattern = ((IdPatternContext) o).getText().trim();
-					// remove brackets
-					idPattern = idPattern.substring(1, idPattern.length() - 1) + ".*";
+			for (ParseTree o : ctx.children) {
+				if (o instanceof IdPatternContext || o instanceof PartitionPatternContext) {
+					Object o2 = visit(o);
+					if (o2 instanceof Set){
+						inputSet = (Set<Input<?>>) o2;
+					}
 				}
 				if (o instanceof ElemntNameContext) {
 					elementPattern = ((ElemntNameContext) o).getText().trim();
@@ -245,59 +247,92 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				if (o instanceof InputnameContext) {
 					inputPattern = ((InputnameContext) o).getText().trim();
 				}
-				if (o instanceof PartitionPatternContext) {
-					partitionPattern = ((PartitionPatternContext)o).getText().trim();
-					// remove braces
-					partitionPattern = partitionPattern.substring(1, partitionPattern.length()-1);
-				}
 			}
 			mapInputToObject = InputFilter.initInputMap(doc);
 			InputFilter filter = new InputFilter();
-			if (partitionPattern != null) {
-				inputSet = filter.getInputSet(doc, partitionPattern, '*', null, null);
-			} else {
-				inputSet = filter.getInputSet(doc, idPattern, elementPattern, inputPattern);
-			}
+			
+			inputSet = filter.getInputSet(doc, inputSet, elementPattern, inputPattern);
 			
 			return null;
 		}
 
 		@Override
-		public Object visitPartitionPattern(PartitionPatternContext ctx) {
-			String partitionPattern = ctx.getText().trim();
+		public Object visitIdPattern(IdPatternContext ctx) {
+			String idPattern = ctx.getText().trim();
+			// remove brackets
+			idPattern = idPattern.substring(1, idPattern.length() - 1) + ".*";
 			InputFilter filter = new InputFilter();
-			inputSet = filter.getInputSet(doc, partitionPattern, '*', null, null);
+			inputSet = filter.getInputSet(doc, idPattern, null, null);
 			return inputSet;
 		}
 		
+		@Override
+		public Object visitPartitionPattern(PartitionPatternContext ctx) {
+			String partitionPattern = ctx.getText().trim();
+			partitionPattern = partitionPattern.substring(1, partitionPattern.length() - 1);
+			String [] patterns = partitionPattern.split(",");
+			inputSet = new LinkedHashSet<>();
+			for (String pattern: patterns) {
+				InputFilter filter = new InputFilter();
+				inputSet.addAll(filter.getInputSet(doc, partitionPattern, linkType, null, null));
+			}
+			return inputSet;
+		}
+		
+		int linkType = BeautiDoc.ALIGNMENT_PARTITION;
+		
+		@Override
+		public Object visitLinktype(LinktypeContext ctx) {
+			String linktype = ctx.getText();
+			linkType = -1;
+			switch (linktype) {
+			case "sitemodel":
+				linkType =  BeautiDoc.SITEMODEL_PARTITION;
+				break;
+			case "clock":
+				linkType = BeautiDoc.CLOCKMODEL_PARTITION;
+				break;
+			case "tree":
+				linkType = BeautiDoc.TREEMODEL_PARTITION;
+				break;
+			}
+			if (linkType < 0) {
+				throw new IllegalArgumentException();
+			}
+			return linkType;
+		}
 
 		@Override
 		public Object visitLink(LinkContext ctx) {
+			Integer linktype = (Integer) visit(ctx.getChild(1));
 			if (ctx.getChildCount() == 2) {
 				processPattern(".*");
 			} else {
-				processPattern(ctx.getChild(2).getText());
+				visit(ctx.getChild(2));
 			}
 			if (partitionContext.size() <= 1) {
 				throw new IllegalArgumentException("Link command : At least two partitions must be selected '" + ctx.getText() + "'");
 			}
-			DocumentEditor.link(doc, ctx.getChild(1).getText(), partitionContext);
+			DocumentEditor.link(doc, linktype, partitionContext);
 			return null;
 		}
 		
 		@Override
 		public Object visitUnlink(UnlinkContext ctx) {
+			Integer linktype = (Integer) visit(ctx.getChild(1));
 			if (ctx.getChildCount() == 2) {
 				processPattern(".*");
 			} else {
+				visit(ctx.getChild(2));
 				processPattern(ctx.getChild(2).getText());
 			}
 			if (partitionContext.size() <= 1) {
 				throw new IllegalArgumentException("Command unlink: At least one partition must be selected " + ctx.getText());
 			}
-			DocumentEditor.unlink(doc, ctx.getChild(1).getText(), partitionContext);
+			DocumentEditor.unlink(doc, linktype, partitionContext);
 			return null;
 		}
+		
 		
 		@Override
 		public Object visitSet(SetContext ctx) {

@@ -102,6 +102,12 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLink(CAParser.LinkContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CAParser#linktype}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLinktype(CAParser.LinktypeContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CAParser#unlink}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

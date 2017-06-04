@@ -197,6 +197,18 @@ public class CABaseListener implements CAListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterLinktype(CAParser.LinktypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLinktype(CAParser.LinktypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterUnlink(CAParser.UnlinkContext ctx) { }
 	/**
 	 * {@inheritDoc}

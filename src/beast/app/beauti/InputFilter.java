@@ -19,57 +19,56 @@ import beast.util.Randomizer;
 
 public class InputFilter {
 	BeautiDoc doc;
-	
-	 public Set<Input<?>> getInputSet(BeautiDoc doc, String idPattern, String elementPattern, String inputPattern) {
-		this.doc = doc;		
+
+	public Set<Input<?>> getInputSet(BeautiDoc doc, String idPattern, String elementPattern, String inputPattern) {
+		this.doc = doc;
 		Set<Input<?>> inputSet = null;
 		// first handle idPattern if any
 		if (idPattern != null) {
 			inputSet = handleIdPattern(idPattern);
 		}
-		// then the elementPattern
-		if (elementPattern != null) {
-			inputSet = handleElemntName(elementPattern, inputSet);
-		}
-		// and finally the input pattern
-		if (inputPattern != null) {
-			inputSet = handleInputname(inputPattern, inputSet);
-		}
-		return inputSet;
+		return getInputSet(doc, inputSet, elementPattern, inputPattern);
 	}
 
-	 public Set<Input<?>> getInputSet(BeautiDoc doc, String partitionPattern, char context, String elementPattern, String inputPattern) {
-		this.doc = doc;		
+	public Set<Input<?>> getInputSet(BeautiDoc doc, String partitionPattern, int context, String elementPattern,
+			String inputPattern) {
+		this.doc = doc;
 		Set<Input<?>> inputSet = null;
 		// first handle partitionPattern if any
 		if (partitionPattern != null) {
 			inputSet = handlePartitionPattern(partitionPattern, context);
 		}
-		// then the elementPattern
+		return getInputSet(doc, inputSet, elementPattern, inputPattern);
+	}
+
+	public Set<Input<?>> getInputSet(BeautiDoc doc, Set<Input<?>> inputSet, String elementPattern,
+			String inputPattern) {
+		this.doc = doc;
+		// handle the elementPattern, if any
 		if (elementPattern != null) {
 			inputSet = handleElemntName(elementPattern, inputSet);
 		}
-		// and finally the input pattern
+		// handle the input pattern, if any
 		if (inputPattern != null) {
 			inputSet = handleInputname(inputPattern, inputSet);
 		}
 		return inputSet;
 	}
 
-	 public static Map<Input<?>, BEASTInterface>  initInputMap(BeautiDoc doc) {
-		Map<Input<?>, BEASTInterface> mapInputToObject= new LinkedHashMap<>();
+	public static Map<Input<?>, BEASTInterface> initInputMap(BeautiDoc doc) {
+		Map<Input<?>, BEASTInterface> mapInputToObject = new LinkedHashMap<>();
 		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
-			if (o.getID() == null) {  
+			if (o.getID() == null) {
 				// hack to ensure any object has an ID
 				o.setID(o.getClass().getName() + Randomizer.nextInt(1000));
 				Log.info("Setting ID: " + o.getID());
 				doc.registerPlugin(o);
 				doc.pluginmap.remove(null);
 			}
-			
+
 			for (Input<?> input : o.listInputs()) {
 				mapInputToObject.put(input, o);
-			}				
+			}
 		}
 		return mapInputToObject;
 	}
@@ -85,27 +84,40 @@ public class InputFilter {
 		}
 		return newInputSet;
 	}
-	
-	public Set<Input<?>> handlePartitionPattern(String partitionPattern, char context) {
-		String [] matches = partitionPattern.split(",");
+
+	public Set<Input<?>> handlePartitionPattern(String partitionPattern, int context) {
+		String[] matches = partitionPattern.split(",");
 		for (int i = 0; i < matches.length; i++) {
 			matches[i] = matches[i].trim();
 			matches[i] = matches[i].replaceAll("\\*", ".*");
 		}
 		Set<Input<?>> newInputSet = new LinkedHashSet<>();
 		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
-			String id = o.getID();
-			String p = id;
-			char currentContext = 'p';
-			if (id.indexOf(':') > 1) {
-				p = id.substring(id.indexOf(':') + 1);
-				currentContext = id.charAt(id.indexOf(':') - 1);
-			}
-			for (String match : matches) {
-				if (p.matches(match) || id.matches(match)) {
-					if (context == '*' || currentContext == context) {
-						for (Input<?> input : o.listInputs()) {
-							newInputSet.add(input);
+			for (Input<?> input : o.listInputs()) {
+				if (input.get() instanceof BEASTInterface) {
+					BEASTInterface o2 = (BEASTInterface) input.get();
+					String id = o2.getID();
+					String p = id;
+					int currentContext = BeautiDoc.ALIGNMENT_PARTITION;
+					if (id.indexOf(':') > 1) {
+						p = id.substring(id.indexOf(':') + 1);
+						switch (id.charAt(id.indexOf(':') - 1)) {
+						case 's':
+							currentContext = BeautiDoc.CLOCKMODEL_PARTITION;
+							break;
+						case 't':
+							currentContext = BeautiDoc.TREEMODEL_PARTITION;
+							break;
+						case 'c':
+							currentContext = BeautiDoc.CLOCKMODEL_PARTITION;
+							break;
+						}
+					}
+					for (String match : matches) {
+						if (p.matches(match) || id.matches(match)) {
+							if (context == BeautiDoc.ALIGNMENT_PARTITION || currentContext == context) {
+								newInputSet.add(input);
+							}
 						}
 					}
 				}
@@ -113,7 +125,7 @@ public class InputFilter {
 		}
 		return newInputSet;
 	}
-	 
+
 	public Set<Input<?>> handleInputname(String inputPattern, Set<Input<?>> inputSet) {
 		if (inputSet == null) {
 			inputSet = setupInputSet(inputPattern, doc, false);
@@ -122,8 +134,8 @@ public class InputFilter {
 		}
 		return inputSet;
 	}
-	
-	 public Set<Input<?>> handleElemntName(String elementPattern, Set<Input<?>> inputSet) {
+
+	public Set<Input<?>> handleElemntName(String elementPattern, Set<Input<?>> inputSet) {
 		if (elementPattern.endsWith("@")) {
 			elementPattern = elementPattern.substring(0, elementPattern.length() - 1);
 		}
@@ -136,17 +148,17 @@ public class InputFilter {
 		return inputSet;
 	}
 
-	 private String normaliseString(String str) {
+	private String normaliseString(String str) {
 		if (str.startsWith("'") && str.endsWith("'")) {
-			return str.substring(1, str.length()-1);
+			return str.substring(1, str.length() - 1);
 		}
 		if (str.startsWith("\"") && str.endsWith("\"")) {
-			return str.substring(1, str.length()-1);
+			return str.substring(1, str.length() - 1);
 		}
 		return str;
 	}
 
-	 private Set<Input<?>> filterInputSet(String inputPattern, Set<Input<?>> inputSet) {
+	private Set<Input<?>> filterInputSet(String inputPattern, Set<Input<?>> inputSet) {
 		Set<Input<?>> newInputSet = new LinkedHashSet<>();
 		for (Input<?> input : inputSet) {
 			if (input.getName().matches(inputPattern)) {
@@ -170,7 +182,7 @@ public class InputFilter {
 						Object o2 = input.get();
 						if (o2 instanceof BEASTInterface) {
 							BEASTInterface bo = (BEASTInterface) o2;
-							for (Input<?> input2: bo.listInputs()) {
+							for (Input<?> input2 : bo.listInputs()) {
 								inputSet.add(input2);
 								if (input2.getType() == null) {
 									input2.determineClass(o);
@@ -190,25 +202,25 @@ public class InputFilter {
 		return predecessors;
 	}
 
-    static private void collectPredecessors(BEASTInterface bo, List<BEASTInterface> predecessors) {
-        predecessors.add(bo);
-        if (bo instanceof Alignment || bo instanceof FilteredAlignment) {
-            return;
-        }
-        try {
-            for (BEASTInterface bo2 : bo.listActiveBEASTObjects()) {
-            	// hack to deal with ThreadedTreeLikelihood instantiating itself with TreeLikelihoods
-            	// in a private input
-            	if (!(bo instanceof ThreadedTreeLikelihood) ||  !(bo2 instanceof TreeLikelihood)) {
-            		if (!predecessors.contains(bo2)) {
-            			collectPredecessors(bo2, predecessors);
-            		}
-            	}
-            }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-    }
-
+	static private void collectPredecessors(BEASTInterface bo, List<BEASTInterface> predecessors) {
+		predecessors.add(bo);
+		if (bo instanceof Alignment || bo instanceof FilteredAlignment) {
+			return;
+		}
+		try {
+			for (BEASTInterface bo2 : bo.listActiveBEASTObjects()) {
+				// hack to deal with ThreadedTreeLikelihood instantiating itself
+				// with TreeLikelihoods
+				// in a private input
+				if (!(bo instanceof ThreadedTreeLikelihood) || !(bo2 instanceof TreeLikelihood)) {
+					if (!predecessors.contains(bo2)) {
+						collectPredecessors(bo2, predecessors);
+					}
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

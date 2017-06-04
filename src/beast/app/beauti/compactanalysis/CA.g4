@@ -32,13 +32,14 @@ alignmentprovider : STRING ;
 
 arg : STRING ;
 
-link : LINKTOKEN LINKTYPE partitionPattern? ;
+link : LINKTOKEN linktype partitionPattern? ;
+linktype : LINKTYPE ;
  
-unlink : UNLINKTOKEN LINKTYPE partitionPattern? ;
+unlink : UNLINKTOKEN linktype partitionPattern? ;
 
 set : SETTOKEN inputidentifier '=' STRING ;
 
-inputidentifier : idPattern | elemntName? inputname idPattern? | partitionPattern;
+inputidentifier : idPattern | elemntName? inputname idPattern? | elemntName? inputname? partitionPattern;
 
 elemntName : STRING '@';
 

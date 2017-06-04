@@ -19,7 +19,7 @@ import beast.evolution.tree.TreeInterface;
 public class DocumentEditor {
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static void link(BeautiDoc doc, String partitionID, Set<PartitionContext> partitionContext) {
+	public static void link(BeautiDoc doc, int partitionID, Set<PartitionContext> partitionContext) {
 		PartitionContext [] contexts = partitionContext.toArray(new PartitionContext[]{});
 		GenericTreeLikelihood [] treelikelihood = new GenericTreeLikelihood[contexts.length];
 		CompoundDistribution likelihoods = (CompoundDistribution) doc.pluginmap.get("likelihood");
@@ -36,7 +36,7 @@ public class DocumentEditor {
 		}
 
 		switch (partitionID) {
-		case "sitemodel" :
+		case BeautiDoc.SITEMODEL_PARTITION :
 			SiteModelInterface sitemodel = treelikelihood[0].siteModelInput.get();
 			for (int i = 1; i < contexts.length; i++) {
 				PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
@@ -71,7 +71,7 @@ public class DocumentEditor {
 				repartition(doc, oldContext);
 			}
 			break;
-		case "clock" :
+		case BeautiDoc.CLOCKMODEL_PARTITION :
 			BranchRateModel clockmodel = treelikelihood[0].branchRateModelInput.get();
 			for (int i = 1; i < contexts.length; i++) {
 				PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
@@ -106,7 +106,7 @@ public class DocumentEditor {
 				repartition(doc, oldContext);
 			}
 			break;
-		case "tree" :
+		case BeautiDoc.TREEMODEL_PARTITION :
 			TreeInterface tree = treelikelihood[0].treeInput.get();
 			for (int i = 1; i < contexts.length; i++) {
 				PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
@@ -151,7 +151,7 @@ public class DocumentEditor {
 		doc.scrubAll(true, false);
 	}
 
-	public static void unlink(BeautiDoc doc, String partitionID, Set<PartitionContext> partitionContext) {
+	public static void unlink(BeautiDoc doc, int partitionID, Set<PartitionContext> partitionContext) {
 		PartitionContext [] contexts = partitionContext.toArray(new PartitionContext[]{});
 		GenericTreeLikelihood [] treelikelihood = new GenericTreeLikelihood[contexts.length];
 		CompoundDistribution likelihoods = (CompoundDistribution) doc.pluginmap.get("likelihood");
@@ -168,7 +168,7 @@ public class DocumentEditor {
 		}
 
 		switch (partitionID) {
-		case "sitemodel" :
+		case BeautiDoc.SITEMODEL_PARTITION :
 			SiteModelInterface sitemodel = treelikelihood[0].siteModelInput.get();
 			for (int i = 1; i < contexts.length; i++) {
 				PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
@@ -179,7 +179,7 @@ public class DocumentEditor {
 				repartition(doc, contexts[i]);
 			}
 			break;
-		case "clock" :
+		case BeautiDoc.CLOCKMODEL_PARTITION :
 			BranchRateModel clockModel = treelikelihood[0].branchRateModelInput.get();
 			for (int i = 1; i < contexts.length; i++) {
 				PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
@@ -190,7 +190,7 @@ public class DocumentEditor {
 				repartition(doc, contexts[i]);
 			}
 			break;
-		case "tree" :
+		case BeautiDoc.TREEMODEL_PARTITION :
 			TreeInterface tree = treelikelihood[0].treeInput.get();
 			for (int i = 1; i < contexts.length; i++) {
 				PartitionContext oldContext = new PartitionContext(treelikelihood[i]);
