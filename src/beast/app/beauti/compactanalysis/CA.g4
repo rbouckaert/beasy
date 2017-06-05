@@ -45,12 +45,12 @@ elemntName : STRING '@';
 
 idPattern : '[' STRING ']' ;
 
-partitionPattern : '{' STRING  (',' STRING ) * '}' ;
+partitionPattern : '{' (STRING | LINKTYPE) (',' (STRING | LINKTYPE) ) * '}' ;
 
 inputname : STRING ;
 
 //rename : RENAMETOKEN LINKTYPE partitionPattern? newName ;
-rename : RENAMETOKEN LINKTYPE oldName? '=' newName ;
+rename : RENAMETOKEN linktype oldName? '=' newName ;
 
 // HACK: since 'tree' and 'clock' are popular names to switch to
 // we allow STRINGs and LINKTYPE

@@ -146,6 +146,24 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			}
 		}
 		
+		private void processPattern(ParseTree ctx, int context) {
+			String pattern = ctx.getText();
+			pattern = pattern.substring(1, pattern.length() - 1);
+			String [] patterns = pattern.split(",");
+			for (int i = 0; i < patterns.length; i++) {
+				patterns[i] = patterns[i].replaceAll("\\*",".*");
+			}
+			
+			partitionContext.clear();
+			for (PartitionContext p : doc.partitionNames) {
+				for (String pattern2: patterns) {
+					if (p.partition.matches(pattern2)) {
+						partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
+					}
+				}
+			}
+		}
+
 		@Override
 		public Object visitImport_(Import_Context ctx) {
 			String providerID = "Import Alignment";
@@ -227,8 +245,6 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		
 		@Override
 		public Object visitInputidentifier(InputidentifierContext ctx) {
-			String idPattern = null;
-			String partitionPattern = null;
 			String elementPattern = null;
 			String inputPattern = null;
 			
@@ -243,6 +259,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				}
 				if (o instanceof ElemntNameContext) {
 					elementPattern = ((ElemntNameContext) o).getText().trim();
+					// remove '@' sign at end
+					elementPattern = elementPattern.substring(0,  elementPattern.length() - 1);
 				}
 				if (o instanceof InputnameContext) {
 					inputPattern = ((InputnameContext) o).getText().trim();
@@ -274,7 +292,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			inputSet = new LinkedHashSet<>();
 			for (String pattern: patterns) {
 				InputFilter filter = new InputFilter();
-				inputSet.addAll(filter.getInputSet(doc, partitionPattern, linkType, null, null));
+				inputSet.addAll(filter.getInputSet(doc, pattern, linkType, null, null));
 			}
 			return inputSet;
 		}
@@ -308,7 +326,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (ctx.getChildCount() == 2) {
 				processPattern(".*");
 			} else {
-				visit(ctx.getChild(2));
+				processPattern(ctx.getChild(2), linktype);
 			}
 			if (partitionContext.size() <= 1) {
 				throw new IllegalArgumentException("Link command : At least two partitions must be selected '" + ctx.getText() + "'");
@@ -623,42 +641,28 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		
 		@Override
 		public Object visitRename(RenameContext ctx) {
-			String partition = ctx.getChild(1).getText();
+			Object o = visit(ctx.getChild(1));
+			int partitionID = (Integer) o;
 
 			String oldName = null, newName;
-			if (ctx.getChildCount() > 4) {
+			if (ctx.getChildCount() > 2) {
 				oldName = ctx.getChild(2).getText();
 				newName = ctx.getChild(4).getText();
 			} else {
-				switch (partition) {
-				case "sitemodel" : 
+				switch (partitionID) {
+				case BeautiDoc.SITEMODEL_PARTITION : 
 					oldName = ((PartitionContext)doc.possibleContexts.toArray()[0]).siteModel;
 					break;
-				case "tree" : 
+				case BeautiDoc.TREEMODEL_PARTITION : 
 					oldName = ((PartitionContext)doc.possibleContexts.toArray()[0]).tree;
 					break;
-				case "clock" : 
+				case BeautiDoc.CLOCKMODEL_PARTITION : 
 					oldName = ((PartitionContext)doc.possibleContexts.toArray()[0]).clockModel;
 					break;
 				default:
 					oldName = ((PartitionContext)doc.possibleContexts.toArray()[0]).partition;
 				}
-				
 				newName = ctx.getChild(3).getText();
-			}
-			int partitionID;
-			switch (partition) {
-			case "sitemodel" : 
-				partitionID = BeautiDoc.SITEMODEL_PARTITION;
-				break;
-			case "tree" : 
-				partitionID = BeautiDoc.TREEMODEL_PARTITION;
-				break;
-			case "clock" : 
-				partitionID = BeautiDoc.CLOCKMODEL_PARTITION;
-				break;
-			default:
-				partitionID = BeautiDoc.ALIGNMENT_PARTITION;
 			}
 			doc.renamePartition(partitionID, oldName, newName);
 			

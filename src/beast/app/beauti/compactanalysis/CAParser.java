@@ -1448,6 +1448,10 @@ public class CAParser extends Parser {
 		public TerminalNode STRING(int i) {
 			return getToken(CAParser.STRING, i);
 		}
+		public List<TerminalNode> LINKTYPE() { return getTokens(CAParser.LINKTYPE); }
+		public TerminalNode LINKTYPE(int i) {
+			return getToken(CAParser.LINKTYPE, i);
+		}
 		public PartitionPatternContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1477,7 +1481,12 @@ public class CAParser extends Parser {
 			setState(211);
 			match(T__8);
 			setState(212);
-			match(STRING);
+			_la = _input.LA(1);
+			if ( !(_la==LINKTYPE || _la==STRING) ) {
+			_errHandler.recoverInline(this);
+			} else {
+				consume();
+			}
 			setState(217);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -1487,7 +1496,12 @@ public class CAParser extends Parser {
 				setState(213);
 				match(T__3);
 				setState(214);
-				match(STRING);
+				_la = _input.LA(1);
+				if ( !(_la==LINKTYPE || _la==STRING) ) {
+				_errHandler.recoverInline(this);
+				} else {
+					consume();
+				}
 				}
 				}
 				setState(219);
@@ -1553,7 +1567,9 @@ public class CAParser extends Parser {
 
 	public static class RenameContext extends ParserRuleContext {
 		public TerminalNode RENAMETOKEN() { return getToken(CAParser.RENAMETOKEN, 0); }
-		public TerminalNode LINKTYPE() { return getToken(CAParser.LINKTYPE, 0); }
+		public LinktypeContext linktype() {
+			return getRuleContext(LinktypeContext.class,0);
+		}
 		public NewNameContext newName() {
 			return getRuleContext(NewNameContext.class,0);
 		}
@@ -1589,7 +1605,7 @@ public class CAParser extends Parser {
 			setState(224);
 			match(RENAMETOKEN);
 			setState(225);
-			match(LINKTYPE);
+			linktype();
 			setState(227);
 			_la = _input.LA(1);
 			if (_la==LINKTYPE || _la==STRING) {
@@ -1893,19 +1909,19 @@ public class CAParser extends Parser {
 		"\u00cb\3\2\2\2\u00cb\u00cd\5,\27\2\u00cc\u00bd\3\2\2\2\u00cc\u00bf\3\2"+
 		"\2\2\u00cc\u00c6\3\2\2\2\u00cd\'\3\2\2\2\u00ce\u00cf\7\30\2\2\u00cf\u00d0"+
 		"\7\b\2\2\u00d0)\3\2\2\2\u00d1\u00d2\7\t\2\2\u00d2\u00d3\7\30\2\2\u00d3"+
-		"\u00d4\7\n\2\2\u00d4+\3\2\2\2\u00d5\u00d6\7\13\2\2\u00d6\u00db\7\30\2"+
-		"\2\u00d7\u00d8\7\6\2\2\u00d8\u00da\7\30\2\2\u00d9\u00d7\3\2\2\2\u00da"+
-		"\u00dd\3\2\2\2\u00db\u00d9\3\2\2\2\u00db\u00dc\3\2\2\2\u00dc\u00de\3\2"+
-		"\2\2\u00dd\u00db\3\2\2\2\u00de\u00df\7\f\2\2\u00df-\3\2\2\2\u00e0\u00e1"+
-		"\7\30\2\2\u00e1/\3\2\2\2\u00e2\u00e3\7\24\2\2\u00e3\u00e5\7\27\2\2\u00e4"+
-		"\u00e6\5\62\32\2\u00e5\u00e4\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6\u00e7\3"+
-		"\2\2\2\u00e7\u00e8\7\4\2\2\u00e8\u00e9\5\64\33\2\u00e9\61\3\2\2\2\u00ea"+
-		"\u00eb\t\3\2\2\u00eb\63\3\2\2\2\u00ec\u00ed\t\3\2\2\u00ed\65\3\2\2\2\u00ee"+
-		"\u00ef\7\25\2\2\u00ef\u00f0\5&\24\2\u00f0\67\3\2\2\2\u00f1\u00f2\7\26"+
-		"\2\2\u00f2\u00f3\7\30\2\2\u00f3\u00f5\7\4\2\2\u00f4\u00f6\7\30\2\2\u00f5"+
-		"\u00f4\3\2\2\2\u00f6\u00f7\3\2\2\2\u00f7\u00f5\3\2\2\2\u00f7\u00f8\3\2"+
-		"\2\2\u00f89\3\2\2\2\30=JWejr{\u0080\u008a\u008f\u0093\u00a1\u00af\u00b6"+
-		"\u00bf\u00c3\u00c6\u00c9\u00cc\u00db\u00e5\u00f7";
+		"\u00d4\7\n\2\2\u00d4+\3\2\2\2\u00d5\u00d6\7\13\2\2\u00d6\u00db\t\3\2\2"+
+		"\u00d7\u00d8\7\6\2\2\u00d8\u00da\t\3\2\2\u00d9\u00d7\3\2\2\2\u00da\u00dd"+
+		"\3\2\2\2\u00db\u00d9\3\2\2\2\u00db\u00dc\3\2\2\2\u00dc\u00de\3\2\2\2\u00dd"+
+		"\u00db\3\2\2\2\u00de\u00df\7\f\2\2\u00df-\3\2\2\2\u00e0\u00e1\7\30\2\2"+
+		"\u00e1/\3\2\2\2\u00e2\u00e3\7\24\2\2\u00e3\u00e5\5 \21\2\u00e4\u00e6\5"+
+		"\62\32\2\u00e5\u00e4\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6\u00e7\3\2\2\2\u00e7"+
+		"\u00e8\7\4\2\2\u00e8\u00e9\5\64\33\2\u00e9\61\3\2\2\2\u00ea\u00eb\t\3"+
+		"\2\2\u00eb\63\3\2\2\2\u00ec\u00ed\t\3\2\2\u00ed\65\3\2\2\2\u00ee\u00ef"+
+		"\7\25\2\2\u00ef\u00f0\5&\24\2\u00f0\67\3\2\2\2\u00f1\u00f2\7\26\2\2\u00f2"+
+		"\u00f3\7\30\2\2\u00f3\u00f5\7\4\2\2\u00f4\u00f6\7\30\2\2\u00f5\u00f4\3"+
+		"\2\2\2\u00f6\u00f7\3\2\2\2\u00f7\u00f5\3\2\2\2\u00f7\u00f8\3\2\2\2\u00f8"+
+		"9\3\2\2\2\30=JWejr{\u0080\u008a\u008f\u0093\u00a1\u00af\u00b6\u00bf\u00c3"+
+		"\u00c6\u00c9\u00cc\u00db\u00e5\u00f7";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

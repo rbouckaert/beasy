@@ -7,8 +7,8 @@ import examples/nexus/RSV2.nex;
 link tree {codon1, codon2, codon3};
 link clock {codon1, codon2, codon3};
 
-rename clock {codon1} clock;
-rename tree {codon1} tree;
+rename clock codon1 = clock;
+rename tree codon1 = tree;
 
 // UCLN clock
 use branchRateModel{clock} = RelaxedClockLogNormal;

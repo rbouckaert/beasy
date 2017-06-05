@@ -9,14 +9,14 @@ import examples/nexus/primate-mtDNA.nex;
 link tree {noncoding,1stpos,2ndpos,3rdpos};
 link clock {noncoding,1stpos,2ndpos,3rdpos};
 
-rename tree {noncoding} tree;
-rename clock {noncoding} clock;
+rename tree noncoding = tree;
+rename clock noncoding = clock;
 
 // link sitemodel;
 
 // HKY + 4G
 use substModel {noncoding,1stpos,2ndpos,3rdpos} = HKY;
-set gammaCategoryCount {noncoding,1stpos,2ndpos,3rdpos} = 4;
+set siteModel@gammaCategoryCount {noncoding,1stpos,2ndpos,3rdpos} = 4;
 set shape@estimate {noncoding,1stpos,2ndpos,3rdpos} = true;
 
 // unlink sitemodel;

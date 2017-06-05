@@ -130,7 +130,7 @@ public class InputFilter {
 		if (inputSet == null) {
 			inputSet = setupInputSet(inputPattern, doc, false);
 		} else {
-			inputSet = filterInputSet(inputPattern, inputSet);
+			inputSet = filterInputSet(inputPattern, inputSet, false);
 		}
 		return inputSet;
 	}
@@ -143,7 +143,7 @@ public class InputFilter {
 		if (inputSet == null) {
 			inputSet = setupInputSet(elementPattern, doc, true);
 		} else {
-			inputSet = filterInputSet(elementPattern, inputSet);
+			inputSet = filterInputSet(elementPattern, inputSet, true);
 		}
 		return inputSet;
 	}
@@ -158,11 +158,26 @@ public class InputFilter {
 		return str;
 	}
 
-	private Set<Input<?>> filterInputSet(String inputPattern, Set<Input<?>> inputSet) {
+	private Set<Input<?>> filterInputSet(String inputPattern, Set<Input<?>> inputSet, boolean useChildren) {
 		Set<Input<?>> newInputSet = new LinkedHashSet<>();
 		for (Input<?> input : inputSet) {
 			if (input.getName().matches(inputPattern)) {
-				newInputSet.add(input);
+				if (!useChildren) {
+					newInputSet.add(input);
+				} else {
+					Object o2 = input.get();
+					if (o2 instanceof BEASTInterface) {
+						BEASTInterface bo = (BEASTInterface) o2;
+						for (Input<?> input2 : bo.listInputs()) {
+							newInputSet.add(input2);
+							if (input2.getType() == null) {
+								input2.determineClass(bo);
+							}
+						}
+					}
+				}
+
+//				newInputSet.add(input);
 			}
 		}
 		return newInputSet;
@@ -185,7 +200,7 @@ public class InputFilter {
 							for (Input<?> input2 : bo.listInputs()) {
 								inputSet.add(input2);
 								if (input2.getType() == null) {
-									input2.determineClass(o);
+									input2.determineClass(o2);
 								}
 							}
 						}

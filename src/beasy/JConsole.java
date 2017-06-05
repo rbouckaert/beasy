@@ -739,6 +739,7 @@ public class JConsole extends JScrollPane
 			    text.replaceSelection(string);
 				
 				text.setCharacterAttributes(oldAttr, false);
+				studio.rightLowerPaneTab.setSelectedIndex(1);
 			}
 		});	
 	}

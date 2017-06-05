@@ -3,8 +3,8 @@ import ../beast2/examples/nexus/26.nex;
 import ../beast2/examples/nexus/29.nex;
 import ../beast2/examples/nexus/47.nex;
 
-use substModel{16,19,47} = HKY;
-use frequencies{16,19,47} = Empirical;
+use substModel{26,29,47} = HKY;
+use frequencies{26,29,47} = Empirical;
 
 
 set chainLength = 5000000;
