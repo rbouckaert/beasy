@@ -2,6 +2,7 @@ package beasy.shell;
 
 
 
+
 import jam.framework.DocumentFrame;
 
 import java.awt.BorderLayout;
@@ -13,29 +14,41 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import javax.swing.Action;
+import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import beast.app.beauti.BeautiSubTemplate;
+import beast.app.beauti.PartitionContext;
+import beast.app.draw.InputEditor;
 import beast.app.draw.MyAction;
 import beast.app.util.Utils;
 import beast.app.util.Utils6;
+import beast.core.parameter.RealParameter;
+import beast.math.distributions.Prior;
+import beast.math.distributions.Uniform;
 import beast.util.AddOnManager;
 import beasy.Help;
 import beasy.JConsole;
@@ -355,6 +368,84 @@ public class BeasyStudio extends JSplitPane {
         }
     }; // class ActionHelp
 	
+    
+    MyAction a_distr = new MyAction("View distribution", "View parametric distribution and its graph", "distr", -1) {
+
+        @Override
+		public void actionPerformed(ActionEvent ae) {
+            JFrame frame = new JFrame("Parametric distribution");
+            // start with prior with uniform(0,1) distribution
+            final Prior prior = new Prior();
+            Uniform uniform = new Uniform();
+            uniform.setID("Uniform.0");
+            uniform.initByName("lower","0.0","upper","1.0");
+            prior.initByName("x", new RealParameter("0.0"), "distr", uniform);
+            prior.setID("Parametric.Distribution");
+            
+            // create panel with parametric distribution viewer
+            refreshDistributionPanel(frame, prior);
+
+            frame.setSize(800, 400);
+            frame.setVisible(true);
+        }
+
+		private void refreshDistributionPanel(JFrame frame, Prior prior) {
+			// clear frame content in case it is refreshed after change of distribution  
+			JRootPane p = (JRootPane) frame.getComponent(0);
+			JLayeredPane p1 = (JLayeredPane) p.getComponent(1);
+			JPanel p2 = (JPanel) p1.getComponent(0);
+			p2.removeAll();
+			
+            final JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+			
+            // add combobox with parametric distributions
+            List<BeautiSubTemplate> availableBEASTObjects = interpreter.doc.getInputEditorFactory().getAvailableTemplates(prior.distInput, prior, null, interpreter.doc);
+            JComboBox<BeautiSubTemplate> comboBox = new JComboBox<BeautiSubTemplate>(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
+            panel.add(comboBox);
+            
+            String id = prior.distInput.get().getID();
+            id = id.substring(0, id.indexOf('.'));
+            for (BeautiSubTemplate template : availableBEASTObjects) {
+                if (template.classInput.get() != null && template.getShortClassName().equals(id)) {
+                    comboBox.setSelectedItem(template);
+                }
+            }
+            
+            try {
+            	// add parametric input editor
+                final InputEditor editor = interpreter.doc.getInputEditorFactory().createInputEditor(prior.distInput, prior, interpreter.doc);
+                panel.add((Component) editor);
+                comboBox.addActionListener(e -> {
+                    @SuppressWarnings("unchecked")
+        			JComboBox<BeautiSubTemplate> comboBox1 = (JComboBox<BeautiSubTemplate>) e.getSource();
+
+                    BeautiSubTemplate template = (BeautiSubTemplate) comboBox1.getSelectedItem();
+                    try {
+                        template.createSubNet(new PartitionContext(), prior, prior.distInput, true);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    refreshDistributionPanel(frame, prior);
+                });
+			} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException
+					| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+            
+            // add close button
+            JButton closeButton = new JButton("Close");
+            closeButton.addActionListener(e -> {
+            	frame.setVisible(false);
+            	frame.dispose();
+            });
+            panel.add(closeButton);
+			
+            frame.add(panel);
+            frame.revalidate();
+		}
+    }; // class ActionViewDistribution
+
 	private JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
@@ -395,6 +486,7 @@ public class BeasyStudio extends JSplitPane {
         if (!Utils.isMac()) {
             helpMenu.add(a_about);
         }
+        helpMenu.add(a_distr);
 
         return menuBar;
 	}
