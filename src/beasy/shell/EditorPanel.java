@@ -49,7 +49,7 @@ import org.fife.ui.rsyntaxtextarea.*;
 import beast.app.beauti.BeautiDoc;
 import beast.app.util.Utils;
 import beast.core.util.Log;
-import beast.util.AddOnManager;
+import beast.util.PackageManager;
 
 public class EditorPanel extends JPanel implements ActionListener, KeyListener, DocumentListener {
 	private static final long serialVersionUID = 1L;
@@ -457,7 +457,7 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 	final static String STATUS_FILE = "editors.dat";
 	
 	private void restoreEditors() {
-		File backup = new File(AddOnManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + STATUS_FILE);
+		File backup = new File(PackageManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + STATUS_FILE);
 		if (backup.exists()) {
 			try {
 		        BufferedReader fin = new BufferedReader(new FileReader(backup));
@@ -475,11 +475,11 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 	}
 	
 	public void saveStatus() {
-		File backupdir = new File(AddOnManager.getPackageUserDir() + BeasyStudio.PACKAGENAME);
+		File backupdir = new File(PackageManager.getPackageUserDir() + BeasyStudio.PACKAGENAME);
 		if (!backupdir.exists()) {
 			backupdir.mkdirs();
 		}
-		File backup = new File(AddOnManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + STATUS_FILE);
+		File backup = new File(PackageManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + STATUS_FILE);
 		try {
 	        FileWriter outfile = new FileWriter(backup);
 	        for (String s : fileNames) {

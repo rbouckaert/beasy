@@ -37,7 +37,7 @@ import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TreeDistribution;
 import beast.math.distributions.MRCAPrior;
-import beast.util.AddOnManager;
+import beast.util.PackageManager;
 
 public class CompactAnalysisByAntlr extends CABaseListener {
 	BeautiDoc doc = null;
@@ -388,24 +388,22 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (inputSet == null) {
 				setupInputSet(((MCMC)doc.mcmc.get()).posteriorInput.get());
 			}
-			if (inputSet.size() == 0) {
-				throw new IllegalArgumentException("Command use: cannot find suitable match for " + ctx.getText());
-			}
 			
 			BeautiSubTemplate subTemplate = getSubTemplateName(ctx);
 			
 			// collect parameters
-			List<String> param = new ArrayList<>();
-			List<Object> value = new ArrayList<>();
-			String newID = collectParameters(ctx, param, value);
+			List<String> params = new ArrayList<>();
+			List<Object> values = new ArrayList<>();
+			String newID = collectParameters(ctx, params, values);
 			
+			// see if we can find an input to match the subtemplate to
 			int instantCount = 0;
 			for(Input<?> in : inputSet) {
 				BEASTInterface o = mapInputToObject.get(in);
 				if (in.getType() != null) {
 					if (in.get() instanceof List<?>) {
 						if (in.getType().isAssignableFrom(subTemplate._class)) {
-							BEASTInterface bo = createSubnet(subTemplate, param, value, newID, o, in);
+							BEASTInterface bo = createSubnet(subTemplate, params, values, newID, o, in);
 							boolean found = false;
 							for (Object o2 : (Collection<?>) in.get()) {
 								if (o2 == bo) {
@@ -424,7 +422,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 						}
 					} else {
 						if (in.getType().isAssignableFrom(subTemplate._class)) { 
-							BEASTInterface bo = createSubnet(subTemplate, param, value, newID, o, in);
+							BEASTInterface bo = createSubnet(subTemplate, params, values, newID, o, in);
 							if (in.canSetValue(bo, o)) {
 								Log.info("Using " + in.getName() + "[" +o.getID() +"] = " + bo.getID());
 								in.setValue(bo, o);
@@ -435,9 +433,26 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				}
 			}
 			
-			if (ctx.getParent() instanceof ValueContext) {
-				BEASTInterface bo = createSubnet(subTemplate, param, value, newID, null, null);
-				return bo;
+			if (instantCount == 0) {
+				if (ctx.getParent() instanceof ValueContext) {
+					BEASTInterface bo = createSubnet(subTemplate, params, values, newID, null, null);
+					return bo;
+				} else {
+					String mainID = subTemplate.getMainID();
+					if (mainID.indexOf("$(m)") > 0 && doc.alignments.size() > 0) {
+						// it's a dual partition subnet
+						BEASTInterface bo = createSubnet(subTemplate, params, values, newID, doc.alignments.get(0), null);
+						// find 2nd partition context
+						PartitionContext context = (PartitionContext) partitionContext.toArray()[0];
+						String newName = context.partition;
+						for(BEASTInterface o : doc.pluginmap.values()) {
+							if (o.getID() != null && o.getID().indexOf("$(m)") > 0) {
+								String newID2 = o.getID().replaceAll("$(m)", newName);
+								o.setID(newID2);
+							}
+						}
+					}
+				}
 			}
 			
 			if (instantCount == 0) {
@@ -678,7 +693,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	    	priorProviders.add(p.new MRCAPriorProvider());
 	    	
 	        // build up list of data types
-	        List<String> importerClasses = AddOnManager.find(PriorProvider.class, new String[]{"beast.app"});
+	        List<String> importerClasses = PackageManager.find(PriorProvider.class, new String[]{"beast.app"});
 	        for (String _class: importerClasses) {
 	        	try {
 	        		if (!_class.startsWith(this.getClass().getName())) {

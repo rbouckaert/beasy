@@ -23,7 +23,7 @@ import beast.app.beauti.BeautiSubTemplate;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.util.Log;
-import beast.util.AddOnManager;
+import beast.util.PackageManager;
 import beasy.shell.BeasyStudio;
 
 public class Help {
@@ -197,7 +197,7 @@ public class Help {
 		html.append("Switches to a new template. Available templates are:</p>\n");
 		html.append("<table>\n");
 		
-        List<String> beastDirectories = AddOnManager.getBeastDirectories();
+        List<String> beastDirectories = PackageManager.getBeastDirectories();
         for (String dirName : beastDirectories) {
             File dir = new File(dirName + "/templates");
             if (dir.exists() && dir.isDirectory()) {

@@ -48,12 +48,12 @@ import org.w3c.dom.events.EventListener;
 
 
 import beast.app.DocMaker;
-import beast.util.AddOnManager;
+import beast.util.PackageManager;
 
 public class HelpBrowser extends JPanel implements ActionListener { //implements HyperlinkListener {
     private static final long serialVersionUID = 1L;
     final static String INITIAL_PAGE = "doc/html/index.html";
-    final static String BEAST_DOC_DIR = AddOnManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + "doc/BeastObjects/";
+    final static String BEAST_DOC_DIR = PackageManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + "doc/BeastObjects/";
     
     
     /**
@@ -236,7 +236,7 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
         	if (new File(path  + "/" + INITIAL_PAGE).exists()) {
             	setURL(new URL("file://" + path  + "/" + INITIAL_PAGE));
         	} else {
-            	setURL(new URL("file://" + AddOnManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + INITIAL_PAGE));
+            	setURL(new URL("file://" + PackageManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + INITIAL_PAGE));
         	}
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -671,9 +671,9 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 				e.printStackTrace();
 			}
            	return true;
-    	} else if(new File(AddOnManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + docPage).exists()) {
+    	} else if(new File(PackageManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + docPage).exists()) {
         	try {
-				setURL(new URL("file://" + AddOnManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + docPage));
+				setURL(new URL("file://" + PackageManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + docPage));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
