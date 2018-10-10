@@ -1,3 +1,13 @@
 <addon name='CompactAnalysis' version='0.0.1'>
-	<depends on='beast2' atleast='2.4.6'/>
+	<depends on='beast2' atleast='2.5.0'/>
+	
+	    <packageapp description="Beasy Script Interpreter"
+              class="beasy.Interpreter"
+              args=""
+            />
+	    <packageapp description="Beasy interactive Read-Eval-Print-Loop"
+              class="beasy.REPL"
+              args=""
+            />
+
 </addon>

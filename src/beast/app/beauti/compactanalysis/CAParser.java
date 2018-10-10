@@ -1,4 +1,4 @@
-// Generated from CA.g4 by ANTLR 4.5
+// Generated from CA.g4 by ANTLR 4.7
 package beast.app.beauti.compactanalysis;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class CAParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -214,6 +214,7 @@ public class CAParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(72);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case TEMPLATETOKEN:
 				{
@@ -278,7 +279,7 @@ public class CAParser extends Parser {
 			case T__0:
 				break;
 			default:
-				throw new NoViableAltException(this);
+				break;
 			}
 			setState(74);
 			match(T__0);
@@ -431,6 +432,7 @@ public class CAParser extends Parser {
 			setState(81);
 			match(USETOKEN);
 			setState(85);
+			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				{
@@ -444,6 +446,7 @@ public class CAParser extends Parser {
 			setState(87);
 			match(STRING);
 			setState(104);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__2) {
 				{
@@ -526,7 +529,10 @@ public class CAParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==TAXONSETTOKEN || _la==STRING) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -627,6 +633,7 @@ public class CAParser extends Parser {
 			setState(110);
 			match(IMPORTTOKEN);
 			setState(112);
+			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				{
@@ -638,6 +645,7 @@ public class CAParser extends Parser {
 			setState(114);
 			filename();
 			setState(126);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__2) {
 				{
@@ -719,6 +727,7 @@ public class CAParser extends Parser {
 			setState(129);
 			match(STRING);
 			setState(141);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__2) {
 				{
@@ -791,6 +800,7 @@ public class CAParser extends Parser {
 		enterRule(_localctx, 18, RULE_argOrUse);
 		try {
 			setState(145);
+			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
@@ -1069,6 +1079,7 @@ public class CAParser extends Parser {
 			setState(171);
 			linktype();
 			setState(173);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__8) {
 				{
@@ -1171,6 +1182,7 @@ public class CAParser extends Parser {
 			setState(178);
 			linktype();
 			setState(180);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__8) {
 				{
@@ -1282,6 +1294,7 @@ public class CAParser extends Parser {
 		int _la;
 		try {
 			setState(202);
+			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
@@ -1294,6 +1307,7 @@ public class CAParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(189);
+				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 				case 1:
 					{
@@ -1305,6 +1319,7 @@ public class CAParser extends Parser {
 				setState(191);
 				inputname();
 				setState(193);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==T__6) {
 					{
@@ -1319,6 +1334,7 @@ public class CAParser extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(196);
+				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
 				case 1:
 					{
@@ -1328,6 +1344,7 @@ public class CAParser extends Parser {
 					break;
 				}
 				setState(199);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==STRING) {
 					{
@@ -1484,7 +1501,10 @@ public class CAParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==LINKTYPE || _la==STRING) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(217);
@@ -1499,7 +1519,10 @@ public class CAParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==LINKTYPE || _la==STRING) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -1607,6 +1630,7 @@ public class CAParser extends Parser {
 			setState(225);
 			linktype();
 			setState(227);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LINKTYPE || _la==STRING) {
 				{
@@ -1665,7 +1689,10 @@ public class CAParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==LINKTYPE || _la==STRING) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -1714,7 +1741,10 @@ public class CAParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==LINKTYPE || _la==STRING) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -1843,7 +1873,7 @@ public class CAParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\33\u00fa\4\2\t\2"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\33\u00fa\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -1863,10 +1893,10 @@ public class CAParser extends Parser {
 		"\5\31\u00e6\n\31\3\31\3\31\3\31\3\32\3\32\3\33\3\33\3\34\3\34\3\34\3\35"+
 		"\3\35\3\35\3\35\6\35\u00f6\n\35\r\35\16\35\u00f7\3\35\2\2\36\2\4\6\b\n"+
 		"\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668\2\4\4\2\26\26\30\30"+
-		"\3\2\27\30\u00fd\2=\3\2\2\2\4J\3\2\2\2\6N\3\2\2\2\bQ\3\2\2\2\nS\3\2\2"+
-		"\2\fl\3\2\2\2\16n\3\2\2\2\20p\3\2\2\2\22\u0082\3\2\2\2\24\u0093\3\2\2"+
-		"\2\26\u0095\3\2\2\2\30\u00a6\3\2\2\2\32\u00a8\3\2\2\2\34\u00aa\3\2\2\2"+
-		"\36\u00ac\3\2\2\2 \u00b1\3\2\2\2\"\u00b3\3\2\2\2$\u00b8\3\2\2\2&\u00cc"+
+		"\3\2\27\30\2\u00fd\2=\3\2\2\2\4J\3\2\2\2\6N\3\2\2\2\bQ\3\2\2\2\nS\3\2"+
+		"\2\2\fl\3\2\2\2\16n\3\2\2\2\20p\3\2\2\2\22\u0082\3\2\2\2\24\u0093\3\2"+
+		"\2\2\26\u0095\3\2\2\2\30\u00a6\3\2\2\2\32\u00a8\3\2\2\2\34\u00aa\3\2\2"+
+		"\2\36\u00ac\3\2\2\2 \u00b1\3\2\2\2\"\u00b3\3\2\2\2$\u00b8\3\2\2\2&\u00cc"+
 		"\3\2\2\2(\u00ce\3\2\2\2*\u00d1\3\2\2\2,\u00d5\3\2\2\2.\u00e0\3\2\2\2\60"+
 		"\u00e2\3\2\2\2\62\u00ea\3\2\2\2\64\u00ec\3\2\2\2\66\u00ee\3\2\2\28\u00f1"+
 		"\3\2\2\2:<\5\4\3\2;:\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\3\3\2\2\2"+

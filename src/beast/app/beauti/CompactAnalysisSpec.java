@@ -534,7 +534,8 @@ public class CompactAnalysisSpec extends BEASTObject {
 			} else {
 				in.setValue(bo, o);
 			}
-		}	}
+		}	
+	}
 
 
 	
