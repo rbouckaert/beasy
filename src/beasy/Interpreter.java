@@ -3,6 +3,7 @@ package beasy;
 import java.io.File;
 import java.util.Arrays;
 
+import beast.app.beauti.Beauti;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.CAParsingException;
@@ -28,8 +29,11 @@ public class Interpreter extends Runnable {
 	public void initAndValidate() {
 	}
 
+	
 	@Override
 	public void run() throws Exception {
+		
+		
 		validateInputs();
 		
 		File out = outFileInput.get();
@@ -49,6 +53,9 @@ public class Interpreter extends Runnable {
 		BeautiDoc doc = new BeautiDoc();
 		doc.beautiConfig = new BeautiConfig();
 		doc.beautiConfig.initAndValidate();
+		// this sets a flag so classes think we are in BEAUti
+		// which causes some classes to behave differently (in particular ThreadedTreeLikelihood)
+		Beauti beauti = new Beauti(doc);  
 
 		String script = BeautiDoc.load(inputFileInput.get());
 		
@@ -63,6 +70,7 @@ public class Interpreter extends Runnable {
 		}
 		
 		doc.save(out);
+
 	}
 
 	

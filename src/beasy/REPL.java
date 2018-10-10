@@ -2,6 +2,7 @@ package beasy;
 
 import java.io.*;
 
+import beast.app.beauti.Beauti;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.CAParsingException;
@@ -18,6 +19,10 @@ public class REPL {
 		doc = new BeautiDoc();
 		doc.beautiConfig = new BeautiConfig();
 		doc.beautiConfig.initAndValidate();
+		
+		// this sets a flag so classes think we are in BEAUti
+		// which causes some classes to behave differently (in particular ThreadedTreeLikelihood)
+		Beauti beauti = new Beauti(doc);
 	}
 	
 	public REPL(BeautiDoc doc) {

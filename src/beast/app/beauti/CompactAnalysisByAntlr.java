@@ -498,7 +498,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				purgeTreeDistribution(subTemplate, pc, input, o);
 			}
 			
-			BEASTInterface bo = subTemplate.createSubNet(pc, true);
+			BEASTInterface bo = subTemplate.createSubNet(pc, false);
     		for (int i = 0; i < param.size(); i++) {
     			Input<?> in = bo.getInput(param.get(i));
     			if (in.get() instanceof Parameter.Base) {
@@ -693,7 +693,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	    	priorProviders.add(p.new MRCAPriorProvider());
 	    	
 	        // build up list of data types
-	        List<String> importerClasses = PackageManager.find(PriorProvider.class, new String[]{"beast.app"});
+	        List<String> importerClasses = PackageManager.find(PriorProvider.class, new String[]{"beast"});
 	        for (String _class: importerClasses) {
 	        	try {
 	        		if (!_class.startsWith(this.getClass().getName())) {
@@ -747,14 +747,14 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (newObjects == null) {
 				Log.info("No objects created");
 			} else {
-				BEASTInterface p = doc.pluginmap.get("prior");
-				if (p != null && p instanceof CompoundDistribution) {
-					CompoundDistribution prior = (CompoundDistribution) p;
-					for (Distribution distr : newObjects) {
-						Log.info("Created " + distr.getID());
-						prior.pDistributions.set(distr);
-					}
-				}
+//				BEASTInterface p = doc.pluginmap.get("prior");
+//				if (p != null && p instanceof CompoundDistribution) {
+//					CompoundDistribution prior = (CompoundDistribution) p;
+//					for (Distribution distr : newObjects) {
+//						Log.info("Created " + distr.getID());
+//						prior.pDistributions.set(distr);
+//					}
+//				}
 			}
 
 			return super.visitAdd(ctx);
