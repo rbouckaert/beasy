@@ -747,17 +747,17 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (newObjects == null) {
 				Log.info("No objects created");
 			} else {
-//				BEASTInterface p = doc.pluginmap.get("prior");
-//				if (p != null && p instanceof CompoundDistribution) {
-//					CompoundDistribution prior = (CompoundDistribution) p;
-//					for (Distribution distr : newObjects) {
-//						Log.info("Created " + distr.getID());
-//						prior.pDistributions.set(distr);
-//					}
-//				}
+				BEASTInterface p = doc.pluginmap.get("prior");
+				if (p != null && p instanceof CompoundDistribution) {
+					CompoundDistribution prior = (CompoundDistribution) p;
+					for (Distribution distr : newObjects) {
+						Log.info("Created " + distr.getID());
+						prior.pDistributions.set(distr);
+					}
+				}
 			}
 
-			return super.visitAdd(ctx);
+			return newObjects; // super.visitAdd(ctx);
 		}
 		
 		private PriorProvider getProvider(AddContext ctx) {

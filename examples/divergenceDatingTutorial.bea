@@ -31,5 +31,5 @@ use RelaxedClockLogNormal;
 
 
 // add calibration
-taxonset HC = Human Chimp;
-add MRCAPrior(HC, Normal(mean=6,sigma=0.5));
+taxonset humanchimp = Homo_sapiens Pan;
+add MRCAPrior(humanchimp, Normal(mean=6,sigma=0.5));

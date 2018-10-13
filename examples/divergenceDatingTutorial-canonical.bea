@@ -9,7 +9,7 @@ import examples/nexus/primate-mtDNA.nex;
 link tree {noncoding,1stpos,2ndpos,3rdpos};
 link clock {noncoding,1stpos,2ndpos,3rdpos};
 
-rename tree noncoding = tree;
+rename tree noncoding = treepartition;
 rename clock noncoding = clock;
 
 // link sitemodel;
@@ -31,6 +31,6 @@ use branchRateModel{clock} = RelaxedClockLogNormal;
 
 
 // add calibration
-taxonset HC = Human Chimp;
-add MRCAPrior(HC, Normal(mean=6,sigma=0.5));
+taxonset humanchimp = Homo_sapiens Pan;
+add MRCAPrior(humanchimp, Normal(mean=6,sigma=0.5), treepartition);
 
