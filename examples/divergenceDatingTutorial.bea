@@ -9,7 +9,7 @@ import examples/nexus/primate-mtDNA.nex;
 link tree;
 link clock;
 
-rename tree = tree;
+rename tree = treepartition;
 rename clock = clock;
 
 // link sitemodel;
@@ -31,5 +31,5 @@ use RelaxedClockLogNormal;
 
 
 // add calibration
-taxonset humanchimp = Homo_sapiens Pan;
-add MRCAPrior(humanchimp, Normal(mean=6,sigma=0.5));
+taxonset Hominidae = Homo_sapiens Pan Pongo Gorilla;
+add MRCAPrior(Hominidae, Normal(mean=20,sigma=3.5));

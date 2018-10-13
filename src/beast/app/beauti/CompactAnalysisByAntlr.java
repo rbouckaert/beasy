@@ -292,7 +292,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			inputSet = new LinkedHashSet<>();
 			for (String pattern: patterns) {
 				InputFilter filter = new InputFilter();
-				inputSet.addAll(filter.getInputSet(doc, pattern, linkType, null, null));
+				inputSet.addAll(filter.getInputSet(doc, pattern, BeautiDoc.ALIGNMENT_PARTITION, null, null));
 			}
 			return inputSet;
 		}
@@ -385,7 +385,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			// set up inputSet
 			mapInputToObject = InputFilter.initInputMap(doc);
 			super.visitUse(ctx);
-			if (inputSet == null) {
+			if (inputSet == null || inputSet.size() == 0) {
 				setupInputSet(((MCMC)doc.mcmc.get()).posteriorInput.get());
 			}
 			

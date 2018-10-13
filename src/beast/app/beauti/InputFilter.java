@@ -103,7 +103,7 @@ public class InputFilter {
 						p = id.substring(id.indexOf(':') + 1);
 						switch (id.charAt(id.indexOf(':') - 1)) {
 						case 's':
-							currentContext = BeautiDoc.CLOCKMODEL_PARTITION;
+							currentContext = BeautiDoc.SITEMODEL_PARTITION;
 							break;
 						case 't':
 							currentContext = BeautiDoc.TREEMODEL_PARTITION;

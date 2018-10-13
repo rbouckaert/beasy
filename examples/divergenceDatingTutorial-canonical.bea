@@ -31,6 +31,6 @@ use branchRateModel{clock} = RelaxedClockLogNormal;
 
 
 // add calibration
-taxonset humanchimp = Homo_sapiens Pan;
-add MRCAPrior(humanchimp, Normal(mean=6,sigma=0.5), treepartition);
+taxonset Hominidae = Homo_sapiens Pan Pongo Gorilla;
+add MRCAPrior(Hominidae, Normal(mean=20,sigma=3.5), treepartition);
 
