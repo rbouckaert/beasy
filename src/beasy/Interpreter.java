@@ -1,7 +1,10 @@
 package beasy;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 
 import beast.app.beauti.Beauti;
 import beast.app.beauti.BeautiConfig;
@@ -14,6 +17,7 @@ import beast.core.Description;
 import beast.core.Input;
 import beast.core.Runnable;
 import beast.core.util.Log;
+import beast.util.PackageManager;
 
 @Description("Runs a Beasy file, and save output to XML")
 public class Interpreter extends Runnable {
@@ -69,11 +73,27 @@ public class Interpreter extends Runnable {
 			Log.info("Error: " + e.getMessage());
 		}
 		
-		doc.save(out);
+		String XML = doc.toXML();
+		save(XML, script, out);
+	}
+	
+	static void save(String XML, String script, File out) throws IOException {
+    	Map<String, String > classToPackageMap = PackageManager.getClassToPackageMap();
+    	String packageVersion = classToPackageMap.get(Interpreter.class.getName());
+
+        StringBuilder buf = new StringBuilder();
+        buf.append("\n\n<!-- Generated with Beasy " + packageVersion + " -->\n\n");
+        buf.append("<!--\n");
+        buf.append(script);
+        buf.append("-->\n\n");
+        XML = XML.replaceFirst("\n", buf.toString());
+        FileWriter outfile = new FileWriter(out);
+        outfile.write(XML);
+        outfile.close();
 
 	}
 
-	
+
 	public static void main(String[] args) throws Exception {
 		new Application(new Interpreter(), "BEASY Interpreter", args);
 	}

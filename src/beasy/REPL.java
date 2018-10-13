@@ -71,14 +71,11 @@ public class REPL {
 			Log.warning("File is not saved");
 			return;
 		}
+		
 		try {
 			XMLProducer xmlProducer = new XMLProducer();
 			MCMC mcmc = (MCMC) doc.mcmc.get();
-
-			FileWriter outfile = new FileWriter(new File(strs[1]));
-	        outfile.write(xmlProducer.toXML(mcmc));
-	        outfile.close();
-	        System.err.println("Results in " + strs[1]);
+			Interpreter.save(xmlProducer.toXML(mcmc), cmd, new File(strs[1]));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
