@@ -8,9 +8,15 @@ use frequencies{dna} = Empirical;
 // == "use Empirical;"
 
 taxonset MR = Mouse Rat;
-add MRCAPrior(MR, Normal(mean=37,sigma=1), monophyletic);
+add MRCAPrior(MR, Normal(mean=37,sigma=1));
 
 // alternative way to set distribution:
 // add MRCAPrior(MR)
 // use distr[MR.prior] = Normal(mean=37,sigma=1) 
 // set monophyletic[MR.prior] = true;
+
+
+add MultiMonophyleticConstraint("(Mouse,Rat,Cow)");
+
+
+add MultiMonophyleticConstraint('((Mouse,Rat,Cow),Chicken)', dna)
