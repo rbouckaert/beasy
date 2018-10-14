@@ -12,10 +12,10 @@ import beast.core.util.Log;
 import beast.util.XMLProducer;
 
 /** A simple Read-Eval-Print-Loop for Beasy: a Compact Analysis language for BEAST **/ 
-public class REPL {
+public class BeasyREPL {
 	BeautiDoc doc;
 
-	public REPL() {
+	public BeasyREPL() {
 		doc = new BeautiDoc();
 		doc.beautiConfig = new BeautiConfig();
 		doc.beautiConfig.initAndValidate();
@@ -25,7 +25,7 @@ public class REPL {
 		Beauti beauti = new Beauti(doc);
 	}
 	
-	public REPL(BeautiDoc doc) {
+	public BeasyREPL(BeautiDoc doc) {
 		this.doc = doc;
 	}
 
@@ -75,7 +75,7 @@ public class REPL {
 		try {
 			XMLProducer xmlProducer = new XMLProducer();
 			MCMC mcmc = (MCMC) doc.mcmc.get();
-			Interpreter.save(xmlProducer.toXML(mcmc), cmd, new File(strs[1]));
+			BeasyInterpreter.save(xmlProducer.toXML(mcmc), cmd, new File(strs[1]));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -87,7 +87,7 @@ public class REPL {
 
 	public static void main(String[] args) {
 		System.out.println("A simple Read-Eval-Print-Loop for Beasy: a Compact Analysis language for BEAST");
-		REPL repl = new REPL();
+		BeasyREPL repl = new BeasyREPL();
 		repl.doREPL();
 	}
 

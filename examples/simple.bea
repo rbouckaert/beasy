@@ -1,0 +1,5 @@
+template Standard;
+import ../beast2/examples/nexus/dna.nex;
+use HKY;
+use RelaxedClockLogNormal;
+use [prior] = CoalescentExponentialPopulation;

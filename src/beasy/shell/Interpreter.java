@@ -36,7 +36,7 @@ package beasy.shell;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beasy.JConsole;
-import beasy.REPL;;
+import beasy.BeasyREPL;;
 
 public class Interpreter 
 {
@@ -68,7 +68,7 @@ public class Interpreter
 //	}
 
 	public void run(String cmd) {
-		REPL repl = new REPL(doc);
+		BeasyREPL repl = new BeasyREPL(doc);
 		repl.processCmd(cmd);
 	}
 

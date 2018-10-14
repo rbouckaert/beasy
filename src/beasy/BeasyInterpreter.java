@@ -20,7 +20,7 @@ import beast.core.util.Log;
 import beast.util.PackageManager;
 
 @Description("Runs a Beasy file, and save output to XML")
-public class Interpreter extends Runnable {
+public class BeasyInterpreter extends Runnable {
 	final public Input<InFile> inputFileInput = new Input<>("in", "Input file with BEASY specification.");
 	final public Input<OutFile> outFileInput = new Input<>("out", "Output XML file. If not specified, input file will be used with .xml extension");
     public enum MODE {
@@ -79,7 +79,7 @@ public class Interpreter extends Runnable {
 	
 	static void save(String XML, String script, File out) throws IOException {
     	Map<String, String > classToPackageMap = PackageManager.getClassToPackageMap();
-    	String packageVersion = classToPackageMap.get(Interpreter.class.getName());
+    	String packageVersion = classToPackageMap.get(BeasyInterpreter.class.getName());
 
         StringBuilder buf = new StringBuilder();
         buf.append("\n\n<!-- Generated with Beasy " + packageVersion + " -->\n\n");
@@ -95,6 +95,6 @@ public class Interpreter extends Runnable {
 
 
 	public static void main(String[] args) throws Exception {
-		new Application(new Interpreter(), "BEASY Interpreter", args);
+		new Application(new BeasyInterpreter(), "BEASY Interpreter", args);
 	}
 }

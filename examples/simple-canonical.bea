@@ -1,0 +1,5 @@
+template Standard;
+import ../beast2/examples/nexus/dna.nex;
+use substModel{dna} = HKY;
+use branchRateModel{dna} = RelaxedClockLogNormal;
+use [prior] = CoalescentExponentialPopulation;
