@@ -139,7 +139,7 @@ public class HistoryPanel extends JPanel implements KeyListener {
 		setMaximumSize(new Dimension(768,2048));
 	}
 
-	final static String BACKUP_FILE = "beastshell.history";
+	final static String BACKUP_FILE = "beasy.history";
 	
 	void loadBackup() {
 		File backup = new File(PackageManager.getPackageUserDir() + BeasyStudio.PACKAGENAME + BACKUP_FILE);

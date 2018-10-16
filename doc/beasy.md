@@ -69,23 +69,51 @@ The second action is encoded in BEAUti sub-templates, so most of the complexity 
 Beasy consists of commands separated by semicolons. The first command should say which `template` is being used (e.g. Standard or StarBeast2), equivalent to selecting a template under the `File/templates` menu in BEAUti. Usually, this is followed by the `import` command for getting data in NEXUS format into the model (equivalent with the `File/Import` menu in BEAUti).
 This is followed by a number of other commands. The order only matters in the sense they matter in BEAUti (like linking site models, setting the site model, followed by unlinking the site models).
 
+## Beasy commands
+
 Commands are `template`, `import`, `link`, `ulink`, `use`, `set`, `taxonset`, `add`, `rename`, `rm`.
+
+
+## Input identifiers
 
 To identify the input(s) that need to be updated, we use `inputidentifiers`. Inputs can be identified by id, by name, by name of the element in the XML followed by the input name, and these can be conditioned on partitions that they are in. To give a few examples
 
-```
-branchRateModel // all inputs with name branchRateModel
-branchRateModel{coding1, coding2} // branchRateModel inputs for partition coding1 and coding2, but no other partitions.
-branchRateModel[treeLikelihood1] // branchRateModel for object with id="treeLikelihood1"
-distribution@branchRateModel // all branchRateModel inputs for distribution elements
+```java
+// all inputs with name branchRateModel:
+branchRateModel 
+
+// branchRateModel inputs for partition coding1 and coding2, but no other partitions:
+branchRateModel{coding1, coding2} 
+
+// branchRateModel for object with id="treeLikelihood1":
+branchRateModel[treeLikelihood1] 
+
+// all branchRateModel inputs for distribution elements:
+distribution@branchRateModel 
 ```
 
+
+## Comments
+
+You can insert comments using C/Java style comments, like so:
+
+```java
+template StarBeast2; // this comment goes to the end of the the line
+
+/** 
+ * this comment starts at the backslash and continues
+ * over multiple lines to the next backslash
+ **/
+import ../beast2/examples/nexus/28.nex;
+```
 
 # Common actions
 
 ## Selecting the main templates
 
-## Importing data
+## Importing data and creating partitions
+
+## Removing partitions
 
 ## Linking/Unlinking partitions
 

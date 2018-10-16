@@ -50,13 +50,13 @@ import beast.core.parameter.RealParameter;
 import beast.math.distributions.Prior;
 import beast.math.distributions.Uniform;
 import beast.util.PackageManager;
+import beasy.BeasyInterpreter;
 import beasy.Help;
 import beasy.JConsole;
 
 public class BeasyStudio extends JSplitPane {
 	public final static String ICONPATH = "beasy/shell/icons/";
-	public final static String PACKAGENAME = "/compactanalysis/";
-	public final static String VERSION = "0.0.1";
+	public final static String PACKAGENAME = "/beasy/";
 	
 	private static final long serialVersionUID = 1L;
 
@@ -169,7 +169,7 @@ public class BeasyStudio extends JSplitPane {
 	}
 	
 	void doAbout() {
-		JOptionPane.showMessageDialog(frame, "BEAST shell version " + VERSION);
+		JOptionPane.showMessageDialog(frame, "Beasy Studio version " + BeasyInterpreter.beasyVersion());
 	}
 	
 	void doQuit() {
@@ -401,6 +401,9 @@ public class BeasyStudio extends JSplitPane {
 			
             // add combobox with parametric distributions
             List<BeautiSubTemplate> availableBEASTObjects = interpreter.doc.getInputEditorFactory().getAvailableTemplates(prior.distInput, prior, null, interpreter.doc);
+            if (availableBEASTObjects.size() == 0) {
+            	JOptionPane.showMessageDialog(null, "No Parametric distirbutions available\nDid you select a template with the template command?");
+            }
             JComboBox<BeautiSubTemplate> comboBox = new JComboBox<BeautiSubTemplate>(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
             panel.add(comboBox);
             
@@ -535,6 +538,8 @@ public class BeasyStudio extends JSplitPane {
 
 		// try to load JavaFX
 		loadJavaFX();
+
+		Utils.loadUIManager();
 	
 		JFrame frame = new JFrame();
 		final BeasyStudio studio = new BeasyStudio(args);
@@ -542,6 +547,7 @@ public class BeasyStudio extends JSplitPane {
 		studio.frame = frame;
 		
 		Help.studio = studio;
+		
 		
 		frame.setLayout(new BorderLayout());
 		frame.add(studio, BorderLayout.CENTER);

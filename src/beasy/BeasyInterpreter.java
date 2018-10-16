@@ -66,6 +66,9 @@ public class BeasyInterpreter extends Runnable {
 		try {
 			CompactAnalysisByAntlr parser = new CompactAnalysisByAntlr(doc);
 			parser.parseCA(script + ";");
+
+			String XML = doc.toXML();
+			save(XML, script, out);
 		} catch (CAParsingException e) {
 			Log.info(e.getMessage());
 		} catch (Exception e) {
@@ -73,13 +76,16 @@ public class BeasyInterpreter extends Runnable {
 			Log.info("Error: " + e.getMessage());
 		}
 		
-		String XML = doc.toXML();
-		save(XML, script, out);
+	}
+	
+	public static String beasyVersion() {
+		Map<String, String > classToPackageMap = PackageManager.getClassToPackageMap();
+		String packageVersion = classToPackageMap.get(BeasyInterpreter.class.getName());
+		return packageVersion;
 	}
 	
 	static void save(String XML, String script, File out) throws IOException {
-    	Map<String, String > classToPackageMap = PackageManager.getClassToPackageMap();
-    	String packageVersion = classToPackageMap.get(BeasyInterpreter.class.getName());
+    	String packageVersion = beasyVersion();
 
         StringBuilder buf = new StringBuilder();
         buf.append("\n\n<!-- Generated with Beasy " + packageVersion + " -->\n\n");
