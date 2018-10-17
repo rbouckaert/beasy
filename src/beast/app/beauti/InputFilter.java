@@ -57,17 +57,19 @@ public class InputFilter {
 
 	public static Map<Input<?>, BEASTInterface> initInputMap(BeautiDoc doc) {
 		Map<Input<?>, BEASTInterface> mapInputToObject = new LinkedHashMap<>();
-		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
-			if (o.getID() == null) {
-				// hack to ensure any object has an ID
-				o.setID(o.getClass().getName() + Randomizer.nextInt(1000));
-				Log.info("Setting ID: " + o.getID());
-				doc.registerPlugin(o);
-				doc.pluginmap.remove(null);
-			}
-
-			for (Input<?> input : o.listInputs()) {
-				mapInputToObject.put(input, o);
+		if (doc.mcmc.get() != null) {
+			for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
+				if (o.getID() == null) {
+					// hack to ensure any object has an ID
+					o.setID(o.getClass().getName() + Randomizer.nextInt(1000));
+					Log.info("Setting ID: " + o.getID());
+					doc.registerPlugin(o);
+					doc.pluginmap.remove(null);
+				}
+	
+				for (Input<?> input : o.listInputs()) {
+					mapInputToObject.put(input, o);
+				}
 			}
 		}
 		return mapInputToObject;
@@ -185,22 +187,24 @@ public class InputFilter {
 
 	static public Set<Input<?>> setupInputSet(String inputPattern, BeautiDoc doc, boolean useChildren) {
 		Set<Input<?>> inputSet = new LinkedHashSet<>();
-		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
-			for (Input<?> input : o.listInputs()) {
-				if (input.getName().matches(inputPattern)) {
-					if (!useChildren) {
-						inputSet.add(input);
-						if (input.getType() == null) {
-							input.determineClass(o);
-						}
-					} else {
-						Object o2 = input.get();
-						if (o2 instanceof BEASTInterface) {
-							BEASTInterface bo = (BEASTInterface) o2;
-							for (Input<?> input2 : bo.listInputs()) {
-								inputSet.add(input2);
-								if (input2.getType() == null) {
-									input2.determineClass(o2);
+		if (doc.mcmc.get() != null) {
+			for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
+				for (Input<?> input : o.listInputs()) {
+					if (input.getName().matches(inputPattern)) {
+						if (!useChildren) {
+							inputSet.add(input);
+							if (input.getType() == null) {
+								input.determineClass(o);
+							}
+						} else {
+							Object o2 = input.get();
+							if (o2 instanceof BEASTInterface) {
+								BEASTInterface bo = (BEASTInterface) o2;
+								for (Input<?> input2 : bo.listInputs()) {
+									inputSet.add(input2);
+									if (input2.getType() == null) {
+										input2.determineClass(o2);
+									}
 								}
 							}
 						}
@@ -220,6 +224,9 @@ public class InputFilter {
 	static private void collectPredecessors(BEASTInterface bo, List<BEASTInterface> predecessors) {
 		predecessors.add(bo);
 		if (bo instanceof Alignment || bo instanceof FilteredAlignment) {
+			return;
+		}
+		if (bo == null) {
 			return;
 		}
 		try {

@@ -4,7 +4,7 @@ grammar CA;
  
 // parser rules
   
-casentence : cmd * ;
+casentence : cmd + ;
 
 cmd : (template | import_ | use | set | link | unlink | rename | add | rm | taxonset )? ';' ;
 

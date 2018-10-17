@@ -11,9 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.IntStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -22,7 +23,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.PartitionContext;
-import beast.app.beauti.PriorListInputEditor.MRCAPriorProvider;
 import beast.app.beauti.compactanalysis.*;
 import beast.app.beauti.compactanalysis.CAParser.*;
 import beast.core.BEASTInterface;
@@ -41,6 +41,8 @@ import beast.util.PackageManager;
 
 public class CompactAnalysisByAntlr extends CABaseListener {
 	BeautiDoc doc = null;
+	CAParser parser = null;
+	IntStream input = null;
 
 	public CompactAnalysisByAntlr() {
 		this.doc = new BeautiDoc();
@@ -75,7 +77,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
         };
 
         // Get our lexer
-	    CALexer lexer = new CALexer(new ANTLRInputStream(CASentence));
+	    CALexer lexer = new CALexer(CharStreams.fromString(CASentence));
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener);
 
@@ -83,7 +85,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	    CommonTokenStream tokens = new CommonTokenStream(lexer);
 	 
 	    // Pass the tokens to the parser
-	    CAParser parser = new CAParser(tokens);
+	    parser = new CAParser(tokens);
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
 	 
@@ -100,9 +102,19 @@ public class CompactAnalysisByAntlr extends CABaseListener {
         // Traverse parse tree, constructing BEAST tree along the way
         CAASTVisitor visitor = new CAASTVisitor(doc);
 
+        print(parseTree);
+        
         visitor.visit(parseTree);
 	}
 	
+
+	private void print(ParseTree parseTree) {		
+//		System.out.println(parseTree.getClass().getName() + " >" + parseTree.getText() + "<");
+//		for (int i = 0; i < parseTree.getChildCount(); i++) {
+//			print(parseTree.getChild(i));
+//		}
+	}
+
 
 	public class CAASTVisitor extends CABaseVisitor<Object> {
 		
@@ -322,6 +334,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 
 		@Override
 		public Object visitLink(LinkContext ctx) {
+			if (doc.mcmc.get() == null) {
+				parser.notifyErrorListeners("Use `template` and `import` command before `link` command.");
+				return null;
+			}
+
 			Integer linktype = (Integer) visit(ctx.getChild(1));
 			if (ctx.getChildCount() == 2) {
 				processPattern(".*");
@@ -337,6 +354,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		
 		@Override
 		public Object visitUnlink(UnlinkContext ctx) {
+			if (doc.mcmc.get() == null) {
+				parser.notifyErrorListeners("Use `template` and `import` command before `unlink` command.");
+				return null;
+			}
+
 			Integer linktype = (Integer) visit(ctx.getChild(1));
 			if (ctx.getChildCount() == 2) {
 				processPattern(".*");
@@ -354,6 +376,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		
 		@Override
 		public Object visitSet(SetContext ctx) {
+			if (doc.mcmc.get() == null) {
+				parser.notifyErrorListeners("Use `template` command before `set` command.");
+				return null;
+			}
+
 			// set <identifier> = <value>;
 			String value = ctx.getChild(3).getText();;
 			
@@ -382,6 +409,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 
 		@Override
 		public Object visitUse(UseContext ctx) {
+			if (doc.mcmc.get() == null) {
+				parser.notifyErrorListeners("Use `template` command before `use` command.");
+				return null;
+			}
+			
 			// set up inputSet
 			mapInputToObject = InputFilter.initInputMap(doc);
 			super.visitUse(ctx);
@@ -656,6 +688,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		
 		@Override
 		public Object visitRename(RenameContext ctx) {
+			if (doc.mcmc.get() == null) {
+				parser.notifyErrorListeners("Use `template` and `import` command before `rename` command.");
+				return null;
+			}
+
 			Object o = visit(ctx.getChild(1));
 			int partitionID = (Integer) o;
 
@@ -732,6 +769,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	    
 		@Override
 		public Object visitAdd(AddContext ctx) {
+			if (doc.mcmc.get() == null) {
+				parser.notifyErrorListeners("Use `template` command before `add` command.");
+				return null;
+			}
+
 			PriorProvider provider = getProvider(ctx);
 			
 			// grab arguments
@@ -797,6 +839,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 
 		@Override
 		public Object visitRm(RmContext ctx) {
+			if (doc.mcmc.get() == null) {
+				parser.notifyErrorListeners("Use `template` and `import` command before `rm` command.");
+				return null;
+			}
+
 			// set up inputSet
 			mapInputToObject = InputFilter.initInputMap(doc);
 			super.visitRm(ctx);
@@ -834,6 +881,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 
 		@Override
 		public Object visitTaxonset(TaxonsetContext ctx) {
+			if (doc.mcmc.get() == null) {
+				parser.notifyErrorListeners("Use `template` command before `taxonset` command.");
+				return null;
+			}
+
 			String setID = ctx.getChild(1).getText();
 			TaxonSet taxonset;
 			if (doc.taxaset.containsKey(setID) && doc.taxaset.get(setID) instanceof TaxonSet) {
