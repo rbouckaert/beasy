@@ -40,7 +40,7 @@ Beasy allows you to do pretty much **everything you can do in BEAUti**, like sel
 
 To use Beasy, first you need to install the Beasy package in the [package manager](http://www.beast2.org/managing-packages/). 
 
-There are two ways to use Beasy: as a script interpreter (converting a Beasy script from file to XML), or interactively using the Read-Eval-Print-Loop (REPL). Both can be started  using the AppLauncher either from a terminal.
+There are three ways to use Beasy: as a script interpreter (converting a Beasy script from file to XML), interactively using the Read-Eval-Print-Loop (REPL) or interactively using Beasy Studio. All these can be started using the AppLauncher either from a terminal, or via Beauti using the <tt>File/Launch Apps</tt> menu.
 
 For instances, to convert the file `BeasyScript.bea` containing a Beasy script to `beast.xml`, use
 
@@ -49,6 +49,12 @@ applauncher BeasyInterpreter -in BeasyScript.bea -out beast.xml
 ```
 
 To start the REPL, just run from a terminal `applauncher BeasyREPL` or choose `Beasy REPL` from the application launcher dialog that you get when choosing the menu `File/Launch Apps` in BEAUti.
+
+
+Beasy Studio is a small integrated development environment where you can easily develop Beasy scripts, and which supports code completion to some extent, online help, a history and Beasy script editor.
+
+![Beasy Studio, the IDE for Beasy](beasystudio.png)
+
 
 # Beasy philosophy
 

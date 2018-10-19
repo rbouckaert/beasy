@@ -54,6 +54,7 @@ import javax.swing.text.*;
 
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.InputFilter;
+import beast.app.util.Utils;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.parameter.Parameter;
@@ -104,8 +105,6 @@ public class JConsole extends JScrollPane
     public JTextPane text;
     private DefaultStyledDocument docStyle;
     
-    List<String> templates;
-    
     static Semaphore mutex = new Semaphore(1);
 
 //	NameCompletion nameCompletion;
@@ -117,7 +116,10 @@ public class JConsole extends JScrollPane
     public BeasyStudio studio = null;
     
     
-	public JConsole() {
+	// list of available templates
+    List<String> templates;
+
+    public JConsole() {
 		this(null, null);
 	}
 	
@@ -358,24 +360,12 @@ public class JConsole extends JScrollPane
 		
 		// complete template
 		if (part0.startsWith("template")) {
-			part = part.substring(8).trim();
-			// list of available templates
-			initTemplates();
-			List<String> matches = new ArrayList<>();
-			for (String template : templates) {
-				if (template.startsWith(part)) {
-					matches.add(template);
-				}
-			}
-			if (matches.size() == 1) {				
-				replaceRange("template " + matches.get(0), cmdStart, textLength());
-				return;
-			}
-			if (matches.size() == 0) {
-				printHint("No template matches " + part, Color.blue);
-				return;
-			}
-			printHint("Choose one of: " + Arrays.toString(matches.toArray()), Color.blue);
+			completeTemplate(part);
+			return;
+		}
+
+		if (part0.startsWith("import")) {
+			completeImport(part);
 			return;
 		}
 
@@ -455,6 +445,57 @@ public class JConsole extends JScrollPane
 		}
 	}
 
+	
+	private void completeImport(String part) {
+		part = part.substring(7).trim();
+		String cwd = System.getProperty("user.dir");
+		String fileSep = Utils.isWindows() ? "\\\\" : "/";
+		cwd = cwd + fileSep + part;
+		String dir = cwd.substring(0, cwd.lastIndexOf(fileSep));
+		String rest = cwd.substring(cwd.lastIndexOf(fileSep) + 1);
+		File d = new File(dir);
+		List<String> matches = new ArrayList<>();
+		for (File f : d.listFiles()) {
+			if (f.getName().startsWith(rest)) {
+				try {
+					matches.add(f.getCanonicalPath());
+				} catch (IOException e) {					
+				}
+			}
+		}
+		
+		
+		if (matches.size() == 1) {
+			replaceRange("import " + matches.get(0), cmdStart, textLength());
+			return;
+		}
+		if (matches.size() == 0) {
+			printHint("No template matches " + part, Color.blue);
+			return;
+		}
+		printHint("Choose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+	}
+	
+	private void completeTemplate(String part) {
+		part = part.substring(8).trim();
+		
+		initTemplates();
+		List<String> matches = new ArrayList<>();
+		for (String template : templates) {
+			if (template.startsWith(part)) {
+				matches.add(template);
+			}
+		}
+		if (matches.size() == 1) {				
+			replaceRange("template " + matches.get(0), cmdStart, textLength());
+			return;
+		}
+		if (matches.size() == 0) {
+			printHint("No template matches " + part, Color.blue);
+			return;
+		}
+		printHint("Choose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+	}
 	
 	private void initTemplates() {
 		if (templates != null) {
