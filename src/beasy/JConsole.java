@@ -43,6 +43,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,6 +58,7 @@ import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.parameter.Parameter;
 import beast.core.util.Log;
+import beast.util.PackageManager;
 import beasy.shell.BeasyStudio;
 import beasy.shell.HistoryPanel;
 
@@ -101,6 +103,8 @@ public class JConsole extends JScrollPane
     private JPopupMenu menu;
     public JTextPane text;
     private DefaultStyledDocument docStyle;
+    
+    List<String> templates;
     
     static Semaphore mutex = new Semaphore(1);
 
@@ -342,8 +346,41 @@ public class JConsole extends JScrollPane
 
 	private void completeCommand(final String part0 ) {
 //		Log.info(part0);
-		if (part0.trim().startsWith("set") || part0.trim().startsWith("use") || part0.trim().startsWith("rm")) {
-			String part = part0.trim().substring(3).trim();
+		String part = part0.trim();
+		
+		// complete command
+		for (String cmd : new String[]{"template", "import", "link", "unlink", "rm", "add", "set", "use", "taxonset", "rename"}) {
+			if (cmd.startsWith(part)) {
+				replaceRange(cmd + " ", cmdStart, textLength());
+				return;
+			}
+		}
+		
+		// complete template
+		if (part0.startsWith("template")) {
+			part = part.substring(8).trim();
+			// list of available templates
+			initTemplates();
+			List<String> matches = new ArrayList<>();
+			for (String template : templates) {
+				if (template.startsWith(part)) {
+					matches.add(template);
+				}
+			}
+			if (matches.size() == 1) {				
+				replaceRange("template " + matches.get(0), cmdStart, textLength());
+				return;
+			}
+			if (matches.size() == 0) {
+				printHint("No template matches " + part, Color.blue);
+				return;
+			}
+			printHint("Choose one of: " + Arrays.toString(matches.toArray()), Color.blue);
+			return;
+		}
+
+		if (part.startsWith("set") || part.startsWith("use") || part.startsWith("rm")) {
+			part = part.substring(3).trim();
 			int len = part.length();
 			String elementPattern = null;
 			String idPattern = null;
@@ -418,6 +455,43 @@ public class JConsole extends JScrollPane
 		}
 	}
 
+	
+	private void initTemplates() {
+		if (templates != null) {
+			return;
+		}
+		templates = new ArrayList<>();
+        List<String> beastDirectories = PackageManager.getBeastDirectories();
+        for (String dirName : beastDirectories) {
+            File dir = new File(dirName + "/templates");
+            if (dir.exists() && dir.isDirectory()) {
+                File[] files = dir.listFiles();
+                if (files != null) {
+                    for (File template : files) {
+                        if (template.getName().toLowerCase().endsWith(".xml")) {
+                            try {
+                                String xml2 = BeautiDoc.load(template.getAbsolutePath());
+                                if (xml2.contains("templateinfo=")) {
+                                	String fileName = template.getName();
+                                    fileName = fileName.substring(0, fileName.length() - 4);
+                                    String fileSep = System.getProperty("file.separator");
+                                    if (fileSep.equals("\\")) {
+                                        fileSep = "\\";
+                                    }
+                                    int i = fileName.lastIndexOf(fileSep) + 1;
+                                    String name = fileName.substring(i, fileName.length());
+                                    templates.add(name);
+                                }
+                            } catch (Exception e) {
+                            	Log.warning.println(e.getMessage());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+		
+	}
 	private String gcd(String gcd, String str) {
 		StringBuilder b = new StringBuilder();
 		for (int i = 0; i < gcd.length() && i < gcd.length(); i++) {

@@ -30,7 +30,7 @@ public class CAParsingException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return message + " line " + lineNum + " character " + characterNum;
+        return message + "\nline " + lineNum + " character " + characterNum;
     }
 
     /**

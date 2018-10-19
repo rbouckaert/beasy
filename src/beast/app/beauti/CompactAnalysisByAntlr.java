@@ -215,7 +215,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				for (int i = 1; i < providerList.size(); i++) {
 					providers += "," + providerList.get(i).getID();
 				}
-				throw new IllegalArgumentException("Could not match '" + providerID+"' to one of these providers: " + providers);
+				parser.notifyErrorListeners("Could not match '" + providerID+"' to one of these providers: " + providers);
+				return null;
 			}
 			
 	        List<BEASTInterface> beastObjects = provider.getAlignments(doc, new File[]{new File(fileName)}, args.toArray(new String[]{}));
@@ -327,7 +328,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				break;
 			}
 			if (linkType < 0) {
-				throw new IllegalArgumentException();
+				parser.notifyErrorListeners("link type not recognised: choose one of `sitemodel`, `clock`, `tree`");
+				return null;
 			}
 			return linkType;
 		}
@@ -346,7 +348,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				processPattern(ctx.getChild(2), linktype);
 			}
 			if (partitionContext.size() <= 1) {
-				throw new IllegalArgumentException("Link command : At least two partitions must be selected '" + ctx.getText() + "'");
+				parser.notifyErrorListeners("Link command : At least two partitions must be selected '" + ctx.getText() + "'");
+				return null;
 			}
 			DocumentEditor.link(doc, linktype, partitionContext);
 			return null;
@@ -367,7 +370,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				processPattern(ctx.getChild(2).getText());
 			}
 			if (partitionContext.size() <= 1) {
-				throw new IllegalArgumentException("Command unlink: At least one partition must be selected " + ctx.getText());
+				parser.notifyErrorListeners("Command unlink: At least one partition must be selected " + ctx.getText());
+				return null;
 			}
 			DocumentEditor.unlink(doc, linktype, partitionContext);
 			return null;
@@ -402,7 +406,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			}
 
 			if (inputSet.size() == 0) {
-				throw new IllegalArgumentException("Command set: cannot find suitable match for " + ctx.getText());
+				parser.notifyErrorListeners("Command set: cannot find suitable match for " + ctx.getText());
+				return null;
 			}
 			return null;
 		}
@@ -488,7 +493,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			}
 			
 			if (instantCount == 0) {
-				throw new IllegalArgumentException("Command use: cannot find suitable input to match for " + ctx.getText());				
+				parser.notifyErrorListeners("Command use: cannot find suitable input to match for " + ctx.getText());
+				return null;
 			} else {
 				doc.scrubAll(false, false);
 			}
@@ -571,22 +577,26 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	            	switch (c) {
 	            	case 's': 
 	            		if (!p.siteModel.equals(base.siteModel)) {
-	    		            throw new IllegalArgumentException("Could not determine partition context based on site model");
+	            			parser.notifyErrorListeners("Could not determine partition context based on site model");
+	            			return null;
 	            		}
 	            	break;
 	            	case 't': 
 	            		if (!p.tree.equals(base.tree)) {
-	    		            throw new IllegalArgumentException("Could not determine partition context based on tree model");
+	            			parser.notifyErrorListeners("Could not determine partition context based on tree model");
+	            			return null;
 	            		}
 	            	break;
 	            	case 'c': 
 	            		if (!p.clockModel.equals(base.clockModel)) {
-	    		            throw new IllegalArgumentException("Could not determine partition context based on clock model");
+	            			parser.notifyErrorListeners("Could not determine partition context based on clock model");
+	            			return null;
 	            		}
 	            	break;
 	            	default : 
 	            		if (!p.partition.equals(base.partition)) {
-	    		            throw new IllegalArgumentException("Could not determine partition context based on partition");
+	            			parser.notifyErrorListeners("Could not determine partition context based on partition");
+	            			return null;
 	            		}
 	            	}
 	            }
@@ -625,7 +635,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
             }
 
             
-            throw new IllegalArgumentException("Could not determine partition context for '"+o.getID()+"': a more specific ID would help");
+            parser.notifyErrorListeners("Could not determine partition context for '"+o.getID()+"': a more specific ID would help");
+            return null;
 		}
 
 		// assume this specifies a subtemplate
@@ -649,7 +660,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	        		return subTemplate;
 	        	}
 	        }
-			throw new IllegalArgumentException("Command use: cannot find matching template for " + subTemplateName);
+	        parser.notifyErrorListeners("Command use: cannot find matching template for " + subTemplateName);
+	        return null;
 		}
 
 		private String collectParameters(ParserRuleContext ctx, List<String> param, List<Object> value) {
@@ -697,7 +709,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			int partitionID = (Integer) o;
 
 			String oldName = null, newName;
-			if (ctx.getChildCount() > 2) {
+			if (ctx.getChildCount() > 4) {
 				oldName = ctx.getChild(2).getText();
 				newName = ctx.getChild(4).getText();
 			} else {
@@ -832,7 +844,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	    				providers += ", ";
 	    			}
 	    		}
-	    		throw new IllegalArgumentException("Could not find provider. Use one of " + providers + ".");
+	    		parser.notifyErrorListeners("Could not find provider. Use one of " + providers + ".");
+	    		return null;
 	    	}
 	    	return matches.get(0);
 		}
