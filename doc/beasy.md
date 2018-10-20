@@ -117,9 +117,29 @@ import ../beast2/examples/nexus/28.nex;
 
 ## Selecting the main templates
 
+The first thing to specify is a template using `template <template name>`, e.g.,
+
+```
+template StarBeast2
+```
+
+To find out which template names are available in BeasyStudio, type `template ` followed by the `tab` key and a list will be displayed in the "Hints" window. These are the same template names as shown in BEAuti under the `File/Templates` menu.
+
 ## Importing data and creating partitions
 
+Importing single or multiple  sequence alignments from a nexus or fasta file can be done using the `import` command, for example `import ../beast2/examples/nexus/primatesmtDNA.nex` would import the `primates-mtDNA.nex` file from the BEAST 2 examples directory. Filenames are auto-completed in BeasyStudio using the `tab` key.
+
+```
+import alignmentprovider? filename ( '(' arg (',' arg)* ')' )? 
+```
+
 ## Removing partitions
+
+To remove a partition use the `rm <inputidentifier>` command. It takes as argument an `<inputidentifier>` that identifies an alignment, and removes the partitions associated with this identifier. For example, to remove the `coding` partition, which is created when importing the `primates-mtDNA.nex` file, use
+
+```
+rm {coding}
+```
 
 ## Linking/Unlinking partitions
 
