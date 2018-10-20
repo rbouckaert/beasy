@@ -44,6 +44,7 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -369,6 +370,11 @@ public class JConsole extends JScrollPane
 			return;
 		}
 
+		if (part0.startsWith("link") || part0.startsWith("unlink")) {
+			completeLinkOrUnLink(part);
+			return;
+		}
+
 		if (part.startsWith("set") || part.startsWith("use") || part.startsWith("rm")) {
 			part = part.substring(3).trim();
 			int len = part.length();
@@ -445,6 +451,57 @@ public class JConsole extends JScrollPane
 		}
 	}
 
+	
+	private void completeLinkOrUnLink(String part) {
+		String [] strs = part.split("\\s+");
+		if (strs.length == 1) {
+			printHint("Choose one of 'clock', 'tree', 'sitemodel'", Color.blue);
+			return;
+		}
+		if (strs.length == 2) {
+			if ("clock".startsWith(part)) {
+				replaceRange(strs[0] + " clock", cmdStart, textLength());
+			} else if ("tree".startsWith(part)) {
+				replaceRange(strs[0] + " tree", cmdStart, textLength());
+			} else if ("sitemodel".startsWith(part)) {
+				replaceRange(strs[0] + " sitemodel", cmdStart, textLength());
+			} else {
+				printHint("Choose one of 'clock', 'tree', 'sitemodel'", Color.blue);
+			}
+			return;
+		}
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("clock", "ClockModel");
+		map.put("tree", "TreeModel");
+		map.put("sitemodel", "SiteModel");
+		BeautiDoc doc = studio.interpreter.doc;
+		
+		List<BEASTInterface> partitions = doc.getPartitions(map.get(strs[1]));
+		List<String> matches = new ArrayList<>();
+		for (BEASTInterface p : partitions) {
+			String partition = doc.parsePartition(p.getID());
+			if (partition.startsWith(strs[strs.length - 1])) {
+				matches.add(partition);
+			}
+		}
+		
+		if (matches.size() == 1) {
+			String cmd = "";
+			for (int i = 0; i < strs.length - 1; i++) {
+				cmd += strs[i] + " ";
+			}
+			replaceRange(cmd + matches.get(0), cmdStart, textLength());
+			return;
+		}
+		if (matches.size() == 0) {
+			printHint("No parition matches " + strs[strs.length - 1], Color.blue);
+			return;
+		}
+		printHint("Choose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+		
+	}
+	
 	
 	private void completeImport(String part) {
 		part = part.substring(7).trim();
