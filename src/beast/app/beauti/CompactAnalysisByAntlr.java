@@ -169,8 +169,27 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			partitionContext.clear();
 			for (PartitionContext p : doc.partitionNames) {
 				for (String pattern2: patterns) {
-					if (p.partition.matches(pattern2)) {
-						partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
+					switch (context) {
+					case BeautiDoc.ALIGNMENT_PARTITION:
+						if (p.partition.matches(pattern2)) {
+							partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
+						}
+						break;
+					case BeautiDoc.SITEMODEL_PARTITION:
+						if (p.siteModel.matches(pattern2)) {
+							partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
+						}
+						break;
+					case BeautiDoc.CLOCKMODEL_PARTITION:
+						if (p.clockModel.matches(pattern2)) {
+							partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
+						}
+						break;
+					case BeautiDoc.TREEMODEL_PARTITION:
+						if (p.tree.matches(pattern2)) {
+							partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
+						}
+						break;
 					}
 				}
 			}
@@ -370,11 +389,10 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (ctx.getChildCount() == 2) {
 				processPattern(".*");
 			} else {
-				visit(ctx.getChild(2));
-				processPattern(ctx.getChild(2).getText());
+				processPattern(ctx.getChild(2), linktype);
 			}
 			if (partitionContext.size() <= 1) {
-				parser.notifyErrorListeners("Command unlink: At least one partition must be selected " + ctx.getText());
+				parser.notifyErrorListeners("Command unlink: At least two partitions must be selected " + ctx.getText());
 				return null;
 			}
 			DocumentEditor.unlink(doc, linktype, partitionContext);

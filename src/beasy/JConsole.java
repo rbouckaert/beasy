@@ -470,6 +470,9 @@ public class JConsole extends JScrollPane
 	private void completeLinkOrUnLink(String part) {
 		String [] strs = part.split("\\s+");
 		if (part.indexOf('{') > 0) {
+			if (part.endsWith(",")) {
+				part += "*";
+			}
 			String [] strs2 = part.substring(part.indexOf('{')+1).split(",");
 			strs2[strs2.length - 1] = strs2[strs2.length - 1].replaceAll("}", "");
 
@@ -481,24 +484,41 @@ public class JConsole extends JScrollPane
 			
 			List<BEASTInterface> partitions = doc.getPartitions(map.get(strs[1]));
 			List<String> matches = new ArrayList<>();
+			String current = strs2[strs2.length - 1];
+			if (current.equals("*")) {
+				current = "";
+			}
 			for (BEASTInterface p : partitions) {
 				String partition = doc.parsePartition(p.getID());
-				if (partition.startsWith(strs[strs2.length - 1])) {
+				if (current.length() == 0 || partition.startsWith(current)) {
 					matches.add(partition);
 				}
 			}
-			
-			if (matches.size() == 1) {
-				String cmd = "";
-				for (int i = 0; i < strs.length - 1; i++) {
-					cmd += strs[i] + " ";
+			for (String s : strs2) {
+				if (!s.equals(current)) {
+					matches.remove(s);
 				}
-				replaceRange(cmd + matches.get(0), cmdStart, textLength());
-				return;
+			}			
+			String cmd = strs[0] + " " + strs[1] + " {";
+			for (int i = 0; i < strs2.length - 1; i++) {
+				cmd += strs2[i] + ",";
+			}
+			if (matches.size() == 1) {
+				if (matches.get(0).equals(current)) {
+					matches.clear();
+				} else {
+					replaceRange(cmd + matches.get(0), cmdStart, textLength());
+					return;
+				}
 			}
 			if (matches.size() == 0) {
-				printHint("No parition matches " + strs[strs.length - 1], Color.blue);
+				replaceRange(cmd + strs2[strs2.length - 1] + "}", cmdStart, textLength());
+				printHint("\nNo available partition matches " + current, Color.blue);
 				return;
+			}
+			String prefix = getLargestCommonPrefix(matches);
+			if (prefix.length() > current.length()) {
+				replaceRange(cmd + prefix, cmdStart, textLength());
 			}
 			printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
 		}
@@ -602,6 +622,10 @@ public class JConsole extends JScrollPane
 		if (matches.size() == 0) {
 			printHint("No template matches " + part, Color.blue);
 			return;
+		}
+		String prefix = getLargestCommonPrefix(matches);
+		if (prefix.length() > part.length()) {
+			replaceRange("template " + prefix, cmdStart, textLength());
 		}
 		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
 	}

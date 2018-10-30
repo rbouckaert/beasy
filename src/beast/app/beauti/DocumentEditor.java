@@ -27,7 +27,7 @@ public class DocumentEditor {
 		for (int i = 0; i < partitionContext.size(); i++) {
 			String partition = contexts[i].partition;
 			for (int j = 0; j < likelihoods.pDistributions.get().size(); j++) {
-				GenericTreeLikelihood likelihood = (GenericTreeLikelihood) likelihoods.pDistributions.get().get(i);
+				GenericTreeLikelihood likelihood = (GenericTreeLikelihood) likelihoods.pDistributions.get().get(j);
 				assert (likelihood != null);
 				if (likelihood.dataInput.get().getID().equals(partition)) {
 					treelikelihood[i] = likelihood;
@@ -159,7 +159,7 @@ public class DocumentEditor {
 		for (int i = 0; i < partitionContext.size(); i++) {
 			String partition = contexts[i].partition;
 			for (int j = 0; j < likelihoods.pDistributions.get().size(); j++) {
-				GenericTreeLikelihood likelihood = (GenericTreeLikelihood) likelihoods.pDistributions.get().get(i);
+				GenericTreeLikelihood likelihood = (GenericTreeLikelihood) likelihoods.pDistributions.get().get(j);
 				assert (likelihood != null);
 				if (likelihood.dataInput.get().getID().equals(partition)) {
 					treelikelihood[i] = likelihood;
@@ -186,7 +186,7 @@ public class DocumentEditor {
 				contexts[i].clockModel = contexts[i].partition;
 
 				BranchRateModel newClockmodel = (BranchRateModel) BeautiDoc.deepCopyPlugin((BEASTInterface) clockModel, treelikelihood[i], (MCMC) doc.mcmc.get(), oldContext, contexts[i], doc, new ArrayList<>());
-				treelikelihood[i].siteModelInput.setValue(newClockmodel, treelikelihood[i]);
+				treelikelihood[i].branchRateModelInput.setValue(newClockmodel, treelikelihood[i]);
 				repartition(doc, contexts[i]);
 			}
 			break;
