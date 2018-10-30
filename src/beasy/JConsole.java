@@ -60,6 +60,7 @@ import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.parameter.Parameter;
 import beast.core.util.Log;
+import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.util.PackageManager;
 import beasy.shell.BeasyStudio;
 import beasy.shell.HistoryPanel;
@@ -381,6 +382,16 @@ public class JConsole extends JScrollPane
 			return;
 		}
 
+		if (part0.startsWith("taxonset")) {
+			completeTaxonset(part);
+			return;
+		}
+
+		if (part0.startsWith("rename")) {
+			completeRename(part);
+			return;
+		}
+
 		if (part0.startsWith("link") || part0.startsWith("unlink")) {
 			completeLinkOrUnLink(part);
 			return;
@@ -467,6 +478,129 @@ public class JConsole extends JScrollPane
 	}
 
 	
+	private void completeRename(String part) {
+		if (part.indexOf('=') > 0) {
+			printHint("\nProvide new name of partition", Color.blue);
+			return;
+		}
+
+		String [] strs = part.split("\\s+");
+		if (strs.length == 1) {
+			printHint("\nChoose one of 'clock', 'tree', 'sitemodel'", Color.blue);
+			return;
+		}
+		if (strs.length == 2) {
+			if ("clock".startsWith(strs[1])) {
+				strs[1] = "clock";
+			} else if ("tree".startsWith(strs[1])) {
+				strs[1] = "tree";
+			} else if ("sitemodel".startsWith(strs[1])) {
+				strs[1] = "sitemodel";
+			} else {
+				printHint("\nChoose one of 'clock', 'tree', 'sitemodel'", Color.blue);
+				return;
+			}
+			replaceRange(strs[0] + " " + strs[1] + " ", cmdStart, textLength());
+		}
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("clock", "ClockModel");
+		map.put("tree", "TreeModel");
+		map.put("sitemodel", "SiteModel");
+		BeautiDoc doc = studio.interpreter.doc;
+		
+		List<String> matches = new ArrayList<>();
+		String current = strs[strs.length - 1];
+
+		List<BEASTInterface> partitions = doc.getPartitions(map.get(strs[1]));
+		List<String> partNames = new ArrayList<>();
+		for (BEASTInterface bo : partitions) {
+			String id = bo.getID();
+			switch (strs[1]) {
+			case "clock":
+				id = ((BEASTInterface) bo.getInput("branchRateModel").get()).getID();
+				break;
+			case "tree":
+				id = ((BEASTInterface) bo.getInput("tree").get()).getID();
+				break;
+			case "sitemodel":
+				id = ((BEASTInterface) bo.getInput("siteModel").get()).getID();
+				break;
+			}
+			id = BeautiDoc.parsePartition(id);
+			partNames.add(id);
+		}
+		
+		if (strs.length == 2) {
+			printHint("\nChoose one of " + partNames.toString(), Color.blue);
+			return;
+		}
+		for (String partition : partNames) {
+			if (current.length() == 0 || partition.startsWith(current)) {
+				matches.add(partition);
+			}
+		}
+
+		String cmd = strs[0] + " " + strs[1] + " ";
+		if (matches.size() == 1) {
+			replaceRange(cmd + matches.get(0), cmdStart, textLength());
+			return;
+		}
+		if (matches.size() == 0) {
+			replaceRange(cmd + strs[strs.length - 1], cmdStart, textLength());
+			printHint("\nNo available partition matches " + current, Color.blue);
+			return;
+		}
+		String prefix = getLargestCommonPrefix(matches);
+		if (prefix.length() > current.length()) {
+			replaceRange(cmd + prefix, cmdStart, textLength());
+		}
+		printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+	}
+
+	private void completeTaxonset(String part) {
+		if (part.indexOf('=') > 0) {
+			BeautiDoc doc = studio.interpreter.doc;
+			String [] taxa = doc.taxaset.keySet().toArray(new String [] {});
+			String [] strs = part.split("=");
+			if (strs.length == 1) {
+				printHint("\nChoose one of " + Arrays.toString(taxa), Color.blue);
+				return;
+			}
+			String [] strs2 = strs[1].split("\\s+");
+			String current = strs2[strs2.length - 1];			
+			List<String> matches = new ArrayList<>();
+			for (String taxon : taxa) {
+				if (taxon.startsWith(current)) {
+					matches.add(taxon);
+				}
+			}
+			if (matches.size() == 1) {
+				part = part.substring(0, part.length() - current.length());
+				replaceRange(part + matches.get(0) + " ", cmdStart, textLength());
+				return;
+			}
+			if (matches.size() == 0) {
+				printHint("\nNo available taxon matches " + current, Color.blue);
+				return;
+			}
+			String prefix = getLargestCommonPrefix(matches);
+			if (prefix.length() > current.length()) {
+				part = part.substring(0, part.length() - current.length());
+				replaceRange(part + prefix, cmdStart, textLength());
+			}
+			printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+			return;
+		}
+
+		String [] strs = part.split("\\s+");
+		if (strs.length == 1) {
+			printHint("\nProvide the name of a taxonset", Color.blue);
+		} else {
+			replaceRange(part +" = ", cmdStart, textLength());			
+		}
+	}
+	
 	private void completeLinkOrUnLink(String part) {
 		String [] strs = part.split("\\s+");
 		if (part.indexOf('{') > 0) {
@@ -524,7 +658,7 @@ public class JConsole extends JScrollPane
 		}
 				
 		if (strs.length == 1) {
-			printHint("\nChoose one of 'clock', 'tree', 'sitemodel'", Color.blue);
+				printHint("\nChoose one of 'clock', 'tree', 'sitemodel'", Color.blue);
 			return;
 		}
 		if (strs.length == 2) {
