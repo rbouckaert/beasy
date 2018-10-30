@@ -211,6 +211,10 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				}
 			}
 			if (provider == null) {
+				if (providerList == null || providerList.size() == 0) {
+					parser.notifyErrorListeners("Could not find importer. Did you load a template yet?");
+					return null;
+				}
 				String providers = providerList.get(0).getID();
 				for (int i = 1; i < providerList.size(); i++) {
 					providers += "," + providerList.get(i).getID();

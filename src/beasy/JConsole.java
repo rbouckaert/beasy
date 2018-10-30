@@ -349,11 +349,22 @@ public class JConsole extends JScrollPane
 
 	private void completeCommand(final String part0 ) {
 //		Log.info(part0);
+		String [] cmds = new String[]{"template", "import", "link", "unlink", "rm", "add", "set", "use", "taxonset", "rename"};
 		String part = part0.trim();
 		
+		if (part.length() == 0) {
+			if (studio.interpreter.doc.beautiConfig.alignmentProvider.size() == 0) {
+				// no template loaded yet
+				replaceRange("template ", cmdStart, textLength());
+				return;
+			}
+			printHint("\nChoose one of " + Arrays.toString(cmds), Color.blue);
+			return;
+		}
+		
 		// complete command
-		for (String cmd : new String[]{"template", "import", "link", "unlink", "rm", "add", "set", "use", "taxonset", "rename"}) {
-			if (cmd.startsWith(part)) {
+		for (String cmd : cmds) {
+			if (cmd.startsWith(part) && !cmd.equals(part)) {
 				replaceRange(cmd + " ", cmdStart, textLength());
 				return;
 			}
@@ -376,7 +387,11 @@ public class JConsole extends JScrollPane
 		}
 
 		if (part.startsWith("set") || part.startsWith("use") || part.startsWith("rm")) {
-			part = part.substring(3).trim();
+			if (part.startsWith("rm")) {
+				part = part.substring(2).trim();
+			} else {
+				part = part.substring(3).trim();
+			}
 			int len = part.length();
 			String elementPattern = null;
 			String idPattern = null;
@@ -454,63 +469,76 @@ public class JConsole extends JScrollPane
 	
 	private void completeLinkOrUnLink(String part) {
 		String [] strs = part.split("\\s+");
+		if (part.indexOf('{') > 0) {
+			String [] strs2 = part.substring(part.indexOf('{')+1).split(",");
+			strs2[strs2.length - 1] = strs2[strs2.length - 1].replaceAll("}", "");
+
+			Map<String, String> map = new HashMap<>();
+			map.put("clock", "ClockModel");
+			map.put("tree", "TreeModel");
+			map.put("sitemodel", "SiteModel");
+			BeautiDoc doc = studio.interpreter.doc;
+			
+			List<BEASTInterface> partitions = doc.getPartitions(map.get(strs[1]));
+			List<String> matches = new ArrayList<>();
+			for (BEASTInterface p : partitions) {
+				String partition = doc.parsePartition(p.getID());
+				if (partition.startsWith(strs[strs2.length - 1])) {
+					matches.add(partition);
+				}
+			}
+			
+			if (matches.size() == 1) {
+				String cmd = "";
+				for (int i = 0; i < strs.length - 1; i++) {
+					cmd += strs[i] + " ";
+				}
+				replaceRange(cmd + matches.get(0), cmdStart, textLength());
+				return;
+			}
+			if (matches.size() == 0) {
+				printHint("No parition matches " + strs[strs.length - 1], Color.blue);
+				return;
+			}
+			printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+		}
+				
 		if (strs.length == 1) {
-			printHint("Choose one of 'clock', 'tree', 'sitemodel'", Color.blue);
+			printHint("\nChoose one of 'clock', 'tree', 'sitemodel'", Color.blue);
 			return;
 		}
 		if (strs.length == 2) {
-			if ("clock".startsWith(part)) {
-				replaceRange(strs[0] + " clock", cmdStart, textLength());
-			} else if ("tree".startsWith(part)) {
-				replaceRange(strs[0] + " tree", cmdStart, textLength());
-			} else if ("sitemodel".startsWith(part)) {
-				replaceRange(strs[0] + " sitemodel", cmdStart, textLength());
+			if ("clock".startsWith(strs[1])) {
+				replaceRange(strs[0] + " clock {", cmdStart, textLength());
+			} else if ("tree".startsWith(strs[1])) {
+				replaceRange(strs[0] + " tree {", cmdStart, textLength());
+			} else if ("sitemodel".startsWith(strs[1])) {
+				replaceRange(strs[0] + " sitemodel {", cmdStart, textLength());
 			} else {
-				printHint("Choose one of 'clock', 'tree', 'sitemodel'", Color.blue);
+				printHint("\nChoose one of 'clock', 'tree', 'sitemodel'", Color.blue);
 			}
 			return;
 		}
 		
-		Map<String, String> map = new HashMap<>();
-		map.put("clock", "ClockModel");
-		map.put("tree", "TreeModel");
-		map.put("sitemodel", "SiteModel");
-		BeautiDoc doc = studio.interpreter.doc;
-		
-		List<BEASTInterface> partitions = doc.getPartitions(map.get(strs[1]));
-		List<String> matches = new ArrayList<>();
-		for (BEASTInterface p : partitions) {
-			String partition = doc.parsePartition(p.getID());
-			if (partition.startsWith(strs[strs.length - 1])) {
-				matches.add(partition);
-			}
-		}
-		
-		if (matches.size() == 1) {
-			String cmd = "";
-			for (int i = 0; i < strs.length - 1; i++) {
-				cmd += strs[i] + " ";
-			}
-			replaceRange(cmd + matches.get(0), cmdStart, textLength());
-			return;
-		}
-		if (matches.size() == 0) {
-			printHint("No parition matches " + strs[strs.length - 1], Color.blue);
-			return;
-		}
-		printHint("Choose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
 		
 	}
 	
 	
 	private void completeImport(String part) {
-		part = part.substring(7).trim();
-		String cwd = System.getProperty("user.dir");
+		part = part.substring(6).trim();
+		String cwd;
 		String fileSep = Utils.isWindows() ? "\\\\" : "/";
-		cwd = cwd + fileSep + part;
+		if (part.startsWith(fileSep)) {
+			cwd = part;
+		} else {
+			cwd = System.getProperty("user.dir") + fileSep + part;
+		}
 		String dir = cwd.substring(0, cwd.lastIndexOf(fileSep));
 		String rest = cwd.substring(cwd.lastIndexOf(fileSep) + 1);
 		File d = new File(dir);
+		if (!d.exists()) {
+			printHint("\nFile or folder " + d.getAbsolutePath() + " does not exist", Color.red);
+		}
 		List<String> matches = new ArrayList<>();
 		for (File f : d.listFiles()) {
 			if (f.getName().startsWith(rest)) {
@@ -530,7 +558,31 @@ public class JConsole extends JScrollPane
 			printHint("No template matches " + part, Color.blue);
 			return;
 		}
-		printHint("Choose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+		
+		String largestPrefix = getLargestCommonPrefix(matches);
+		if (largestPrefix.length() > part.length()) {
+			replaceRange("import " + largestPrefix, cmdStart, textLength());
+		}
+		printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+	}
+	
+	private String getLargestCommonPrefix(List<String> strs) {
+		if (strs.size() == 0) {
+			return "";
+		}
+		
+		String m0 = strs.get(0);
+		for (int i = 0; i < m0.length(); i++) {
+			char c = m0.charAt(i);
+			for (String s : strs) {
+				if (s.length() == i || s.charAt(i) != c) {
+					return m0.substring(0, i);
+				}
+			}
+		}
+		
+		// we only get here if m0 is prefix of all strs
+		return m0;
 	}
 	
 	private void completeTemplate(String part) {
@@ -551,7 +603,7 @@ public class JConsole extends JScrollPane
 			printHint("No template matches " + part, Color.blue);
 			return;
 		}
-		printHint("Choose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
 	}
 	
 	private void initTemplates() {
