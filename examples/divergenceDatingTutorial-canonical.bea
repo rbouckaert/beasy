@@ -5,6 +5,7 @@ template Standard;
 import examples/nexus/primate-mtDNA.nex;
 
 //rm [treeLikelihood.coding];
+rm {coding};
 
 link tree {noncoding,1stpos,2ndpos,3rdpos};
 link clock {noncoding,1stpos,2ndpos,3rdpos};

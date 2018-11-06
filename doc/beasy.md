@@ -120,7 +120,7 @@ import ../beast2/examples/nexus/28.nex;
 The first thing to specify is a template using `template <template name>`, e.g.,
 
 ```
-template StarBeast2
+template StarBeast2;
 ```
 
 To find out which template names are available in BeasyStudio, type `template ` followed by the `tab` key and a list will be displayed in the "Hints" window. These are the same template names as shown in BEAuti under the `File/Templates` menu.
@@ -138,22 +138,130 @@ import alignmentprovider? filename ( '(' arg (',' arg)* ')' )?
 To remove a partition use the `rm <inputidentifier>` command. It takes as argument an `<inputidentifier>` that identifies an alignment, and removes the partitions associated with this identifier. For example, to remove the `coding` partition, which is created when importing the `primates-mtDNA.nex` file, use
 
 ```
-rm {coding}
+rm {coding};
 ```
 
 ## Linking/Unlinking partitions
 
+Partitions can have their `tree`, `clock` and/or `sitemodel` shared by linking them using the `link` command. The format of the link command is `link <partition> {partition1, partition2, ...}` where `<partition>` is either `tree`, `clock` or `sitemodel` and `partition1`, `partition2`, etc. the names of the partitions. For example, link site models for partitions `1stpos`, `2ndpos` and `3rdpos` use
+
+```
+link sitemodel {1stpos,2ndpos,3rdpos};
+```
+
+After linking, the three partitions share the same clock model and it will have the label of `1stpos`. To unlink partitions, use the `unlink` command which has the same format as the `link` command but with `link` replaced by `unlink`. So, to unlink the site models linked above use
+
+```
+unlink sitemodel {1stpos};
+```
+
+
 ## Changing substitution models
+
+The `use` command allows changing models by invoking available sub-templates, and is usually used in the format `use <input identifier> = <sub template>`, where `<input identier>` identifies inputs as outlined in the [Input Identifier] section, and `<sub template>` one of the available sub-templates. For example, to set the substitution model of the `1stpos` partition to HKY, use
+
+```
+use substModel{1stpos} = HKY;
+```
+
+In the compact notation, `use HKY` (that is, with input identifier omitted) will try to apply the HKY template to any available input. Since it only matches with `substModel` inputs for nucleotide partitions, it will set all these substitution models to HKY.
+
+To set site models of a selected set of partitions, for example, for partitions `1stpos`, `2ndpos` and `3rdpos` use
+
+```
+use substModel{1stpos,2ndpos,3rdpos} = HKY;
+```
+
+Alternatively, you can link the `sitemodel`s of the partitions, set the model, then unlink them.
 
 ## Changing clock models
 
-## Changing tree models
+By default, a strict clock model is assumed in most templates. To change it to a relaxed clock with log normal distributed rates, use
+
+```
+use branchRateModel{1stpos} = RelaxedClockLogNormal;
+```
+
+Rates tend to differ in different partitions. To estimate rates across partitions such that the mean rate is the fixed to that of the branch rate model, use
+
+```
+use [mcmc]=FixMeanRate;
+```
+
+## Changing tree priors
+
+Since tree priors are input to the `prior` distribution, changing the tree prior means changing input with `id=prior`, for example, like so
+
+```
+use [prior] = CoalescentConstantPopulation;
+```
 
 ## Changing default values/templates
 
-## Specifying calibrations
+
+To set values of primitive inputs, the `set` command, which has the format `set <input identifier> = <value>` where `<input identifier>` identifies inputs as outlined in the [Input Identifier] section, and `<value>` a value that is admitted for the input. For instance, by default, the kappa paramater for the HKY model is set to 2. To set it to 1 for partition `1stpos`, use
+
+```
+set kappa{1stpos} = 1
+```
+
+Alternatively, when setting up the substitution model, you can pass it as an extra parameter to the template, like so:
+
+```
+use substModel{1stpos} = HKY(kappa=1.0)
+```
 
 
+## Specifying calibrations and other priors
 
+Tip dates and tip calibrations are easiest set in the NEXUS file by adding `sets` and `assumptions` blocks and use the `import` command to include them in the analysis. This is an example NEXUS file fragment: 
+
+```
+# Define monophyletic clades
+begin sets;
+taxset germanic = oldnorse oldhighgerman oldprussian oldenglish;
+taxset tocharian = tocharian_a tocharian_b;
+taxset anatolian = hittite lycian luvian;
+end;
+
+# Define time calibrations on tips, and clades.
+# Note that since anatolian does not have a calibration, 
+# only a monophyletic MRCAPrior is created in BEAUti
+begin assumptions;
+calibrate oldnorse = normal(775,40)
+calibrate avestan = normal(2500,50)
+calibrate gothic = normal(1650,25)
+calibrate germanic = normal(1875,67)
+calibrate tocharian = offsetlognormal(1650,200,0.9)
+end;
+```
+
+
+An alternative is to specify a internal a taxon set first, then add an MRCAPrior for the taxon set, for example
+
+```
+taxonset Hominidae = Homo_sapiens Pan Pongo Gorilla;
+add MRCAPrior(Hominidae, Normal(mean=20,sigma=3.5), treepartition);
+```
+
+The arguments for MRCAPrior are
+
+* `Hominidae` the name of the taxon set.
+* `Normal(mean=20,sigma=3.5)` a parametric distribution. Any sub-template for distributions can be used. By default, there are `Uniform`, `Exponential`, `LogNormal`, `Normal`, `Beta`, `Gamma`, `LaplaceDistribution`, `InverseGamma`, `OneOnX`, but other packages may have more distributions.
+* `treepartition` optional argument with the name of the tree partition that the prior should apply to.
+
+
+By default MRCAPriors does not enforce monophyly of the clade. To enforce monophyly, use
+
+```
+set monophyletic[Hominidae.prior] = true
+```
+
+Note that the MRCAPrior for the set `Hominidae` will be called `Hominidae.prior`.
+To set a tip prior, after setting a node prior (potentially only containing the tip node), you can set `tipsonly` to true.
+
+```
+set tipsonly[Hominidae.prior] = true
+```
 
 

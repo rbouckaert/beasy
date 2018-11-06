@@ -57,7 +57,7 @@ rename : RENAMETOKEN linktype oldName? '=' newName ;
 oldName : STRING | LINKTYPE ;
 newName : STRING | LINKTYPE ;
 
-rm : RMTOKEN inputidentifier ;
+rm : RMTOKEN (inputidentifier | partitionPattern);
 
 taxonset : TAXONSETTOKEN STRING '=' STRING + ;
 

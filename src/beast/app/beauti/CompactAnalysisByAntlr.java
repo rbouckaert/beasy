@@ -6,6 +6,7 @@ package beast.app.beauti;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -711,6 +712,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		private void setupInputSet(BEASTInterface object) {
 			inputSet = new LinkedHashSet<>();
 			for (BEASTInterface o : InputFilter.getDocumentObjects(object)) {
+				o.determindClassOfInputs();
 				for (Input<?> input : o.listInputs()) {
 					inputSet.add(input);
 					if (input.getType() == null) {
@@ -881,9 +883,29 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 
 			// set up inputSet
 			mapInputToObject = InputFilter.initInputMap(doc);
+			partitionContext = new HashSet<>();
 			super.visitRm(ctx);
 			
+//			if (partitionContext.size() > 0) {
+//				for (PartitionContext p : partitionContext) {
+//					if (doc.pluginmap.get(p.partition) != null) {
+//						BEASTInterface o = doc.pluginmap.get(p.partition);
+//						if (o instanceof Alignment) {
+//							Log.info("Removing partition " + o.getID());	
+//							// remove partition
+//							DocumentEditor.removePartition(doc, (Alignment) o);
+//						} else {
+//							Log.info("Cannot remove partition " + p.partition + " since it is not an alignment");
+//						}
+//					} else {
+//						Log.info("Cannot find partition " + p.partition);
+//					}
+//				}
+//				return null;
+//			}
+			
 			// remove matching inputs
+			boolean gotOne = false;
 			for (Input<?> in : inputSet) {
 				BEASTInterface bo = mapInputToObject.get(in);
 				if (in.getType() == null) {
@@ -893,8 +915,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 					Log.info("Removing partition " + ((BEASTInterface)in.get()).getID());	
 					// remove partition
 					DocumentEditor.removePartition(doc, (Alignment)in.get());
-					return null;
+					gotOne = true;
 				} 
+			}
+			if (gotOne) {
+				return null;
 			}
 			
 			int instances = 0;

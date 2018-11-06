@@ -392,6 +392,11 @@ public class JConsole extends JScrollPane
 			return;
 		}
 
+		if (part0.startsWith("use")) {
+			completeUse(part);
+			return;
+		}
+
 		if (part0.startsWith("link") || part0.startsWith("unlink")) {
 			completeLinkOrUnLink(part);
 			return;
@@ -477,6 +482,11 @@ public class JConsole extends JScrollPane
 		}
 	}
 
+	
+	private void completeUse(String part) {
+		part = part.substring(3).trim();
+		
+	}
 	
 	private void completeRename(String part) {
 		if (part.indexOf('=') > 0) {

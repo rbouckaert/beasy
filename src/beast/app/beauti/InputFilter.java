@@ -79,6 +79,7 @@ public class InputFilter {
 		Set<Input<?>> newInputSet = new LinkedHashSet<>();
 		for (BEASTInterface o : getDocumentObjects(doc.mcmc.get())) {
 			if (o.getID().matches(idPattern)) {
+				o.determindClassOfInputs();
 				for (Input<?> input : o.listInputs()) {
 					newInputSet.add(input);
 				}
