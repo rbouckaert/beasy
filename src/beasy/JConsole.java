@@ -55,7 +55,9 @@ import javax.swing.text.*;
 
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiSubTemplate;
+import beast.app.beauti.CompactAnalysisByAntlr;
 import beast.app.beauti.InputFilter;
+import beast.app.beauti.PriorProvider;
 import beast.app.util.Utils;
 import beast.core.BEASTInterface;
 import beast.core.Input;
@@ -394,6 +396,11 @@ public class JConsole extends JScrollPane
 			return;
 		}
 
+		if (part.startsWith("add")) {
+			completeAdd(part);
+			return;
+		}
+
 		if (part.startsWith("link") || part.startsWith("unlink")) {
 			completeLinkOrUnLink(part);
 			return;
@@ -583,6 +590,53 @@ public class JConsole extends JScrollPane
 		}
 	}
 
+	
+	private void completeAdd(String part) {		
+    	if (part.indexOf('(') > 0) {
+    		return;
+    	}
+
+    	if (CompactAnalysisByAntlr.priorProviders == null) {
+    		BeautiDoc doc = studio.interpreter.doc;
+    		CompactAnalysisByAntlr.initProviders(doc);
+    	}
+    	
+		String part0 = part.substring(3).trim();
+		if (part0.length() == 0) {
+			if (CompactAnalysisByAntlr.priorProviders.size() == 1) {
+				replaceRange("add " + CompactAnalysisByAntlr.priorProviders.get(0).getClass().getSimpleName(), cmdStart, textLength());
+				return;				
+			}
+			String [] descriptions = new String[CompactAnalysisByAntlr.priorProviders.size()];
+			for (int i = 0; i < descriptions.length; i++) {
+				descriptions[i] = CompactAnalysisByAntlr.priorProviders.get(i).getClass().getSimpleName();
+			}
+			printHint("\nChoose one of: " + Arrays.toString(descriptions), Color.blue);
+			return;
+		}
+		
+		List<String> matches = new ArrayList<>();
+		for (PriorProvider p : CompactAnalysisByAntlr.priorProviders) {
+			if (p.getClass().getSimpleName().startsWith(part0)) {
+				matches.add(p.getClass().getSimpleName());
+			}
+		}		
+		
+		if (matches.size() == 1) {				
+			replaceRange("add " + matches.get(0) +"(", cmdStart, textLength());
+			return;
+		}
+		if (matches.size() == 0) {
+			printHint("\nNo prior provider matches " + part0, Color.blue);
+			return;
+		}
+		String prefix = getLargestCommonPrefix(matches);
+		if (prefix.length() > part0.length()) {
+			replaceRange("add "  + prefix, cmdStart, textLength());
+		}
+		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+		return;					
+	}
 	
 	private void completeSubtemplate(String part) {
 		String part0 = part.substring(0, part.indexOf('='));

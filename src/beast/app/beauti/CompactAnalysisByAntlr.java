@@ -45,6 +45,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 	CAParser parser = null;
 	IntStream input = null;
 
+	public static List<PriorProvider> priorProviders;
+
 	public CompactAnalysisByAntlr() {
 		this.doc = new BeautiDoc();
 		this.doc.beautiConfig = new BeautiConfig();
@@ -60,7 +62,27 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 	}
 	
-	public void enterCAsentence(CasentenceContext ctx) {
+    public static void initProviders(BeautiDoc doc) {
+    	priorProviders = new ArrayList<>();
+    	PriorListInputEditor p = new PriorListInputEditor(doc);
+    	priorProviders.add(p.new MRCAPriorProvider());
+    	
+        // build up list of data types
+        List<String> importerClasses = PackageManager.find(PriorProvider.class, new String[]{"beast"});
+        for (String _class: importerClasses) {
+        	try {
+        		//if (!_class.startsWith(this.getClass().getName())) {
+        			PriorProvider priorProvider = (PriorProvider) Class.forName(_class).newInstance();
+					priorProviders.add(priorProvider);
+				//	}
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+    }
+    
+    public void enterCAsentence(CasentenceContext ctx) {
 		System.out.println(ctx.getText());
 	}
 	
@@ -758,28 +780,6 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		}
 		
 		
-	    List<PriorProvider> priorProviders;
-	    
-	    private void initProviders() {
-	    	priorProviders = new ArrayList<>();
-	    	PriorListInputEditor p = new PriorListInputEditor(doc);
-	    	priorProviders.add(p.new MRCAPriorProvider());
-	    	
-	        // build up list of data types
-	        List<String> importerClasses = PackageManager.find(PriorProvider.class, new String[]{"beast"});
-	        for (String _class: importerClasses) {
-	        	try {
-	        		if (!_class.startsWith(this.getClass().getName())) {
-	        			PriorProvider priorProvider = (PriorProvider) Class.forName(_class).newInstance();
-						priorProviders.add(priorProvider);
-	        		}
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	        }
-	    }
-	    
 	    @Override
 	    public Object visitValue(ValueContext ctx) {
 			String value = ctx.getText();
@@ -840,7 +840,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		
 		private PriorProvider getProvider(AddContext ctx) {
 	    	if (priorProviders == null) {
-	    		initProviders();
+	    		initProviders(doc);
 	    	}
 	    	List<PriorProvider> matches = new ArrayList<>();
 			String priorProviderName = ".*" + ctx.getChild(1).getText() + ".*";
