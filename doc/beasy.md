@@ -1,4 +1,4 @@
-#Beasy: setting up BEAST XML without tears
+# Beasy: setting up BEAST XML without tears
 
 <center>
 Remco Bouckaert 

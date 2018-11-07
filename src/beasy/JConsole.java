@@ -1,6 +1,5 @@
 /*****************************************************************************
  *                                                                           *
- *  This file is part of the BeanShell Java Scripting distribution.          *
  *  Documentation and updates may be found at http://www.beanshell.org/      *
  *                                                                           *
  *  Sun Public License Notice:                                               *
@@ -45,6 +44,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,12 +54,14 @@ import java.awt.Cursor;
 import javax.swing.text.*;
 
 import beast.app.beauti.BeautiDoc;
+import beast.app.beauti.BeautiSubTemplate;
 import beast.app.beauti.InputFilter;
 import beast.app.util.Utils;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.parameter.Parameter;
 import beast.core.util.Log;
+import beast.evolution.alignment.Alignment;
 import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.util.PackageManager;
 import beasy.shell.BeasyStudio;
@@ -372,62 +374,163 @@ public class JConsole extends JScrollPane
 		}
 		
 		// complete template
-		if (part0.startsWith("template")) {
+		if (part.startsWith("template")) {
 			completeTemplate(part);
 			return;
 		}
 
-		if (part0.startsWith("import")) {
+		if (part.startsWith("import")) {
 			completeImport(part);
 			return;
 		}
 
-		if (part0.startsWith("taxonset")) {
+		if (part.startsWith("taxonset")) {
 			completeTaxonset(part);
 			return;
 		}
 
-		if (part0.startsWith("rename")) {
+		if (part.startsWith("rename")) {
 			completeRename(part);
 			return;
 		}
 
-		if (part0.startsWith("use")) {
-			completeUse(part);
-			return;
-		}
-
-		if (part0.startsWith("link") || part0.startsWith("unlink")) {
+		if (part.startsWith("link") || part.startsWith("unlink")) {
 			completeLinkOrUnLink(part);
 			return;
 		}
 
 		if (part.startsWith("set") || part.startsWith("use") || part.startsWith("rm")) {
+			if (part.indexOf('=') > 0) {
+				if (part.startsWith("use")) {
+					completeSubtemplate(part);
+				}
+				return;
+			}
 			if (part.startsWith("rm")) {
 				part = part.substring(2).trim();
 			} else {
 				part = part.substring(3).trim();
 			}
+			
+			
+			// complete a partitionPattern 
+			if (part.indexOf("{") >= 0) {
+				if (part.indexOf('}') > 0) {
+					replaceRange(part0 + " = ", cmdStart, textLength());
+					return;
+				}
+				String partitionPattern = part.substring(part.indexOf("{") + 1).trim();
+				String partition = partitionPattern;
+				if (partitionPattern.indexOf(',') > 0) {
+					String [] strs = partitionPattern.split(",");
+					partition = strs[strs.length - 1].trim();
+				}
+				partitionPattern = part0.substring(0, part0.length() - partition.length());
+				
+				Set<String> matcheSet = new HashSet<>();
+				BeautiDoc doc = studio.interpreter.doc;
+				List<BEASTInterface> bos = doc.getPartitions("Partitions");
+				bos.addAll(doc.getPartitions("SiteModel"));
+				bos.addAll(doc.getPartitions("ClockModel"));
+				bos.addAll(doc.getPartitions("TreeModel"));
+				for (BEASTInterface o : bos) {
+					if (o.getID().startsWith(partition)) {
+						matcheSet.add(o.getID());
+					}
+				}
+				List<String> matches = new ArrayList<>();
+				matches.addAll(matcheSet);
+				if (matches.size() == 1) {				
+					replaceRange(partitionPattern + matches.get(0) +", ", cmdStart, textLength());
+					return;
+				}
+				if (matches.size() == 0) {
+					printHint("\nNo partition matches " + partition, Color.blue);
+					return;
+				}
+				String prefix = getLargestCommonPrefix(matches);
+				if (prefix.length() > partition.length()) {
+					replaceRange(partitionPattern + prefix, cmdStart, textLength());
+				}
+				printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+				return;
+			}
+			
+			// complete an idPattern 
+			if (part.indexOf("[") >= 0 && part.indexOf(']') < 0) {
+				int k = part.indexOf("[");
+				String id = part.substring(k + 1).trim();
+				part = part0.substring(0, part0.indexOf('['));
+
+				BeautiDoc doc = studio.interpreter.doc;
+				List<String> matches = new ArrayList<>();
+				for (String id_ : doc.pluginmap.keySet()) {
+					if (id_.startsWith(id)) {
+						matches.add(id_);
+					}
+				}
+				if (matches.size() == 1) {				
+					replaceRange(part +'[' + matches.get(0) +"] ", cmdStart, textLength());
+					return;
+				}
+				if (matches.size() == 0) {
+					printHint("\nNo object id matches " + id, Color.blue);
+					return;
+				}
+				String prefix = getLargestCommonPrefix(matches);
+				if (prefix.length() > id.length()) {
+					replaceRange(part + '[' + prefix, cmdStart, textLength());
+				}
+				printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+				return;			
+			}
+
+			// complete an inputname
+			if (part.indexOf("@") >= 0) {
+				int k = part.indexOf("@");
+				String elementPart = part.substring(0, k).trim();
+				String inputPart = part.substring(k+1).trim();
+				part = part0.substring(0, part0.indexOf('@'));
+
+				BeautiDoc doc = studio.interpreter.doc;
+				Set<String> matchSet = new HashSet<>();
+				for (BEASTInterface o : doc.pluginmap.values()) {
+					for (Input<?> input : o.listInputs()) {
+						if (input.getName().equals(elementPart)) {
+							if (input.get() != null && input.get() instanceof BEASTInterface) {
+								BEASTInterface o2 = (BEASTInterface) input.get();
+								for (Input<?> input2 : o2.listInputs()) {
+									if (input2.getName().startsWith(inputPart)) {
+										matchSet.add(input2.getName());
+									}
+								}
+							}
+						}
+					}
+				}
+				List<String> matches = new ArrayList<>();
+				matches.addAll(matchSet);
+				if (matches.size() == 1) {				
+					replaceRange(part +'@' + matches.get(0), cmdStart, textLength());
+					return;
+				}
+				if (matches.size() == 0) {
+					printHint("\nNo input name matches " + inputPart, Color.blue);
+					return;
+				}
+				String prefix = getLargestCommonPrefix(matches);
+				if (prefix.length() > inputPart.length()) {
+					replaceRange(part + '@' + prefix, cmdStart, textLength());
+				}
+				printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+				return;			
+			}
+
+			
 			int len = part.length();
 			String elementPattern = null;
 			String idPattern = null;
 			String inputPattern = null;
-			String partitionPattern = null;
-			if (part.indexOf("{") >= 0) {
-				int k = part.indexOf("{");
-				partitionPattern = part.substring(k + 1).trim() + "*";
-				part = part.substring(0, k);				
-			}
-			if (part.indexOf("[") >= 0) {
-				int k = part.indexOf("[");
-				idPattern = part.substring(k + 1).trim() + ".*";
-				part = part.substring(0, k);
-			}
-			if (part.indexOf("@") >= 0) {
-				int k = part.indexOf("@");
-				elementPattern = part.substring(0, k).trim() + ".*";
-				part = part.substring(k + 1).trim();
-			}
 			if (part.trim().length() > 0) {
 				inputPattern = part + ".*";
 			}
@@ -437,9 +540,7 @@ public class JConsole extends JScrollPane
 			InputFilter filter = new InputFilter();
 			BeautiDoc doc = studio.interpreter.doc;
 			Map<Input<?>, BEASTInterface> map = InputFilter.initInputMap(doc);
-			Set<Input<?>> inputs = partitionPattern == null ? 
-					filter.getInputSet(doc, idPattern, elementPattern, inputPattern):
-					filter.getInputSet(doc, partitionPattern, '*', elementPattern, inputPattern);
+			Set<Input<?>> inputs = filter.getInputSet(doc, idPattern, elementPattern, inputPattern);
 			
 			Log.info("");
 			for (Input<?> input : inputs) {
@@ -483,9 +584,41 @@ public class JConsole extends JScrollPane
 	}
 
 	
-	private void completeUse(String part) {
-		part = part.substring(3).trim();
+	private void completeSubtemplate(String part) {
+		String part0 = part.substring(0, part.indexOf('='));
+		String part1 = part.substring(part.indexOf('=') + 1);
+		if (part1.indexOf('(') > 0) {
+			// deal with arguments
+			return;
+		}
 		
+		// try to complete subtemplate name
+		String str = part1.trim();
+		boolean hasQuote = false;
+		if (str.charAt(0) == '"') {
+			hasQuote = true;
+			str = str.substring(1);
+		}
+		BeautiDoc doc = studio.interpreter.doc;
+		List<String> matches = new ArrayList<>();
+		for (BeautiSubTemplate sub : doc.beautiConfig.subTemplates) {
+			if (sub.getID().startsWith(str)) {
+				matches.add(sub.getID());
+			}
+		}
+		if (matches.size() == 1) {				
+			replaceRange(part0 + "= " + (hasQuote ? '"' : "") + matches.get(0) + (hasQuote ? '"' : ""), cmdStart, textLength());
+			return;
+		}
+		if (matches.size() == 0) {
+			printHint("No subtemplate matches " + part1, Color.blue);
+			return;
+		}
+		String prefix = getLargestCommonPrefix(matches);
+		if (prefix.length() > str.length()) {
+			replaceRange(part0 + "= " + (hasQuote ? '"' : "") + prefix, cmdStart, textLength());
+		}
+		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
 	}
 	
 	private void completeRename(String part) {
