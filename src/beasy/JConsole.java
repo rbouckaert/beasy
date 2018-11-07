@@ -447,19 +447,20 @@ public class JConsole extends JScrollPane
 				}
 				List<String> matches = new ArrayList<>();
 				matches.addAll(matcheSet);
-				if (matches.size() == 1) {				
-					replaceRange(partitionPattern + matches.get(0) +", ", cmdStart, textLength());
-					return;
-				}
-				if (matches.size() == 0) {
-					printHint("\nNo partition matches " + partition, Color.blue);
-					return;
-				}
-				String prefix = getLargestCommonPrefix(matches);
-				if (prefix.length() > partition.length()) {
-					replaceRange(partitionPattern + prefix, cmdStart, textLength());
-				}
-				printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+				completeMatch(matches, partition, partitionPattern, ", ", "No partition matches ");
+//				if (matches.size() == 1) {				
+//					replaceRange(partitionPattern + matches.get(0) +", ", cmdStart, textLength());
+//					return;
+//				}
+//				if (matches.size() == 0) {
+//					printHint("\nNo partition matches " + partition, Color.blue);
+//					return;
+//				}
+//				String prefix = getLargestCommonPrefix(matches);
+//				if (prefix.length() > partition.length()) {
+//					replaceRange(partitionPattern + prefix, cmdStart, textLength());
+//				}
+//				printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
 				return;
 			}
 			
@@ -476,19 +477,20 @@ public class JConsole extends JScrollPane
 						matches.add(id_);
 					}
 				}
-				if (matches.size() == 1) {				
-					replaceRange(part +'[' + matches.get(0) +"] ", cmdStart, textLength());
-					return;
-				}
-				if (matches.size() == 0) {
-					printHint("\nNo object id matches " + id, Color.blue);
-					return;
-				}
-				String prefix = getLargestCommonPrefix(matches);
-				if (prefix.length() > id.length()) {
-					replaceRange(part + '[' + prefix, cmdStart, textLength());
-				}
-				printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+				completeMatch(matches, id, part +'[', "]", "No object id matches ");
+//				if (matches.size() == 1) {				
+//					replaceRange(part +'[' + matches.get(0) +"] ", cmdStart, textLength());
+//					return;
+//				}
+//				if (matches.size() == 0) {
+//					printHint("\nNo object id matches " + id, Color.blue);
+//					return;
+//				}
+//				String prefix = getLargestCommonPrefix(matches);
+//				if (prefix.length() > id.length()) {
+//					replaceRange(part + '[' + prefix, cmdStart, textLength());
+//				}
+//				printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
 				return;			
 			}
 
@@ -517,19 +519,20 @@ public class JConsole extends JScrollPane
 				}
 				List<String> matches = new ArrayList<>();
 				matches.addAll(matchSet);
-				if (matches.size() == 1) {				
-					replaceRange(part +'@' + matches.get(0), cmdStart, textLength());
-					return;
-				}
-				if (matches.size() == 0) {
-					printHint("\nNo input name matches " + inputPart, Color.blue);
-					return;
-				}
-				String prefix = getLargestCommonPrefix(matches);
-				if (prefix.length() > inputPart.length()) {
-					replaceRange(part + '@' + prefix, cmdStart, textLength());
-				}
-				printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+				completeMatch(matches, inputPart, part +'@', "No input name matches ");
+//				if (matches.size() == 1) {				
+//					replaceRange(part +'@' + matches.get(0), cmdStart, textLength());
+//					return;
+//				}
+//				if (matches.size() == 0) {
+//					printHint("\nNo input name matches " + inputPart, Color.blue);
+//					return;
+//				}
+//				String prefix = getLargestCommonPrefix(matches);
+//				if (prefix.length() > inputPart.length()) {
+//					replaceRange(part + '@' + prefix, cmdStart, textLength());
+//				}
+//				printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
 				return;			
 			}
 
@@ -622,20 +625,21 @@ public class JConsole extends JScrollPane
 			}
 		}		
 		
-		if (matches.size() == 1) {				
-			replaceRange("add " + matches.get(0) +"(", cmdStart, textLength());
-			return;
-		}
-		if (matches.size() == 0) {
-			printHint("\nNo prior provider matches " + part0, Color.blue);
-			return;
-		}
-		String prefix = getLargestCommonPrefix(matches);
-		if (prefix.length() > part0.length()) {
-			replaceRange("add "  + prefix, cmdStart, textLength());
-		}
-		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
-		return;					
+		completeMatch(matches, part0, "add ", "(", "No prior provider matches ");
+//		if (matches.size() == 1) {				
+//			replaceRange("add " + matches.get(0) +"(", cmdStart, textLength());
+//			return;
+//		}
+//		if (matches.size() == 0) {
+//			printHint("\nNo prior provider matches " + part0, Color.blue);
+//			return;
+//		}
+//		String prefix = getLargestCommonPrefix(matches);
+//		if (prefix.length() > part0.length()) {
+//			replaceRange("add "  + prefix, cmdStart, textLength());
+//		}
+//		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+//		return;					
 	}
 	
 	private void completeSubtemplate(String part) {
@@ -660,19 +664,21 @@ public class JConsole extends JScrollPane
 				matches.add(sub.getID());
 			}
 		}
-		if (matches.size() == 1) {				
-			replaceRange(part0 + "= " + (hasQuote ? '"' : "") + matches.get(0) + (hasQuote ? '"' : ""), cmdStart, textLength());
-			return;
-		}
-		if (matches.size() == 0) {
-			printHint("No subtemplate matches " + part1, Color.blue);
-			return;
-		}
-		String prefix = getLargestCommonPrefix(matches);
-		if (prefix.length() > str.length()) {
-			replaceRange(part0 + "= " + (hasQuote ? '"' : "") + prefix, cmdStart, textLength());
-		}
-		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+		completeMatch(matches, part1, part0 + "= " + (hasQuote ? '"' : ""), (hasQuote ? "\"" : ""), "No subtemplate matches ");
+
+//		if (matches.size() == 1) {				
+//			replaceRange(part0 + "= " + (hasQuote ? '"' : "") + matches.get(0) + (hasQuote ? '"' : ""), cmdStart, textLength());
+//			return;
+//		}
+//		if (matches.size() == 0) {
+//			printHint("No subtemplate matches " + part1, Color.blue);
+//			return;
+//		}
+//		String prefix = getLargestCommonPrefix(matches);
+//		if (prefix.length() > str.length()) {
+//			replaceRange(part0 + "= " + (hasQuote ? '"' : "") + prefix, cmdStart, textLength());
+//		}
+//		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
 	}
 	
 	private void completeRename(String part) {
@@ -728,7 +734,7 @@ public class JConsole extends JScrollPane
 			partNames.add(id);
 		}
 		
-		if (strs.length == 2) {
+		if (partNames.size() == 2) {
 			printHint("\nChoose one of " + partNames.toString(), Color.blue);
 			return;
 		}
@@ -739,20 +745,26 @@ public class JConsole extends JScrollPane
 		}
 
 		String cmd = strs[0] + " " + strs[1] + " ";
-		if (matches.size() == 1) {
-			replaceRange(cmd + matches.get(0), cmdStart, textLength());
-			return;
-		}
-		if (matches.size() == 0) {
-			replaceRange(cmd + strs[strs.length - 1], cmdStart, textLength());
-			printHint("\nNo available partition matches " + current, Color.blue);
-			return;
-		}
-		String prefix = getLargestCommonPrefix(matches);
-		if (prefix.length() > current.length()) {
-			replaceRange(cmd + prefix, cmdStart, textLength());
-		}
-		printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+		
+		// TODO
+		printHint("rename clock <tab> needs more testing", Color.RED);
+		
+		completeMatch(matches, current, cmd, "No available partition matches " + current);
+
+//		if (matches.size() == 1) {
+//			replaceRange(cmd + matches.get(0), cmdStart, textLength());
+//			return;
+//		}
+//		if (matches.size() == 0) {
+//			replaceRange(cmd + strs[strs.length - 1], cmdStart, textLength());
+//			printHint("\nNo available partition matches " + current, Color.blue);
+//			return;
+//		}
+//		String prefix = getLargestCommonPrefix(matches);
+//		if (prefix.length() > current.length()) {
+//			replaceRange(cmd + prefix, cmdStart, textLength());
+//		}
+//		printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
 	}
 
 	private void completeTaxonset(String part) {
@@ -761,7 +773,8 @@ public class JConsole extends JScrollPane
 			String [] taxa = doc.taxaset.keySet().toArray(new String [] {});
 			String [] strs = part.split("=");
 			if (strs.length == 1) {
-				printHint("\nChoose one of " + Arrays.toString(taxa), Color.blue);
+				Arrays.sort(taxa);
+				printHint("\nChoose one of: " + Arrays.toString(taxa).replaceAll("[\\[,\\]]", "\n").replaceFirst("\n", "\n "), Color.blue);
 				return;
 			}
 			String [] strs2 = strs[1].split("\\s+");
@@ -772,21 +785,24 @@ public class JConsole extends JScrollPane
 					matches.add(taxon);
 				}
 			}
-			if (matches.size() == 1) {
-				part = part.substring(0, part.length() - current.length());
-				replaceRange(part + matches.get(0) + " ", cmdStart, textLength());
-				return;
-			}
-			if (matches.size() == 0) {
-				printHint("\nNo available taxon matches " + current, Color.blue);
-				return;
-			}
-			String prefix = getLargestCommonPrefix(matches);
-			if (prefix.length() > current.length()) {
-				part = part.substring(0, part.length() - current.length());
-				replaceRange(part + prefix, cmdStart, textLength());
-			}
-			printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+			part = part.substring(0, part.length() - current.length());
+			completeMatch(matches, current, part, " ", "No available taxon matches " + part);
+			
+//			if (matches.size() == 1) {
+//				part = part.substring(0, part.length() - current.length());
+//				replaceRange(part + matches.get(0) + " ", cmdStart, textLength());
+//				return;
+//			}
+//			if (matches.size() == 0) {
+//				printHint("\nNo available taxon matches " + current, Color.blue);
+//				return;
+//			}
+//			String prefix = getLargestCommonPrefix(matches);
+//			if (prefix.length() > current.length()) {
+//				part = part.substring(0, part.length() - current.length());
+//				replaceRange(part + prefix, cmdStart, textLength());
+//			}
+//			printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
 			return;
 		}
 
@@ -900,22 +916,43 @@ public class JConsole extends JScrollPane
 			}
 		}
 		
-		
+		completeMatch(matches, part, "import ", "No file matches " + part);
+//		if (matches.size() == 1) {
+//			replaceRange("import " + matches.get(0), cmdStart, textLength());
+//			return;
+//		}
+//		if (matches.size() == 0) {
+//			printHint("No file matches " + part, Color.blue);
+//			return;
+//		}
+//		
+//		String largestPrefix = getLargestCommonPrefix(matches);
+//		if (largestPrefix.length() > part.length()) {
+//			replaceRange("import " + largestPrefix, cmdStart, textLength());
+//		}
+//		printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+	}
+	
+	private void completeMatch(List<String> matches, String toMatch, String match0, String warning) {
+		completeMatch(matches, toMatch, match0, "", warning);
+	}
+	
+	private void completeMatch(List<String> matches, String toMatch, String match0, String postFix, String warning) {
 		if (matches.size() == 1) {
-			replaceRange("import " + matches.get(0), cmdStart, textLength());
+			replaceRange(match0 + matches.get(0) + postFix, cmdStart, textLength());
 			return;
 		}
 		if (matches.size() == 0) {
-			printHint("No template matches " + part, Color.blue);
+			printHint(warning + toMatch, Color.blue);
 			return;
 		}
-		
-		String largestPrefix = getLargestCommonPrefix(matches);
-		if (largestPrefix.length() > part.length()) {
-			replaceRange("import " + largestPrefix, cmdStart, textLength());
+		String prefix = getLargestCommonPrefix(matches);
+		if (prefix.length() > toMatch.length()) {			
+			replaceRange(match0 + prefix, cmdStart, textLength());
 		}
-		printHint("\nChoose one of:\n" + Arrays.toString(matches.toArray()).replaceAll(",", "\n"), Color.blue);		
+		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()).replaceAll("[\\[,\\]]", "\n").replaceFirst("\n", "\n "), Color.blue);		
 	}
+	
 	
 	private String getLargestCommonPrefix(List<String> strs) {
 		if (strs.size() == 0) {
@@ -946,19 +983,7 @@ public class JConsole extends JScrollPane
 				matches.add(template);
 			}
 		}
-		if (matches.size() == 1) {				
-			replaceRange("template " + matches.get(0), cmdStart, textLength());
-			return;
-		}
-		if (matches.size() == 0) {
-			printHint("No template matches " + part, Color.blue);
-			return;
-		}
-		String prefix = getLargestCommonPrefix(matches);
-		if (prefix.length() > part.length()) {
-			replaceRange("template " + prefix, cmdStart, textLength());
-		}
-		printHint("\nChoose one of: " + Arrays.toString(matches.toArray()), Color.blue);		
+		completeMatch(matches, part, "template ", "No template matches " + part);
 	}
 	
 	private void initTemplates() {
