@@ -734,7 +734,7 @@ public class JConsole extends JScrollPane
 			partNames.add(id);
 		}
 		
-		if (partNames.size() == 2) {
+		if (strs.length == 2) {
 			printHint("\nChoose one of " + partNames.toString(), Color.blue);
 			return;
 		}
@@ -745,11 +745,8 @@ public class JConsole extends JScrollPane
 		}
 
 		String cmd = strs[0] + " " + strs[1] + " ";
-		
-		// TODO
-		printHint("rename clock <tab> needs more testing", Color.RED);
-		
-		completeMatch(matches, current, cmd, "No available partition matches " + current);
+				
+		completeMatch(matches, current, cmd, " = ", "No available partition matches " + current);
 
 //		if (matches.size() == 1) {
 //			replaceRange(cmd + matches.get(0), cmdStart, textLength());
