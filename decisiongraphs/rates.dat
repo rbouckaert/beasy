@@ -1,0 +1,18 @@
+Single partition?
+	Has tip dates?
+		Clock rate = 1e-x, estimate = true, broad prior on clock rate
+	Has calibrations?
+		goto 3
+	Rate from literature?
+		Ranges available?
+			Clock rate = from literature, estimate = true, narrow prior on clock rate
+		No range available
+			Clock rate = from literature, estimate = false
+	No timing info
+		Clock rate = 1.0 estimate = false
+First of multiple clock partitions?
+	goto 2
+Has tree linked with a previous partition?
+	goto 3
+Must be: Clock and tree linked to first partition	
+	goto 2
