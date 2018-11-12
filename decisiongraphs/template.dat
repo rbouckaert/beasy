@@ -1,0 +1,40 @@
+Sequence alignment
+	Gene tree == species tree instead of Multi Species Coalescent
+		Has multiple birth/death/sampling rate changes in tree?
+			MSBDtemplate
+			Standard
+		SNP data
+			SNAPP
+		Has migration?
+			Is species network instead of tree?
+				AIM
+			DENIM
+		Interested in population sizes on branches?
+			*Beast
+		Is species network instead of tree?
+			SpeciesNetwork
+		Has species clock model?
+			Relaxed log normal?
+				SpeciesTreeRLC
+			Relaxed exponential?
+				SpeciesTreeUCED
+			Relaxed local clock?
+				SpeciesTreeRLC
+			Interested in species delimitation?
+				STACEY
+			StarBeast2
+		goto 15
+Binary cognate alignment
+	BinaryCTMC
+	BinaryCovarion
+	PDCovarion
+	PseudoDollo
+	SDollo
+Demes/Discrete trait
+	Is coalescent?
+		Has less than 4 demes?
+			MultiTypeTree
+		Has 4 or more demes
+			BASTA
+			Mascot
+			MascotBSSVS
