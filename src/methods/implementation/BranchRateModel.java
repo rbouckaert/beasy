@@ -18,7 +18,7 @@ public class BranchRateModel implements MethodsText {
 		StringBuilder b = new StringBuilder();		
 		beast.evolution.branchratemodel.BranchRateModel.Base brm = (beast.evolution.branchratemodel.BranchRateModel.Base) o;
 
-		b.append("and " + o.getClass().getSimpleName() + " ");
+		b.append("and " + getName(o) + " ");
 		boolean hasWith = false;
 
 		done.add(brm);
@@ -28,10 +28,10 @@ public class BranchRateModel implements MethodsText {
 					(!(input.get() instanceof TreeInterface)) && 
 					((StateNode)input.get()).isEstimatedInput.get()) {
 				if (!hasWith) {
-					b.append(" with ");
+					b.append("with ");
 					hasWith = true;
 				}
-				b.append(input.getName() + " ");
+				b.append(getInputName(input.getName()) + " ");
 				done.add(input.get());
 				String m = describePriors((StateNode) input.get());
 				b.append(m);

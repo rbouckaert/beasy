@@ -1,5 +1,7 @@
 package methods.implementation;
 
+import java.util.Map;
+
 import methods.MethodsText;
 import methods.MethodsTextFactory;
 

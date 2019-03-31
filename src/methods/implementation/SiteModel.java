@@ -34,7 +34,7 @@ public class SiteModel implements MethodsText {
 			b.append(" and a category proportion invarible\n");
 		}
 		b.delete(b.length()-1, b.length());
-		b.append(".\n");
+		b.append("\n");
 		return b.toString();
 	}
 }

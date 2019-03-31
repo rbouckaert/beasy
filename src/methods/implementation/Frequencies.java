@@ -13,12 +13,12 @@ public class Frequencies implements MethodsText {
 	public String getModelDescription(Object o) {
 		beast.evolution.substitutionmodel.Frequencies f = (beast.evolution.substitutionmodel.Frequencies) o;
 		StringBuilder b = new StringBuilder();
-		if (f.frequenciesInput.get() == null) {
-			b.append(" fixed equal frequencies\n");
+		if (f.dataInput.get() != null) {
+			b.append("empirical frequencies\n");
 		} else if (f.frequenciesInput.get().isEstimatedInput.get()) {
-			b.append(" estimated frequencies\n");
+			b.append("estimated frequencies\n");
 		} else {
-			b.append(" empirical frequencies\n");
+			b.append("fixed equal frequencies\n");
 		}
 		return b.toString();
 	}

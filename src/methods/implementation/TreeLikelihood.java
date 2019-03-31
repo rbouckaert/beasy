@@ -16,7 +16,9 @@ public class TreeLikelihood implements MethodsText {
 		StringBuilder b = new StringBuilder();
 		b.append(MethodsTextFactory.getModelDescription(likelihood.siteModelInput.get()));
 		b.append(MethodsTextFactory.getModelDescription(likelihood.branchRateModelInput.get()));
-		b.append(MethodsTextFactory.getModelDescription(likelihood.treeInput.get()));
+
+		b.append("\n");
+//		b.append(MethodsTextFactory.getModelDescription(likelihood.treeInput.get()));
 		return b.toString();
 	}
 

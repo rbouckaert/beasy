@@ -16,7 +16,7 @@ public class SubstModel implements MethodsText {
 	public String getModelDescription(Object o2) {
 		StringBuilder b = new StringBuilder();		
 		beast.evolution.substitutionmodel.SubstitutionModel.Base o = (beast.evolution.substitutionmodel.SubstitutionModel.Base) o2;
-		b.append("uses " + o.getClass().getSimpleName() + " ");
+		b.append("uses " + getName(o) + " ");
 		boolean hasWith = false;
 
 		done.add(o2);
@@ -26,7 +26,7 @@ public class SubstModel implements MethodsText {
 					b.append(" with ");
 					hasWith = true;
 				}
-				b.append(input.getName() + " ");
+				b.append(getInputName(input.getName()) + " ");
 				done.add(input.get());
 				String m = describePriors((StateNode) input.get());
 				b.append(m);

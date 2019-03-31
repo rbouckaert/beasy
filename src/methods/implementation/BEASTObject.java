@@ -1,11 +1,13 @@
 package methods.implementation;
 
+import java.util.*;
+
 import beast.core.Input;
 import methods.MethodsText;
 import methods.MethodsTextFactory;
 
 public class BEASTObject implements MethodsText {
-
+	
 	@Override
 	public Class type() {
 		return beast.core.BEASTObject.class;
@@ -19,12 +21,14 @@ public class BEASTObject implements MethodsText {
 		beast.core.BEASTObject o = (beast.core.BEASTObject) o2;
 		done.add(o);
 		StringBuilder b = new StringBuilder();
-		b.append(o.getClass().getSimpleName() + " with ");
+		b.append(getName(o) + " with ");
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
-				b.append(" " + input.getName() + " is ");
 				String m = MethodsTextFactory.getModelDescription(input.get());
-				b.append(m);
+				if (m.length() > 0) {
+					b.append(" " + getInputName(input.getName()) + " is ");
+					b.append(m);
+				}
 			}
 		}
  				
