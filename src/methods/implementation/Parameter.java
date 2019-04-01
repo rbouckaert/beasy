@@ -17,7 +17,7 @@ public class Parameter implements MethodsText {
 		if (p.isEstimatedInput.get()) {
 			b.addAll(describePriors(p));
 		} else {
-			b.add(new Phrase(p, p.getValue().toString()));
+			b.add(new Phrase(p.valuesInput.get(), p, p.valuesInput, p.getValue().toString()));
 		}
 		return b;
 	}

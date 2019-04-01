@@ -5,6 +5,7 @@ import java.util.*;
 import beast.core.BEASTObject;
 import beast.core.Description;
 import beast.core.Distribution;
+import beast.core.Input;
 import beast.core.StateNode;
 import beast.core.util.CompoundDistribution;
 
@@ -70,7 +71,8 @@ public interface MethodsText {
 		return name;
 	}
 
-	default String getInputName(String name) {
+	default String getInputName(Input<?> input) {
+		String name = input.getName();
 		if (inputNameMap.containsKey(name)) {
 			name = inputNameMap.get(name);
 		} else {

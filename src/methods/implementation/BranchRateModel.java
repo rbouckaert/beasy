@@ -33,7 +33,7 @@ public class BranchRateModel implements MethodsText {
 					b.add(new Phrase("with "));
 					hasWith = true;
 				}
-				b.add(new Phrase(input, getInputName(input.getName()) + " "));
+				b.add(new Phrase(input.get(), (BEASTInterface) brm, input, getInputName(input) + " "));
 				done.add(input.get());
 				List<Phrase> m = describePriors((StateNode) input.get());
 				b.addAll(m);

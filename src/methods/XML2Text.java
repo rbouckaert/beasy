@@ -77,24 +77,29 @@ public class XML2Text extends Runnable {
                 List<String> currentPartitionIDs = new ArrayList<>();
                 currentPartitionIDs.add(partitionIDs.get(i));
                 String model = Phrase.toString(partitionModels.get(i));
+
+                List<List<Phrase>> selected = new ArrayList<>();
+                selected.add(partitionModels.get(i));
                 for (int j = i + 1; j < partitionIDs.size(); j++) {
-                	if (partitionModels.get(j).equals(model)) {
+                	if (Phrase.toString(partitionModels.get(j)).equals(model)) {
+                        selected.add(partitionModels.get(j));
                 		partitionModels.set(j, null);
                 		currentPartitionIDs.add(partitionIDs.get(j));
                 	}
                 }
                 // translate to text
+                model = Phrase.toString( selected.toArray(new List[]{}));
                 if (currentPartitionIDs.size() > 1) {
                 	b.append("Partitions ");
-                    printParitions(currentPartitionIDs, b);
+                	b.append(printParitions(currentPartitionIDs));
                 	b.append(model + "\n");
                 } else {
                 	b.append("Partitions " + currentPartitionIDs.get(0) + " " + model + "\n");                	
                 }
         	}
         }
-        // tree priors
         
+        // tree priors        
         Set<TreeInterface> trees = new LinkedHashSet<>();
         for (Distribution distr : posterior.pDistributions.get()) {
             if (distr.getID().equals("likelihood")) {
@@ -111,7 +116,7 @@ public class XML2Text extends Runnable {
         for (TreeInterface tree : trees) {
         	b.append(Phrase.toString(MethodsTextFactory.getModelDescription(tree)));
         }
-        b.append("\n");
+        b.append("\n\n");
         
         // has FixMeanMutationRatesOperator?
         for (Operator op : mcmc.operatorsInput.get()) {
@@ -121,7 +126,7 @@ public class XML2Text extends Runnable {
                 for (StateNode s : ((DeltaExchangeOperator)op).parameterInput.get()) {
                 	partitionIDs.add(BeautiDoc.parsePartition(s.getID()));
                 }
-                printParitions(partitionIDs, b);
+                b.append(printParitions(partitionIDs));
         		b.append("are estimated.\n");
         	}
         }
@@ -133,7 +138,8 @@ public class XML2Text extends Runnable {
 		Log.warning("Done!");
 	}
 	
-	private void printParitions(List<String> partitionIDs, StringBuilder b) {
+	static String printParitions(List<String> partitionIDs) {
+		StringBuilder b = new StringBuilder();
     	for (int j = 0; j < partitionIDs.size() - 1; j++) {
     		b.append(partitionIDs.get(j));
     		if (j < partitionIDs.size() - 2) {
@@ -143,6 +149,7 @@ public class XML2Text extends Runnable {
     		}
     	}
     	b.append(partitionIDs.get(partitionIDs.size() - 1) + " ");
+    	return b.toString();
 	}
 
 	private String getPartitionDescription(CompoundDistribution distr) {

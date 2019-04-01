@@ -1,9 +1,6 @@
 package methods.implementation;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import beast.core.Input;
 import java.util.*;
 import methods.*;
@@ -30,7 +27,7 @@ public class ParametricDistribution implements MethodsText {
 				} else {
 					b.add(new Phrase(","));
 				}
-				b.add(new Phrase(" " + getInputName(input.getName()) + " is "));
+				b.add(new Phrase(input.get(), o, input," " + getInputName(input) + " is "));
 				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get());
 				b.addAll(m);
 			}

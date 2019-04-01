@@ -22,12 +22,12 @@ public class BEASTObject implements MethodsText {
 		beast.core.BEASTObject o = (beast.core.BEASTObject) o2;
 		done.add(o);
 		List<Phrase> b = new ArrayList<>();
-		b.add(new Phrase(getName(o) + " with "));
+		b.add(new Phrase(o, getName(o) + " with "));
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
 				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get());
 				if (m.size() > 0) {
-					b.add(new Phrase(" " + getInputName(input.getName()) + " is "));
+					b.add(new Phrase(input.get(), o, input, " " + getInputName(input) + " is "));
 					b.addAll(m);
 				}
 			}

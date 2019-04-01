@@ -27,7 +27,7 @@ public class SubstModel implements MethodsText {
 					b.add(new Phrase(" with "));
 					hasWith = true;
 				}
-				b.add(new Phrase(input, getInputName(input.getName()) + " "));
+				b.add(new Phrase(input.get(), o, input, getInputName(input) + " "));
 				done.add(input.get());
 				List<Phrase> m = describePriors((StateNode) input.get());
 				b.addAll(m);
