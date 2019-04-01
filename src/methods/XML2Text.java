@@ -18,7 +18,6 @@ import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.evolution.operators.DeltaExchangeOperator;
 import beast.evolution.tree.TreeInterface;
 import beast.util.XMLParser;
-import sun.security.x509.DeltaCRLIndicatorExtension;
 import beast.core.Input.Validate;
 import beast.core.MCMC;
 import beast.core.Operator;
@@ -57,7 +56,7 @@ public class XML2Text extends Runnable {
         
         // collect model descriptions of all partitions
         List<String> partitionIDs = new ArrayList<>();
-        List<String> partitionModels = new ArrayList<>();
+        List<List<Phrase>> partitionModels = new ArrayList<>();
         
         for (Distribution distr : posterior.pDistributions.get()) {
             if (distr.getID().equals("likelihood")) {
@@ -65,7 +64,7 @@ public class XML2Text extends Runnable {
                     if (likelihood instanceof GenericTreeLikelihood) {
                         GenericTreeLikelihood treeLikelihood = (GenericTreeLikelihood) likelihood;
                     	partitionIDs.add(treeLikelihood.dataInput.get().getID());
-                    	String modelDescription = getModelDescription(treeLikelihood);
+                    	List<Phrase> modelDescription = getModelDescription(treeLikelihood);
                     	partitionModels.add(modelDescription);
                     }
                 }
@@ -77,7 +76,7 @@ public class XML2Text extends Runnable {
         	if (partitionModels.get(i) != null) {
                 List<String> currentPartitionIDs = new ArrayList<>();
                 currentPartitionIDs.add(partitionIDs.get(i));
-                String model = partitionModels.get(i);
+                String model = Phrase.toString(partitionModels.get(i));
                 for (int j = i + 1; j < partitionIDs.size(); j++) {
                 	if (partitionModels.get(j).equals(model)) {
                 		partitionModels.set(j, null);
@@ -110,7 +109,7 @@ public class XML2Text extends Runnable {
         
         b.append("Tree prior: ");
         for (TreeInterface tree : trees) {
-        	b.append(MethodsTextFactory.getModelDescription(tree));
+        	b.append(Phrase.toString(MethodsTextFactory.getModelDescription(tree)));
         }
         b.append("\n");
         
@@ -151,7 +150,7 @@ public class XML2Text extends Runnable {
 		return null;
 	}
 
-	private String getModelDescription(GenericTreeLikelihood treeLikelihood) {
+	private List<Phrase> getModelDescription(GenericTreeLikelihood treeLikelihood) {
 		return MethodsTextFactory.getModelDescription(treeLikelihood);
 	}
 

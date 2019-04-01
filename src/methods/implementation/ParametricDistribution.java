@@ -1,11 +1,12 @@
 package methods.implementation;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
 import beast.core.Input;
-import methods.MethodsText;
-import methods.MethodsTextFactory;
+import java.util.*;
+import methods.*;
 
 public class ParametricDistribution implements MethodsText {
 
@@ -15,28 +16,28 @@ public class ParametricDistribution implements MethodsText {
 	}
 	
 	@Override
-	public String getModelDescription(Object o2) {
+	public List<Phrase> getModelDescription(Object o2) {
 		beast.math.distributions.ParametricDistribution o = (beast.math.distributions.ParametricDistribution) o2;
 		done.add(o);
-		StringBuilder b = new StringBuilder();
-		b.append(getName(o) + " ");
+		List<Phrase> b = new ArrayList<>();
+		b.add(new Phrase(o, getName(o) + " "));
 		boolean isFirst = true;
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
 				if (isFirst) {
 					isFirst = false;
-					b.append("with ");
+					b.add(new Phrase("with "));
 				} else {
-					b.append(",");
+					b.add(new Phrase(","));
 				}
-				b.append(" " + getInputName(input.getName()) + " is ");
-				String m = MethodsTextFactory.getModelDescription(input.get());
-				b.append(m);
+				b.add(new Phrase(" " + getInputName(input.getName()) + " is "));
+				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get());
+				b.addAll(m);
 			}
 		}
  				
-		b.append(describePriors(o));
+		b.addAll(describePriors(o));
 		
-		return b.toString();
+		return b;
 	}
 }

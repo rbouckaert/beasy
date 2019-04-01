@@ -1,9 +1,10 @@
 package methods.implementation;
 
+
 import java.util.Map;
 
-import methods.MethodsText;
-import methods.MethodsTextFactory;
+import java.util.*;
+import methods.*;
 
 public class Prior implements MethodsText {
 
@@ -13,11 +14,11 @@ public class Prior implements MethodsText {
 	}
 
 	@Override
-	public String getModelDescription(Object o) {
+	public List<Phrase> getModelDescription(Object o) {
 		beast.math.distributions.Prior p = (beast.math.distributions.Prior) o;
-		StringBuilder b = new StringBuilder();
-		b.append(MethodsTextFactory.getModelDescription(p.distInput.get()));
-		return b.toString();
+		List<Phrase> b = new ArrayList<>();
+		b.addAll(MethodsTextFactory.getModelDescription(p.distInput.get()));
+		return b;
 	}
 
 }

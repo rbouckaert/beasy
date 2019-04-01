@@ -5,6 +5,7 @@ import java.util.*;
 import beast.core.Input;
 import methods.MethodsText;
 import methods.MethodsTextFactory;
+import methods.Phrase;
 
 public class BEASTObject implements MethodsText {
 	
@@ -14,27 +15,27 @@ public class BEASTObject implements MethodsText {
 	}
 	
 	@Override
-	public String getModelDescription(Object o2) {
+	public List<Phrase> getModelDescription(Object o2) {
 		if (done.contains(o2)) {
-			return "";
+			return new ArrayList<>();
 		}
 		beast.core.BEASTObject o = (beast.core.BEASTObject) o2;
 		done.add(o);
-		StringBuilder b = new StringBuilder();
-		b.append(getName(o) + " with ");
+		List<Phrase> b = new ArrayList<>();
+		b.add(new Phrase(getName(o) + " with "));
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
-				String m = MethodsTextFactory.getModelDescription(input.get());
-				if (m.length() > 0) {
-					b.append(" " + getInputName(input.getName()) + " is ");
-					b.append(m);
+				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get());
+				if (m.size() > 0) {
+					b.add(new Phrase(" " + getInputName(input.getName()) + " is "));
+					b.addAll(m);
 				}
 			}
 		}
  				
-		b.append(describePriors(o));
+		b.addAll(describePriors(o));
 		
-		return b.toString();
+		return b;
 	}
 
 }

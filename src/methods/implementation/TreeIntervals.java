@@ -1,6 +1,7 @@
 package methods.implementation;
 
-import methods.MethodsText;
+import java.util.*;
+import methods.*;
 
 public class TreeIntervals implements MethodsText {
 
@@ -10,8 +11,8 @@ public class TreeIntervals implements MethodsText {
 	}
 
 	@Override
-	public String getModelDescription(Object o) {
-		return "";
+	public List<Phrase> getModelDescription(Object o) {
+		return new ArrayList<>();
 	}
 
 }

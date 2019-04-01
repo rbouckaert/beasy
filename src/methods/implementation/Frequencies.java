@@ -1,6 +1,7 @@
 package methods.implementation;
 
-import methods.MethodsText;
+import java.util.*;
+import methods.*;
 
 public class Frequencies implements MethodsText {
 
@@ -10,17 +11,17 @@ public class Frequencies implements MethodsText {
 	}
 
 	@Override
-	public String getModelDescription(Object o) {
+	public List<Phrase> getModelDescription(Object o) {
 		beast.evolution.substitutionmodel.Frequencies f = (beast.evolution.substitutionmodel.Frequencies) o;
-		StringBuilder b = new StringBuilder();
+		List<Phrase> b = new ArrayList<>();
 		if (f.dataInput.get() != null) {
-			b.append("empirical frequencies\n");
+			b.add(new Phrase("empirical frequencies\n"));
 		} else if (f.frequenciesInput.get().isEstimatedInput.get()) {
-			b.append("estimated frequencies\n");
+			b.add(new Phrase("estimated frequencies\n"));
 		} else {
-			b.append("fixed equal frequencies\n");
+			b.add(new Phrase("fixed equal frequencies\n"));
 		}
-		return b.toString();
+		return b;
 	}
 
 }

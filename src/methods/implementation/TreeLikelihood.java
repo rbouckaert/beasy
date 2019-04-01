@@ -1,7 +1,7 @@
 package methods.implementation;
 
-import methods.MethodsText;
-import methods.MethodsTextFactory;
+import java.util.*;
+import methods.*;
 
 public class TreeLikelihood implements MethodsText {
 		
@@ -11,15 +11,15 @@ public class TreeLikelihood implements MethodsText {
 	}
 	
 	@Override
-	public String getModelDescription(Object o) {
+	public List<Phrase> getModelDescription(Object o) {
 		beast.evolution.likelihood.GenericTreeLikelihood likelihood = (beast.evolution.likelihood.GenericTreeLikelihood) o;
-		StringBuilder b = new StringBuilder();
-		b.append(MethodsTextFactory.getModelDescription(likelihood.siteModelInput.get()));
-		b.append(MethodsTextFactory.getModelDescription(likelihood.branchRateModelInput.get()));
+		List<Phrase> b = new ArrayList<>();
+		b.addAll(MethodsTextFactory.getModelDescription(likelihood.siteModelInput.get()));
+		b.addAll(MethodsTextFactory.getModelDescription(likelihood.branchRateModelInput.get()));
 
-		b.append("\n");
-//		b.append(MethodsTextFactory.getModelDescription(likelihood.treeInput.get()));
-		return b.toString();
+		b.add(new Phrase("\n"));
+//		b.add(MethodsTextFactory.getModelDescription(likelihood.treeInput.get()));
+		return b;
 	}
 
 }

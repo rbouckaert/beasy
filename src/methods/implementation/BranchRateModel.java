@@ -5,6 +5,8 @@ import beast.core.Input;
 import beast.core.StateNode;
 import beast.evolution.tree.TreeInterface;
 import methods.MethodsText;
+import java.util.*;
+import methods.*;
 
 public class BranchRateModel implements MethodsText {
 
@@ -14,11 +16,11 @@ public class BranchRateModel implements MethodsText {
 	}
 
 	@Override
-	public String getModelDescription(Object o) {
-		StringBuilder b = new StringBuilder();		
+	public List<Phrase> getModelDescription(Object o) {
+		List<Phrase> b = new ArrayList<>();		
 		beast.evolution.branchratemodel.BranchRateModel.Base brm = (beast.evolution.branchratemodel.BranchRateModel.Base) o;
 
-		b.append("and " + getName(o) + " ");
+		b.add(new Phrase("and " + getName(o) + " "));
 		boolean hasWith = false;
 
 		done.add(brm);
@@ -28,16 +30,16 @@ public class BranchRateModel implements MethodsText {
 					(!(input.get() instanceof TreeInterface)) && 
 					((StateNode)input.get()).isEstimatedInput.get()) {
 				if (!hasWith) {
-					b.append("with ");
+					b.add(new Phrase("with "));
 					hasWith = true;
 				}
-				b.append(getInputName(input.getName()) + " ");
+				b.add(new Phrase(input, getInputName(input.getName()) + " "));
 				done.add(input.get());
-				String m = describePriors((StateNode) input.get());
-				b.append(m);
+				List<Phrase> m = describePriors((StateNode) input.get());
+				b.addAll(m);
 			}
 		}
-		return b.toString();
+		return b;
 	}
 
 }

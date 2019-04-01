@@ -1,9 +1,10 @@
 package methods.implementation;
 
+
 import beast.core.Input;
 import beast.core.StateNode;
-import methods.MethodsText;
-import methods.MethodsTextFactory;
+import java.util.*;
+import methods.*;
 
 public class SubstModel implements MethodsText {
 
@@ -13,31 +14,31 @@ public class SubstModel implements MethodsText {
 	}
 
 	@Override
-	public String getModelDescription(Object o2) {
-		StringBuilder b = new StringBuilder();		
+	public List<Phrase> getModelDescription(Object o2) {
+		List<Phrase> b = new ArrayList<>();		
 		beast.evolution.substitutionmodel.SubstitutionModel.Base o = (beast.evolution.substitutionmodel.SubstitutionModel.Base) o2;
-		b.append("uses " + getName(o) + " ");
+		b.add(new Phrase("uses " + getName(o) + " "));
 		boolean hasWith = false;
 
 		done.add(o2);
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof StateNode && ((StateNode)input.get()).isEstimatedInput.get()) {
 				if (!hasWith) {
-					b.append(" with ");
+					b.add(new Phrase(" with "));
 					hasWith = true;
 				}
-				b.append(getInputName(input.getName()) + " ");
+				b.add(new Phrase(input, getInputName(input.getName()) + " "));
 				done.add(input.get());
-				String m = describePriors((StateNode) input.get());
-				b.append(m);
+				List<Phrase> m = describePriors((StateNode) input.get());
+				b.addAll(m);
 			}
 		}
 		if (hasWith) {
-			b.append("\nand ");
+			b.add(new Phrase("\nand "));
 		}
 		
-		b.append(MethodsTextFactory.getModelDescription(o.frequenciesInput.get()));
-		return b.toString();
+		b.addAll(MethodsTextFactory.getModelDescription(o.frequenciesInput.get()));
+		return b;
 	}
 
 }

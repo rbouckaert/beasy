@@ -1,6 +1,7 @@
 package methods.implementation;
 
-import methods.MethodsText;
+import java.util.*;
+import methods.*;
 
 public class Parameter implements MethodsText {
 
@@ -10,14 +11,14 @@ public class Parameter implements MethodsText {
 	}
 	
 	@Override
-	public String getModelDescription(Object o) {
+	public List<Phrase> getModelDescription(Object o) {
 		beast.core.parameter.Parameter.Base p = (beast.core.parameter.Parameter.Base) o;
+		List<Phrase> b = new ArrayList<>();
 		if (p.isEstimatedInput.get()) {
-			StringBuilder b = new StringBuilder();
-			b.append(describePriors(p));
-			return b.toString();
+			b.addAll(describePriors(p));
 		} else {
-			return p.getValue().toString();
+			b.add(new Phrase(p, p.getValue().toString()));
 		}
+		return b;
 	}
 }

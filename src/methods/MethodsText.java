@@ -1,9 +1,6 @@
 package methods;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import beast.core.BEASTObject;
 import beast.core.Description;
@@ -38,11 +35,11 @@ public interface MethodsText {
 		return "";
 	}
 	
-	String getModelDescription(Object o);
+	List<Phrase> getModelDescription(Object o);
 
 	
-	default String describePriors(BEASTObject o) {
-		StringBuilder b = new StringBuilder();
+	default List<Phrase> describePriors(BEASTObject o) {
+		List<Phrase> b = new ArrayList<>();
 		// need to describe priors?
 		if (o instanceof StateNode && ((StateNode) o).isEstimatedInput.get()) {			
 			for (Object output : o.getOutputs()) {
@@ -51,15 +48,15 @@ public interface MethodsText {
 					// is it in the prior?
 					for (Object output2 : distr.getOutputs()) {
 						if (output2 instanceof CompoundDistribution && ((CompoundDistribution) output2).getID().equals("prior")) {
-							b.append(" using ");
-							String m = MethodsTextFactory.getModelDescription(distr);
-							b.append(m);
+							b.add(new Phrase(distr, " using "));
+							List<Phrase> m = MethodsTextFactory.getModelDescription(distr);
+							b.addAll(m);
 						}
 					}
 				}
 			}
 		}
-		return b.toString();
+		return b;
 	}
 	
 	default String getName(Object o) {

@@ -53,9 +53,9 @@ public class MethodsTextFactory {
 		return createMethodsText(o.getClass());
 	}
 	
-	static public String getModelDescription(Object o) {
+	static public List<Phrase> getModelDescription(Object o) {
 		MethodsText m = createMethodsText(o);
-		String modelDescription = m.getModelDescription(o);
+		List<Phrase> modelDescription = m.getModelDescription(o);
 		return modelDescription;
 	}
 
