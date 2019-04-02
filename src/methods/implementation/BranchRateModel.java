@@ -20,7 +20,7 @@ public class BranchRateModel implements MethodsText {
 		List<Phrase> b = new ArrayList<>();		
 		beast.evolution.branchratemodel.BranchRateModel.Base brm = (beast.evolution.branchratemodel.BranchRateModel.Base) o;
 
-		b.add(new Phrase("and " + getName(o) + " "));
+		b.add(new Phrase(o, "and " + getName(o) + " "));
 		boolean hasWith = false;
 
 		done.add(brm);

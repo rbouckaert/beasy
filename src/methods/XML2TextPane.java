@@ -69,6 +69,9 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         CompoundDistribution posterior = (CompoundDistribution) mcmc.posteriorInput.get();
 		StringBuilder b = new StringBuilder();
 
+
+		List<Phrase> m = new ArrayList<>();
+
         for (Distribution distr : posterior.pDistributions.get()) {
             if (distr.getID().equals("likelihood")) {
             	String partitionDescription = getPartitionDescription((CompoundDistribution) distr);
@@ -113,19 +116,36 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 	}
                 }
                 // translate to text
-                StyledDocument doc = getStyledDocument();
-                Phrase.addTextToDocument(doc, this, beautiDoc, selected.toArray(new List[]{}));
                 
                 model = Phrase.toString(selected.toArray(new List[]{}));
+            	m.clear();
                 if (currentPartitionIDs.size() > 1) {
-                	b.append("Partitions ");
-                	b.append(XML2Text.printParitions(currentPartitionIDs));
-                	b.append(model + "\n");
+                	StringBuilder b2 = new StringBuilder();
+                	b2.append("Partitions ");
+                	b2.append(XML2Text.printParitions(currentPartitionIDs));
+                	b.append(b2.toString());
+                	m.add(new Phrase(b2.toString()));
+                	b2.append(model + "\n");
+
                 } else {
+                	m.add(new Phrase("Partitions " + currentPartitionIDs.get(0)));
                 	b.append("Partitions " + currentPartitionIDs.get(0) + " " + model + "\n");                	
                 }
+                
+                if (model.trim().length() > 0) {
+                	List<Phrase> [] phrases = new List[1];
+                	phrases[0] = m;
+                	Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
+                }
+
+                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, selected.toArray(new List[]{}));
         	}
         }
+
+        List<Phrase> [] phrases = new List[1];
+    	m.add(new Phrase(b.toString()));
+    	phrases[0] = m;
+//        Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
         
         // tree priors        
         Set<TreeInterface> trees = new LinkedHashSet<>();
@@ -140,10 +160,16 @@ public class XML2TextPane extends JTextPane implements ActionListener {
             }
         }
         
-        b.append("Tree prior: ");
         for (TreeInterface tree : trees) {
-        	b.append(Phrase.toString(MethodsTextFactory.getModelDescription(tree)));
+        	m = MethodsTextFactory.getModelDescription(tree);
+        	m.set(0, new Phrase("Tree prior: "));
+        	b.append(Phrase.toString(m));
+        	phrases = new List[1];
+        	phrases[0] = m;
+            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
         }
+		Log.warning(b.toString());
+        b = new StringBuilder();
         b.append("\n\n");
         
         // has FixMeanMutationRatesOperator?
@@ -156,6 +182,10 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 }
                 b.append(XML2Text.printParitions(partitionIDs));
         		b.append("are estimated.\n");
+        		m.clear();
+        		m.add(new Phrase(b.toString()));
+        		phrases[0] = m;
+                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
         	}
         }
 

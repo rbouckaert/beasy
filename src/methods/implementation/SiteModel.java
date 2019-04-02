@@ -20,7 +20,9 @@ public class SiteModel implements MethodsText {
 		List<Phrase> b = new ArrayList<>();
 		SubstitutionModel subst = sm.substModelInput.get();
 		b.add(new Phrase("uses "));
-		b.add(new Phrase(subst, sm, sm.substModelInput, getName(o) + " "));
+		b.add(new Phrase(sm, " gamma site model "));
+		b.add(new Phrase("and "));
+		b.add(new Phrase(subst, sm, sm.substModelInput, getName(sm.substModelInput.get()) + " "));
 		List<Phrase> substModel = MethodsTextFactory.getModelDescription(sm.substModelInput.get());
 		b.addAll(substModel);
 		if (sm.gammaCategoryCount.get() > 1) {

@@ -17,7 +17,8 @@ public class ParametricDistribution implements MethodsText {
 		beast.math.distributions.ParametricDistribution o = (beast.math.distributions.ParametricDistribution) o2;
 		done.add(o);
 		List<Phrase> b = new ArrayList<>();
-		b.add(new Phrase(o, getName(o) + " distributed "));
+		b.add(new Phrase(o, getName(o)));
+		b.add(new Phrase(" distributed "));
 		boolean isFirst = true;
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
@@ -27,7 +28,7 @@ public class ParametricDistribution implements MethodsText {
 				} else {
 					b.add(new Phrase(","));
 				}
-				b.add(new Phrase(input.get(), o, input," " + getInputName(input) + " is "));
+				b.add(new Phrase(input.get(), o, input," " + getInputName(input) + " "));
 				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get());
 				b.addAll(m);
 			}

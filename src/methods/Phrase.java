@@ -1,11 +1,14 @@
 package methods;
 
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.*;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -13,11 +16,11 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import beast.app.beauti.BeautiDoc;
-import beast.app.beauti.BeautiFixedTreeAlignmentProvider;
 import beast.app.beauti.BeautiSubTemplate;
 import beast.app.draw.InputEditorFactory;
 import beast.core.*;
-import beast.math.distributions.ParametricDistribution;
+import beast.core.parameter.Parameter;
+import beast.core.parameter.RealParameter;
 
 /** Contains information about a word or phrase in the MethodsText,
  * including a pointer to where the phrase came from 
@@ -25,6 +28,8 @@ import beast.math.distributions.ParametricDistribution;
 public class Phrase {
 	/** object being described **/
 	Object source;
+	
+	Set<Object> sibling;
 	
 	/** input associated with the source **/
 	Input<?> input;
@@ -40,6 +45,8 @@ public class Phrase {
 		this.parent = parent;
 		this.input = parameter;
 		this.text = phrase;
+		
+		sibling = new LinkedHashSet<>();
 	}
 
 	
@@ -105,11 +112,44 @@ public class Phrase {
 		for (int i = 0; i < basePhrases.size(); i++) {
 			Phrase phrase = basePhrases.get(i);
 
-			if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
+			 if (phrase.source instanceof RealParameter) {
+				textString.add(phrase.text);
+				styleString.add("regular");
+			 } else if (phrase.parent != null && phrase.parent instanceof Parameter<?> && phrase.input.getName().equals("value")) {
+		        Style s = doc.addStyle(phrase.parent.getID() + " " + phrase.input.getName(), regular);
+		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
+		        String text = phrase.source.toString();
+		        text = text.substring(1, text.length() - 1);
+		        final JTextField entry = new JTextField(text);
+		        entry.setCursor(Cursor.getDefaultCursor());
+		        entry.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
+		        entry.addActionListener(al);
+		        entry.setMaximumSize(new Dimension(80,80));
+		        entry.getDocument().addDocumentListener(new DocumentListener() {
+		            @Override
+		            public void removeUpdate(DocumentEvent e) {
+		            	entry.postActionEvent();
+		            }
+
+					@Override
+		            public void insertUpdate(DocumentEvent e) {
+		            	entry.postActionEvent();
+		            }
+
+		            @Override
+		            public void changedUpdate(DocumentEvent e) {
+		            	entry.postActionEvent();
+		            }
+		        });
+		        StyleConstants.setComponent(s, entry);	
+	
+		        textString.add(" ");
+				styleString.add(phrase.parent.getID() + " " + phrase.input.getName());
+			 } else if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
 		        InputEditorFactory inputEditorFactory = beautiDoc.getInputEditorFactory();
 		        List<BeautiSubTemplate> plugins = inputEditorFactory.getAvailableTemplates(phrase.input, phrase.parent, null, beautiDoc);
 		        if (plugins.size() > 0) {
-			        JComboBox<Object> combobox2 = new JComboBox<>(plugins.toArray());
+			        JComboBox<Object> combobox = new JComboBox<>(plugins.toArray());
 			        Style s = doc.addStyle(phrase.parent.getID() + " " + phrase.input.getName(), regular);
 			        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
 
@@ -117,31 +157,20 @@ public class Phrase {
                     if (id.indexOf('.') != -1) {
                     	id = id.substring(0,  id.indexOf('.'));
                     }
-                    boolean selected = false;
-                    for (int k = 0; k < combobox2.getItemCount(); k++) {
-                        BeautiSubTemplate template = (BeautiSubTemplate) combobox2.getItemAt(k);
+                    for (int k = 0; k < combobox.getItemCount(); k++) {
+                        BeautiSubTemplate template = (BeautiSubTemplate) combobox.getItemAt(k);
                         if (template.getMainID().replaceAll(".\\$\\(n\\)", "").equals(id) ||
                         		template.getMainID().replaceAll(".s:\\$\\(n\\)", "").equals(id) || 
                         		template.getMainID().replaceAll(".c:\\$\\(n\\)", "").equals(id) || 
-                        		template.getMainID().replaceAll(".t:\\$\\(n\\)", "").equals(id)) {
-                        	combobox2.setSelectedItem(template);
-                        	selected = true;
+                        		template.getMainID().replaceAll(".t:\\$\\(n\\)", "").equals(id) ||
+                        		(template.getShortClassName() != null && template.getShortClassName().equals(id))) {
+                        	combobox.setSelectedItem(template);
                         }
                     }
-                    if (!selected) {
-                        for (int k = 0; k < combobox2.getItemCount(); k++) {
-                            BeautiSubTemplate template = (BeautiSubTemplate) combobox2.getItemAt(k);
-                            if (template.getShortClassName() != null && template.getShortClassName().equals(id)) {
-                            	combobox2.setSelectedItem(template);
-                            	selected = true;
-                            }
-                        }
-
-                    }
-			        combobox2.setCursor(Cursor.getDefaultCursor());
-			        combobox2.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
-			        combobox2.addActionListener(al);
-			        StyleConstants.setComponent(s, combobox2);	
+			        combobox.setCursor(Cursor.getDefaultCursor());
+			        combobox.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
+			        combobox.addActionListener(al);
+			        StyleConstants.setComponent(s, combobox);	
 	
 			        textString.add(" ");
 					styleString.add(phrase.parent.getID() + " " + phrase.input.getName());
@@ -149,17 +178,6 @@ public class Phrase {
 					textString.add(phrase.text);
 					styleString.add("regular");
 		        }
-			} else if (phrase.source instanceof String && phrase.input != null && phrase.parent != null) {
-		        Style s = doc.addStyle(phrase.parent.getID() + " " + phrase.input.getName(), regular);
-		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
-		        JTextField combobox2 = new JTextField(phrase.source.toString());
-		        combobox2.setCursor(Cursor.getDefaultCursor());
-		        combobox2.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
-		        combobox2.addActionListener(al);
-		        StyleConstants.setComponent(s, combobox2);	
-
-		        textString.add(" ");
-				styleString.add(phrase.parent.getID() + " " + phrase.input.getName());
 			} else {
 				textString.add(phrase.text);
 				styleString.add("regular");
