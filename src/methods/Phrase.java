@@ -112,10 +112,11 @@ public class Phrase {
 		for (int i = 0; i < basePhrases.size(); i++) {
 			Phrase phrase = basePhrases.get(i);
 
-			 if (phrase.source instanceof RealParameter) {
+			if (phrase.source instanceof RealParameter) {
 				textString.add(phrase.text);
 				styleString.add("regular");
-			 } else if (phrase.parent != null && phrase.parent instanceof Parameter<?> && phrase.input.getName().equals("value")) {
+			} else if (phrase.parent != null && phrase.parent instanceof Parameter<?> && phrase.input.getName().equals("value")) {
+				// beautiDoc.registerPlugin((BEASTInterface) phrase.parent);
 		        Style s = doc.addStyle(phrase.parent.getID() + " " + phrase.input.getName(), regular);
 		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
 		        String text = phrase.source.toString();
@@ -145,7 +146,8 @@ public class Phrase {
 	
 		        textString.add(" ");
 				styleString.add(phrase.parent.getID() + " " + phrase.input.getName());
-			 } else if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
+			} else if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
+				// beautiDoc.registerPlugin((BEASTInterface) phrase.source);
 		        InputEditorFactory inputEditorFactory = beautiDoc.getInputEditorFactory();
 		        List<BeautiSubTemplate> plugins = inputEditorFactory.getAvailableTemplates(phrase.input, phrase.parent, null, beautiDoc);
 		        if (plugins.size() > 0) {

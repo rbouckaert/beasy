@@ -5,10 +5,12 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.*;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -16,8 +18,13 @@ import javax.swing.text.StyledDocument;
 
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
+import beast.app.beauti.BeautiSubTemplate;
+import beast.app.beauti.InputFilter;
+import beast.app.draw.InputEditor;
+import beast.core.BEASTInterface;
 import beast.core.Description;
 import beast.core.Distribution;
+import beast.core.Input;
 import beast.core.StateNode;
 import beast.core.util.CompoundDistribution;
 import beast.core.util.Log;
@@ -25,6 +32,7 @@ import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.evolution.operators.DeltaExchangeOperator;
 import beast.evolution.tree.TreeInterface;
 import beast.util.XMLParser;
+import beast.util.XMLProducer;
 import beast.core.MCMC;
 import beast.core.Operator;
 
@@ -60,8 +68,29 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		XMLParser parser = new XMLParser();
 		MCMC mcmc = (MCMC) parser.parseFile(file);
 		beautiDoc.mcmc.setValue(mcmc, beautiDoc);
+		for (BEASTInterface o : InputFilter.getDocumentObjects(beautiDoc.mcmc.get())) {
+			beautiDoc.registerPlugin(o);
+		}
 		
 		MethodsText.initNameMap();
+		initialise((MCMC) beautiDoc.mcmc.get());
+	}
+	
+	
+	private void refreshText()  throws Exception {
+//		XMLProducer p = new XMLProducer();
+//		String xml = p.toXML(beautiDoc.mcmc.get());
+//		PrintStream ps = new PrintStream(new File("/tmp/beast-raw.xml"));
+//		ps.println(xml);
+//		ps.close();
+//		
+//		beautiDoc.save("/tmp/beast.xml");		
+		beautiDoc.determinePartitions();
+		beautiDoc.scrubAll(false, false);
+
+		StyledDocument doc = getStyledDocument();
+		doc.remove(0, doc.getLength());
+		MethodsText.done.clear();
 		initialise((MCMC) beautiDoc.mcmc.get());
 	}
 	
@@ -198,10 +227,78 @@ public class XML2TextPane extends JTextPane implements ActionListener {
     public void actionPerformed(ActionEvent e) {
     	if (e.getSource() instanceof JComboBox) {
     		JComboBox<String> b = (JComboBox<String>) e.getSource();
+    		String cmd = e.getActionCommand();
+    		int k = cmd.lastIndexOf(' ');
+    		String pid = cmd.substring(0, k);
+    		String inputName = cmd.substring(k + 1);
     		System.out.println("You selected " + b.getSelectedItem() + " for " + e.getActionCommand());
+    		BEASTInterface m_beastObject = beautiDoc.pluginmap.get(pid);
+    		Input<?> input = m_beastObject.getInput(inputName);
+    		
+            BeautiSubTemplate selected = (BeautiSubTemplate) b.getSelectedItem();
+            BEASTInterface beastObject = (BEASTInterface) input.get();
+            String id = beastObject.getID();
+            String partition = id.indexOf('.') >= 0 ? 
+            		id.substring(id.indexOf('.') + 1) : "";
+            if (partition.indexOf(':') >= 0) {
+            	partition = id.substring(id.indexOf(':') + 1);
+            }
+            if (selected.equals(InputEditor.NO_VALUE)) {
+                beastObject = null;
+            } else {
+                try {
+                    beastObject = selected.createSubNet(beautiDoc.getContextFor(beastObject), m_beastObject, input, true);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Could not select beastObject: " +
+                            ex.getClass().getName() + " " +
+                            ex.getMessage()
+                    );
+                }
+            }
+
+
+            try {
+                if (beastObject == null) {
+                    b.setSelectedItem(InputEditor.NO_VALUE);
+                } else {
+                    if (!input.canSetValue(beastObject, m_beastObject)) {
+                        throw new IllegalArgumentException("Cannot set input to this value");
+                    }
+                }
+
+                input.setValue(beastObject, m_beastObject);
+
+                refreshText();
+            } catch (Exception ex) {
+                id = ((BEASTInterface) input.get()).getID();
+                b.setSelectedItem(id);
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Could not change beastObject: " +
+                        ex.getClass().getName() + " " +
+                        ex.getMessage() 
+                );
+            }
+    		
+    		
     	} else if (e.getSource() instanceof JTextField) {
     		JTextField b = (JTextField) e.getSource();
-    		System.out.println("You selected " + b.getText() + " for " + e.getActionCommand());
+    		String cmd = e.getActionCommand();
+    		int k = cmd.lastIndexOf(' ');
+    		String id = cmd.substring(0, k);
+    		String inputName = cmd.substring(k + 1);
+    		String value = b.getText();
+    		System.out.println("You selected " + b.getText() + " for " + cmd);
+    		BEASTInterface o = beautiDoc.pluginmap.get(id);
+    		Input<?> input = o.getInput(inputName);
+    		if (input.canSetValue(value, o)) {
+    			try {
+    				input.setValue(value, o);
+    			} catch (RuntimeException ex) {
+    				// could not set the value after all...
+    			}
+    		}
+    		System.out.println(id + "." + input.getName() + " set to " + input.get().toString());
+    		
     	}
     }
 
