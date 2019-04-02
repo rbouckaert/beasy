@@ -2,6 +2,7 @@ package methods;
 
 import java.util.*;
 
+import beast.core.util.Log;
 import beast.util.PackageManager;
 
 public class MethodsTextFactory {
@@ -13,6 +14,7 @@ public class MethodsTextFactory {
 		if (object2MethodsText != null) {
 			return;
 		}
+		Log.warning.print("Discovering MethodsText classes ... ");
 		object2MethodsText = new HashMap<>();
         List<String> methodsTypes = PackageManager.find(MethodsText.class, new String[]{"methods"});
         for (String methodsTypeName : methodsTypes) {
@@ -23,6 +25,7 @@ public class MethodsTextFactory {
                 // TODO: handle exception
             }
         }
+		Log.warning("Done");
 	}
 	
 	

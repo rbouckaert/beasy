@@ -27,7 +27,8 @@ public interface MethodsText {
 		inputNameMap.put("clock.rate", "clock rate");
 		inputNameMap.put("populationModel", "population model");
 		inputNameMap.put("popSize", "population size");
-		
+		inputNameMap.put("M", "mean");
+		inputNameMap.put("S", "sigma");		
 	}
 
 	Class type();
@@ -49,7 +50,7 @@ public interface MethodsText {
 					// is it in the prior?
 					for (Object output2 : distr.getOutputs()) {
 						if (output2 instanceof CompoundDistribution && ((CompoundDistribution) output2).getID().equals("prior")) {
-							b.add(new Phrase(distr, " using "));
+							b.add(new Phrase(distr, " "));
 							List<Phrase> m = MethodsTextFactory.getModelDescription(distr);
 							b.addAll(m);
 						}

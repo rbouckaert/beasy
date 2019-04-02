@@ -1,6 +1,8 @@
 package methods.implementation;
 
 import beast.core.parameter.RealParameter;
+import beast.evolution.substitutionmodel.SubstitutionModel;
+
 import java.util.*;
 import methods.*;
 
@@ -16,6 +18,9 @@ public class SiteModel implements MethodsText {
 	public List<Phrase> getModelDescription(Object o) {
 		beast.evolution.sitemodel.SiteModel sm = (beast.evolution.sitemodel.SiteModel) o; 
 		List<Phrase> b = new ArrayList<>();
+		SubstitutionModel subst = sm.substModelInput.get();
+		b.add(new Phrase("uses "));
+		b.add(new Phrase(subst, sm, sm.substModelInput, getName(o) + " "));
 		List<Phrase> substModel = MethodsTextFactory.getModelDescription(sm.substModelInput.get());
 		b.addAll(substModel);
 		if (sm.gammaCategoryCount.get() > 1) {

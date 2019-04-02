@@ -1,16 +1,23 @@
 package methods;
 
-import java.io.PrintStream;
+
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.*;
 
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.text.StyledDocument;
+
+import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
-import beast.app.util.Application;
-import beast.app.util.OutFile;
-import beast.app.util.XMLFile;
 import beast.core.Description;
 import beast.core.Distribution;
-import beast.core.Input;
-import beast.core.Runnable;
 import beast.core.StateNode;
 import beast.core.util.CompoundDistribution;
 import beast.core.util.Log;
@@ -18,31 +25,49 @@ import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.evolution.operators.DeltaExchangeOperator;
 import beast.evolution.tree.TreeInterface;
 import beast.util.XMLParser;
-import beast.core.Input.Validate;
 import beast.core.MCMC;
 import beast.core.Operator;
 
 @Description("Convert MCMC analysis in XML file to a methods section")
-public class XML2Text extends Runnable {
-	public Input<XMLFile> xmlInput = new Input<>("xml",
-			"file name of BEAST XML file containing the model for which to create a methods text file for",
-			new XMLFile("examples/normalTest-1XXX.xml"), Validate.REQUIRED);
-	public Input<OutFile> outputInput = new Input<>("output", "where to save the file", new OutFile("methods.txt"));
+public class XML2TextPane extends JTextPane implements ActionListener {
 	
-
-	
-	@Override
-	public void initAndValidate() {}
-	
-	@Override
-	public void run() throws Exception {
+	BeautiDoc beautiDoc;
+	public XML2TextPane(String [] args) throws Exception {
+		beautiDoc = new BeautiDoc();
+		File file = new File(args[0]);
+		beautiDoc.setFileName(file.getAbsolutePath());
+		beautiDoc.beautiConfig = new BeautiConfig();
+		beautiDoc.beautiConfig.initAndValidate();		
+		String xml = beautiDoc.load(file);
+		int i = xml.indexOf("beautitemplate=");
+		if (i > 0) {
+			i += 15;
+			char c = xml.charAt(i);
+			i++;
+			int start = i;
+			while (xml.charAt(i) != c) {
+				i++;
+			}
+			String template = xml.substring(start, i);
+			if (!template.endsWith("xml")) {
+				template = template + ".xml";
+			}
+			beautiDoc.loadNewTemplate(template);
+		} else {
+			beautiDoc.loadNewTemplate("Standard.xml");
+		}
+		
 		XMLParser parser = new XMLParser();
-		MCMC mcmc = (MCMC) parser.parseFile(xmlInput.get());
-		StringBuilder b = new StringBuilder();
+		MCMC mcmc = (MCMC) parser.parseFile(file);
+		beautiDoc.mcmc.setValue(mcmc, beautiDoc);
 		
 		MethodsText.initNameMap();
-		
+		initialise((MCMC) beautiDoc.mcmc.get());
+	}
+	
+	public void initialise(MCMC mcmc) throws Exception {
         CompoundDistribution posterior = (CompoundDistribution) mcmc.posteriorInput.get();
+		StringBuilder b = new StringBuilder();
 
         for (Distribution distr : posterior.pDistributions.get()) {
             if (distr.getID().equals("likelihood")) {
@@ -88,10 +113,13 @@ public class XML2Text extends Runnable {
                 	}
                 }
                 // translate to text
+                StyledDocument doc = getStyledDocument();
+                Phrase.addTextToDocument(doc, this, beautiDoc, selected.toArray(new List[]{}));
+                
                 model = Phrase.toString(selected.toArray(new List[]{}));
                 if (currentPartitionIDs.size() > 1) {
                 	b.append("Partitions ");
-                	b.append(printParitions(currentPartitionIDs));
+                	b.append(XML2Text.printParitions(currentPartitionIDs));
                 	b.append(model + "\n");
                 } else {
                 	b.append("Partitions " + currentPartitionIDs.get(0) + " " + model + "\n");                	
@@ -126,33 +154,28 @@ public class XML2Text extends Runnable {
                 for (StateNode s : ((DeltaExchangeOperator)op).parameterInput.get()) {
                 	partitionIDs.add(BeautiDoc.parsePartition(s.getID()));
                 }
-                b.append(printParitions(partitionIDs));
+                b.append(XML2Text.printParitions(partitionIDs));
         		b.append("are estimated.\n");
         	}
         }
 
-        PrintStream out = new PrintStream(outputInput.get());
-        out.print(b.toString());
-		out.close();
 		Log.warning(b.toString());
 		Log.warning("Done!");
 	}
 	
-	static String printParitions(List<String> partitionIDs) {
-		StringBuilder b = new StringBuilder();
-    	for (int j = 0; j < partitionIDs.size() - 1; j++) {
-    		b.append(partitionIDs.get(j));
-    		if (j < partitionIDs.size() - 2) {
-    			b.append(", ");
-    		} else {
-    			b.append(" and ");
-    		}
-    	}
-    	b.append(partitionIDs.get(partitionIDs.size() - 1) + " ");
-    	return b.toString();
-	}
 
-	private String getPartitionDescription(CompoundDistribution distr) {
+	@Override
+    public void actionPerformed(ActionEvent e) {
+    	if (e.getSource() instanceof JComboBox) {
+    		JComboBox<String> b = (JComboBox<String>) e.getSource();
+    		System.out.println("You selected " + b.getSelectedItem() + " for " + e.getActionCommand());
+    	} else if (e.getSource() instanceof JTextField) {
+    		JTextField b = (JTextField) e.getSource();
+    		System.out.println("You selected " + b.getText() + " for " + e.getActionCommand());
+    	}
+    }
+
+    private String getPartitionDescription(CompoundDistribution distr) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -162,6 +185,22 @@ public class XML2Text extends Runnable {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new Application(new XML2Text(), "XML 2 methods section", args);
+        XML2TextPane textPane = new XML2TextPane(args);
+        
+        JScrollPane paneScrollPane = new JScrollPane(textPane);
+        paneScrollPane.setVerticalScrollBarPolicy(
+                        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        paneScrollPane.setPreferredSize(new Dimension(650, 455));
+        paneScrollPane.setMinimumSize(new Dimension(10, 10));
+
+        //Create and set up the window.
+        JFrame frame = new JFrame("XML2TextPane");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.add(paneScrollPane);
+
+        frame.pack();
+        frame.setVisible(true);
+        
 	}
 }

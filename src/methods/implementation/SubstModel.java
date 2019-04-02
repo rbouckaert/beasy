@@ -17,7 +17,6 @@ public class SubstModel implements MethodsText {
 	public List<Phrase> getModelDescription(Object o2) {
 		List<Phrase> b = new ArrayList<>();		
 		beast.evolution.substitutionmodel.SubstitutionModel.Base o = (beast.evolution.substitutionmodel.SubstitutionModel.Base) o2;
-		b.add(new Phrase("uses " + getName(o) + " "));
 		boolean hasWith = false;
 
 		done.add(o2);

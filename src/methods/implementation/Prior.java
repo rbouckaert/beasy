@@ -17,7 +17,9 @@ public class Prior implements MethodsText {
 	public List<Phrase> getModelDescription(Object o) {
 		beast.math.distributions.Prior p = (beast.math.distributions.Prior) o;
 		List<Phrase> b = new ArrayList<>();
-		b.addAll(MethodsTextFactory.getModelDescription(p.distInput.get()));
+		List<Phrase> m = MethodsTextFactory.getModelDescription(p.distInput.get());
+		m.get(0).setInput(p, p.distInput);
+		b.addAll(m);
 		return b;
 	}
 
