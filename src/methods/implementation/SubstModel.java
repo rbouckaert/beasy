@@ -36,7 +36,9 @@ public class SubstModel implements MethodsText {
 			b.add(new Phrase("\nand "));
 		}
 		
-		b.addAll(MethodsTextFactory.getModelDescription(o.frequenciesInput.get()));
+		if (o.frequenciesInput.get() != null) {
+			b.addAll(MethodsTextFactory.getModelDescription(o.frequenciesInput.get()));
+		}
 		return b;
 	}
 

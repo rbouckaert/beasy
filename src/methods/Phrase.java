@@ -96,7 +96,12 @@ public class Phrase {
 		return b.toString();
 	}
 
-
+	static void addTextToDocument(StyledDocument doc, ActionListener al, BeautiDoc beautiDoc, List<Phrase> m) {
+        List<Phrase> [] phrases = new List[1];
+    	phrases[0] = m;
+    	addTextToDocument(doc, al, beautiDoc, phrases);
+	}
+	
 	static void addTextToDocument(StyledDocument doc, ActionListener al, BeautiDoc beautiDoc, List<Phrase> [] phrases) {
         List<String> textString = new ArrayList<>();
         List<String> styleString = new ArrayList<>();

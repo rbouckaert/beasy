@@ -28,6 +28,7 @@ import beast.core.Input;
 import beast.core.StateNode;
 import beast.core.util.CompoundDistribution;
 import beast.core.util.Log;
+import beast.evolution.alignment.Alignment;
 import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.evolution.operators.DeltaExchangeOperator;
 import beast.evolution.tree.TreeInterface;
@@ -101,14 +102,9 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 		List<Phrase> m = new ArrayList<>();
 
-        for (Distribution distr : posterior.pDistributions.get()) {
-            if (distr.getID().equals("likelihood")) {
-            	String partitionDescription = getPartitionDescription((CompoundDistribution) distr);
-            	b.append(partitionDescription);
-            	b.append("\n");
-            }
-        }
 		
+		addPartitionDescription();
+				
         
         
         // collect model descriptions of all partitions
@@ -163,13 +159,13 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         if (trees.size() == 1) {
         	TreeInterface tree = (TreeInterface) trees.toArray()[0];
         	m = MethodsTextFactory.getModelDescription(tree);
-        	m.set(0, new Phrase("There is a single tree with "));
+        	m.set(0, new Phrase("\nThere is a single tree with "));
         	phrases = new List[1];
         	phrases[0] = m;
             Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);        	
         } else {
 	        for (TreeInterface tree : trees) {
-	        	m.set(0, new Phrase("Tree prior: "));
+	        	m.set(0, new Phrase("\nTree prior: "));
 	        	b.append(Phrase.toString(m));
 	        	phrases = new List[1];
 	        	phrases[0] = m;
@@ -192,8 +188,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         		b.append("are estimated.\n");
         		m.clear();
         		m.add(new Phrase(b.toString()));
-        		phrases[0] = m;
-                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
+                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
         	}
         }
 
@@ -201,6 +196,40 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		Log.warning("Done!");
 	}
 	
+
+	private void addPartitionDescription() {
+		StringBuilder b = new StringBuilder();
+		List<Phrase> m = new ArrayList<>();
+
+		List<BEASTInterface> parts = beautiDoc.getPartitions("Partitions");
+		if (parts.size() == 1) {
+			b.append("There is one alignment with ");
+			Alignment data = (Alignment) parts.get(0);
+			b.append(data.getTaxonCount());
+			b.append(" taxa, and ");
+			b.append(data.getSiteCount());
+			b.append(" characters.");
+		} else {
+			List<String> strs = new ArrayList<>();
+			for (BEASTInterface o : parts) {
+				Alignment data = (Alignment) o;
+				strs.add(data.getID());
+			}	
+			b.append("There are " + parts.size() + " partitions (" + XML2Text.printParitions(strs) + ") with ");
+			strs.clear();
+			for (BEASTInterface o : parts) {
+				Alignment data = (Alignment) o;
+				strs.add(data.getSiteCount() + "");
+			}	
+			b.append(XML2Text.printParitions(strs));
+			b.append(" sites respectively.");
+		}
+		b.append("\n");
+		m.add(new Phrase(b.toString()));
+        Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+		
+	}
+
 
 	private void amalgamate(List<List<Phrase>> models, List<String> partitionIDs, StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
@@ -227,28 +256,28 @@ public class XML2TextPane extends JTextPane implements ActionListener {
             	m.clear();
                 if (currentPartitionIDs.size() == partitionIDs.size()) {
                 	StringBuilder b2 = new StringBuilder();
-                	b2.append("All partitions ");
+                	b2.append("\nAll partitions ");
             		if (selected.size() > 1) {
             			if (shared) {
                 			b2.append(" share a ");
                 		} else {
-                			b2.append(" have a ");
+                			b2.append(" each have a ");
                 		}
                 	} else {
                 		b2.append(" has ");
                 	}
-                	b.append("All paritions ");
+                	b.append("\nAll paritions ");
                 	m.add(new Phrase(b2.toString()));
                 	b2.append(model + "\n");
                 } else if (currentPartitionIDs.size() > 1) {
                 	StringBuilder b2 = new StringBuilder();
-                	b2.append("Partitions ");
+                	b2.append("\nPartitions ");
                 	b2.append(XML2Text.printParitions(currentPartitionIDs));
             		if (selected.size() > 1) {
             			if (shared) {
                 			b2.append(" share a ");
                 		} else {
-                			b2.append(" have a ");
+                			b2.append(" each have a ");
                 		}
                 	} else {
                 		b2.append(" has ");
@@ -258,8 +287,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 	b2.append(model + "\n");
 
                 } else {
-                	m.add(new Phrase("Partition " + currentPartitionIDs.get(0)));
-                	b.append("Partitions " + currentPartitionIDs.get(0) + " " + model + "\n");                	
+                	m.add(new Phrase("\nPartition " + currentPartitionIDs.get(0) + " has a "));
+                	b.append("\nPartitions " + currentPartitionIDs.get(0) + " has a " + model + "\n");                	
                 }
                 
                 if (model.trim().length() > 0) {
@@ -382,10 +411,6 @@ public class XML2TextPane extends JTextPane implements ActionListener {
     	}
     }
 
-    private String getPartitionDescription(CompoundDistribution distr) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	private List<Phrase> getModelDescription(GenericTreeLikelihood treeLikelihood) {
 		return MethodsTextFactory.getModelDescription(treeLikelihood);

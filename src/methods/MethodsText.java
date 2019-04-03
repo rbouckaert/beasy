@@ -27,8 +27,8 @@ public interface MethodsText {
 		inputNameMap.put("clock.rate", "clock rate");
 		inputNameMap.put("populationModel", "population model");
 		inputNameMap.put("popSize", "population size");
-		inputNameMap.put("M", "mean");
-		inputNameMap.put("S", "sigma");		
+		inputNameMap.put("M", "mean log");
+		inputNameMap.put("S", "sd log");		
 	}
 
 	Class type();
