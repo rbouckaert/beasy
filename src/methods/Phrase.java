@@ -221,9 +221,6 @@ public class Phrase {
 	
 	@Override
 	public String toString() {
-		if (source instanceof StateNode && ((StateNode) source).isEstimatedInput.get()) {
-//			return text + "(" + ((StateNode) source).getID() + ") ";
-		}
 		return text;
 	}
 

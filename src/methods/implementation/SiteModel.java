@@ -19,10 +19,10 @@ public class SiteModel implements MethodsText {
 		beast.evolution.sitemodel.SiteModel sm = (beast.evolution.sitemodel.SiteModel) o; 
 		List<Phrase> b = new ArrayList<>();
 		SubstitutionModel subst = sm.substModelInput.get();
-		b.add(new Phrase("uses "));
 		b.add(new Phrase(sm, " gamma site model "));
 		b.add(new Phrase("and "));
-		b.add(new Phrase(subst, sm, sm.substModelInput, getName(sm.substModelInput.get()) + " "));
+		b.add(new Phrase(subst, sm, sm.substModelInput, getName(sm.substModelInput.get())));
+		b.add(new Phrase(" substitution model "));
 		List<Phrase> substModel = MethodsTextFactory.getModelDescription(sm.substModelInput.get());
 		b.addAll(substModel);
 		if (sm.gammaCategoryCount.get() > 1) {
@@ -35,13 +35,13 @@ public class SiteModel implements MethodsText {
 			} else {
 				b.add(new Phrase("(shape = " + shape.getValue() + ")"));
 			}
-			b.add(new Phrase("\n"));
 		}
 		if (sm.invarParameterInput.get().getValue() > 0) {
-			b.add(new Phrase(" and a category proportion invarible\n"));
+			b.add(new Phrase(" and a category proportion invarible "));
 		}
 		// b.delete(b.length()-1, b.length());
 		// b.add(new Phrase("\n"));
+		b.add(new Phrase("."));
 		return b;
 	}
 }

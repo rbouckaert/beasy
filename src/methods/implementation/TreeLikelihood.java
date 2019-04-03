@@ -16,7 +16,7 @@ public class TreeLikelihood implements MethodsText {
 		List<Phrase> b = new ArrayList<>();
 		List<Phrase> m = MethodsTextFactory.getModelDescription(likelihood.siteModelInput.get());
 		b.addAll(m);
-		m.get(1).setInput(likelihood, likelihood.siteModelInput);
+		m.get(0).setInput(likelihood, likelihood.siteModelInput);
 		
 		m = MethodsTextFactory.getModelDescription(likelihood.branchRateModelInput.get());
 		m.get(0).setInput(likelihood, likelihood.branchRateModelInput);

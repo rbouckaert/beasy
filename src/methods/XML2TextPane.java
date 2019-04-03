@@ -32,7 +32,6 @@ import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.evolution.operators.DeltaExchangeOperator;
 import beast.evolution.tree.TreeInterface;
 import beast.util.XMLParser;
-import beast.util.XMLProducer;
 import beast.core.MCMC;
 import beast.core.Operator;
 
@@ -71,6 +70,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		for (BEASTInterface o : InputFilter.getDocumentObjects(beautiDoc.mcmc.get())) {
 			beautiDoc.registerPlugin(o);
 		}
+		beautiDoc.determinePartitions();
 		
 		MethodsText.initNameMap();
 		initialise((MCMC) beautiDoc.mcmc.get());
@@ -113,7 +113,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         
         // collect model descriptions of all partitions
         List<String> partitionIDs = new ArrayList<>();
-        List<List<Phrase>> partitionModels = new ArrayList<>();
+        List<List<Phrase>> siteModels = new ArrayList<>();
+        List<List<Phrase>> clockModels = new ArrayList<>();
         
         for (Distribution distr : posterior.pDistributions.get()) {
             if (distr.getID().equals("likelihood")) {
@@ -121,55 +122,25 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                     if (likelihood instanceof GenericTreeLikelihood) {
                         GenericTreeLikelihood treeLikelihood = (GenericTreeLikelihood) likelihood;
                     	partitionIDs.add(treeLikelihood.dataInput.get().getID());
-                    	List<Phrase> modelDescription = getModelDescription(treeLikelihood);
-                    	partitionModels.add(modelDescription);
+                    	
+                		List<Phrase> sm = MethodsTextFactory.getModelDescription(treeLikelihood.siteModelInput.get());
+                		sm.get(0).setInput(treeLikelihood, treeLikelihood.siteModelInput);
+                		sm.add(new Phrase("\n"));
+                		siteModels.add(sm);
+                		
+                		List<Phrase> cm = MethodsTextFactory.getModelDescription(treeLikelihood.branchRateModelInput.get());
+                		cm.get(0).setInput(treeLikelihood, treeLikelihood.branchRateModelInput);
+                		cm.add(new Phrase("\n"));
+                		clockModels.add(cm);
                     }
                 }
             }
         }
         
         // amalgamate partitions
-        for (int i = 0; i < partitionIDs.size(); i++) {
-        	if (partitionModels.get(i) != null) {
-                List<String> currentPartitionIDs = new ArrayList<>();
-                currentPartitionIDs.add(partitionIDs.get(i));
-                String model = Phrase.toSimpleString(partitionModels.get(i));
+        amalgamate(siteModels, partitionIDs, b);
+        amalgamate(clockModels, partitionIDs, b);
 
-                List<List<Phrase>> selected = new ArrayList<>();
-                selected.add(partitionModels.get(i));
-                for (int j = i + 1; j < partitionIDs.size(); j++) {
-                	if (Phrase.toSimpleString(partitionModels.get(j)).equals(model)) {
-                        selected.add(partitionModels.get(j));
-                		partitionModels.set(j, null);
-                		currentPartitionIDs.add(partitionIDs.get(j));
-                	}
-                }
-                // translate to text
-                
-                model = Phrase.toString(selected.toArray(new List[]{}));
-            	m.clear();
-                if (currentPartitionIDs.size() > 1) {
-                	StringBuilder b2 = new StringBuilder();
-                	b2.append("Partitions ");
-                	b2.append(XML2Text.printParitions(currentPartitionIDs));
-                	b.append(b2.toString());
-                	m.add(new Phrase(b2.toString()));
-                	b2.append(model + "\n");
-
-                } else {
-                	m.add(new Phrase("Partitions " + currentPartitionIDs.get(0)));
-                	b.append("Partitions " + currentPartitionIDs.get(0) + " " + model + "\n");                	
-                }
-                
-                if (model.trim().length() > 0) {
-                	List<Phrase> [] phrases = new List[1];
-                	phrases[0] = m;
-                	Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
-                }
-
-                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, selected.toArray(new List[]{}));
-        	}
-        }
 
         List<Phrase> [] phrases = new List[1];
     	m.add(new Phrase(b.toString()));
@@ -189,13 +160,21 @@ public class XML2TextPane extends JTextPane implements ActionListener {
             }
         }
         
-        for (TreeInterface tree : trees) {
+        if (trees.size() == 1) {
+        	TreeInterface tree = (TreeInterface) trees.toArray()[0];
         	m = MethodsTextFactory.getModelDescription(tree);
-        	m.set(0, new Phrase("Tree prior: "));
-        	b.append(Phrase.toString(m));
+        	m.set(0, new Phrase("There is a single tree with "));
         	phrases = new List[1];
         	phrases[0] = m;
-            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
+            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);        	
+        } else {
+	        for (TreeInterface tree : trees) {
+	        	m.set(0, new Phrase("Tree prior: "));
+	        	b.append(Phrase.toString(m));
+	        	phrases = new List[1];
+	        	phrases[0] = m;
+	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
+	        }
         }
 		Log.warning(b.toString());
         b = new StringBuilder();
@@ -222,6 +201,107 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		Log.warning("Done!");
 	}
 	
+
+	private void amalgamate(List<List<Phrase>> models, List<String> partitionIDs, StringBuilder b) {
+		List<Phrase> m = new ArrayList<>();
+
+		for (int i = 0; i < partitionIDs.size(); i++) {
+        	if (models.get(i) != null) {
+                List<String> currentPartitionIDs = new ArrayList<>();
+                currentPartitionIDs.add(partitionIDs.get(i));
+                String model = Phrase.toSimpleString(models.get(i));
+
+                List<List<Phrase>> selected = new ArrayList<>();
+                selected.add(models.get(i));
+                for (int j = i + 1; j < partitionIDs.size(); j++) {
+                	if (Phrase.toSimpleString(models.get(j)).equals(model)) {
+                        selected.add(models.get(j));
+                		models.set(j, null);
+                		currentPartitionIDs.add(partitionIDs.get(j));
+                	}
+                }
+                // translate to text
+                
+                boolean shared = isShared(selected);
+                model = Phrase.toString(selected.toArray(new List[]{}));
+            	m.clear();
+                if (currentPartitionIDs.size() == partitionIDs.size()) {
+                	StringBuilder b2 = new StringBuilder();
+                	b2.append("All partitions ");
+            		if (selected.size() > 1) {
+            			if (shared) {
+                			b2.append(" share a ");
+                		} else {
+                			b2.append(" have a ");
+                		}
+                	} else {
+                		b2.append(" has ");
+                	}
+                	b.append("All paritions ");
+                	m.add(new Phrase(b2.toString()));
+                	b2.append(model + "\n");
+                } else if (currentPartitionIDs.size() > 1) {
+                	StringBuilder b2 = new StringBuilder();
+                	b2.append("Partitions ");
+                	b2.append(XML2Text.printParitions(currentPartitionIDs));
+            		if (selected.size() > 1) {
+            			if (shared) {
+                			b2.append(" share a ");
+                		} else {
+                			b2.append(" have a ");
+                		}
+                	} else {
+                		b2.append(" has ");
+                	}
+                	b.append(b2.toString());
+                	m.add(new Phrase(b2.toString()));
+                	b2.append(model + "\n");
+
+                } else {
+                	m.add(new Phrase("Partition " + currentPartitionIDs.get(0)));
+                	b.append("Partitions " + currentPartitionIDs.get(0) + " " + model + "\n");                	
+                }
+                
+                if (model.trim().length() > 0) {
+                	List<Phrase> [] phrases = new List[1];
+                	phrases[0] = m;
+                	Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
+                }
+
+                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, selected.toArray(new List[]{}));
+        	}
+        }
+     }
+
+
+	private boolean isShared(List<List<Phrase>> selected) {
+		if (selected.size() == 1) {
+			return true;
+		}
+			
+		Set<BEASTInterface> stateNodes = new LinkedHashSet<>();
+		for (Phrase phrase : selected.get(0)) {
+			if (phrase.source instanceof BEASTInterface) {
+				stateNodes.add((BEASTInterface)phrase.source);
+			}
+		}
+		
+		for (int i = 1; i < selected.size(); i++) {
+			Set<BEASTInterface> otherNodes = new LinkedHashSet<>();
+			for (Phrase phrase : selected.get(i)) {
+				if (phrase.source instanceof BEASTInterface) {
+					otherNodes.add((BEASTInterface)phrase.source);
+					
+				}
+			}
+			if (!stateNodes.containsAll(otherNodes) || !otherNodes.containsAll(stateNodes)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
 
 	@Override
     public void actionPerformed(ActionEvent e) {
