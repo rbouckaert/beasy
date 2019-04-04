@@ -8,19 +8,18 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.*;
 
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.StyledDocument;
 
+import beast.app.beauti.AlignmentListInputEditor;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
+import beast.app.beauti.BeautiPanelConfig;
 import beast.app.beauti.BeautiSubTemplate;
 import beast.app.beauti.InputFilter;
 import beast.app.draw.InputEditor;
+import beast.app.draw.InputEditor.ExpandOption;
 import beast.core.BEASTInterface;
 import beast.core.Description;
 import beast.core.Distribution;
@@ -225,7 +224,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 			b.append(" sites respectively.");
 		}
 		b.append("\n");
-		m.add(new Phrase(b.toString()));
+		m.add(new PartitionPhrase(b.toString()));
         Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
 		
 	}
@@ -334,7 +333,39 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-    	if (e.getSource() instanceof JComboBox) {
+    	if (e.getSource() instanceof JButton) {
+    		BeautiPanelConfig config = new BeautiPanelConfig();
+    		config.initByName("path","distribution/distribution[id=\"likelihood\"]/distribution/data",
+    				"panelname", "Partitions", "tiptext", "Data Partitions",
+    	            "hasPartitions", "none", "forceExpansion", "FALSE",
+    	            "type", "beast.evolution.alignment.Alignment"    				
+    				);
+    		final Input<?> input = config.resolveInput(beautiDoc, 0);    		
+    		AlignmentListInputEditor ie = new AlignmentListInputEditor(beautiDoc);
+    		ie.init(input, config, -1, ExpandOption.FALSE, false);
+            ((JComponent) ie).setBorder(BorderFactory.createEmptyBorder());
+            ie.getComponent().setVisible(true);
+            JOptionPane optionPane = new JOptionPane(ie,
+                    JOptionPane.PLAIN_MESSAGE,
+                    JOptionPane.OK_CANCEL_OPTION,
+                    null,
+                    new String[]{"OK"},
+                    "OK");
+            optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+
+            final JDialog dialog = optionPane.createDialog(null, "Partition panel");
+            dialog.setResizable(true);
+            dialog.pack();
+
+            dialog.setVisible(true);
+            
+            try {
+				refreshText();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	} if (e.getSource() instanceof JComboBox) {
     		JComboBox<String> b = (JComboBox<String>) e.getSource();
     		String cmd = e.getActionCommand();
     		int k = cmd.lastIndexOf(' ');

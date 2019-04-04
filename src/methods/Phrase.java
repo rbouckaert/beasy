@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.*;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -17,10 +18,12 @@ import javax.swing.text.StyledDocument;
 
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiSubTemplate;
+import beast.app.beauti.BeautiPanelConfig.Partition;
 import beast.app.draw.InputEditorFactory;
 import beast.core.*;
 import beast.core.parameter.Parameter;
 import beast.core.parameter.RealParameter;
+import beast.util.Randomizer;
 
 /** Contains information about a word or phrase in the MethodsText,
  * including a pointer to where the phrase came from 
@@ -117,12 +120,27 @@ public class Phrase {
 		for (int i = 0; i < basePhrases.size(); i++) {
 			Phrase phrase = basePhrases.get(i);
 
-			if (phrase.source instanceof RealParameter) {
+			if (phrase instanceof PartitionPhrase) {
+		        JButton button = new JButton(phrase.toString());
+		        String partitionStyle = "partitionPhrase " + Randomizer.nextInt();
+		        Style s = doc.addStyle(partitionStyle, regular);
+		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
+
+		        button.setCursor(Cursor.getDefaultCursor());
+		        button.setActionCommand("PartitionEditor");
+		        button.addActionListener(al);
+		        StyleConstants.setComponent(s, button);
+		        
+		        textString.add(phrase.toString());
+				styleString.add(partitionStyle);
+
+			} else if (phrase.source instanceof RealParameter) {
 				textString.add(phrase.text);
 				styleString.add("regular");
 			} else if (phrase.parent != null && phrase.parent instanceof Parameter<?> && phrase.input.getName().equals("value")) {
 				// beautiDoc.registerPlugin((BEASTInterface) phrase.parent);
-		        Style s = doc.addStyle(phrase.parent.getID() + " " + phrase.input.getName(), regular);
+				String entryStyle = phrase.parent.getID() + " " + phrase.input.getName();
+		        Style s = doc.addStyle(entryStyle, regular);
 		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
 		        String text = phrase.source.toString();
 		        text = text.substring(1, text.length() - 1);
@@ -150,7 +168,7 @@ public class Phrase {
 		        StyleConstants.setComponent(s, entry);	
 	
 		        textString.add(" ");
-				styleString.add(phrase.parent.getID() + " " + phrase.input.getName());
+				styleString.add(entryStyle);
 			} else if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
 				// beautiDoc.registerPlugin((BEASTInterface) phrase.source);
 		        InputEditorFactory inputEditorFactory = beautiDoc.getInputEditorFactory();
