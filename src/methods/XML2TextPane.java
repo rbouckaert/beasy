@@ -13,11 +13,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.StyledDocument;
 
 import beast.app.beauti.AlignmentListInputEditor;
+import beast.app.beauti.Beauti;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiPanelConfig;
 import beast.app.beauti.BeautiSubTemplate;
 import beast.app.beauti.InputFilter;
+import beast.app.draw.BEASTObjectDialog;
 import beast.app.draw.InputEditor;
 import beast.app.draw.InputEditor.ExpandOption;
 import beast.core.BEASTInterface;
@@ -25,6 +27,7 @@ import beast.core.Description;
 import beast.core.Distribution;
 import beast.core.Input;
 import beast.core.StateNode;
+import beast.core.parameter.RealParameter;
 import beast.core.util.CompoundDistribution;
 import beast.core.util.Log;
 import beast.evolution.alignment.Alignment;
@@ -108,6 +111,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         
         // collect model descriptions of all partitions
         List<String> partitionIDs = new ArrayList<>();
+        List<String> smPartitionIDs = new ArrayList<>();
+        List<String> cmPartitionIDs = new ArrayList<>();
         List<List<Phrase>> siteModels = new ArrayList<>();
         List<List<Phrase>> clockModels = new ArrayList<>();
         
@@ -118,23 +123,27 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                         GenericTreeLikelihood treeLikelihood = (GenericTreeLikelihood) likelihood;
                     	partitionIDs.add(treeLikelihood.dataInput.get().getID());
                     	
-                		List<Phrase> sm = MethodsTextFactory.getModelDescription(treeLikelihood.siteModelInput.get());
+                    	BEASTInterface siteModel = (BEASTInterface) treeLikelihood.siteModelInput.get();
+                		List<Phrase> sm = MethodsTextFactory.getModelDescription(siteModel);
                 		sm.get(0).setInput(treeLikelihood, treeLikelihood.siteModelInput);
                 		sm.add(new Phrase("\n"));
                 		siteModels.add(sm);
+                		smPartitionIDs.add(beautiDoc.parsePartition(siteModel.getID()));
                 		
-                		List<Phrase> cm = MethodsTextFactory.getModelDescription(treeLikelihood.branchRateModelInput.get());
+                		BEASTInterface clockModel = treeLikelihood.branchRateModelInput.get();
+                		List<Phrase> cm = MethodsTextFactory.getModelDescription(clockModel);
                 		cm.get(0).setInput(treeLikelihood, treeLikelihood.branchRateModelInput);
                 		cm.add(new Phrase("\n"));
                 		clockModels.add(cm);
+                		cmPartitionIDs.add(beautiDoc.parsePartition(clockModel.getID()));
                     }
                 }
             }
         }
         
         // amalgamate partitions
-        amalgamate(siteModels, partitionIDs, b);
-        amalgamate(clockModels, partitionIDs, b);
+        amalgamate(siteModels, partitionIDs, smPartitionIDs, b);
+        amalgamate(clockModels, partitionIDs, cmPartitionIDs, b);
 
 
         List<Phrase> [] phrases = new List[1];
@@ -230,7 +239,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	}
 
 
-	private void amalgamate(List<List<Phrase>> models, List<String> partitionIDs, StringBuilder b) {
+	private void amalgamate(List<List<Phrase>> models, List<String> partitionIDs, 
+			List<String> xPartitionIDs, StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
 
 		for (int i = 0; i < partitionIDs.size(); i++) {
@@ -241,15 +251,17 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
                 List<List<Phrase>> selected = new ArrayList<>();
                 selected.add(models.get(i));
+                String modelID = xPartitionIDs.get(i);
                 for (int j = i + 1; j < partitionIDs.size(); j++) {
                 	if (Phrase.toSimpleString(models.get(j)).equals(model)) {
+                	//if (xPartitionIDs.get(j).equals(modelID)) {
                         selected.add(models.get(j));
                 		models.set(j, null);
                 		currentPartitionIDs.add(partitionIDs.get(j));
                 	}
                 }
-                // translate to text
                 
+                // translate to text                
                 boolean shared = isShared(selected);
                 model = Phrase.toString(selected.toArray(new List[]{}));
             	m.clear();
@@ -260,13 +272,13 @@ public class XML2TextPane extends JTextPane implements ActionListener {
             			if (shared) {
                 			b2.append(" share a ");
                 		} else {
-                			b2.append(" each have a ");
+                			b2.append(" individually have a ");
                 		}
                 	} else {
                 		b2.append(" has ");
                 	}
                 	b.append("\nAll paritions ");
-                	m.add(new Phrase(b2.toString()));
+                	m.add(new PartitionPhrase(b2.toString()));
                 	b2.append(model + "\n");
                 } else if (currentPartitionIDs.size() > 1) {
                 	StringBuilder b2 = new StringBuilder();
@@ -276,17 +288,17 @@ public class XML2TextPane extends JTextPane implements ActionListener {
             			if (shared) {
                 			b2.append(" share a ");
                 		} else {
-                			b2.append(" each have a ");
+                			b2.append(" individually have a ");
                 		}
                 	} else {
                 		b2.append(" has ");
                 	}
                 	b.append(b2.toString());
-                	m.add(new Phrase(b2.toString()));
+                	m.add(new PartitionPhrase(b2.toString()));
                 	b2.append(model + "\n");
 
                 } else {
-                	m.add(new Phrase("\nPartition " + currentPartitionIDs.get(0) + " has a "));
+                	m.add(new PartitionPhrase("\nPartition " + currentPartitionIDs.get(0) + " has a "));
                 	b.append("\nPartitions " + currentPartitionIDs.get(0) + " has a " + model + "\n");                	
                 }
                 
@@ -334,114 +346,152 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	@Override
     public void actionPerformed(ActionEvent e) {
     	if (e.getSource() instanceof JButton) {
-    		BeautiPanelConfig config = new BeautiPanelConfig();
-    		config.initByName("path","distribution/distribution[id=\"likelihood\"]/distribution/data",
-    				"panelname", "Partitions", "tiptext", "Data Partitions",
-    	            "hasPartitions", "none", "forceExpansion", "FALSE",
-    	            "type", "beast.evolution.alignment.Alignment"    				
-    				);
-    		final Input<?> input = config.resolveInput(beautiDoc, 0);    		
-    		AlignmentListInputEditor ie = new AlignmentListInputEditor(beautiDoc);
-    		ie.init(input, config, -1, ExpandOption.FALSE, false);
-            ((JComponent) ie).setBorder(BorderFactory.createEmptyBorder());
-            ie.getComponent().setVisible(true);
-            JOptionPane optionPane = new JOptionPane(ie,
-                    JOptionPane.PLAIN_MESSAGE,
-                    JOptionPane.OK_CANCEL_OPTION,
-                    null,
-                    new String[]{"OK"},
-                    "OK");
-            optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-            final JDialog dialog = optionPane.createDialog(null, "Partition panel");
-            dialog.setResizable(true);
-            dialog.pack();
-
-            dialog.setVisible(true);
-            
-            try {
-				refreshText();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+    		handleButton(e);
     	} if (e.getSource() instanceof JComboBox) {
-    		JComboBox<String> b = (JComboBox<String>) e.getSource();
-    		String cmd = e.getActionCommand();
-    		int k = cmd.lastIndexOf(' ');
-    		String pid = cmd.substring(0, k);
-    		String inputName = cmd.substring(k + 1);
-    		System.out.println("You selected " + b.getSelectedItem() + " for " + e.getActionCommand());
-    		BEASTInterface m_beastObject = beautiDoc.pluginmap.get(pid);
-    		Input<?> input = m_beastObject.getInput(inputName);
-    		
-            BeautiSubTemplate selected = (BeautiSubTemplate) b.getSelectedItem();
-            BEASTInterface beastObject = (BEASTInterface) input.get();
-            String id = beastObject.getID();
-            String partition = id.indexOf('.') >= 0 ? 
-            		id.substring(id.indexOf('.') + 1) : "";
-            if (partition.indexOf(':') >= 0) {
-            	partition = id.substring(id.indexOf(':') + 1);
-            }
-            if (selected.equals(InputEditor.NO_VALUE)) {
-                beastObject = null;
-            } else {
-                try {
-                    beastObject = selected.createSubNet(beautiDoc.getContextFor(beastObject), m_beastObject, input, true);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Could not select beastObject: " +
-                            ex.getClass().getName() + " " +
-                            ex.getMessage()
-                    );
-                }
-            }
-
-
-            try {
-                if (beastObject == null) {
-                    b.setSelectedItem(InputEditor.NO_VALUE);
-                } else {
-                    if (!input.canSetValue(beastObject, m_beastObject)) {
-                        throw new IllegalArgumentException("Cannot set input to this value");
-                    }
-                }
-
-                input.setValue(beastObject, m_beastObject);
-
-                refreshText();
-            } catch (Exception ex) {
-                id = ((BEASTInterface) input.get()).getID();
-                b.setSelectedItem(id);
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Could not change beastObject: " +
-                        ex.getClass().getName() + " " +
-                        ex.getMessage() 
-                );
-            }
-    		
-    		
+    		handleComboBox(e);
     	} else if (e.getSource() instanceof JTextField) {
-    		JTextField b = (JTextField) e.getSource();
-    		String cmd = e.getActionCommand();
-    		int k = cmd.lastIndexOf(' ');
-    		String id = cmd.substring(0, k);
-    		String inputName = cmd.substring(k + 1);
-    		String value = b.getText();
-    		System.out.println("You selected " + b.getText() + " for " + cmd);
-    		BEASTInterface o = beautiDoc.pluginmap.get(id);
-    		Input<?> input = o.getInput(inputName);
-    		if (input.canSetValue(value, o)) {
-    			try {
-    				input.setValue(value, o);
-    			} catch (RuntimeException ex) {
-    				// could not set the value after all...
-    			}
-    		}
-    		System.out.println(id + "." + input.getName() + " set to " + input.get().toString());
+    		handleTextFeild(e);
     		
     	}
     }
 
+	private void handleButton(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		if (cmd.startsWith("PartitionEditor")) {
+			editPartition(e);
+		} else if (cmd.startsWith("RealParameter")) {
+			editRealParameter(e);
+		}
+		
+	}
+
+	private void editRealParameter(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		String id = cmd.split(" ")[1];
+		RealParameter param = (RealParameter) beautiDoc.pluginmap.get(id);
+		
+        BEASTObjectDialog dlg = new BEASTObjectDialog(param, RealParameter.class, beautiDoc);
+        if (dlg.showDialog()) {
+            dlg.accept((BEASTInterface) param, beautiDoc);
+            try {
+            	refreshText();
+            } catch (Exception ex) {
+				ex.printStackTrace();
+			}
+        }		
+	}
+
+
+	private void editPartition(ActionEvent e) {
+		BeautiPanelConfig config = new BeautiPanelConfig();
+		config.initByName("path","distribution/distribution[id=\"likelihood\"]/distribution/data",
+				"panelname", "Partitions", "tiptext", "Data Partitions",
+	            "hasPartitions", "none", "forceExpansion", "FALSE",
+	            "type", "beast.evolution.alignment.Alignment"    				
+				);
+		final Input<?> input = config.resolveInput(beautiDoc, 0);    		
+		AlignmentListInputEditor ie = new AlignmentListInputEditor(beautiDoc);
+		ie.init(input, config, -1, ExpandOption.FALSE, false);
+        ((JComponent) ie).setBorder(BorderFactory.createEmptyBorder());
+        ie.getComponent().setVisible(true);
+        JOptionPane optionPane = new JOptionPane(ie,
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.OK_CANCEL_OPTION,
+                null,
+                new String[]{"OK"},
+                "OK");
+        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+
+        final JDialog dialog = optionPane.createDialog(null, "Partition panel");
+        dialog.setResizable(true);
+        dialog.pack();
+
+        dialog.setVisible(true);
+        
+        try {
+			refreshText();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
+	}
+
+
+	private void handleComboBox(ActionEvent e) {
+		JComboBox<String> b = (JComboBox<String>) e.getSource();
+		String cmd = e.getActionCommand();
+		int k = cmd.lastIndexOf(' ');
+		String pid = cmd.substring(0, k);
+		String inputName = cmd.substring(k + 1);
+		System.out.println("You selected " + b.getSelectedItem() + " for " + e.getActionCommand());
+		BEASTInterface m_beastObject = beautiDoc.pluginmap.get(pid);
+		Input<?> input = m_beastObject.getInput(inputName);
+		
+        BeautiSubTemplate selected = (BeautiSubTemplate) b.getSelectedItem();
+        BEASTInterface beastObject = (BEASTInterface) input.get();
+        String id = beastObject.getID();
+        String partition = id.indexOf('.') >= 0 ? 
+        		id.substring(id.indexOf('.') + 1) : "";
+        if (partition.indexOf(':') >= 0) {
+        	partition = id.substring(id.indexOf(':') + 1);
+        }
+        if (selected.equals(InputEditor.NO_VALUE)) {
+            beastObject = null;
+        } else {
+            try {
+                beastObject = selected.createSubNet(beautiDoc.getContextFor(beastObject), m_beastObject, input, true);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Could not select beastObject: " +
+                        ex.getClass().getName() + " " +
+                        ex.getMessage()
+                );
+            }
+        }
+
+
+        try {
+            if (beastObject == null) {
+                b.setSelectedItem(InputEditor.NO_VALUE);
+            } else {
+                if (!input.canSetValue(beastObject, m_beastObject)) {
+                    throw new IllegalArgumentException("Cannot set input to this value");
+                }
+            }
+
+            input.setValue(beastObject, m_beastObject);
+
+            refreshText();
+        } catch (Exception ex) {
+            id = ((BEASTInterface) input.get()).getID();
+            b.setSelectedItem(id);
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Could not change beastObject: " +
+                    ex.getClass().getName() + " " +
+                    ex.getMessage() 
+            );
+        }
+	}
+
+
+	private void handleTextFeild(ActionEvent e) {
+		JTextField b = (JTextField) e.getSource();
+		String cmd = e.getActionCommand();
+		int k = cmd.lastIndexOf(' ');
+		String id = cmd.substring(0, k);
+		String inputName = cmd.substring(k + 1);
+		String value = b.getText();
+		System.out.println("You selected " + b.getText() + " for " + cmd);
+		BEASTInterface o = beautiDoc.pluginmap.get(id);
+		Input<?> input = o.getInput(inputName);
+		if (input.canSetValue(value, o)) {
+			try {
+				input.setValue(value, o);
+			} catch (RuntimeException ex) {
+				// could not set the value after all...
+			}
+		}
+		System.out.println(id + "." + input.getName() + " set to " + input.get().toString());
+	}
 
 	private List<Phrase> getModelDescription(GenericTreeLikelihood treeLikelihood) {
 		return MethodsTextFactory.getModelDescription(treeLikelihood);

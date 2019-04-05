@@ -21,15 +21,22 @@ public class SubstModel implements MethodsText {
 
 		done.add(o2);
 		for (Input<?> input : o.listInputs()) {
-			if (input.get() != null && input.get() instanceof StateNode && ((StateNode)input.get()).isEstimatedInput.get()) {
+			if (input.get() != null && input.get() instanceof StateNode) { // && ((StateNode)input.get()).isEstimatedInput.get()) {
 				if (!hasWith) {
 					b.add(new Phrase(" with "));
 					hasWith = true;
+				} else {
+					b.add(new Phrase(" and "));
 				}
 				b.add(new Phrase(input.get(), o, input, getInputName(input) + " "));
 				done.add(input.get());
-				List<Phrase> m = describePriors((StateNode) input.get());
-				b.addAll(m);
+				if (((StateNode)input.get()).isEstimatedInput.get()) {
+					List<Phrase> m = describePriors((StateNode) input.get());
+					b.addAll(m);
+				} else {
+					List<Phrase> m =  MethodsTextFactory.getModelDescription(input.get());
+					b.addAll(m);
+				}
 			}
 		}
 		if (hasWith) {

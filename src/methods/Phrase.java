@@ -135,8 +135,19 @@ public class Phrase {
 				styleString.add(partitionStyle);
 
 			} else if (phrase.source instanceof RealParameter) {
-				textString.add(phrase.text);
-				styleString.add("regular");
+		        JButton button = new JButton(phrase.toString());
+		        String partitionStyle = ((BEASTInterface) phrase.source).getID();
+		        Style s = doc.addStyle(partitionStyle, regular);
+		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
+
+		        button.setCursor(Cursor.getDefaultCursor());
+		        button.setActionCommand("RealParameter " + partitionStyle);
+		        button.addActionListener(al);
+		        StyleConstants.setComponent(s, button);
+		        
+		        textString.add(phrase.toString());
+				styleString.add(partitionStyle);
+
 			} else if (phrase.parent != null && phrase.parent instanceof Parameter<?> && phrase.input.getName().equals("value")) {
 				// beautiDoc.registerPlugin((BEASTInterface) phrase.parent);
 				String entryStyle = phrase.parent.getID() + " " + phrase.input.getName();
