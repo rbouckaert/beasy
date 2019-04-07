@@ -2,6 +2,7 @@ package methods;
 
 import java.util.*;
 
+import beast.core.BEASTInterface;
 import beast.core.BEASTObject;
 import beast.core.Description;
 import beast.core.Distribution;
@@ -37,10 +38,10 @@ public interface MethodsText {
 		return "";
 	}
 	
-	List<Phrase> getModelDescription(Object o);
+	List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input);
 
 	
-	default List<Phrase> describePriors(BEASTObject o) {
+	default List<Phrase> describePriors(BEASTObject o, BEASTInterface parent, Input<?> input2) {
 		List<Phrase> b = new ArrayList<>();
 		// need to describe priors?
 		if (o instanceof StateNode && ((StateNode) o).isEstimatedInput.get()) {			
@@ -51,7 +52,7 @@ public interface MethodsText {
 					for (Object output2 : distr.getOutputs()) {
 						if (output2 instanceof CompoundDistribution && ((CompoundDistribution) output2).getID().equals("prior")) {
 							b.add(new Phrase(distr, " "));
-							List<Phrase> m = MethodsTextFactory.getModelDescription(distr);
+							List<Phrase> m = MethodsTextFactory.getModelDescription(distr, (CompoundDistribution) output2, ((CompoundDistribution) output2).pDistributions);
 							b.addAll(m);
 						}
 					}

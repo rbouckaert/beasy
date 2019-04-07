@@ -4,6 +4,7 @@ package methods.implementation;
 import beast.core.BEASTInterface;
 import beast.core.BEASTObject;
 import beast.core.Distribution;
+import beast.core.Input;
 import beast.core.util.CompoundDistribution;
 import beast.evolution.tree.coalescent.TreeIntervals;
 import java.util.*;
@@ -17,8 +18,8 @@ public class Tree implements MethodsText {
 	}
 
 	@Override
-	public List<Phrase> getModelDescription(Object o) {
-		List<Phrase> m = describePriors((BEASTObject) o);
+	public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input2) {
+		List<Phrase> m = describePriors((BEASTObject) o, parent, input2);
 		if (m.size() == 0) {
 			for (Object ooutput : ((BEASTInterface)o).getOutputs()) {
 				if (ooutput instanceof TreeIntervals) {
@@ -31,7 +32,7 @@ public class Tree implements MethodsText {
 							for (Object output2 : distr.getOutputs()) {
 								if (output2 instanceof CompoundDistribution && ((CompoundDistribution) output2).getID().equals("prior")) {
 									b.add(new Phrase(" using "));
-									m = MethodsTextFactory.getModelDescription(distr);
+									m = MethodsTextFactory.getModelDescription(distr, (CompoundDistribution) output2, ((CompoundDistribution) output2).pDistributions);
 									b.addAll(m);
 									done.remove(distr);
 								}

@@ -1,7 +1,10 @@
 package methods;
 
+
 import java.util.*;
 
+import beast.core.BEASTInterface;
+import beast.core.Input;
 import beast.core.util.Log;
 import beast.util.PackageManager;
 
@@ -56,9 +59,9 @@ public class MethodsTextFactory {
 		return createMethodsText(o.getClass());
 	}
 	
-	static public List<Phrase> getModelDescription(Object o) {
+	static public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input) {
 		MethodsText m = createMethodsText(o);
-		List<Phrase> modelDescription = m.getModelDescription(o);
+		List<Phrase> modelDescription = m.getModelDescription(o, parent, input);
 		return modelDescription;
 	}
 

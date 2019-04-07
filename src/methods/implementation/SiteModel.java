@@ -1,5 +1,7 @@
 package methods.implementation;
 
+import beast.core.BEASTInterface;
+import beast.core.Input;
 import beast.core.parameter.RealParameter;
 import beast.evolution.substitutionmodel.SubstitutionModel;
 
@@ -15,22 +17,22 @@ public class SiteModel implements MethodsText {
 
 	
 	@Override
-	public List<Phrase> getModelDescription(Object o) {
+	public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input2) {
 		beast.evolution.sitemodel.SiteModel sm = (beast.evolution.sitemodel.SiteModel) o; 
 		List<Phrase> b = new ArrayList<>();
 		SubstitutionModel subst = sm.substModelInput.get();
-		b.add(new Phrase(sm, " gamma site model "));
+		b.add(new Phrase(sm, parent, input2, " gamma site model "));
 		b.add(new Phrase("and "));
 		b.add(new Phrase(subst, sm, sm.substModelInput, getName(sm.substModelInput.get())));
 		b.add(new Phrase(" substitution model "));
-		List<Phrase> substModel = MethodsTextFactory.getModelDescription(sm.substModelInput.get());
+		List<Phrase> substModel = MethodsTextFactory.getModelDescription(sm.substModelInput.get(), sm, sm.substModelInput);
 		b.addAll(substModel);
 		if (sm.gammaCategoryCount.get() > 1) {
 			b.add(new Phrase(" with gamma rate heterogeneity using " + sm.gammaCategoryCount.get() + " categories "));
 			RealParameter shape = sm.shapeParameterInput.get();
 			if (shape.isEstimatedInput.get()) {
 				b.add(new Phrase(" (shape "));
-				b.addAll(describePriors(shape));
+				b.addAll(describePriors(shape, sm, sm.shapeParameterInput));
 				b.add(new Phrase(")"));
 			} else {
 				b.add(new Phrase("(shape = " + shape.getValue() + ")"));

@@ -114,7 +114,7 @@ public class XML2Text extends Runnable {
         
         b.append("Tree prior: ");
         for (TreeInterface tree : trees) {
-        	b.append(Phrase.toString(MethodsTextFactory.getModelDescription(tree)));
+        	b.append(Phrase.toString(MethodsTextFactory.getModelDescription(tree, null, null)));
         }
         b.append("\n\n");
         
@@ -158,7 +158,7 @@ public class XML2Text extends Runnable {
 	}
 
 	private List<Phrase> getModelDescription(GenericTreeLikelihood treeLikelihood) {
-		return MethodsTextFactory.getModelDescription(treeLikelihood);
+		return MethodsTextFactory.getModelDescription(treeLikelihood, null, null);
 	}
 
 	public static void main(String[] args) throws Exception {

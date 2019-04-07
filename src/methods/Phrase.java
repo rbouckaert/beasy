@@ -190,7 +190,7 @@ public class Phrase {
 			        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
 
 			        String id = ((BEASTInterface)phrase.source).getID();
-                    if (id.indexOf('.') != -1) {
+                    if (id != null && id.indexOf('.') != -1) {
                     	id = id.substring(0,  id.indexOf('.'));
                     }
                     for (int k = 0; k < combobox.getItemCount(); k++) {
@@ -259,7 +259,7 @@ public class Phrase {
 	}
 
 
-	public void setInput(BEASTInterface parent, Input<?> input) {
+	public void setInputX(BEASTInterface parent, Input<?> input) {
 		this.parent = parent;
 		this.input = input;		
 	}

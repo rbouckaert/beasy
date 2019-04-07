@@ -2,6 +2,7 @@ package methods.implementation;
 
 import java.util.*;
 
+import beast.core.BEASTInterface;
 import beast.core.Input;
 import methods.MethodsText;
 import methods.MethodsTextFactory;
@@ -15,17 +16,17 @@ public class Coalescent implements MethodsText {
 	}
 	
 	@Override
-	public List<Phrase> getModelDescription(Object o2) {
+	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2) {
 		if (done.contains(o2)) {
 			return new ArrayList<>();
 		}
 		beast.evolution.tree.coalescent.Coalescent o = (beast.evolution.tree.coalescent.Coalescent) o2;
 		done.add(o);
 		List<Phrase> b = new ArrayList<>();
-		b.add(new Phrase(o, getName(o) + " with "));
+		b.add(new Phrase(o, parent, input2, getName(o) + " with "));
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
-				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get());
+				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input);
 				if (m.size() > 0) {
 					if (!input.getName().equals("populationModel")) {
 						b.add(new Phrase(input.get(), o, input, " " + getInputName(input) + " is "));
@@ -35,7 +36,7 @@ public class Coalescent implements MethodsText {
 			}
 		}
  				
-		b.addAll(describePriors(o));
+		b.addAll(describePriors(o, parent, input2));
 		
 		return b;
 	}

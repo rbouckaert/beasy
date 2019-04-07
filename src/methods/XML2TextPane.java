@@ -10,6 +10,7 @@ import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.Element;
 import javax.swing.text.StyledDocument;
 
 import beast.app.beauti.AlignmentListInputEditor;
@@ -105,7 +106,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		List<Phrase> m = new ArrayList<>();
 
 		
-		addPartitionDescription();
+		addPartitionDescription(b);
 				
         
         
@@ -124,16 +125,16 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                     	partitionIDs.add(treeLikelihood.dataInput.get().getID());
                     	
                     	BEASTInterface siteModel = (BEASTInterface) treeLikelihood.siteModelInput.get();
-                		List<Phrase> sm = MethodsTextFactory.getModelDescription(siteModel);
-                		sm.get(0).setInput(treeLikelihood, treeLikelihood.siteModelInput);
-                		sm.add(new Phrase("\n"));
+                		List<Phrase> sm = MethodsTextFactory.getModelDescription(siteModel, treeLikelihood, treeLikelihood.siteModelInput);
+                		// sm.get(0).setInput(treeLikelihood, treeLikelihood.siteModelInput);
+                		// sm.add(new Phrase("\n"));
                 		siteModels.add(sm);
                 		smPartitionIDs.add(beautiDoc.parsePartition(siteModel.getID()));
                 		
                 		BEASTInterface clockModel = treeLikelihood.branchRateModelInput.get();
-                		List<Phrase> cm = MethodsTextFactory.getModelDescription(clockModel);
-                		cm.get(0).setInput(treeLikelihood, treeLikelihood.branchRateModelInput);
-                		cm.add(new Phrase("\n"));
+                		List<Phrase> cm = MethodsTextFactory.getModelDescription(clockModel, treeLikelihood, treeLikelihood.branchRateModelInput);
+                		// cm.get(0).setInput(treeLikelihood, treeLikelihood.branchRateModelInput);
+                		// cm.add(new Phrase("\n"));
                 		clockModels.add(cm);
                 		cmPartitionIDs.add(beautiDoc.parsePartition(clockModel.getID()));
                     }
@@ -153,12 +154,14 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         
         // tree priors        
         Set<TreeInterface> trees = new LinkedHashSet<>();
+        // List<GenericTreeLikelihood> likelihoods = new ArrayList<>();
         for (Distribution distr : posterior.pDistributions.get()) {
             if (distr.getID().equals("likelihood")) {
                 for (Distribution likelihood : ((CompoundDistribution) distr).pDistributions.get()) {
                     if (likelihood instanceof GenericTreeLikelihood) {
                         GenericTreeLikelihood treeLikelihood = (GenericTreeLikelihood) likelihood;
                     	trees.add(treeLikelihood.treeInput.get());
+                    	// likelihoods.add(treeLikelihood);
                     }
                 }
             }
@@ -166,7 +169,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         
         if (trees.size() == 1) {
         	TreeInterface tree = (TreeInterface) trees.toArray()[0];
-        	m = MethodsTextFactory.getModelDescription(tree);
+        	m = MethodsTextFactory.getModelDescription(tree, null, null);
         	m.set(0, new Phrase("\nThere is a single tree with "));
         	phrases = new List[1];
         	phrases[0] = m;
@@ -181,32 +184,19 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	        }
         }
 		Log.warning(b.toString());
-        b = new StringBuilder();
+        //b = new StringBuilder();
         b.append("\n\n");
         
         // has FixMeanMutationRatesOperator?
-        for (Operator op : mcmc.operatorsInput.get()) {
-        	if (op.getID().equals("FixMeanMutationRatesOperator")) {
-        		b.append("Relative substitution rates among partitions ");
-                partitionIDs = new ArrayList<>();
-                for (StateNode s : ((DeltaExchangeOperator)op).parameterInput.get()) {
-                	partitionIDs.add(BeautiDoc.parsePartition(s.getID()));
-                }
-                b.append(XML2Text.printParitions(partitionIDs));
-        		b.append("are estimated.\n");
-        		m.clear();
-        		m.add(new Phrase(b.toString()));
-                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
-        	}
-        }
+//        addFixMeanMutationRatesOperator(mcmc, b, m);
 
 		Log.warning(b.toString());
 		Log.warning("Done!");
+		
+				
 	}
 	
-
-	private void addPartitionDescription() {
-		StringBuilder b = new StringBuilder();
+	private void addPartitionDescription(StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
 
 		List<BEASTInterface> parts = beautiDoc.getPartitions("Partitions");
@@ -312,6 +302,24 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         	}
         }
      }
+
+
+	private void addFixMeanMutationRatesOperator(MCMC mcmc, StringBuilder b, List<Phrase> m) {
+        for (Operator op : mcmc.operatorsInput.get()) {
+        	if (op.getID().equals("FixMeanMutationRatesOperator")) {
+        		b.append("Relative substitution rates among partitions ");
+                List<String> partitionIDs = new ArrayList<>();
+                for (StateNode s : ((DeltaExchangeOperator)op).parameterInput.get()) {
+                	partitionIDs.add(BeautiDoc.parsePartition(s.getID()));
+                }
+                b.append(XML2Text.printParitions(partitionIDs));
+        		b.append("are estimated.\n");
+        		m.clear();
+        		m.add(new Phrase(b.toString()));
+                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+        	}
+        }
+	}
 
 
 	private boolean isShared(List<List<Phrase>> selected) {
@@ -491,10 +499,6 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 			}
 		}
 		System.out.println(id + "." + input.getName() + " set to " + input.get().toString());
-	}
-
-	private List<Phrase> getModelDescription(GenericTreeLikelihood treeLikelihood) {
-		return MethodsTextFactory.getModelDescription(treeLikelihood);
 	}
 
 	public static void main(String[] args) throws Exception {
