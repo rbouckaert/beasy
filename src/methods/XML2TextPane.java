@@ -94,7 +94,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 		StyledDocument doc = getStyledDocument();
 		doc.remove(0, doc.getLength());
-		MethodsText.done.clear();
+		MethodsText.clear();
 		initialise((MCMC) beautiDoc.mcmc.get());
 	}
 	
@@ -251,6 +251,19 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 	}
                 }
                 
+                // update MethodsText.partitionGroupMap
+                if (selected.size() > 0) {
+	                for (int k = 0; k < selected.get(i).size(); k++) {
+	                	Object source = models.get(i).get(k).source;
+	                	Set<Phrase> set = MethodsText.partitionGroupMap.get(source);
+	                	for (int j = 0; j < selected.size(); j++) {
+	                		Phrase phrase = selected.get(j).get(k);
+	                		set.add(phrase);
+	                		MethodsText.partitionGroupMap.put(phrase.source, set);	                		
+	                	}
+	                }
+                }
+                
                 // translate to text                
                 boolean shared = isShared(selected);
                 model = Phrase.toString(selected.toArray(new List[]{}));
@@ -378,9 +391,32 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		String id = cmd.split(" ")[1];
 		RealParameter param = (RealParameter) beautiDoc.pluginmap.get(id);
 		
+		List<Phrase> set = new ArrayList<>(); 
+		set.addAll(MethodsText.partitionGroupMap.get(param));
+		if (set.size() > 1) {
+			String [] options = new String[set.size() + 1];
+			int i = 0;
+			options[i++] = "All";
+			for (Phrase p : set) {
+				options[i++] = ((RealParameter) p.source).getID();
+			}
+			i = JOptionPane.showOptionDialog(this, "Which parameter?", null, JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "All");
+			if (i > 0) {
+				Phrase x = set.get(i-1);
+				set.clear();
+				set.add(x);
+				param = (RealParameter) beautiDoc.pluginmap.get(options[i]);
+			}
+		}
+		
         BEASTObjectDialog dlg = new BEASTObjectDialog(param, RealParameter.class, beautiDoc);
         if (dlg.showDialog()) {
-            dlg.accept((BEASTInterface) param, beautiDoc);
+        	for (Phrase p : set) {
+        		param = (RealParameter) p.source;
+                String id2 = param.getID();
+        		dlg.accept((BEASTInterface) param, beautiDoc);
+        		param.setID(id2);
+        	}
             try {
             	refreshText();
             } catch (Exception ex) {

@@ -31,9 +31,7 @@ import beast.util.Randomizer;
 public class Phrase {
 	/** object being described **/
 	Object source;
-	
-	Set<Object> sibling;
-	
+		
 	/** input associated with the source **/
 	Input<?> input;
 	
@@ -49,7 +47,10 @@ public class Phrase {
 		this.input = parameter;
 		this.text = phrase;
 		
-		sibling = new LinkedHashSet<>();
+		if (!MethodsText.partitionGroupMap.containsKey(source)) {
+			MethodsText.partitionGroupMap.put(source, new LinkedHashSet<>());
+		}
+		MethodsText.partitionGroupMap.get(source).add(this);
 	}
 
 	
@@ -262,6 +263,11 @@ public class Phrase {
 	public void setInputX(BEASTInterface parent, Input<?> input) {
 		this.parent = parent;
 		this.input = input;		
+	}
+
+
+	public void setText(String text) {
+		this.text = text;		
 	}
 
 	

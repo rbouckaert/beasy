@@ -13,6 +13,12 @@ import beast.core.util.CompoundDistribution;
 @Description("Describe model details in text format for a methods section")
 public interface MethodsText {
 	static Set<Object> done = new HashSet<>();
+	static Map<Object, Set<Phrase>> partitionGroupMap = new LinkedHashMap<>();
+
+	static void clear() {
+		MethodsText.done.clear();
+		MethodsText.partitionGroupMap.clear();
+	}
 
 	static Map<String, String> nameMap = new HashMap<>();
 	static Map<String, String> inputNameMap = new HashMap<>();
@@ -83,4 +89,5 @@ public interface MethodsText {
 		}
 		return name;
 	}
+
 }

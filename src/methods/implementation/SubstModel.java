@@ -45,7 +45,13 @@ public class SubstModel implements MethodsText {
 		}
 		
 		if (o.frequenciesInput.get() != null) {
-			b.addAll(MethodsTextFactory.getModelDescription(o.frequenciesInput.get(), o, o.frequenciesInput));
+			List<Phrase> m = MethodsTextFactory.getModelDescription(o.frequenciesInput.get(), o, o.frequenciesInput);
+			String text = o.frequenciesInput.get().getID();
+			if (text.indexOf("Freqs") > 0) {
+				text = text.substring(0, text.indexOf("Freqs"));
+			}
+			m.get(0).setText(text);
+			b.addAll(m);
 			b.add(new Phrase(" frequencies"));
 		}
 		return b;
