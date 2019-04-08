@@ -1,10 +1,13 @@
 package methods;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.awt.font.TextAttribute;
 import java.util.*;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -122,7 +125,10 @@ public class Phrase {
 			Phrase phrase = basePhrases.get(i);
 
 			if (phrase instanceof PartitionPhrase) {
-		        JButton button = new JButton(phrase.toString());
+		        JButton button = new JButton(
+		        		"<html><font color=\"blue\"><u>" + phrase.toString() + "</u></font></html>"
+		        		);
+		        button.setBorder(BorderFactory.createEmptyBorder());
 		        String partitionStyle = "partitionPhrase " + Randomizer.nextInt();
 		        Style s = doc.addStyle(partitionStyle, regular);
 		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
@@ -130,13 +136,17 @@ public class Phrase {
 		        button.setCursor(Cursor.getDefaultCursor());
 		        button.setActionCommand("PartitionEditor");
 		        button.addActionListener(al);
+		        button.setMaximumSize(new Dimension(phrase.toString().length() * 10, 20));
 		        StyleConstants.setComponent(s, button);
 		        
 		        textString.add(phrase.toString());
 				styleString.add(partitionStyle);
 
 			} else if (phrase.source instanceof RealParameter) {
-		        JButton button = new JButton(phrase.toString());
+		        JButton button = new JButton(
+		        		"<html><font color=\"blue\"><u>" + phrase.toString() + "</u></font></html>"
+		        		);
+		        button.setBorder(BorderFactory.createEmptyBorder());
 		        String partitionStyle = ((BEASTInterface) phrase.source).getID();
 		        Style s = doc.addStyle(partitionStyle, regular);
 		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
@@ -144,6 +154,7 @@ public class Phrase {
 		        button.setCursor(Cursor.getDefaultCursor());
 		        button.setActionCommand("RealParameter " + partitionStyle);
 		        button.addActionListener(al);
+		        button.setMaximumSize(new Dimension(phrase.toString().length() * 10, 20));
 		        StyleConstants.setComponent(s, button);
 		        
 		        textString.add(phrase.toString());
@@ -157,6 +168,8 @@ public class Phrase {
 		        String text = phrase.source.toString();
 		        text = text.substring(1, text.length() - 1);
 		        final JTextField entry = new JTextField(text);
+		        entry.setBorder(BorderFactory.createEmptyBorder());
+		        entry.setForeground(Color.BLUE);
 		        entry.setCursor(Cursor.getDefaultCursor());
 		        entry.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
 		        entry.addActionListener(al);
@@ -187,8 +200,9 @@ public class Phrase {
 		        List<BeautiSubTemplate> plugins = inputEditorFactory.getAvailableTemplates(phrase.input, phrase.parent, null, beautiDoc);
 		        if (plugins.size() > 0) {
 			        JComboBox<Object> combobox = new JComboBox<>(plugins.toArray());
+			        combobox.setBorder(BorderFactory.createEmptyBorder());
 			        Style s = doc.addStyle(phrase.parent.getID() + " " + phrase.input.getName(), regular);
-			        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
+			        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
 
 			        String id = ((BEASTInterface)phrase.source).getID();
                     if (id != null && id.indexOf('.') != -1) {
@@ -202,6 +216,7 @@ public class Phrase {
                         		template.getMainID().replaceAll(".t:\\$\\(n\\)", "").equals(id) ||
                         		(template.getShortClassName() != null && template.getShortClassName().equals(id))) {
                         	combobox.setSelectedItem(template);
+        			        combobox.setMaximumSize(new Dimension(template.toString().length() * 8 + 15, 200));
                         }
                     }
 			        combobox.setCursor(Cursor.getDefaultCursor());
