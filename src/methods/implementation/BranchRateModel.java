@@ -26,18 +26,20 @@ public class BranchRateModel implements MethodsText {
 
 		done.add(brm);
 		for (Input<?> input : ((BEASTInterface)brm).listInputs()) {
-			if (input.get() != null && 
-					input.get() instanceof StateNode && 
-					(!(input.get() instanceof TreeInterface)) && 
-					((StateNode)input.get()).isEstimatedInput.get()) {
-				if (!hasWith) {
-					b.add(new Phrase("with "));
-					hasWith = true;
+			if (!BEASTObject.cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
+				if (input.get() != null && 
+						input.get() instanceof StateNode && 
+						(!(input.get() instanceof TreeInterface)) && 
+						((StateNode)input.get()).isEstimatedInput.get()) {
+					if (!hasWith) {
+						b.add(new Phrase("with "));
+						hasWith = true;
+					}
+					b.add(new Phrase(input.get(), (BEASTInterface) brm, input, getInputName(input) + " "));
+					done.add(input.get());
+					List<Phrase> m = describePriors((StateNode) input.get(), parent, input2);
+					b.addAll(m);
 				}
-				b.add(new Phrase(input.get(), (BEASTInterface) brm, input, getInputName(input) + " "));
-				done.add(input.get());
-				List<Phrase> m = describePriors((StateNode) input.get(), parent, input2);
-				b.addAll(m);
 			}
 		}
 		return b;

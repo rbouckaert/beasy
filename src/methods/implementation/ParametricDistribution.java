@@ -22,16 +22,18 @@ public class ParametricDistribution implements MethodsText {
 		b.add(new Phrase(" distributed "));
 		boolean isFirst = true;
 		for (Input<?> input : o.listInputs()) {
-			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
-				if (isFirst) {
-					isFirst = false;
-					b.add(new Phrase("with "));
-				} else {
-					b.add(new Phrase(","));
+			if (!BEASTObject.cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
+				if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
+					if (isFirst) {
+						isFirst = false;
+						b.add(new Phrase("with "));
+					} else {
+						b.add(new Phrase(","));
+					}
+					b.add(new Phrase(input.get(), o, input," " + getInputName(input) + " "));
+					List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input);
+					b.addAll(m);
 				}
-				b.add(new Phrase(input.get(), o, input," " + getInputName(input) + " "));
-				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input);
-				b.addAll(m);
 			}
 		}
  				

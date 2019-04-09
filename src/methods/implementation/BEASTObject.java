@@ -2,6 +2,8 @@ package methods.implementation;
 
 import java.util.*;
 
+import beast.app.beauti.BeautiConfig;
+import beast.app.beauti.BeautiSubTemplate;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import methods.MethodsText;
@@ -9,6 +11,7 @@ import methods.MethodsTextFactory;
 import methods.Phrase;
 
 public class BEASTObject implements MethodsText {
+	
 	
 	@Override
 	public Class type() {
@@ -22,14 +25,24 @@ public class BEASTObject implements MethodsText {
 		}
 		beast.core.BEASTObject o = (beast.core.BEASTObject) o2;
 		done.add(o);
+		
+		for (BeautiSubTemplate st : cfg.subTemplates) {
+			
+		}
+		
+		
+		
+		
 		List<Phrase> b = new ArrayList<>();
 		b.add(new Phrase(o, parent, input2, getName(o) + " with "));
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
-				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input);
-				if (m.size() > 0) {
-					b.add(new Phrase(input.get(), o, input, " " + getInputName(input) + " is "));
-					b.addAll(m);
+				if (!cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
+					List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input);
+					if (m.size() > 0) {
+						b.add(new Phrase(input.get(), o, input, " " + getInputName(input) + " is "));
+						b.addAll(m);
+					}
 				}
 			}
 		}
@@ -39,4 +52,9 @@ public class BEASTObject implements MethodsText {
 		return b;
 	}
 
+
+	static BeautiConfig cfg;
+	public static void setBeautiCFG(BeautiConfig beautiConfig) {
+		cfg = beautiConfig;		
+	}
 }

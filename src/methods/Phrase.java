@@ -119,6 +119,9 @@ public class Phrase {
 
         Style regular = doc.addStyle("regular", def);
         StyleConstants.setFontFamily(def, "SansSerif");
+        StyleConstants.setFontSize(def, 16);
+        StyleConstants.setSubscript(def, true);
+        StyleConstants.setAlignment(def, StyleConstants.ALIGN_RIGHT);
 
 		List<Phrase> basePhrases = phrases[0];
 		for (int i = 0; i < basePhrases.size(); i++) {
@@ -131,7 +134,7 @@ public class Phrase {
 		        button.setBorder(BorderFactory.createEmptyBorder());
 		        String partitionStyle = "partitionPhrase " + Randomizer.nextInt();
 		        Style s = doc.addStyle(partitionStyle, regular);
-		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
+		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
 
 		        button.setCursor(Cursor.getDefaultCursor());
 		        button.setActionCommand("PartitionEditor");
@@ -149,7 +152,7 @@ public class Phrase {
 		        button.setBorder(BorderFactory.createEmptyBorder());
 		        String partitionStyle = ((BEASTInterface) phrase.source).getID();
 		        Style s = doc.addStyle(partitionStyle, regular);
-		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
+		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
 
 		        button.setCursor(Cursor.getDefaultCursor());
 		        button.setActionCommand("RealParameter " + partitionStyle);
@@ -164,7 +167,7 @@ public class Phrase {
 				// beautiDoc.registerPlugin((BEASTInterface) phrase.parent);
 				String entryStyle = phrase.parent.getID() + " " + phrase.input.getName();
 		        Style s = doc.addStyle(entryStyle, regular);
-		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
+		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
 		        String text = phrase.source.toString();
 		        text = text.substring(1, text.length() - 1);
 		        final JTextField entry = new JTextField(text);
@@ -216,7 +219,8 @@ public class Phrase {
                         		template.getMainID().replaceAll(".t:\\$\\(n\\)", "").equals(id) ||
                         		(template.getShortClassName() != null && template.getShortClassName().equals(id))) {
                         	combobox.setSelectedItem(template);
-        			        combobox.setMaximumSize(new Dimension(template.toString().length() * 8 + 15, 200));
+        			        // combobox.setMaximumSize(new Dimension(template.toString().length() * 8 + 15, 200));
+                        	combobox.setMaximumSize(new Dimension(20 * 8 + 15, 200));
                         }
                     }
 			        combobox.setCursor(Cursor.getDefaultCursor());

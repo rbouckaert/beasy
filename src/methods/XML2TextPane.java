@@ -36,6 +36,7 @@ import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.evolution.operators.DeltaExchangeOperator;
 import beast.evolution.tree.TreeInterface;
 import beast.util.XMLParser;
+import methods.implementation.BEASTObject;
 import beast.core.MCMC;
 import beast.core.Operator;
 
@@ -75,6 +76,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 			beautiDoc.registerPlugin(o);
 		}
 		beautiDoc.determinePartitions();
+		BEASTObject.setBeautiCFG(beautiDoc.beautiConfig);
 		
 		MethodsText.initNameMap();
 		initialise((MCMC) beautiDoc.mcmc.get());
@@ -446,7 +448,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 "OK");
         optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-        final JDialog dialog = optionPane.createDialog(null, "Partition panel");
+        final JDialog dialog = optionPane.createDialog(this, "Partition panel");
         dialog.setResizable(true);
         dialog.pack();
 
