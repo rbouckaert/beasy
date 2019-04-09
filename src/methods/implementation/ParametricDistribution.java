@@ -1,6 +1,7 @@
 package methods.implementation;
 
 
+import beast.app.beauti.BeautiDoc;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import java.util.*;
@@ -14,7 +15,7 @@ public class ParametricDistribution implements MethodsText {
 	}
 	
 	@Override
-	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2) {
+	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
 		beast.math.distributions.ParametricDistribution o = (beast.math.distributions.ParametricDistribution) o2;
 		done.add(o);
 		List<Phrase> b = new ArrayList<>();
@@ -31,13 +32,13 @@ public class ParametricDistribution implements MethodsText {
 						b.add(new Phrase(","));
 					}
 					b.add(new Phrase(input.get(), o, input," " + getInputName(input) + " "));
-					List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input);
+					List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input, doc);
 					b.addAll(m);
 				}
 			}
 		}
  				
-		b.addAll(describePriors(o, parent, input2));
+		b.addAll(describePriors(o, parent, input2, doc));
 		
 		return b;
 	}

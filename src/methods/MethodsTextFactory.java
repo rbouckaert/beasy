@@ -3,6 +3,8 @@ package methods;
 
 import java.util.*;
 
+import beast.app.beauti.BeautiDoc;
+import beast.app.beauti.BeautiSubTemplate;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.util.Log;
@@ -59,9 +61,14 @@ public class MethodsTextFactory {
 		return createMethodsText(o.getClass());
 	}
 	
-	static public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input) {
+	static public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input, BeautiDoc doc) {
+		List<Phrase> m0 = methods.implementation.BeautiSubTemplate.getModelDescription(o, parent, input, doc);
+		if (m0 != null) {
+			return m0;
+		}
+		
 		MethodsText m = createMethodsText(o);
-		List<Phrase> modelDescription = m.getModelDescription(o, parent, input);
+		List<Phrase> modelDescription = m.getModelDescription(o, parent, input, doc);
 		return modelDescription;
 	}
 

@@ -2,6 +2,7 @@ package methods;
 
 import java.util.*;
 
+import beast.app.beauti.BeautiDoc;
 import beast.core.BEASTInterface;
 import beast.core.BEASTObject;
 import beast.core.Description;
@@ -44,10 +45,10 @@ public interface MethodsText {
 		return "";
 	}
 	
-	List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input);
+	List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input, BeautiDoc doc);
 
 	
-	default List<Phrase> describePriors(BEASTObject o, BEASTInterface parent, Input<?> input2) {
+	default List<Phrase> describePriors(BEASTObject o, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
 		List<Phrase> b = new ArrayList<>();
 		// need to describe priors?
 		if (o instanceof StateNode && ((StateNode) o).isEstimatedInput.get()) {			
@@ -58,7 +59,7 @@ public interface MethodsText {
 					for (Object output2 : distr.getOutputs()) {
 						if (output2 instanceof CompoundDistribution && ((CompoundDistribution) output2).getID().equals("prior")) {
 							b.add(new Phrase(distr, " "));
-							List<Phrase> m = MethodsTextFactory.getModelDescription(distr, (CompoundDistribution) output2, ((CompoundDistribution) output2).pDistributions);
+							List<Phrase> m = MethodsTextFactory.getModelDescription(distr, (CompoundDistribution) output2, ((CompoundDistribution) output2).pDistributions, doc);
 							b.addAll(m);
 						}
 					}

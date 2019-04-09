@@ -1,6 +1,7 @@
 package methods.implementation;
 
 
+import beast.app.beauti.BeautiDoc;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.StateNode;
@@ -15,7 +16,7 @@ public class SubstModel implements MethodsText {
 	}
 
 	@Override
-	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2) {
+	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
 		List<Phrase> b = new ArrayList<>();		
 		beast.evolution.substitutionmodel.SubstitutionModel.Base o = (beast.evolution.substitutionmodel.SubstitutionModel.Base) o2;
 		boolean hasWith = false;
@@ -33,10 +34,10 @@ public class SubstModel implements MethodsText {
 					b.add(new Phrase(input.get(), o, input, getInputName(input) + " "));
 					done.add(input.get());
 					if (((StateNode)input.get()).isEstimatedInput.get()) {
-						List<Phrase> m = describePriors((StateNode) input.get(), o, input);
+						List<Phrase> m = describePriors((StateNode) input.get(), o, input, doc);
 						b.addAll(m);
 					} else {
-						List<Phrase> m =  MethodsTextFactory.getModelDescription(input.get(), o, input);
+						List<Phrase> m =  MethodsTextFactory.getModelDescription(input.get(), o, input, doc);
 						b.addAll(m);
 					}
 				}
@@ -47,10 +48,10 @@ public class SubstModel implements MethodsText {
 		}
 		
 		if (o.frequenciesInput.get() != null) {
-			List<Phrase> m = MethodsTextFactory.getModelDescription(o.frequenciesInput.get(), o, o.frequenciesInput);
+			List<Phrase> m = MethodsTextFactory.getModelDescription(o.frequenciesInput.get(), o, o.frequenciesInput, doc);
 			String text = o.frequenciesInput.get().getID();
-			if (text.indexOf("Freqs") > 0) {
-				text = text.substring(0, text.indexOf("Freqs"));
+			if (text.toLowerCase().indexOf("freqs") > 0) {
+				text = text.substring(0, text.toLowerCase().indexOf("freqs"));
 			}
 			m.get(0).setText(text);
 			b.addAll(m);

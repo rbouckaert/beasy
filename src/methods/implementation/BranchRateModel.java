@@ -1,5 +1,6 @@
 package methods.implementation;
 
+import beast.app.beauti.BeautiDoc;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.StateNode;
@@ -16,7 +17,7 @@ public class BranchRateModel implements MethodsText {
 	}
 
 	@Override
-	public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input2) {
+	public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
 		List<Phrase> b = new ArrayList<>();		
 		beast.evolution.branchratemodel.BranchRateModel.Base brm = (beast.evolution.branchratemodel.BranchRateModel.Base) o;
 
@@ -37,7 +38,7 @@ public class BranchRateModel implements MethodsText {
 					}
 					b.add(new Phrase(input.get(), (BEASTInterface) brm, input, getInputName(input) + " "));
 					done.add(input.get());
-					List<Phrase> m = describePriors((StateNode) input.get(), parent, input2);
+					List<Phrase> m = describePriors((StateNode) input.get(), parent, input2, doc);
 					b.addAll(m);
 				}
 			}

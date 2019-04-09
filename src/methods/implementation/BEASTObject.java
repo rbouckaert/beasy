@@ -3,6 +3,7 @@ package methods.implementation;
 import java.util.*;
 
 import beast.app.beauti.BeautiConfig;
+import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiSubTemplate;
 import beast.core.BEASTInterface;
 import beast.core.Input;
@@ -19,7 +20,7 @@ public class BEASTObject implements MethodsText {
 	}
 	
 	@Override
-	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2) {
+	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
 		if (done.contains(o2)) {
 			return new ArrayList<>();
 		}
@@ -38,7 +39,7 @@ public class BEASTObject implements MethodsText {
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
 				if (!cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
-					List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input);
+					List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input, doc);
 					if (m.size() > 0) {
 						b.add(new Phrase(input.get(), o, input, " " + getInputName(input) + " is "));
 						b.addAll(m);
@@ -47,7 +48,7 @@ public class BEASTObject implements MethodsText {
 			}
 		}
  				
-		b.addAll(describePriors(o, parent, input2));
+		b.addAll(describePriors(o, parent, input2, doc));
 		
 		return b;
 	}

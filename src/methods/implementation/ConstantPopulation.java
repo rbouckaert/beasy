@@ -2,6 +2,7 @@ package methods.implementation;
 
 import java.util.*;
 
+import beast.app.beauti.BeautiDoc;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import methods.MethodsText;
@@ -16,7 +17,7 @@ public class ConstantPopulation implements MethodsText {
 	}
 	
 	@Override
-	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2) {
+	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
 		if (done.contains(o2)) {
 			return new ArrayList<>();
 		}
@@ -26,7 +27,7 @@ public class ConstantPopulation implements MethodsText {
 		b.add(new Phrase(o, parent, input2, getName(o) + " where "));
 		for (Input<?> input : o.listInputs()) {
 			if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
-				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input);
+				List<Phrase> m = MethodsTextFactory.getModelDescription(input.get(), o, input, doc);
 				if (m.size() > 0) {
 					b.add(new Phrase(input.get(), o, input, " " + getInputName(input) + " is "));
 					b.addAll(m);
@@ -34,7 +35,7 @@ public class ConstantPopulation implements MethodsText {
 			}
 		}
  				
-		b.addAll(describePriors(o, parent, input2));
+		b.addAll(describePriors(o, parent, input2, doc));
 		
 		return b;
 	}

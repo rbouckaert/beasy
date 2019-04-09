@@ -127,14 +127,14 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                     	partitionIDs.add(treeLikelihood.dataInput.get().getID());
                     	
                     	BEASTInterface siteModel = (BEASTInterface) treeLikelihood.siteModelInput.get();
-                		List<Phrase> sm = MethodsTextFactory.getModelDescription(siteModel, treeLikelihood, treeLikelihood.siteModelInput);
+                		List<Phrase> sm = MethodsTextFactory.getModelDescription(siteModel, treeLikelihood, treeLikelihood.siteModelInput, beautiDoc);
                 		// sm.get(0).setInput(treeLikelihood, treeLikelihood.siteModelInput);
                 		// sm.add(new Phrase("\n"));
                 		siteModels.add(sm);
                 		smPartitionIDs.add(beautiDoc.parsePartition(siteModel.getID()));
                 		
                 		BEASTInterface clockModel = treeLikelihood.branchRateModelInput.get();
-                		List<Phrase> cm = MethodsTextFactory.getModelDescription(clockModel, treeLikelihood, treeLikelihood.branchRateModelInput);
+                		List<Phrase> cm = MethodsTextFactory.getModelDescription(clockModel, treeLikelihood, treeLikelihood.branchRateModelInput, beautiDoc);
                 		// cm.get(0).setInput(treeLikelihood, treeLikelihood.branchRateModelInput);
                 		// cm.add(new Phrase("\n"));
                 		clockModels.add(cm);
@@ -171,7 +171,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         
         if (trees.size() == 1) {
         	TreeInterface tree = (TreeInterface) trees.toArray()[0];
-        	m = MethodsTextFactory.getModelDescription(tree, null, null);
+        	m = MethodsTextFactory.getModelDescription(tree, null, null, beautiDoc);
         	m.set(0, new Phrase("\nThere is a single tree with "));
         	phrases = new List[1];
         	phrases[0] = m;
@@ -245,7 +245,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 selected.add(models.get(i));
                 String modelID = xPartitionIDs.get(i);
                 for (int j = i + 1; j < partitionIDs.size(); j++) {
-                	if (Phrase.toSimpleString(models.get(j)).equals(model)) {
+                	String modelj = Phrase.toSimpleString(models.get(j));
+                	if (modelj.equals(model)) {
                 	//if (xPartitionIDs.get(j).equals(modelID)) {
                         selected.add(models.get(j));
                 		models.set(j, null);
@@ -255,7 +256,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 
                 // update MethodsText.partitionGroupMap
                 if (selected.size() > 0) {
-	                for (int k = 0; k < selected.get(i).size(); k++) {
+	                for (int k = 0; k < selected.get(0).size(); k++) {
 	                	Object source = models.get(i).get(k).source;
 	                	Set<Phrase> set = MethodsText.partitionGroupMap.get(source);
 	                	for (int j = 0; j < selected.size(); j++) {

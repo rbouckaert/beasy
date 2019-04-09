@@ -1,6 +1,7 @@
 package methods.implementation;
 
 
+import beast.app.beauti.BeautiDoc;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 
@@ -15,10 +16,10 @@ public class Prior implements MethodsText {
 	}
 
 	@Override
-	public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input2) {
+	public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
 		beast.math.distributions.Prior p = (beast.math.distributions.Prior) o;
 		List<Phrase> b = new ArrayList<>();
-		List<Phrase> m = MethodsTextFactory.getModelDescription(p.distInput.get(), p, p.distInput);
+		List<Phrase> m = MethodsTextFactory.getModelDescription(p.distInput.get(), p, p.distInput, doc);
 		b.addAll(m);
 		return b;
 	}
