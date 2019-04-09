@@ -240,6 +240,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 List<String> currentPartitionIDs = new ArrayList<>();
                 currentPartitionIDs.add(partitionIDs.get(i));
                 String model = Phrase.toSimpleString(models.get(i));
+Log.warning(model);
 
                 List<List<Phrase>> selected = new ArrayList<>();
                 selected.add(models.get(i));
@@ -273,7 +274,11 @@ public class XML2TextPane extends JTextPane implements ActionListener {
             	m.clear();
                 if (currentPartitionIDs.size() == partitionIDs.size()) {
                 	StringBuilder b2 = new StringBuilder();
-                	b2.append("\nAll partitions ");
+                	if (currentPartitionIDs.size() == 1) {
+                		b2.append("\nThe partition ");
+                	} else {
+                		b2.append("\nAll partitions ");
+                	}
             		if (selected.size() > 1) {
             			if (shared) {
                 			b2.append(" share a ");
@@ -281,7 +286,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 			b2.append(" individually have a ");
                 		}
                 	} else {
-                		b2.append(" has ");
+                		b2.append(" has a ");
                 	}
                 	b.append("\nAll paritions ");
                 	m.add(new PartitionPhrase(b2.toString()));
@@ -297,7 +302,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 			b2.append(" individually have a ");
                 		}
                 	} else {
-                		b2.append(" has ");
+                		b2.append(" has a ");
                 	}
                 	b.append(b2.toString());
                 	m.add(new PartitionPhrase(b2.toString()));

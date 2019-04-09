@@ -6,6 +6,7 @@ import java.util.*;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiSubTemplate;
 import beast.core.BEASTInterface;
+import beast.core.BEASTObject;
 import beast.core.Input;
 import beast.core.util.Log;
 import beast.util.PackageManager;
@@ -58,7 +59,23 @@ public class MethodsTextFactory {
 	
 	static public MethodsText createMethodsText(Object o) {
 		init();
-		return createMethodsText(o.getClass());
+		if (o instanceof BEASTObject) {
+			return createMethodsText(o.getClass());
+		}
+		return new MethodsText() {
+			
+			@Override
+			public Class type() {
+				return null;
+			}
+			
+			@Override
+			public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input, BeautiDoc doc) {
+				List<Phrase> m = new ArrayList<>();
+				m.add(new Phrase(o.toString()));
+				return m;
+			}
+		};
 	}
 	
 	static public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input, BeautiDoc doc) {

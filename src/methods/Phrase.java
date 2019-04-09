@@ -69,6 +69,9 @@ public class Phrase {
 		StringBuilder b = new StringBuilder();
 		for (Phrase phrase : phrases) {
 			b.append(phrase.toString());
+			if (b.length() > 0 && b.charAt(b.length() -1 ) != ' ') {
+				b.append(' ');
+			}
 		}
 		return b.toString();
 	}
