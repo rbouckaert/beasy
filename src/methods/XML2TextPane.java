@@ -1,7 +1,12 @@
 package methods;
 
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.LayoutManager;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -46,6 +51,8 @@ import beast.core.Operator;
 public class XML2TextPane extends JTextPane implements ActionListener {
 	
 	BeautiDoc beautiDoc;
+	String text;
+	
 	public XML2TextPane(String [] args) throws Exception {
 		beautiDoc = new BeautiDoc();
 		File file = new File(args[0]);
@@ -215,9 +222,9 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         }
         
         
-		Log.warning(b.toString());
+		text = b.toString();
+		Log.warning(text);
 		Log.warning("Done!");
-		
 				
 	}
 	
@@ -581,7 +588,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	}
 
 	public static void main(String[] args) throws Exception {
-        XML2TextPane textPane = new XML2TextPane(args);
+        final XML2TextPane textPane = new XML2TextPane(args);
         
         JScrollPane paneScrollPane = new JScrollPane(textPane);
         paneScrollPane.setVerticalScrollBarPolicy(
@@ -591,9 +598,23 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
         //Create and set up the window.
         JFrame frame = new JFrame("XML2TextPane");
+        frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.add(paneScrollPane);
+        frame.add(paneScrollPane, BorderLayout.CENTER);
+        JButton copyButton = new JButton("Copy text to clipboard");
+        frame.add(copyButton, BorderLayout.SOUTH);
+        copyButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textPane.text = textPane.text.replaceAll("  ", " ");
+				textPane.text = textPane.text.replaceAll("\n\n", "\n");
+				StringSelection stringSelection = new StringSelection(textPane.text);
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(stringSelection, null);				
+			}
+		});
 
         frame.pack();
         frame.setVisible(true);
