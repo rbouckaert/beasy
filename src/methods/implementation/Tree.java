@@ -21,7 +21,7 @@ public class Tree implements MethodsText {
 	@Override
 	public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
 		List<Phrase> m = describePriors((BEASTObject) o, parent, input2, doc);
-		if (m.size() == 0) {
+		// if (m.size() == 0) {
 			for (Object ooutput : ((BEASTInterface)o).getOutputs()) {
 				if (ooutput instanceof TreeIntervals) {
 					done.add(ooutput);
@@ -43,7 +43,7 @@ public class Tree implements MethodsText {
 					return b;
 				}
 			}
-		}
+		//}
 		return m;
 	}
 

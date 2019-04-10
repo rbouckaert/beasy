@@ -214,6 +214,7 @@ public class Phrase {
                     if (id != null && id.indexOf('.') != -1) {
                     	id = id.substring(0,  id.indexOf('.'));
                     }
+                    boolean isSelected = false;
                     for (int k = 0; k < combobox.getItemCount(); k++) {
                         BeautiSubTemplate template = (BeautiSubTemplate) combobox.getItemAt(k);
                         if (template.getMainID().replaceAll(".\\$\\(n\\)", "").equals(id) ||
@@ -224,15 +225,21 @@ public class Phrase {
                         	combobox.setSelectedItem(template);
         			        // combobox.setMaximumSize(new Dimension(template.toString().length() * 8 + 15, 200));
                         	combobox.setMaximumSize(new Dimension(20 * 8 + 15, 200));
+                        	isSelected = true;
                         }
                     }
 			        combobox.setCursor(Cursor.getDefaultCursor());
 			        combobox.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
 			        combobox.addActionListener(al);
-			        StyleConstants.setComponent(s, combobox);	
 	
-			        textString.add(" ");
-					styleString.add(phrase.parent.getID() + " " + phrase.input.getName());
+			        if (isSelected) {
+				        StyleConstants.setComponent(s, combobox);	
+			        	textString.add(" ");
+			        	styleString.add(phrase.parent.getID() + " " + phrase.input.getName());
+			        } else {
+						textString.add(phrase.text);
+						styleString.add("regular");
+			        }
 		        } else {
 					textString.add(phrase.text);
 					styleString.add("regular");

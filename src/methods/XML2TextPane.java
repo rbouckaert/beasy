@@ -34,7 +34,9 @@ import beast.core.util.Log;
 import beast.evolution.alignment.Alignment;
 import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.evolution.operators.DeltaExchangeOperator;
+import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
+import beast.math.distributions.MRCAPrior;
 import beast.util.XMLParser;
 import methods.implementation.BEASTObject;
 import beast.core.MCMC;
@@ -146,11 +148,12 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         
         // amalgamate partitions
         amalgamate(siteModels, partitionIDs, smPartitionIDs, b);
+        addDot(b);
         amalgamate(clockModels, partitionIDs, cmPartitionIDs, b);
-
+        addDot(b);
 
         List<Phrase> [] phrases = new List[1];
-    	m.add(new Phrase(b.toString()));
+//    	m.add(new Phrase(b.toString()));
     	phrases[0] = m;
 //        Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
         
@@ -173,9 +176,10 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         	TreeInterface tree = (TreeInterface) trees.toArray()[0];
         	m = MethodsTextFactory.getModelDescription(tree, null, null, beautiDoc);
         	m.set(0, new Phrase("\nThere is a single tree with "));
+        	b.append(Phrase.toString(m));
         	phrases = new List[1];
         	phrases[0] = m;
-            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);        	
+            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
         } else {
 	        for (TreeInterface tree : trees) {
 	        	m.set(0, new Phrase("\nTree prior: "));
@@ -185,19 +189,48 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
 	        }
         }
-		Log.warning(b.toString());
-        //b = new StringBuilder();
-        b.append("\n\n");
+        
+        addDot(b);
         
         // has FixMeanMutationRatesOperator?
-//        addFixMeanMutationRatesOperator(mcmc, b, m);
+        StringBuilder b2 = new StringBuilder();
+        b2.append("\n\n");
+        addFixMeanMutationRatesOperator(mcmc, b2, m);
+        b.append(b2.toString());
+        addDot(b);
 
+        // any priors other than parameter and tree priors?
+        for (Distribution distr : posterior.pDistributions.get()) {
+            if (distr.getID().equals("prior")) {
+                for (Distribution prior : ((CompoundDistribution) distr).pDistributions.get()) {
+                	if (!(prior instanceof beast.math.distributions.Prior || prior instanceof TreeDistribution)) {
+                    	m = MethodsTextFactory.getModelDescription(prior, null, null, beautiDoc);
+                    	m.add(0, new Phrase("Other prior: "));
+        	        	b.append(Phrase.toString(m));
+        	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+        	            addDot(b);
+                	}
+                }
+            }
+        }
+        
+        
 		Log.warning(b.toString());
 		Log.warning("Done!");
 		
 				
 	}
 	
+	private void addDot(StringBuilder b) {
+        b.append(".\n\n");
+        List<Phrase> [] phrases = new List[1];
+		List<Phrase> m = new ArrayList<>();
+		m.add(new Phrase(".\n\n"));
+    	phrases[0] = m;
+        Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
+	}
+
+
 	private void addPartitionDescription(StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
 
@@ -221,7 +254,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 				Alignment data = (Alignment) o;
 				strs.add(data.getSiteCount() + "");
 			}	
-			b.append(XML2Text.printParitions(strs));
+			b.append(XML2Text.printParitions(strs, -1));
 			b.append(" sites respectively.");
 		}
 		b.append("\n");
@@ -240,7 +273,6 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 List<String> currentPartitionIDs = new ArrayList<>();
                 currentPartitionIDs.add(partitionIDs.get(i));
                 String model = Phrase.toSimpleString(models.get(i));
-Log.warning(model);
 
                 List<List<Phrase>> selected = new ArrayList<>();
                 selected.add(models.get(i));
@@ -288,9 +320,9 @@ Log.warning(model);
                 	} else {
                 		b2.append(" has a ");
                 	}
-                	b.append("\nAll paritions ");
                 	m.add(new PartitionPhrase(b2.toString()));
-                	b2.append(model + "\n");
+                	b2.append(model);
+                	b.append(b2.toString());
                 } else if (currentPartitionIDs.size() > 1) {
                 	StringBuilder b2 = new StringBuilder();
                 	b2.append("\nPartitions ");
@@ -304,13 +336,13 @@ Log.warning(model);
                 	} else {
                 		b2.append(" has a ");
                 	}
-                	b.append(b2.toString());
                 	m.add(new PartitionPhrase(b2.toString()));
-                	b2.append(model + "\n");
+                	b2.append(model);
+                	b.append(b2.toString());
 
                 } else {
                 	m.add(new PartitionPhrase("\nPartition " + currentPartitionIDs.get(0) + " has a "));
-                	b.append("\nPartitions " + currentPartitionIDs.get(0) + " has a " + model + "\n");                	
+                	b.append("\nPartitions " + currentPartitionIDs.get(0) + " has a " + model);                	
                 }
                 
                 if (model.trim().length() > 0) {
@@ -328,13 +360,16 @@ Log.warning(model);
 	private void addFixMeanMutationRatesOperator(MCMC mcmc, StringBuilder b, List<Phrase> m) {
         for (Operator op : mcmc.operatorsInput.get()) {
         	if (op.getID().equals("FixMeanMutationRatesOperator")) {
-        		b.append("Relative substitution rates among partitions ");
                 List<String> partitionIDs = new ArrayList<>();
                 for (StateNode s : ((DeltaExchangeOperator)op).parameterInput.get()) {
                 	partitionIDs.add(BeautiDoc.parsePartition(s.getID()));
                 }
-                b.append(XML2Text.printParitions(partitionIDs));
-        		b.append("are estimated.\n");
+        		b.append("Relative substitution rates among ");
+        		if (partitionIDs.size() != beautiDoc.alignments.size()) {
+        			b.append("partitions ");
+        		}
+                b.append(XML2Text.printParitions(partitionIDs, beautiDoc.alignments.size()));
+        		b.append("are estimated");
         		m.clear();
         		m.add(new Phrase(b.toString()));
                 Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);

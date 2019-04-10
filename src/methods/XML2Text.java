@@ -91,7 +91,7 @@ public class XML2Text extends Runnable {
                 model = Phrase.toString(selected.toArray(new List[]{}));
                 if (currentPartitionIDs.size() > 1) {
                 	b.append("Partitions ");
-                	b.append(printParitions(currentPartitionIDs));
+                	b.append(printParitions(currentPartitionIDs, partitionIDs.size()));
                 	b.append(model + "\n");
                 } else {
                 	b.append("Partitions " + currentPartitionIDs.get(0) + " " + model + "\n");                	
@@ -121,12 +121,12 @@ public class XML2Text extends Runnable {
         // has FixMeanMutationRatesOperator?
         for (Operator op : mcmc.operatorsInput.get()) {
         	if (op.getID().equals("FixMeanMutationRatesOperator")) {
-        		b.append("Relative substitution rates among partitions ");
+        		b.append("Relative substitution rates among ");
                 partitionIDs = new ArrayList<>();
                 for (StateNode s : ((DeltaExchangeOperator)op).parameterInput.get()) {
                 	partitionIDs.add(BeautiDoc.parsePartition(s.getID()));
                 }
-                b.append(printParitions(partitionIDs));
+                b.append(printParitions(partitionIDs, partitionIDs.size()));
         		b.append("are estimated.\n");
         	}
         }
@@ -139,16 +139,24 @@ public class XML2Text extends Runnable {
 	}
 	
 	static String printParitions(List<String> partitionIDs) {
+		return printParitions(partitionIDs, -1);	
+	}
+	
+	static String printParitions(List<String> partitionIDs, int totalPartitionCount) {
 		StringBuilder b = new StringBuilder();
-    	for (int j = 0; j < partitionIDs.size() - 1; j++) {
-    		b.append(partitionIDs.get(j));
-    		if (j < partitionIDs.size() - 2) {
-    			b.append(", ");
-    		} else {
-    			b.append(" and ");
-    		}
-    	}
-    	b.append(partitionIDs.get(partitionIDs.size() - 1) + " ");
+		if (partitionIDs.size() == totalPartitionCount) {
+			b.append("all partitions ");
+		} else {
+	    	for (int j = 0; j < partitionIDs.size() - 1; j++) {
+	    		b.append(partitionIDs.get(j));
+	    		if (j < partitionIDs.size() - 2) {
+	    			b.append(", ");
+	    		} else {
+	    			b.append(" and ");
+	    		}
+	    	}
+	    	b.append(partitionIDs.get(partitionIDs.size() - 1) + " ");
+		}
     	return b.toString();
 	}
 

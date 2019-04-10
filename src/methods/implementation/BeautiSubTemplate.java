@@ -16,47 +16,48 @@ public class BeautiSubTemplate {
 	    new String[]{"ClusterTree.t:$(n)", "cluster starting tree", "clusterType"},
 	    new String[]{"NewickTree.t:$(n)", "Newick starting tree"},
 
-	    new String[]{"StrictClock.c:$(n)", "strict clock", "with ", "clockRate.c:$(n)"},
-	    new String[]{"ExponentialRelaxedClock.c:$(n)", "uncorrelated exponential relaxed clock", "with ", "ucedMean.c:$(n)"},
-	    new String[]{"RelaxedClock.c:$(n)", "uncorrelated log-normal relaxed clock", "with ", "ucldMean.c:$(n)", " and ", "ucldStdev.c:$(n)"},
-	    new String[]{"RandomLocalClock.c:$(n)", "random local clock", "with ", "meanClockRate.c:$(n)"},
+	    new String[]{"StrictClock.c:$(n)", "strict clock", " with clock rate ", "clockRate.c:$(n)"},
+	    new String[]{"ExponentialRelaxedClock.c:$(n)", "uncorrelated exponential relaxed clock", " with ", "ucedMean.c:$(n)"},
+	    new String[]{"RelaxedClock.c:$(n)", "uncorrelated log-normal relaxed clock", " with ", "ucldMean.c:$(n)", " and ", "ucldStdev.c:$(n)"},
+	    new String[]{"RandomLocalClock.c:$(n)", "random local clock", " with ", "meanClockRate.c:$(n)"},
 //	    new String[]{"SiteModel.s:$(n)", "gamma site model", "with ", "substModel", "proportionInvariant", "gammaCategoryCount", "shape"},
 
-	    new String[]{"BEASTModelTest.s:$(n)", "bModelTest", "site model with ", "gammaCategoryCount", " gamma categories ", "substModel"},
-	    new String[]{"RevJump.s:$(n)", "using ", "modelSet", " models"},
+	    new String[]{"BEASTModelTest.s:$(n)", "bModelTest", " site model with ", "gammaCategoryCount", " gamma categories ", "substModel"},
+	    new String[]{"RevJump.s:$(n)", "using ", "modelSet", " substitution models"},
 
 	    new String[]{"beast.evolution.substitutionmodel.JukesCantor", "JC69.s:$(n)", "Jukes Cantor"},
-	    new String[]{"beast.evolution.substitutionmodel.HKY", "hky.s:$(n)", "with ", "kappa.s:$(n)", "and ", "frequencies"},
-	    new String[]{"beast.evolution.substitutionmodel.TN93", "tn93.s:$(n)", "with ", "kappa1.s:$(n)", "and ", "kappa2.s:$(n)"},
-	    new String[]{"beast.evolution.substitutionmodel.GTR", "gtr.s:$(n)", "with ", "rateAC.s:$(n)", ", ", "rateAG.s:$(n)", ", ", "rateAT.s:$(n)", ", ", "rateCG.s:$(n)", ", ", "rateCT.s:$(n)", "and ", "rateGT.s:$(n)"},
+	    new String[]{"beast.evolution.substitutionmodel.HKY", "hky.s:$(n)", " with ", "kappa.s:$(n)", " and ", "frequencies"},
+	    new String[]{"beast.evolution.substitutionmodel.TN93", "tn93.s:$(n)", " with ", "kappa1.s:$(n)", " and ", "kappa2.s:$(n)"},
+	    new String[]{"beast.evolution.substitutionmodel.GTR", "gtr.s:$(n)", " with ", "rateAC.s:$(n)", ", ", "rateAG.s:$(n)", ", ", "rateAT.s:$(n)", ", ", "rateCG.s:$(n)", ", ", "rateCT.s:$(n)", " and ", "rateGT.s:$(n)"},
 	    new String[]{"Blosum62.s:$(n)"},
 	    new String[]{"Dayhoff.s:$(n)"},
 	    new String[]{"JTT.s:$(n)"},
 	    new String[]{"CPREV.s:$(n)"},
 	    new String[]{"MTREV.s:$(n)"},
 	    new String[]{"WAG.s:$(n)"},
-	    new String[]{"MutationDeathModel.s:$(n)", "stochastic Dollo", "model"},
+	    new String[]{"MutationDeathModel.s:$(n)", "stochastic Dollo", " model"},
 	    new String[]{"estimatedFreqs.s:$(n)", "estimated", " frequencies"},
 	    new String[]{"empiricalFreqs.s:$(n)", "empirical", " frequencies"},
 	    new String[]{"equalFreqs.s:$(n)", "equal", " frequencies"},
-	    new String[]{"YuleModel.t:$(n)", "Yule model", "birthDiffRate"},
-	    new String[]{"CalibratedYuleModel.t:$(n)", "Calibrated Yule model", "with ", "birthRate"},
-	    new String[]{"BirthDeath.t:$(n)", "birth death model", "with ", "type", ", ", "relativeDeathRate", "and ", "sampleProbability"},
-	    new String[]{"CoalescentConstant.t:$(n)", "constant coalescent", "tree prior with ", "popSize.t:$(n)"},
-	    new String[]{"CoalescentExponential.t:$(n)", "exponential coalescent", "tree prior with ", "ePopSize.t:$(n)", "and ", "growthRate.t:$(n)"},
-	    new String[]{"BayesianSkyline.t:$(n)", "Bayesian skyline", "tree prior with ", "bPopSizes.t:$(n)"},
-	    new String[]{"ExtendedBayesianSkyline.t:$(n)", "extended Bayesian skyline", "tree prior with ", "popSizes.alltrees", "and ", "populationMean.alltrees"},
 
-	    new String[]{"beast.math.distributions.Uniform", "uniformly", "distributed ", "(lower =", "lower", "and upper =", "upper", ")"},
-	    new String[]{"beast.math.distributions.Normal", "normally", "distributed ", "(mean =", "mean", "and sigma =",  "sigma", ")"},
-	    new String[]{"beast.math.distributions.OneOnX", "1/X", "distributed"},
-	    new String[]{"beast.math.distributions.LogNormalDistributionModel", "log-normally", "distributed ", "(mean log=", "M", "and stdev log=", "S", ")"},
-	    new String[]{"beast.math.distributions.Exponential", "exponentially", "distributed ", "(mean =", "mean", ")"},
-	    new String[]{"beast.math.distributions.Gamma", "gamma", "distributed ", "(alpha =", "alpha", "and beta =", "beta", ")"},
-	    new String[]{"beast.math.distributions.Beta", "beta", "distributed ", "(alpha =", "alpha", "and beta =", "beta", ")"},
-	    new String[]{"beast.math.distributions.LaplaceDistribution", "Laplace", "distributed ", "(mu =", "mu", "and scale =", "scale", ")"},
-	    new String[]{"beast.math.distributions.InverseGamma", "inverse Gamma", "distributed ", "(alpha =", "alpha", "and beta =", "beta", ")"},
-	    new String[]{"beast.math.distributions.Poisson", "Poisson", "distributed ", "(lambda =", "lambda", ")"}
+	    new String[]{"YuleModel.t:$(n)", "Yule model", " with birth rate ", "birthDiffRate"},
+	    new String[]{"CalibratedYuleModel.t:$(n)", "Calibrated Yule model", " with birth rate ", "birthRate"},
+	    new String[]{"BirthDeath.t:$(n)", "birth death model", " with ", "type", ", ", "relativeDeathRate", " and ", "sampleProbability"},
+	    new String[]{"CoalescentConstant.t:$(n)", "constant coalescent", " tree prior with population size ", "popSize.t:$(n)"},
+	    new String[]{"CoalescentExponential.t:$(n)", "exponential coalescent", " tree prior with population size ", "ePopSize.t:$(n)", " and growth rate ", "growthRate.t:$(n)"},
+	    new String[]{"BayesianSkyline.t:$(n)", "Bayesian skyline", " tree prior with population size ", "bPopSizes.t:$(n)"},
+	    new String[]{"ExtendedBayesianSkyline.t:$(n)", "extended Bayesian skyline", " tree prior with population size ", "popSizes.alltrees", " and population mean ", "populationMean.alltrees"},
+
+	    new String[]{"beast.math.distributions.Uniform", "uniformly", " distributed ", "(lower=", "lower", " and upper=", "upper", ")"},
+	    new String[]{"beast.math.distributions.Normal", "normally", " distributed ", "(mean=", "mean", " and sigma=",  "sigma", ")"},
+	    new String[]{"beast.math.distributions.OneOnX", "1/X", " distributed"},
+	    new String[]{"beast.math.distributions.LogNormalDistributionModel", "log-normally", " distributed ", "(mean log=", "M", " and stdev log=", "S", ")"},
+	    new String[]{"beast.math.distributions.Exponential", "exponentially", " distributed ", "(mean=", "mean", ")"},
+	    new String[]{"beast.math.distributions.Gamma", "gamma", " distributed ", "(alpha=", "alpha", " and beta=", "beta", ")"},
+	    new String[]{"beast.math.distributions.Beta", "beta", " distributed ", "(alpha=", "alpha", " and beta=", "beta", ")"},
+	    new String[]{"beast.math.distributions.LaplaceDistribution", "Laplace", " distributed ", "(mu=", "mu", " and scale=", "scale", ")"},
+	    new String[]{"beast.math.distributions.InverseGamma", "inverse Gamma", " distributed ", "(alpha=", "alpha", " and beta=", "beta", ")"},
+	    new String[]{"beast.math.distributions.Poisson", "Poisson", " distributed ", "(lambda=", "lambda", ")"}
 	};
 
 	
@@ -68,9 +69,9 @@ public class BeautiSubTemplate {
 			if (match == null) {
 				return null;
 			}
-			if (MethodsText.done.contains(bi)) {
-				return new ArrayList<>();
-			}
+//			if (MethodsText.done.contains(bi)) {
+//				return new ArrayList<>();
+//			}
 			MethodsText.done.add(bi);
 
 			List<Phrase> m = new ArrayList<>();
