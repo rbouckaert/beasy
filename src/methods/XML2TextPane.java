@@ -610,6 +610,9 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				textPane.text = textPane.text.replaceAll("  ", " ");
 				textPane.text = textPane.text.replaceAll("\n\n", "\n");
+				for (char c : new char[]{'a','e','i','o','u'}) {
+					textPane.text = textPane.text.replaceAll(" a " + c, " an " + c);					
+				}				
 				StringSelection stringSelection = new StringSelection(textPane.text);
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(stringSelection, null);				

@@ -24,8 +24,8 @@ public class SiteModel implements MethodsText {
 		SubstitutionModel subst = sm.substModelInput.get();
 		b.add(new Phrase(sm, parent, input2, " gamma site model "));
 		b.add(new Phrase("and "));
-		b.add(new Phrase(subst, sm, sm.substModelInput, getName(sm.substModelInput.get())));
-		b.add(new Phrase(" substitution model "));
+		//b.add(new Phrase(subst, sm, sm.substModelInput, getName(sm.substModelInput.get())));
+		//b.add(new Phrase(" substitution model "));
 		List<Phrase> substModel = MethodsTextFactory.getModelDescription(sm.substModelInput.get(), sm, sm.substModelInput, doc);
 		b.addAll(substModel);
 		if (sm.gammaCategoryCount.get() > 1) {
@@ -44,7 +44,6 @@ public class SiteModel implements MethodsText {
 		}
 		// b.delete(b.length()-1, b.length());
 		// b.add(new Phrase("\n"));
-		b.add(new Phrase("."));
 		return b;
 	}
 }
