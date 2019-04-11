@@ -39,6 +39,8 @@ import beast.core.util.Log;
 import beast.evolution.alignment.Alignment;
 import beast.evolution.likelihood.GenericTreeLikelihood;
 import beast.evolution.operators.DeltaExchangeOperator;
+import beast.evolution.tree.TraitSet;
+import beast.evolution.tree.Tree;
 import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
 import beast.math.distributions.MRCAPrior;
@@ -89,6 +91,14 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		
 		MethodsText.initNameMap();
 		initialise((MCMC) beautiDoc.mcmc.get());
+		
+		
+		if (args.length > 1) {
+			PrintStream out = new PrintStream(args[1]);
+			out.print(text);
+			out.close();
+			System.exit(0);
+		}
 	}
 	
 	
@@ -183,12 +193,24 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         	TreeInterface tree = (TreeInterface) trees.toArray()[0];
         	m = MethodsTextFactory.getModelDescription(tree, null, null, beautiDoc);
         	m.set(0, new Phrase("\nThere is a single tree with "));
+        	TraitSet traitSet = ((Tree) tree).getDateTrait();
+        	if (traitSet != null) {
+        		String direction = traitSet.getDateType().equals(TraitSet.DATE_BACKWARD_TRAIT) ? 
+        				"ages not dates" : "dates not ages";
+        		m.add(1, new Phrase(" dated tips (in " + direction + ") and "));
+        	}
         	b.append(Phrase.toString(m));
         	phrases = new List[1];
         	phrases[0] = m;
             Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
         } else {
 	        for (TreeInterface tree : trees) {
+	        	TraitSet traitSet = ((Tree) tree).getDateTrait();
+	        	if (traitSet != null) {
+	        		String direction = traitSet.getDateType().equals(TraitSet.DATE_BACKWARD_TRAIT) ? 
+	        				"ages not dates" : "dates not ages";
+	        		m.add(1, new Phrase("Tree " + tree.getID() +" has dated tips (in " + direction + ")."));
+	        	}
 	        	m.set(0, new Phrase("\nTree prior: "));
 	        	b.append(Phrase.toString(m));
 	        	phrases = new List[1];
@@ -223,6 +245,13 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         
         
 		text = b.toString();
+		
+		text = text.replaceAll("  ", " ");
+		text = text.replaceAll("\n\n", "\n");
+		for (char c : new char[]{'a','e','i','o','u'}) {
+			text = text.replaceAll(" a " + c, " an " + c);					
+		}				
+
 		Log.warning(text);
 		Log.warning("Done!");
 				
@@ -608,11 +637,6 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textPane.text = textPane.text.replaceAll("  ", " ");
-				textPane.text = textPane.text.replaceAll("\n\n", "\n");
-				for (char c : new char[]{'a','e','i','o','u'}) {
-					textPane.text = textPane.text.replaceAll(" a " + c, " an " + c);					
-				}				
 				StringSelection stringSelection = new StringSelection(textPane.text);
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(stringSelection, null);				

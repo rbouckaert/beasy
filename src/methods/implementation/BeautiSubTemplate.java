@@ -123,6 +123,10 @@ public class BeautiSubTemplate {
 							List<Phrase> m2 = MethodsTextFactory.getModelDescription(input2.get(), bi, input2, doc);
 							m.addAll(m2);
 						}
+					} else if (str.indexOf('@') > -1) {
+						String [] strs = str.split("@");
+						input2 = hasInput(bi, strs[1]);
+						m.add(new Phrase(input2.get(), bi, input2, strs[0]));
 					} else {
 						m.add(new Phrase(str));
 					}
