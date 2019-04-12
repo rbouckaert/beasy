@@ -107,12 +107,17 @@ public class BeautiSubTemplate {
 			MethodsText.done.add(bi);
 
 			List<Phrase> m = new ArrayList<>();
+			String str = match[1];
 			m.add(new Phrase(o,parent,input, match[1]));
 			for (int i = 2; i < match.length; i++) {
-				String str = match[i];
+				str = match[i];
 				if (str.contains("$(n)")) {
 					beast.app.beauti.PartitionContext partition = doc.getContextFor(bi);
 					str = BeautiDoc.translatePartitionNames(str, partition);
+					BEASTInterface o2 = doc.pluginmap.get(str);
+					List<Phrase> m2 = MethodsTextFactory.getModelDescription(o2, null, null, doc);
+					m.addAll(m2);
+				} else if (doc.pluginmap.containsKey(str)) {
 					BEASTInterface o2 = doc.pluginmap.get(str);
 					List<Phrase> m2 = MethodsTextFactory.getModelDescription(o2, null, null, doc);
 					m.addAll(m2);
@@ -147,9 +152,12 @@ public class BeautiSubTemplate {
 	}
 
 	static private String[] match(BEASTInterface bi) {
-		String id = bi.getID();
-		if (id.lastIndexOf('.') > 0) {
-			id = id.substring(0, id.lastIndexOf('.'));
+		String fullID = bi.getID();
+		String id;
+		if (fullID.lastIndexOf('.') > 0) {
+			id = fullID.substring(0, fullID.lastIndexOf('.'));
+		} else {
+			id = fullID;
 		}
 		String className = bi.getClass().getName();
 		for (String [] str : templates) {
@@ -159,6 +167,9 @@ public class BeautiSubTemplate {
 				return str;
 			}
 			if (str[0].equals(className)) {
+				return str;
+			}
+			if (str[0].equals(fullID)) {
 				return str;
 			}
 		}

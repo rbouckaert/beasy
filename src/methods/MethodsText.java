@@ -60,7 +60,8 @@ public interface MethodsText {
 					for (Object output2 : distr.getOutputs()) {
 						if (output2 instanceof CompoundDistribution && ((CompoundDistribution) output2).getID().equals("prior")) {
 							if (!(distr instanceof TreeDistribution && done.contains(distr))) {
-								b.add(new Phrase(distr, " "));
+								//b.add(new Phrase(distr, " "));
+								b.add(new Phrase(" "));
 								List<Phrase> m = MethodsTextFactory.getModelDescription(distr, (CompoundDistribution) output2, ((CompoundDistribution) output2).pDistributions, doc);
 								b.addAll(m);
 							}

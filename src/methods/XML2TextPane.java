@@ -1,9 +1,9 @@
 package methods;
 
 
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -15,11 +15,9 @@ import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.Element;
 import javax.swing.text.StyledDocument;
 
 import beast.app.beauti.AlignmentListInputEditor;
-import beast.app.beauti.Beauti;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiPanelConfig;
@@ -43,7 +41,6 @@ import beast.evolution.tree.TraitSet;
 import beast.evolution.tree.Tree;
 import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
-import beast.math.distributions.MRCAPrior;
 import beast.util.XMLParser;
 import methods.implementation.BEASTObject;
 import beast.core.MCMC;
@@ -126,10 +123,17 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 		List<Phrase> m = new ArrayList<>();
 
+		if (beautiDoc.pluginmap.containsKey("SpeciesTreePopSize.Species")) {
+        	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get("SpeciesTreePopSize.Species");
+        	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
+        	b.append(Phrase.toString(m));
+            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+			addDot(b);
+			m.clear();
+		}
 		
 		addPartitionDescription(b);
 				
-        
         
         // collect model descriptions of all partitions
         List<String> partitionIDs = new ArrayList<>();
@@ -192,30 +196,41 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         if (trees.size() == 1) {
         	TreeInterface tree = (TreeInterface) trees.toArray()[0];
         	m = MethodsTextFactory.getModelDescription(tree, null, null, beautiDoc);
-        	m.set(0, new Phrase("\nThere is a single tree with "));
+        	m.add(0, new Phrase("\nThere is a single tree with "));
         	TraitSet traitSet = ((Tree) tree).getDateTrait();
         	if (traitSet != null) {
         		String direction = traitSet.getDateType().equals(TraitSet.DATE_BACKWARD_TRAIT) ? 
         				"ages not dates" : "dates not ages";
-        		m.add(1, new Phrase(" dated tips (in " + direction + ") and "));
+         		m.add(1, new Phrase(" dated tips (in " + direction + ") "));
         	}
         	b.append(Phrase.toString(m));
-        	phrases = new List[1];
-        	phrases[0] = m;
-            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
+            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+        } else if (beautiDoc.pluginmap.containsKey("Tree.t:Species")) {
+        	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get("Tree.t:Species");
+        	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
+        	if (speciesTree instanceof Tree) {
+	        	TraitSet traitSet = ((Tree) speciesTree).getDateTrait();
+	        	if (traitSet != null) {
+	        		String direction = traitSet.getDateType().equals(TraitSet.DATE_BACKWARD_TRAIT) ? 
+	        				"ages not dates" : "dates not ages";
+	        		m.add(1, new Phrase("Tree " + speciesTree.getID() +" has dated tips (in " + direction + ")."));
+	        	}
+        	}
+        	m.add(0, new Phrase("\nTree prior: "));
+        	b.append(Phrase.toString(m));
+            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);        	
         } else {
 	        for (TreeInterface tree : trees) {
+	        	m = MethodsTextFactory.getModelDescription(tree, null, null, beautiDoc);
 	        	TraitSet traitSet = ((Tree) tree).getDateTrait();
 	        	if (traitSet != null) {
 	        		String direction = traitSet.getDateType().equals(TraitSet.DATE_BACKWARD_TRAIT) ? 
 	        				"ages not dates" : "dates not ages";
 	        		m.add(1, new Phrase("Tree " + tree.getID() +" has dated tips (in " + direction + ")."));
 	        	}
-	        	m.set(0, new Phrase("\nTree prior: "));
+	        	m.add(0, new Phrase("\nTree prior: "));
 	        	b.append(Phrase.toString(m));
-	        	phrases = new List[1];
-	        	phrases[0] = m;
-	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
+	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
 	        }
         }
         
@@ -226,7 +241,6 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         b2.append("\n\n");
         addFixMeanMutationRatesOperator(mcmc, b2, m);
         b.append(b2.toString());
-        addDot(b);
 
         // any priors other than parameter and tree priors?
         for (Distribution distr : posterior.pDistributions.get()) {
@@ -338,7 +352,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 
                 // translate to text                
                 boolean shared = isShared(selected);
-                model = Phrase.toString(selected.toArray(new List[]{}));
+                // model = Phrase.toString(selected.toArray(new List[]{}));
             	m.clear();
                 if (currentPartitionIDs.size() == partitionIDs.size()) {
                 	StringBuilder b2 = new StringBuilder();
@@ -409,6 +423,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         		m.clear();
         		m.add(new Phrase(b.toString()));
                 Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+                addDot(b);
         	}
         }
 	}
