@@ -19,7 +19,13 @@ public class Parameter implements MethodsText {
 		beast.core.parameter.Parameter.Base p = (beast.core.parameter.Parameter.Base) o;
 		List<Phrase> b = new ArrayList<>();
 		if (p.isEstimatedInput.get()) {
-			b.addAll(describePriors(p, parent, input2, doc));
+			List<Phrase> m = describePriors(p, parent, input2, doc);
+			if (m.size() > 0) {
+				b.addAll(m);
+			} else {
+				// it was not estimated after all, just a constant
+				b.add(new Phrase(p.valuesInput.get(), p, p.valuesInput, p.getValue().toString()));
+			}
 		} else {
 			b.add(new Phrase(p.valuesInput.get(), p, p.valuesInput, p.getValue().toString()));
 		}

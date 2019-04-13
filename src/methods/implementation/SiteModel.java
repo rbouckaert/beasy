@@ -37,7 +37,7 @@ public class SiteModel implements MethodsText {
 				b.add(new Phrase("(shape = " + shape.getValue() + ")"));
 			}
 		}
-		if (sm.invarParameterInput.get().getValue() > 0) {
+		if (sm.invarParameterInput.get() != null && sm.invarParameterInput.get().getValue() > 0) {
 			b.add(new Phrase(" and a category proportion invarible "));
 		}
 		return b;

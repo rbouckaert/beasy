@@ -18,12 +18,14 @@ import methods.Phrase;
 
 public class BeautiSubTemplate {
 	static private List<String[]> templates = null;
+	static public Set<String> analysisIdentifiers = null;
 	
-	static private void initialise() {
+	static public void initialise() {
 		if (templates != null) {
 			return;
 		}
 		templates = new ArrayList<>();
+		analysisIdentifiers = new LinkedHashSet<>();
 		
         // first gather the set of potential directories with templates
         Set<String> dirs = new HashSet<>();
@@ -71,7 +73,10 @@ public class BeautiSubTemplate {
 		String [] strs = cfg.split("\n");
 		int i = 0;
 		for (String str : strs) {
-			if (str.trim().length() > 0 && !str.trim().startsWith("#")) {
+			if (str.startsWith("analysisIdentifier")) {
+				String [] strs2 = str.split(",");
+				analysisIdentifiers.add(strs2[1]);
+			} else if (str.trim().length() > 0 && !str.trim().startsWith("#")) {
 				String [] template = str.split(",");
 				for (int j = 0; j < template.length; j++) {
 					template[j] = template[j].replaceAll("&comma;", ",");
@@ -162,7 +167,9 @@ public class BeautiSubTemplate {
 		String className = bi.getClass().getName();
 		for (String [] str : templates) {
 			String str0 = str[0];
-			str0 = str0.substring(0, str0.lastIndexOf('.'));
+			if (str0.lastIndexOf('.') > 0) {
+				str0 = str0.substring(0, str0.lastIndexOf('.'));
+			}
 			if (str0.equals(id)) {
 				return str;
 			}

@@ -122,14 +122,16 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 
 		List<Phrase> m = new ArrayList<>();
-
-		if (beautiDoc.pluginmap.containsKey("SpeciesTreePopSize.Species")) {
-        	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get("SpeciesTreePopSize.Species");
-        	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
-        	b.append(Phrase.toString(m));
-            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
-			addDot(b);
-			m.clear();
+		methods.implementation.BeautiSubTemplate.initialise();
+		for (String analysisIdentifier : methods.implementation.BeautiSubTemplate.analysisIdentifiers) {
+			if (beautiDoc.pluginmap.containsKey(analysisIdentifier)) {
+	        	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get(analysisIdentifier);
+	        	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
+	        	b.append(Phrase.toString(m));
+	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+				addDot(b);
+				m.clear();
+			}
 		}
 		
 		addPartitionDescription(b);
