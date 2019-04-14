@@ -19,6 +19,7 @@ import methods.Phrase;
 public class BeautiSubTemplate {
 	static private List<String[]> templates = null;
 	static public Set<String> analysisIdentifiers = null;
+	static public Set<String> auxTreePriors = null;
 	
 	static public void initialise() {
 		if (templates != null) {
@@ -26,6 +27,7 @@ public class BeautiSubTemplate {
 		}
 		templates = new ArrayList<>();
 		analysisIdentifiers = new LinkedHashSet<>();
+		auxTreePriors = new LinkedHashSet<>();
 		
         // first gather the set of potential directories with templates
         Set<String> dirs = new HashSet<>();
@@ -76,6 +78,9 @@ public class BeautiSubTemplate {
 			if (str.startsWith("analysisIdentifier")) {
 				String [] strs2 = str.split(",");
 				analysisIdentifiers.add(strs2[1]);
+			} else if (str.startsWith("auxTreePrior")) {
+				String [] strs2 = str.split(",");
+				auxTreePriors.add(strs2[1]);
 			} else if (str.trim().length() > 0 && !str.trim().startsWith("#")) {
 				String [] template = str.split(",");
 				for (int j = 0; j < template.length; j++) {
@@ -113,10 +118,12 @@ public class BeautiSubTemplate {
 
 			List<Phrase> m = new ArrayList<>();
 			String str = match[1];
-			m.add(new Phrase(o,parent,input, match[1]));
+			addPhrase(m, o, parent, input, str, doc, bi);
 			for (int i = 2; i < match.length; i++) {
 				str = match[i];
-				if (str.contains("$(n)")) {
+				if (str.equals("id") && o instanceof BEASTInterface) {
+					m.add(new Phrase(((BEASTInterface)o).getID()));					
+				} else if (str.contains("$(n)")) {
 					beast.app.beauti.PartitionContext partition = doc.getContextFor(bi);
 					str = BeautiDoc.translatePartitionNames(str, partition);
 					BEASTInterface o2 = doc.pluginmap.get(str);
@@ -140,11 +147,41 @@ public class BeautiSubTemplate {
 					} else {
 						m.add(new Phrase(str));
 					}
-				}
+				}		
 			}			
 			return m;
 		}
 		return null; 
+	}
+
+	private static void addPhrase(List<Phrase> m, Object o, BEASTInterface parentX, Input<?> inputX, String str, BeautiDoc doc, BEASTInterface bi) {
+		if (str.equals("id") && o instanceof BEASTInterface) {
+			m.add(new Phrase(o, parentX, inputX, ((BEASTInterface)o).getID()));					
+		} else if (str.contains("$(n)")) {
+			beast.app.beauti.PartitionContext partition = doc.getContextFor(bi);
+			str = BeautiDoc.translatePartitionNames(str, partition);
+			BEASTInterface o2 = doc.pluginmap.get(str);
+			List<Phrase> m2 = MethodsTextFactory.getModelDescription(o2, null, null, doc);
+			m.addAll(m2);
+		} else if (doc.pluginmap.containsKey(str) && !(doc.pluginmap.get(str) instanceof beast.app.beauti.BeautiSubTemplate)) {
+			BEASTInterface o2 = doc.pluginmap.get(str);
+			List<Phrase> m2 = MethodsTextFactory.getModelDescription(o2, null, null, doc);
+			m.addAll(m2);
+		} else {
+			Input<?> input2 = hasInput(bi, str);
+			if (input2 != null) {
+				if (input2.get() != null) {
+					List<Phrase> m2 = MethodsTextFactory.getModelDescription(input2.get(), bi, input2, doc);
+					m.addAll(m2);
+				}
+			} else if (str.indexOf('@') > -1) {
+				String [] strs = str.split("@");
+				input2 = hasInput(bi, strs[1]);
+				m.add(new Phrase(input2.get(), bi, input2, strs[0]));
+			} else {
+				m.add(new Phrase(str));
+			}
+		}		
 	}
 
 	private static Input<?> hasInput(BEASTInterface bi, String str) {

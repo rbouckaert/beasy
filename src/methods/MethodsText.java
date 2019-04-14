@@ -11,6 +11,7 @@ import beast.core.Input;
 import beast.core.StateNode;
 import beast.core.util.CompoundDistribution;
 import beast.evolution.tree.TreeDistribution;
+import methods.implementation.BeautiSubTemplate;
 
 @Description("Describe model details in text format for a methods section")
 public interface MethodsText {
@@ -54,11 +55,11 @@ public interface MethodsText {
 		// need to describe priors?
 		if (o instanceof StateNode && ((StateNode) o).isEstimatedInput.get()) {			
 			for (Object output : o.getOutputs()) {
-				if (output instanceof Distribution) {
+				if (output instanceof Distribution && !BeautiSubTemplate.auxTreePriors.contains(output.getClass().getName())) {
 					Distribution distr = (Distribution) output;
 					// is it in the prior?
 					for (Object output2 : distr.getOutputs()) {
-						if (output2 instanceof CompoundDistribution && ((CompoundDistribution) output2).getID().equals("prior")) {
+						if (output2 instanceof CompoundDistribution && !((CompoundDistribution) output2).getID().equals("likelihood")) {
 							if (!(distr instanceof TreeDistribution && done.contains(distr))) {
 								//b.add(new Phrase(distr, " "));
 								b.add(new Phrase(" "));

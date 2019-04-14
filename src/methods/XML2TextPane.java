@@ -246,14 +246,16 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
         // any priors other than parameter and tree priors?
         for (Distribution distr : posterior.pDistributions.get()) {
-            if (distr.getID().equals("prior")) {
+            if (!distr.getID().equals("likelihood")) {
                 for (Distribution prior : ((CompoundDistribution) distr).pDistributions.get()) {
                 	if (!(prior instanceof beast.math.distributions.Prior || prior instanceof TreeDistribution)) {
                     	m = MethodsTextFactory.getModelDescription(prior, null, null, beautiDoc);
-                    	m.add(0, new Phrase("Other prior: "));
-        	        	b.append(Phrase.toString(m));
-        	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
-        	            addDot(b);
+                    	if (m.size() > 0) {
+	                    	m.add(0, new Phrase("Other prior: "));
+	        	        	b.append(Phrase.toString(m));
+	        	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+	        	            addDot(b);
+                    	}
                 	}
                 }
             }
