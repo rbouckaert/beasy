@@ -245,13 +245,17 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         b.append(b2.toString());
 
         // any priors other than parameter and tree priors?
+        boolean hasOther = false;
         for (Distribution distr : posterior.pDistributions.get()) {
             if (!distr.getID().equals("likelihood")) {
                 for (Distribution prior : ((CompoundDistribution) distr).pDistributions.get()) {
                 	if (!(prior instanceof beast.math.distributions.Prior || prior instanceof TreeDistribution)) {
                     	m = MethodsTextFactory.getModelDescription(prior, null, null, beautiDoc);
                     	if (m.size() > 0) {
-	                    	m.add(0, new Phrase("Other prior: "));
+                    		if (!hasOther) {
+                    			m.add(0, new Phrase("\nOther information:\n"));
+                    			hasOther = true;
+                    		}
 	        	        	b.append(Phrase.toString(m));
 	        	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
 	        	            addDot(b);
@@ -362,6 +366,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 	StringBuilder b2 = new StringBuilder();
                 	if (currentPartitionIDs.size() == 1) {
                 		b2.append("\nThe partition ");
+                	} else if (currentPartitionIDs.size() == 2) {
+                		b2.append("\nBoth partitions ");
                 	} else {
                 		b2.append("\nAll partitions ");
                 	}

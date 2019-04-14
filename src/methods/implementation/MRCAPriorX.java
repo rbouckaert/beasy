@@ -19,7 +19,7 @@ public class MRCAPriorX implements MethodsText {
 	public List<Phrase> getModelDescription(Object o2, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {		
 		MRCAPrior o = (MRCAPrior) o2;
 		List<Phrase> b = new ArrayList<>();
-		b.add(new Phrase(o, " MRCA prior " + o.taxonsetInput.get().getID() + " "));
+		b.add(new Phrase(o, " MRCA prior " + o.taxonsetInput.get().getID() + " (" + o.taxonsetInput.get().getTaxonCount() + " taxa)"));
 		boolean isUsed = false;
 		if (o.isMonophyleticInput.get()) {
 			b.add(new Phrase(" is monophyletic "));

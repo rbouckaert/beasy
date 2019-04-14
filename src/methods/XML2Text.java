@@ -145,7 +145,11 @@ public class XML2Text extends Runnable {
 	static String printParitions(List<String> partitionIDs, int totalPartitionCount) {
 		StringBuilder b = new StringBuilder();
 		if (partitionIDs.size() == totalPartitionCount) {
-			b.append("all partitions ");
+			if (partitionIDs.size() == 2) {
+				b.append("both partitions ");
+			} else {
+				b.append("all partitions ");
+			}
 		} else {
 	    	for (int j = 0; j < partitionIDs.size() - 1; j++) {
 	    		b.append(partitionIDs.get(j));
