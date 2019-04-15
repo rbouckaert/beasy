@@ -10,7 +10,7 @@ import methods.*;
 public class TreeIntervalsMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.evolution.tree.coalescent.TreeIntervals.class;
 	}
 

@@ -11,7 +11,7 @@ import methods.*;
 public class SubstModelMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.evolution.substitutionmodel.SubstitutionModel.Base.class;
 	}
 

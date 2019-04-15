@@ -10,7 +10,7 @@ import methods.*;
 public class ParametricDistributionMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.math.distributions.ParametricDistribution.class;
 	}
 	

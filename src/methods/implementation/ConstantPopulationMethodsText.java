@@ -12,7 +12,7 @@ import methods.Phrase;
 public class ConstantPopulationMethodsText implements MethodsText {
 	
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.evolution.tree.coalescent.ConstantPopulation.class;
 	}
 	

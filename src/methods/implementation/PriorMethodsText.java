@@ -11,7 +11,7 @@ import methods.*;
 public class PriorMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.math.distributions.Prior.class;
 	}
 

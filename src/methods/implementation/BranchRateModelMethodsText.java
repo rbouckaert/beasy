@@ -12,7 +12,7 @@ import methods.*;
 public class BranchRateModelMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {		
+	public Class<?> type() {		
 		return beast.evolution.branchratemodel.BranchRateModel.Base.class;
 	}
 

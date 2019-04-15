@@ -11,7 +11,6 @@ import beast.core.Input;
 import beast.core.StateNode;
 import beast.core.util.CompoundDistribution;
 import beast.evolution.tree.TreeDistribution;
-import methods.implementation.BeautiSubTemplateMethodsText;
 
 @Description("Describe model details in text format for a methods section")
 public interface MethodsText {
@@ -41,7 +40,7 @@ public interface MethodsText {
 		inputNameMap.put("S", "sd log");		
 	}
 
-	Class type();
+	Class<?> type();
 		
 	default String getDataDescription(Object o) {
 		return "";

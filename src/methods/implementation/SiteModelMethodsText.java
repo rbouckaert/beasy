@@ -12,7 +12,7 @@ import methods.*;
 public class SiteModelMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.evolution.sitemodel.SiteModel.class;
 	}
 
@@ -21,7 +21,7 @@ public class SiteModelMethodsText implements MethodsText {
 	public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
 		beast.evolution.sitemodel.SiteModel sm = (beast.evolution.sitemodel.SiteModel) o; 
 		List<Phrase> b = new ArrayList<>();
-		SubstitutionModel subst = sm.substModelInput.get();
+		//SubstitutionModel subst = sm.substModelInput.get();
 		b.add(new Phrase(sm, parent, input2, " gamma site model "));
 		b.add(new Phrase("and "));
 		List<Phrase> substModel = MethodsTextFactory.getModelDescription(sm.substModelInput.get(), sm, sm.substModelInput, doc);

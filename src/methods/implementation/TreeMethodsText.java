@@ -1,20 +1,20 @@
 package methods.implementation;
 
 
+
 import beast.app.beauti.BeautiDoc;
 import beast.core.BEASTInterface;
 import beast.core.BEASTObject;
 import beast.core.Distribution;
 import beast.core.Input;
 import beast.core.util.CompoundDistribution;
-import beast.evolution.tree.coalescent.TreeIntervals;
 import java.util.*;
 import methods.*;
 
 public class TreeMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.evolution.tree.Tree.class;
 	}
 
@@ -48,31 +48,6 @@ public class TreeMethodsText implements MethodsText {
 			}
 		}
 		return b;
-
-		
-		
-//		for (Object ooutput : ((BEASTInterface)o).getOutputs()) {
-//			if (ooutput instanceof TreeIntervals) {
-//				done.add(ooutput);
-//				List<Phrase> b = new ArrayList<>();
-//				for (Object output : ((TreeIntervals) ooutput).getOutputs()) {
-//					if (output instanceof Distribution) {
-//						Distribution distr = (Distribution) output;
-//						// is it in the prior?
-//						for (Object output2 : distr.getOutputs()) {
-//							if (output2 instanceof CompoundDistribution && ((CompoundDistribution) output2).getID().equals("prior")) {
-//								b.add(new Phrase(" using "));
-//								m = MethodsTextFactory.getModelDescription(distr, (CompoundDistribution) output2, ((CompoundDistribution) output2).pDistributions, doc);
-//								b.addAll(m);
-//								done.remove(distr);
-//							}
-//						}
-//					}
-//				}
-//				return b;
-//			}
-//		}
-//		return m;
 	}
 
 }

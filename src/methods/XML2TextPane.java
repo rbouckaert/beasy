@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import javax.swing.*;
@@ -48,7 +49,8 @@ import beast.core.Operator;
 
 @Description("Convert MCMC analysis in XML file to a methods section")
 public class XML2TextPane extends JTextPane implements ActionListener {
-	
+	private static final long serialVersionUID = 1L;
+
 	BeautiDoc beautiDoc;
 	String text;
 	
@@ -58,7 +60,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		beautiDoc.setFileName(file.getAbsolutePath());
 		beautiDoc.beautiConfig = new BeautiConfig();
 		beautiDoc.beautiConfig.initAndValidate();		
-		String xml = beautiDoc.load(file);
+		String xml = BeautiDoc.load(file);
 		int i = xml.indexOf("beautitemplate=");
 		if (i > 0) {
 			i += 15;
@@ -269,7 +271,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 		// sm.get(0).setInput(treeLikelihood, treeLikelihood.siteModelInput);
                 		// sm.add(new Phrase("\n"));
                 		siteModels.add(sm);
-                		smPartitionIDs.add(beautiDoc.parsePartition(siteModel.getID()));
+                		smPartitionIDs.add(BeautiDoc.parsePartition(siteModel.getID()));
                     }
                 }
             }
@@ -299,7 +301,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 		// cm.get(0).setInput(treeLikelihood, treeLikelihood.branchRateModelInput);
                 		// cm.add(new Phrase("\n"));
                 		clockModels.add(cm);
-                		cmPartitionIDs.add(beautiDoc.parsePartition(clockModel.getID()));
+                		cmPartitionIDs.add(BeautiDoc.parsePartition(clockModel.getID()));
                     }
                 }
             }
@@ -312,8 +314,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 	private void addAnalysisIdentifier(StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
-		methods.implementation.BeautiSubTemplateMethodsText.initialise();
-		for (String analysisIdentifier : methods.implementation.BeautiSubTemplateMethodsText.analysisIdentifiers) {
+		methods.BeautiSubTemplateMethodsText.initialise();
+		for (String analysisIdentifier : methods.BeautiSubTemplateMethodsText.analysisIdentifiers) {
 			if (beautiDoc.pluginmap.containsKey(analysisIdentifier)) {
 	        	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get(analysisIdentifier);
 	        	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
@@ -406,7 +408,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
                 List<List<Phrase>> selected = new ArrayList<>();
                 selected.add(models.get(i));
-                String modelID = xPartitionIDs.get(i);
+                // String modelID = xPartitionIDs.get(i);
                 for (int j = i + 1; j < partitionIDs.size(); j++) {
                 	String modelj = Phrase.toSimpleString(models.get(j));
                 	if (modelj.equals(model)) {
@@ -632,7 +634,6 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         try {
 			refreshText();
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}		
 	}

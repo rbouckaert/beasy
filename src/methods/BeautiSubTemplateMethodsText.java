@@ -1,4 +1,4 @@
-package methods.implementation;
+package methods;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,9 +12,6 @@ import beast.app.beauti.BeautiDoc;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.util.Log;
-import methods.MethodsText;
-import methods.MethodsTextFactory;
-import methods.Phrase;
 
 public class BeautiSubTemplateMethodsText {
 	static private List<String[]> templates = null;

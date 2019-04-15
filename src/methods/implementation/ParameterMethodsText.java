@@ -10,13 +10,13 @@ import methods.*;
 public class ParameterMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.core.parameter.Parameter.Base.class;
 	}
 	
 	@Override
 	public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input2, BeautiDoc doc) {
-		beast.core.parameter.Parameter.Base p = (beast.core.parameter.Parameter.Base) o;
+		beast.core.parameter.Parameter.Base<?> p = (beast.core.parameter.Parameter.Base<?>) o;
 		List<Phrase> b = new ArrayList<>();
 		if (p.isEstimatedInput.get()) {
 			List<Phrase> m = describePriors(p, parent, input2, doc);

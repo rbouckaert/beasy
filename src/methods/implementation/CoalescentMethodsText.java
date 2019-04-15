@@ -12,7 +12,7 @@ import methods.Phrase;
 public class CoalescentMethodsText implements MethodsText {
 	
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.evolution.tree.coalescent.Coalescent.class;
 	}
 	

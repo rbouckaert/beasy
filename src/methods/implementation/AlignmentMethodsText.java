@@ -10,7 +10,7 @@ import methods.*;
 public class AlignmentMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return beast.evolution.alignment.Alignment.class;
 	}
 

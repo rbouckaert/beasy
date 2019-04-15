@@ -1,10 +1,10 @@
 package methods;
 
 
+
 import java.util.*;
 
 import beast.app.beauti.BeautiDoc;
-import beast.app.beauti.BeautiSubTemplate;
 import beast.core.BEASTInterface;
 import beast.core.BEASTObject;
 import beast.core.Input;
@@ -13,7 +13,7 @@ import beast.util.PackageManager;
 
 public class MethodsTextFactory {
 	/** maps BEAST class to accompanying methodsText class **/
-	static Map<Class, Class> object2MethodsText = null;
+	static Map<Class<?>, Class<?>> object2MethodsText = null;
 	
 	/** initialises object2MethodsText through introspection **/
 	static private void init() {
@@ -35,10 +35,10 @@ public class MethodsTextFactory {
 	}
 	
 	
-	static private MethodsText createMethodsText(Class clazz) {
+	static private MethodsText createMethodsText(Class<?> clazz) {
 
 		if (object2MethodsText.containsKey(clazz)) {
-			Class c = object2MethodsText.get(clazz);
+			Class<?> c = object2MethodsText.get(clazz);
 			try {
 				MethodsText m = (MethodsText) c.newInstance();
 				return m;
@@ -65,7 +65,7 @@ public class MethodsTextFactory {
 		return new MethodsText() {
 			
 			@Override
-			public Class type() {
+			public Class<?> type() {
 				return null;
 			}
 			
@@ -79,7 +79,7 @@ public class MethodsTextFactory {
 	}
 	
 	static public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input, BeautiDoc doc) {
-		List<Phrase> m0 = methods.implementation.BeautiSubTemplateMethodsText.getModelDescription(o, parent, input, doc);
+		List<Phrase> m0 = methods.BeautiSubTemplateMethodsText.getModelDescription(o, parent, input, doc);
 		if (m0 != null) {
 			return m0;
 		}

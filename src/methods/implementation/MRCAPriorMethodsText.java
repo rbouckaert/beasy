@@ -11,7 +11,7 @@ import methods.*;
 public class MRCAPriorMethodsText implements MethodsText {
 
 	@Override
-	public Class type() {
+	public Class<?> type() {
 		return MRCAPrior.class;
 	}
 
