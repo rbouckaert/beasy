@@ -5,4 +5,3 @@ The partition has a strict clock with clock rate 7.9E-4 .
 
 There is a single tree with using Bayesian skyline tree prior with population size markov chain distribution with parameter is (hcv) .
 
-Other prior: .

@@ -3,6 +3,5 @@ The partition has a gamma site model and GTR substitution model with rateAC gamm
 
 The partition has a strict clock with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity ) .
 
-There is a single tree with dated tips (in dates not ages) and constant coalescent tree prior with population size 1/X distributed.
+There is a single tree with dated tips (in dates not ages) using constant coalescent tree prior with population size 1/X distributed.
 
-.

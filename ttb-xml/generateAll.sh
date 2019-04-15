@@ -1,6 +1,6 @@
 #export H=/Users/remco/workspace
 #export CP=`perl t.pl`:$H/beasy/build
-export CP=`perl -e '$s = system("grep","BEAST","/Users/remco/.beast/beauti.properties");$s =~ s/\\\\//g;$s =~ s/.*=//;print $s;'`
+export CP=`perl -e '$s = system("grep","BEAST","/Users/remco/.beast/beauti.properties");$s =~ s/\\\\\\\\//g;$s =~ s/.*=//;print $s;'`:/Users/remco/beasy/build
 
 java -cp "$CP" methods.XML2TextPane SkylinePlots/hcv_bdsky.xml SkylinePlots/hcv_bdsky.txt
 
@@ -46,3 +46,5 @@ java -cp "$CP" methods.XML2TextPane SubstModelAveraging/primate-mtDNA-bMT.xml Su
 #
 # BEAST 2.4 XML:
 #java -cp "$CP" methods.XML2TextPane StructuredCoalescent/MTT.xml StructuredCoalescent/MTT.txt
+
+for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/$s; done

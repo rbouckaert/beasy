@@ -245,31 +245,39 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         b.append(b2.toString());
 
         // any priors other than parameter and tree priors?
-        boolean hasOther = false;
+        List<String> others = new ArrayList<>();
         for (Distribution distr : posterior.pDistributions.get()) {
             if (!distr.getID().equals("likelihood")) {
                 for (Distribution prior : ((CompoundDistribution) distr).pDistributions.get()) {
                 	if (!(prior instanceof beast.math.distributions.Prior || prior instanceof TreeDistribution)) {
                     	m = MethodsTextFactory.getModelDescription(prior, null, null, beautiDoc);
                     	if (m.size() > 0) {
-                    		if (!hasOther) {
-                    			m.add(0, new Phrase("\nOther information:\n"));
-                    			hasOther = true;
-                    		}
-	        	        	b.append(Phrase.toString(m));
-	        	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
-	        	            addDot(b);
+                    		others.add(Phrase.toSimpleString(m));
                     	}
                 	}
                 }
             }
         }
-        
+    	if (others.size() > 0) {
+    		completePhrase(b, "\nOther information:\n");
+    		String longestPostfix = getLongestPostix(others);
+
+			for (String other : others) {
+				completePhrase(b, other.substring(0, other.length() - longestPostfix.length()).trim());
+        		addDot(b);
+			}
+        	if (longestPostfix.length() != 0) {
+        		completePhrase(b, "All have " + longestPostfix.substring(1));
+        	}
+    	}
+
         
 		text = b.toString();
 		
 		text = text.replaceAll("  ", " ");
 		text = text.replaceAll("\n\n", "\n");
+		text = text.replaceAll("\\s\\.", ".");
+		text = text.replaceAll("\\s\\)", ")");
 		for (char c : new char[]{'a','e','i','o','u'}) {
 			text = text.replaceAll(" a " + c, " an " + c);					
 		}				
@@ -279,15 +287,40 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 				
 	}
 	
+	private String getLongestPostix(List<String> others) {
+		if (others.size() <= 1) {
+			return "";
+		}
+ 		String postfix = "";
+		int k = others.get(0).length();
+		while (k > 0 && others.get(0).lastIndexOf(',', k - 1) > 0) {
+			k = others.get(0).lastIndexOf(',', k - 1);
+			String str = others.get(0).substring(k);
+			for (int i = 1; i < others.size(); i++) {
+				String other = others.get(i);
+				int k2 = other.length() - (others.get(0).length() - k);
+				if (k2 <= 0 || !str.equals(other.substring(k2))) {
+					return postfix;
+				}
+			}
+			postfix = str;
+		}
+		return postfix;
+	}
+
+
 	private void addDot(StringBuilder b) {
-        b.append(".\n\n");
+		completePhrase(b, ".\n\n");
+	}
+
+	private void completePhrase(StringBuilder b, String str) {
+        b.append(str);
         List<Phrase> [] phrases = new List[1];
 		List<Phrase> m = new ArrayList<>();
-		m.add(new Phrase(".\n\n"));
+		m.add(new Phrase(str));
     	phrases[0] = m;
         Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
 	}
-
 
 	private void addPartitionDescription(StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
