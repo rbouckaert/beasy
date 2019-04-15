@@ -16,7 +16,7 @@ import methods.MethodsText;
 import methods.MethodsTextFactory;
 import methods.Phrase;
 
-public class BeautiSubTemplate {
+public class BeautiSubTemplateMethodsText {
 	static private List<String[]> templates = null;
 	static public Set<String> analysisIdentifiers = null;
 	static public Set<String> auxTreePriors = null;

@@ -9,7 +9,7 @@ import methods.MethodsText;
 import java.util.*;
 import methods.*;
 
-public class BranchRateModel implements MethodsText {
+public class BranchRateModelMethodsText implements MethodsText {
 
 	@Override
 	public Class type() {		
@@ -27,7 +27,7 @@ public class BranchRateModel implements MethodsText {
 
 		done.add(brm);
 		for (Input<?> input : ((BEASTInterface)brm).listInputs()) {
-			if (!BEASTObject.cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
+			if (!BEASTObjectMethodsText.cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
 				if (input.get() != null && 
 						input.get() instanceof StateNode && 
 						(!(input.get() instanceof TreeInterface)) && 

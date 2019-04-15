@@ -79,7 +79,7 @@ public class MethodsTextFactory {
 	}
 	
 	static public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input, BeautiDoc doc) {
-		List<Phrase> m0 = methods.implementation.BeautiSubTemplate.getModelDescription(o, parent, input, doc);
+		List<Phrase> m0 = methods.implementation.BeautiSubTemplateMethodsText.getModelDescription(o, parent, input, doc);
 		if (m0 != null) {
 			return m0;
 		}

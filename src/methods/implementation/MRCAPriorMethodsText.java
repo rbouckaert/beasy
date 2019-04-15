@@ -8,7 +8,7 @@ import beast.core.Input;
 import beast.math.distributions.MRCAPrior;
 import methods.*;
 
-public class MRCAPriorX implements MethodsText {
+public class MRCAPriorMethodsText implements MethodsText {
 
 	@Override
 	public Class type() {

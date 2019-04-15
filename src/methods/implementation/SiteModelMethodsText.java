@@ -9,7 +9,7 @@ import beast.evolution.substitutionmodel.SubstitutionModel;
 import java.util.*;
 import methods.*;
 
-public class SiteModel implements MethodsText {
+public class SiteModelMethodsText implements MethodsText {
 
 	@Override
 	public Class type() {

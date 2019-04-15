@@ -8,7 +8,7 @@ import beast.core.StateNode;
 import java.util.*;
 import methods.*;
 
-public class SubstModel implements MethodsText {
+public class SubstModelMethodsText implements MethodsText {
 
 	@Override
 	public Class type() {
@@ -23,7 +23,7 @@ public class SubstModel implements MethodsText {
 
 		done.add(o2);
 		for (Input<?> input : o.listInputs()) {
-			if (!BEASTObject.cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
+			if (!BEASTObjectMethodsText.cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
 				if (input.get() != null && input.get() instanceof StateNode) { // && ((StateNode)input.get()).isEstimatedInput.get()) {
 					if (!hasWith) {
 						b.add(new Phrase(" with "));

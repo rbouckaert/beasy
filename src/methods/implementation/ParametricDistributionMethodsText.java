@@ -7,7 +7,7 @@ import beast.core.Input;
 import java.util.*;
 import methods.*;
 
-public class ParametricDistribution implements MethodsText {
+public class ParametricDistributionMethodsText implements MethodsText {
 
 	@Override
 	public Class type() {
@@ -23,7 +23,7 @@ public class ParametricDistribution implements MethodsText {
 		b.add(new Phrase(" distributed "));
 		boolean isFirst = true;
 		for (Input<?> input : o.listInputs()) {
-			if (!BEASTObject.cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
+			if (!BEASTObjectMethodsText.cfg.suppressBEASTObjects.contains(o.getClass().getName() + "." + input.getName())) {
 				if (input.get() != null && input.get() instanceof beast.core.BEASTObject) {
 					if (isFirst) {
 						isFirst = false;

@@ -42,7 +42,7 @@ import beast.evolution.tree.Tree;
 import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
 import beast.util.XMLParser;
-import methods.implementation.BEASTObject;
+import methods.implementation.BEASTObjectMethodsText;
 import beast.core.MCMC;
 import beast.core.Operator;
 
@@ -84,7 +84,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 			beautiDoc.registerPlugin(o);
 		}
 		beautiDoc.determinePartitions();
-		BEASTObject.setBeautiCFG(beautiDoc.beautiConfig);
+		BEASTObjectMethodsText.setBeautiCFG(beautiDoc.beautiConfig);
 		
 		MethodsText.initNameMap();
 		initialise((MCMC) beautiDoc.mcmc.get());
@@ -312,8 +312,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 	private void addAnalysisIdentifier(StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
-		methods.implementation.BeautiSubTemplate.initialise();
-		for (String analysisIdentifier : methods.implementation.BeautiSubTemplate.analysisIdentifiers) {
+		methods.implementation.BeautiSubTemplateMethodsText.initialise();
+		for (String analysisIdentifier : methods.implementation.BeautiSubTemplateMethodsText.analysisIdentifiers) {
 			if (beautiDoc.pluginmap.containsKey(analysisIdentifier)) {
 	        	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get(analysisIdentifier);
 	        	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
@@ -378,13 +378,13 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 				Alignment data = (Alignment) o;
 				strs.add(data.getID());
 			}	
-			b.append("There are " + parts.size() + " partitions (" + XML2Text.printParitions(strs) + ") with ");
+			b.append("There are " + parts.size() + " partitions (" + XML2TextPane.printParitions(strs) + ") with ");
 			strs.clear();
 			for (BEASTInterface o : parts) {
 				Alignment data = (Alignment) o;
 				strs.add(data.getSiteCount() + "");
 			}	
-			b.append(XML2Text.printParitions(strs, -1));
+			b.append(XML2TextPane.printParitions(strs, -1));
 			b.append(" sites respectively.");
 		}
 		b.append("\n");
@@ -458,7 +458,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 } else if (currentPartitionIDs.size() > 1) {
                 	StringBuilder b2 = new StringBuilder();
                 	b2.append("\nPartitions ");
-                	b2.append(XML2Text.printParitions(currentPartitionIDs));
+                	b2.append(XML2TextPane.printParitions(currentPartitionIDs));
             		if (selected.size() > 1) {
             			if (shared) {
                 			b2.append(" share a ");
@@ -501,7 +501,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         		if (partitionIDs.size() != beautiDoc.alignments.size()) {
         			b.append("partitions ");
         		}
-                b.append(XML2Text.printParitions(partitionIDs, beautiDoc.alignments.size()));
+                b.append(XML2TextPane.printParitions(partitionIDs, beautiDoc.alignments.size()));
         		b.append("are estimated");
         		m.clear();
         		m.add(new Phrase(b.toString()));
@@ -713,6 +713,34 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		}
 		System.out.println(id + "." + input.getName() + " set to " + input.get().toString());
 	}
+
+	static String printParitions(List<String> partitionIDs, int totalPartitionCount) {
+		StringBuilder b = new StringBuilder();
+		if (partitionIDs.size() == totalPartitionCount) {
+			if (partitionIDs.size() == 2) {
+				b.append("both partitions ");
+			} else {
+				b.append("all partitions ");
+			}
+		} else {
+	    	for (int j = 0; j < partitionIDs.size() - 1; j++) {
+	    		b.append(partitionIDs.get(j));
+	    		if (j < partitionIDs.size() - 2) {
+	    			b.append(", ");
+	    		} else {
+	    			b.append(" and ");
+	    		}
+	    	}
+	    	b.append(partitionIDs.get(partitionIDs.size() - 1) + " ");
+		}
+		return b.toString();
+	}
+
+
+	static String printParitions(List<String> partitionIDs) {
+		return XML2TextPane.printParitions(partitionIDs, -1);	
+	}
+
 
 	public static void main(String[] args) throws Exception {
         final XML2TextPane textPane = new XML2TextPane(args);

@@ -100,7 +100,7 @@ public class Phrase {
 				}
 				List<String> ids2 = new ArrayList<>();
 				ids2.addAll(ids);
-				b.append("(" + XML2Text.printParitions(ids2).trim() +")");					
+				b.append("(" + XML2TextPane.printParitions(ids2).trim() +")");					
 			}
 		}
 		return b.toString();
@@ -130,124 +130,124 @@ public class Phrase {
 		for (int i = 0; i < basePhrases.size(); i++) {
 			Phrase phrase = basePhrases.get(i);
 
-			if (phrase instanceof PartitionPhrase) {
-		        JButton button = new JButton(
-		        		"<html><font color=\"blue\"><u>" + phrase.toString() + "</u></font></html>"
-		        		);
-		        button.setBorder(BorderFactory.createEmptyBorder());
-		        String partitionStyle = "partitionPhrase " + Randomizer.nextInt();
-		        Style s = doc.addStyle(partitionStyle, regular);
-		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
-
-		        button.setCursor(Cursor.getDefaultCursor());
-		        button.setActionCommand("PartitionEditor");
-		        button.addActionListener(al);
-		        button.setMaximumSize(new Dimension(phrase.toString().length() * 10, 20));
-		        StyleConstants.setComponent(s, button);
-		        
-		        textString.add(phrase.toString());
-				styleString.add(partitionStyle);
-
-			} else if (phrase.source instanceof RealParameter) {
-		        JButton button = new JButton(
-		        		"<html><font color=\"blue\"><u>" + phrase.toString() + "</u></font></html>"
-		        		);
-		        button.setBorder(BorderFactory.createEmptyBorder());
-		        String partitionStyle = ((BEASTInterface) phrase.source).getID();
-		        Style s = doc.addStyle(partitionStyle, regular);
-		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
-
-		        button.setCursor(Cursor.getDefaultCursor());
-		        button.setActionCommand("RealParameter " + partitionStyle);
-		        button.addActionListener(al);
-		        button.setMaximumSize(new Dimension(phrase.toString().length() * 10, 20));
-		        StyleConstants.setComponent(s, button);
-		        
-		        textString.add(phrase.toString());
-				styleString.add(partitionStyle);
-
-			} else if (phrase.parent != null && phrase.parent instanceof Parameter<?> && phrase.input.getName().equals("value")) {
-				// beautiDoc.registerPlugin((BEASTInterface) phrase.parent);
-				String entryStyle = phrase.parent.getID() + " " + phrase.input.getName();
-		        Style s = doc.addStyle(entryStyle, regular);
-		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
-		        String text = phrase.source.toString();
-		        text = text.substring(1, text.length() - 1);
-		        final JTextField entry = new JTextField(text);
-		        entry.setBorder(BorderFactory.createEmptyBorder());
-		        entry.setForeground(Color.BLUE);
-		        entry.setCursor(Cursor.getDefaultCursor());
-		        entry.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
-		        entry.addActionListener(al);
-		        entry.setMaximumSize(new Dimension(80,80));
-		        entry.getDocument().addDocumentListener(new DocumentListener() {
-		            @Override
-		            public void removeUpdate(DocumentEvent e) {
-		            	entry.postActionEvent();
-		            }
-
-					@Override
-		            public void insertUpdate(DocumentEvent e) {
-		            	entry.postActionEvent();
-		            }
-
-		            @Override
-		            public void changedUpdate(DocumentEvent e) {
-		            	entry.postActionEvent();
-		            }
-		        });
-		        StyleConstants.setComponent(s, entry);	
-	
-		        textString.add(" ");
-				styleString.add(entryStyle);
-			} else if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
-				// beautiDoc.registerPlugin((BEASTInterface) phrase.source);
-		        InputEditorFactory inputEditorFactory = beautiDoc.getInputEditorFactory();
-		        List<BeautiSubTemplate> plugins = inputEditorFactory.getAvailableTemplates(phrase.input, phrase.parent, null, beautiDoc);
-		        if (plugins.size() > 0) {
-			        JComboBox<Object> combobox = new JComboBox<>(plugins.toArray());
-			        combobox.setBorder(BorderFactory.createEmptyBorder());
-			        Style s = doc.addStyle(phrase.parent.getID() + " " + phrase.input.getName(), regular);
-			        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
-
-			        String id = ((BEASTInterface)phrase.source).getID();
-                    if (id != null && id.indexOf('.') != -1) {
-                    	id = id.substring(0,  id.indexOf('.'));
-                    }
-                    boolean isSelected = false;
-                    for (int k = 0; k < combobox.getItemCount(); k++) {
-                        BeautiSubTemplate template = (BeautiSubTemplate) combobox.getItemAt(k);
-                        if (template.getMainID().replaceAll(".\\$\\(n\\)", "").equals(id) ||
-                        		template.getMainID().replaceAll(".s:\\$\\(n\\)", "").equals(id) || 
-                        		template.getMainID().replaceAll(".c:\\$\\(n\\)", "").equals(id) || 
-                        		template.getMainID().replaceAll(".t:\\$\\(n\\)", "").equals(id) ||
-                        		(template.getShortClassName() != null && template.getShortClassName().equals(id))) {
-                        	combobox.setSelectedItem(template);
-        			        // combobox.setMaximumSize(new Dimension(template.toString().length() * 8 + 15, 200));
-                        	combobox.setMaximumSize(new Dimension(20 * 8 + 15, 200));
-                        	isSelected = true;
-                        }
-                    }
-			        combobox.setCursor(Cursor.getDefaultCursor());
-			        combobox.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
-			        combobox.addActionListener(al);
-	
-			        if (isSelected) {
-				        StyleConstants.setComponent(s, combobox);	
-			        	textString.add(" ");
-			        	styleString.add(phrase.parent.getID() + " " + phrase.input.getName());
-			        } else {
-						textString.add(phrase.text);
-						styleString.add("regular");
-			        }
-		        } else {
-					textString.add(phrase.text);
-					styleString.add("regular");
-		        }
-			} else {
+//			if (phrase instanceof PartitionPhrase) {
+//		        JButton button = new JButton(
+//		        		"<html><font color=\"blue\"><u>" + phrase.toString() + "</u></font></html>"
+//		        		);
+//		        button.setBorder(BorderFactory.createEmptyBorder());
+//		        String partitionStyle = "partitionPhrase " + Randomizer.nextInt();
+//		        Style s = doc.addStyle(partitionStyle, regular);
+//		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
+//
+//		        button.setCursor(Cursor.getDefaultCursor());
+//		        button.setActionCommand("PartitionEditor");
+//		        button.addActionListener(al);
+//		        button.setMaximumSize(new Dimension(phrase.toString().length() * 10, 20));
+//		        StyleConstants.setComponent(s, button);
+//		        
+//		        textString.add(phrase.toString());
+//				styleString.add(partitionStyle);
+//
+//			} else if (phrase.source instanceof RealParameter) {
+//		        JButton button = new JButton(
+//		        		"<html><font color=\"blue\"><u>" + phrase.toString() + "</u></font></html>"
+//		        		);
+//		        button.setBorder(BorderFactory.createEmptyBorder());
+//		        String partitionStyle = ((BEASTInterface) phrase.source).getID();
+//		        Style s = doc.addStyle(partitionStyle, regular);
+//		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
+//
+//		        button.setCursor(Cursor.getDefaultCursor());
+//		        button.setActionCommand("RealParameter " + partitionStyle);
+//		        button.addActionListener(al);
+//		        button.setMaximumSize(new Dimension(phrase.toString().length() * 10, 20));
+//		        StyleConstants.setComponent(s, button);
+//		        
+//		        textString.add(phrase.toString());
+//				styleString.add(partitionStyle);
+//
+//			} else if (phrase.parent != null && phrase.parent instanceof Parameter<?> && phrase.input.getName().equals("value")) {
+//				// beautiDoc.registerPlugin((BEASTInterface) phrase.parent);
+//				String entryStyle = phrase.parent.getID() + " " + phrase.input.getName();
+//		        Style s = doc.addStyle(entryStyle, regular);
+//		        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
+//		        String text = phrase.source.toString();
+//		        text = text.substring(1, text.length() - 1);
+//		        final JTextField entry = new JTextField(text);
+//		        entry.setBorder(BorderFactory.createEmptyBorder());
+//		        entry.setForeground(Color.BLUE);
+//		        entry.setCursor(Cursor.getDefaultCursor());
+//		        entry.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
+//		        entry.addActionListener(al);
+//		        entry.setMaximumSize(new Dimension(80,80));
+//		        entry.getDocument().addDocumentListener(new DocumentListener() {
+//		            @Override
+//		            public void removeUpdate(DocumentEvent e) {
+//		            	entry.postActionEvent();
+//		            }
+//
+//					@Override
+//		            public void insertUpdate(DocumentEvent e) {
+//		            	entry.postActionEvent();
+//		            }
+//
+//		            @Override
+//		            public void changedUpdate(DocumentEvent e) {
+//		            	entry.postActionEvent();
+//		            }
+//		        });
+//		        StyleConstants.setComponent(s, entry);	
+//	
+//		        textString.add(" ");
+//				styleString.add(entryStyle);
+//			} else if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
+//				// beautiDoc.registerPlugin((BEASTInterface) phrase.source);
+//		        InputEditorFactory inputEditorFactory = beautiDoc.getInputEditorFactory();
+//		        List<BeautiSubTemplate> plugins = inputEditorFactory.getAvailableTemplates(phrase.input, phrase.parent, null, beautiDoc);
+//		        if (plugins.size() > 0) {
+//			        JComboBox<Object> combobox = new JComboBox<>(plugins.toArray());
+//			        combobox.setBorder(BorderFactory.createEmptyBorder());
+//			        Style s = doc.addStyle(phrase.parent.getID() + " " + phrase.input.getName(), regular);
+//			        StyleConstants.setAlignment(s, StyleConstants.ALIGN_LEFT);
+//
+//			        String id = ((BEASTInterface)phrase.source).getID();
+//                    if (id != null && id.indexOf('.') != -1) {
+//                    	id = id.substring(0,  id.indexOf('.'));
+//                    }
+//                    boolean isSelected = false;
+//                    for (int k = 0; k < combobox.getItemCount(); k++) {
+//                        BeautiSubTemplate template = (BeautiSubTemplate) combobox.getItemAt(k);
+//                        if (template.getMainID().replaceAll(".\\$\\(n\\)", "").equals(id) ||
+//                        		template.getMainID().replaceAll(".s:\\$\\(n\\)", "").equals(id) || 
+//                        		template.getMainID().replaceAll(".c:\\$\\(n\\)", "").equals(id) || 
+//                        		template.getMainID().replaceAll(".t:\\$\\(n\\)", "").equals(id) ||
+//                        		(template.getShortClassName() != null && template.getShortClassName().equals(id))) {
+//                        	combobox.setSelectedItem(template);
+//        			        // combobox.setMaximumSize(new Dimension(template.toString().length() * 8 + 15, 200));
+//                        	combobox.setMaximumSize(new Dimension(20 * 8 + 15, 200));
+//                        	isSelected = true;
+//                        }
+//                    }
+//			        combobox.setCursor(Cursor.getDefaultCursor());
+//			        combobox.setActionCommand(phrase.parent.getID() + " " + phrase.input.getName());
+//			        combobox.addActionListener(al);
+//	
+//			        if (isSelected) {
+//				        StyleConstants.setComponent(s, combobox);	
+//			        	textString.add(" ");
+//			        	styleString.add(phrase.parent.getID() + " " + phrase.input.getName());
+//			        } else {
+//						textString.add(phrase.text);
+//						styleString.add("regular");
+//			        }
+//		        } else {
+//					textString.add(phrase.text);
+//					styleString.add("regular");
+//		        }
+//			} else {
 				textString.add(phrase.text);
 				styleString.add("regular");
-			}
+//			}
 		}	
 
 		try {
@@ -276,7 +276,7 @@ public class Phrase {
 				}
 				List<String> ids2 = new ArrayList<>();
 				ids2.addAll(ids);
-				b.append("(" + XML2Text.printParitions(ids2).trim() +")");					
+				b.append("(" + XML2TextPane.printParitions(ids2).trim() +")");					
 			}
 		}
 		return b.toString();

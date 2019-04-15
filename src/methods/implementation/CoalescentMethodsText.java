@@ -9,7 +9,7 @@ import methods.MethodsText;
 import methods.MethodsTextFactory;
 import methods.Phrase;
 
-public class Coalescent implements MethodsText {
+public class CoalescentMethodsText implements MethodsText {
 	
 	@Override
 	public Class type() {

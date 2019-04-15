@@ -7,7 +7,7 @@ import beast.core.BEASTInterface;
 import beast.core.Input;
 import methods.*;
 
-public class Parameter implements MethodsText {
+public class ParameterMethodsText implements MethodsText {
 
 	@Override
 	public Class type() {

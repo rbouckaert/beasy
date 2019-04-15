@@ -9,7 +9,7 @@ import methods.MethodsText;
 import methods.MethodsTextFactory;
 import methods.Phrase;
 
-public class ConstantPopulation implements MethodsText {
+public class ConstantPopulationMethodsText implements MethodsText {
 	
 	@Override
 	public Class type() {

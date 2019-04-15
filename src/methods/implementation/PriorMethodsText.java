@@ -8,7 +8,7 @@ import beast.core.Input;
 import java.util.*;
 import methods.*;
 
-public class Prior implements MethodsText {
+public class PriorMethodsText implements MethodsText {
 
 	@Override
 	public Class type() {

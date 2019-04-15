@@ -7,11 +7,11 @@ import beast.core.BEASTInterface;
 import beast.core.Input;
 import methods.*;
 
-public class TreeIntervals implements MethodsText {
+public class AlignmentMethodsText implements MethodsText {
 
 	@Override
 	public Class type() {
-		return beast.evolution.tree.coalescent.TreeIntervals.class;
+		return beast.evolution.alignment.Alignment.class;
 	}
 
 	@Override

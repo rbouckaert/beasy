@@ -11,7 +11,7 @@ import beast.evolution.tree.coalescent.TreeIntervals;
 import java.util.*;
 import methods.*;
 
-public class Tree implements MethodsText {
+public class TreeMethodsText implements MethodsText {
 
 	@Override
 	public Class type() {

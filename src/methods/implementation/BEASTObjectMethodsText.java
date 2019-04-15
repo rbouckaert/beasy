@@ -11,7 +11,7 @@ import methods.MethodsText;
 import methods.MethodsTextFactory;
 import methods.Phrase;
 
-public class BEASTObject implements MethodsText {
+public class BEASTObjectMethodsText implements MethodsText {
 	
 	
 	@Override
