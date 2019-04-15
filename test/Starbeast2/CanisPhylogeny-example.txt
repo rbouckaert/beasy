@@ -1,10 +1,10 @@
-This is a multi-species coalescent (StarBeast2) analysis with population model passthrough model with child model is constant populations with population sizes is (Species) gamma distributed (alpha=2.0 and beta= 1/X distributed)popModelAIM.Species and population shape 3.0.
-There are 16 partitions (APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2 and VWF ) with 702, 633, 489, 705, 741, 705, 735, 921, 601, 730, 503, 736, 741, 615, 546 and 732 sites respectively.
-All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25 ) and empirical frequencies .
+This is a multi-species coalescent (StarBeast2) analysis with population model constant populations with population sizes is (Species) gamma distributed (alpha=2.0 and beta= 1/X distributed).
+There are 16 partitions (APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2 and VWF) with 702, 633, 489, 705, 741, 705, 735, 921, 601, 730, 503, 736, 741, 615, 546 and 732 sites respectively.
+All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies.
 
-All partitions share a strict clock with clock rate 0.001 .
+All partitions share a strict clock with clock rate 0.001.
 
-Tree prior: birth death model with unscaled tree type, birth rate prior uniformly distributed (lower=0.0 and upper=10000.0) death rate prior uniformly distributed (lower=0.0 and upper=1.0) and sample probability .
+Tree prior: birth death model with unscaled tree type, birth rate prior uniformly distributed (lower=0.0 and upper=10000.0), death rate prior uniformly distributed (lower=0.0 and upper=1.0) and sample probability.
 
 Relative substitution rates among all partitions are estimated.
 

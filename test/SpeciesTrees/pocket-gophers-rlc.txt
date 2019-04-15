@@ -1,8 +1,8 @@
-This is a multi-species coalescent (StarBeast2) analysis with population model passthrough model with child model is dummy model with popModelAIM.Species and population shape 3.0.
-There are 7 partitions (26, 29, 47, 53, 59, 64 and 72 ) with 614, 601, 819, 621, 553, 471 and 706 sites respectively.
-All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25 ) and estimated frequencies .
+This is a multi-species coalescent (StarBeast2) analysis with population model dummy model with.
+There are 7 partitions (26, 29, 47, 53, 59, 64 and 72) with 614, 601, 819, 621, 553, 471 and 706 sites respectively.
+All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and estimated frequencies.
 
-All partitions share a species tree clock model with clock rate log-normally distributed (mean-log= 1.0 and stdev-log= 0.6 ) and random local rates with indicators .
+All partitions share a species tree clock model with clock rate log-normally distributed (mean-log= 1.0 and stdev-log= 0.6) and random local rates with indicators.
 
 Tree prior: Yule model with birth rate 180.0.
 

@@ -117,6 +117,10 @@ public class BeautiSubTemplate {
 			MethodsText.done.add(bi);
 
 			List<Phrase> m = new ArrayList<>();
+			if (match.length == 1) { 
+				return m;
+			}
+						
 			String str = match[1];
 			addPhrase(m, o, parent, input, str, doc, bi);
 			for (int i = 2; i < match.length; i++) {

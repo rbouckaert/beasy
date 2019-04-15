@@ -1,38 +1,9 @@
-This is a multi-species coalescent (StarBeast2) analysis with population model popModelBridge.Speciesconstant with gene flow with ne is (Species) log-normally distributed (mean-log=1.0 and stdev-log=0.25) ne mean is (Species) 1/X distributed m is (Species) rates of migration log-normally distributed (mean-log=2.5 and stdev-log=1.0) indicator is (Species)false max migration rate model is overlap with effective migrants is (Species)1.0 species tree is (Species) Yule model with birth rate (Species) prior uniformly distributed (lower=0.0 and upper=10000.0) and population shape popShape.Species.
-There are 27 partitions (chr3L-2113, chr3L-2320, chr3L-3176, chr3L-3826, chr3L-4022, chr3L-4737, chr3L-6165, chr3L-6344, chr3L-6457, chr3L-6632, chr3L-8026, chr3L-8877, chr3L-8972, chr3L-10066, chr3L-10352, chr3L-11072, chr3L-11178, chr3L-11427, chr3L-13356, chr3L-13525, chr3L-16124, chr3L-16139, chr3L-17478, chr3L-17583, chr3L-18044, chr3L-18089 and chr3L-19336 ) with 888, 1558, 633, 807, 1227, 979, 992, 779, 563, 865, 968, 834, 932, 891, 794, 647, 954, 898, 1151, 596, 1101, 794, 902, 795, 1071, 743 and 966 sites respectively.
-All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25 ) and empirical frequencies with gamma rate heterogeneity using 4 categories (shape log-normally distributed (mean-log= 1.0 and stdev-log= 2.0 ) ) .
+This is a mutli-species coalescent with migration analysis with population sizes log-normally distributed (mean-log=1.0 and stdev-log=0.25), mean population 1/X distributed, rates of migration log-normally distributed (mean-log=2.5 and stdev-log=1.0), migration model all equal rates , and rate is forward is true.
+There are 27 partitions (chr3L-2113, chr3L-2320, chr3L-3176, chr3L-3826, chr3L-4022, chr3L-4737, chr3L-6165, chr3L-6344, chr3L-6457, chr3L-6632, chr3L-8026, chr3L-8877, chr3L-8972, chr3L-10066, chr3L-10352, chr3L-11072, chr3L-11178, chr3L-11427, chr3L-13356, chr3L-13525, chr3L-16124, chr3L-16139, chr3L-17478, chr3L-17583, chr3L-18044, chr3L-18089 and chr3L-19336) with 888, 1558, 633, 807, 1227, 979, 992, 779, 563, 865, 968, 834, 932, 891, 794, 647, 954, 898, 1151, 596, 1101, 794, 902, 795, 1071, 743 and 966 sites respectively.
+All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies with gamma rate heterogeneity using 4 categories (shape log-normally distributed (mean-log= 1.0 and stdev-log= 2.0)).
 
-All partitions share a strict clock with clock rate 1.0 .
+All partitions share a strict clock with clock rate 1.0.
 
-Tree prior: using Yule model with birth rate (Species) prior uniformly distributed (lower=0.0 and upper=10000.0).
+Tree prior: Yule model with birth rate (Species) prior uniformly distributed (lower=0.0 and upper=10000.0).
 
 Relative substitution rates among all partitions are estimated.
-
-Other information:
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .
-gene tree with migration with .

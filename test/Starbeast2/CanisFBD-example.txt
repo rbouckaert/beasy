@@ -1,10 +1,10 @@
-This is a multi-species coalescent (StarBeast2) analysis with population model passthrough model with child model is dummy model with popModelAIM.Species and population shape 3.0.
-There are 20 partitions (APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2, VWF, morphology_canis2, morphology_canis3, morphology_canis4 and morphology_canis5 ) with 702, 633, 489, 705, 741, 705, 735, 921, 601, 730, 503, 736, 741, 615, 546, 732, 29, 16, 11 and 8 sites respectively.
-Partitions APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2 and VWF individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25 ) and empirical frequencies 
-Partitions morphology_canis2, morphology_canis3, morphology_canis4 and morphology_canis5 individually have a gamma site model and .
+This is a multi-species coalescent (StarBeast2) analysis with population model dummy model with.
+There are 20 partitions (APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2, VWF, morphology_canis2, morphology_canis3, morphology_canis4 and morphology_canis5) with 702, 633, 489, 705, 741, 705, 735, 921, 601, 730, 503, 736, 741, 615, 546, 732, 29, 16, 11 and 8 sites respectively.
+Partitions APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2 and VWF individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies 
+Partitions morphology_canis2, morphology_canis3, morphology_canis4 and morphology_canis5 individually have a gamma site model and.
 
-Partitions APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2 and VWF share a strict clock with clock rate log-normally distributed (mean-log= 0.001 and stdev-log= 1.0 ) 
-Partitions morphology_canis2, morphology_canis3, morphology_canis4 and morphology_canis5 share a strict clock with clock rate 1/X distributed .
+Partitions APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2 and VWF share a strict clock with clock rate log-normally distributed (mean-log= 0.001 and stdev-log= 1.0) 
+Partitions morphology_canis2, morphology_canis3, morphology_canis4 and morphology_canis5 share a strict clock with clock rate 1/X distributed.
 
 Tree prior: Tree Tree.t:Species has dated tips (in ages not dates). using a fossilised birth death model, with diversification rate prior uniformly distributed (lower=0.0 and upper=Infinity), turnover rate prior uniformly distributed (lower=0.0 and upper=1.0), sampling proportion prior uniformly distributed (lower=0.0 and upper=1.0) and removal probability 0.0. Condition on rho sampling is true, rho 1.0, and origina prior uniformly distributed (lower=0.0 and upper=Infinity).
 
