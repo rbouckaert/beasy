@@ -1,0 +1,10 @@
+There is one alignment with 24 taxa, and 987 characters.
+The partition has a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25 ) and empirical frequencies with gamma rate heterogeneity using 4 categories (shape exponentially distributed (mean= 1.0 ) ) .
+
+The partition has a strict clock with clock rate log-normally distributed (mean-log= 0.005 and stdev-log= 0.25 ) .
+
+There is a single tree with dated tips (in dates not ages) using mascot with .
+
+
+Other information:
+mascot with .

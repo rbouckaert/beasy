@@ -1,0 +1,8 @@
+There is one alignment with 36 taxa, and 1000 characters.
+The partition has a gamma site model and GTR substitution model with rateAC gamma distributed (alpha= 0.05 and beta= 10.0 ) , rateAG gamma distributed (alpha= 0.05 and beta= 20.0 ) , rateAT gamma distributed (alpha= 0.05 and beta= 10.0 ) , rateCG gamma distributed (alpha= 0.05 and beta= 10.0 ) , rateCT 1.0 rateGT gamma distributed (alpha= 0.05 and beta= 10.0 ) and estimated frequencies .
+
+The partition has a strict clock with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity ) .
+
+There is a single tree with dated tips (in dates not ages) and constant coalescent tree prior with population size 1/X distributed.
+
+.

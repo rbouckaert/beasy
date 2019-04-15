@@ -1,0 +1,10 @@
+A multi-species coalescent (*BEAST) analysis with a linear_with_constant_root population function and gamma log-normally distributed (mean-log=-5.0 and stdev-log=1.25).
+There are 3 partitions (26, 29 and 47 ) with 614, 601 and 819 sites respectively.
+All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25 ) and empirical frequencies .
+
+Partitions 26 has a strict clock with clock rate 1.0 
+Partitions 29 and 47 individually have a strict clock with clock rate exponentially distributed (mean= 1.0 ) .
+
+Tree prior: Yule model with birth rate (Species) log-normally distributed (mean-log=4.0 and stdev-log=1.25).
+
+.

@@ -1,0 +1,10 @@
+There is one alignment with 14 taxa, and 1000 characters.
+The partition has a gamma site model and GTR substitution model with rateAC gamma distributed (alpha= 0.05 and beta= 10.0 ) , rateAG gamma distributed (alpha= 0.05 and beta= 20.0 ) , rateAT gamma distributed (alpha= 0.05 and beta= 10.0 ) , rateCG gamma distributed (alpha= 0.05 and beta= 10.0 ) , rateCT 1.0 rateGT gamma distributed (alpha= 0.05 and beta= 10.0 ) and estimated frequencies with gamma rate heterogeneity using 4 categories (shape exponentially distributed (mean= 1.0 ) ) .
+
+The partition has a strict clock with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity ) .
+
+There is a single tree with Yule model with birth rate (cp3) prior uniformly distributed (lower=0.0 and upper=Infinity).
+
+
+Other information:
+ MRCA prior alltaxa (14 taxa) being normally distributed (mean=40.0 and sigma=2.0).

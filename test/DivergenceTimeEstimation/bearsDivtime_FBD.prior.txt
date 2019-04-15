@@ -1,0 +1,13 @@
+There are 2 partitions (bears_cytb_fossils and bears_irbp_fossils ) with 1000 and 1281 sites respectively.
+.
+.
+.
+
+Relative substitution rates among both partitions are estimated.
+
+Other information:
+ MRCA prior 1_CrownBears (17 taxa) is monophyletic .
+ MRCA prior 2_Pandas (7 taxa) is monophyletic .
+ MRCA prior 3_Tremarctinae (2 taxa) is monophyletic .
+ MRCA prior 4_Ursinae (8 taxa) is monophyletic .
+ MRCA prior 5_BrownBears (3 taxa) is monophyletic .

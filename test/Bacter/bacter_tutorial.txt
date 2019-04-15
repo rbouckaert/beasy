@@ -1,0 +1,7 @@
+There are 12 partitions (Ecoli_rplA, Ecoli_rplB, Ecoli_rplC, Ecoli_rplD, Ecoli_rplE, Ecoli_rplF, Ecoli_rplO, Ecoli_rplP, Ecoli_rplQ, Ecoli_rplR, Ecoli_rplS and Ecoli_rplT ) with 705, 822, 630, 606, 540, 534, 435, 411, 384, 354, 348 and 357 sites respectively.
+All partitions share a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 0.0 and stdev-log= 2.0 ) and estimated frequencies .
+
+All partitions share a strict clock with clock rate 1.0 .
+
+There is a single tree with constant coalescent tree prior with population size log-normally distributed (mean-log=0.0 and stdev-log=2.0).
+
