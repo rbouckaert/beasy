@@ -120,66 +120,76 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         CompoundDistribution posterior = (CompoundDistribution) mcmc.posteriorInput.get();
 		StringBuilder b = new StringBuilder();
 
-
-		List<Phrase> m = new ArrayList<>();
-		methods.implementation.BeautiSubTemplate.initialise();
-		for (String analysisIdentifier : methods.implementation.BeautiSubTemplate.analysisIdentifiers) {
-			if (beautiDoc.pluginmap.containsKey(analysisIdentifier)) {
-	        	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get(analysisIdentifier);
-	        	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
-	        	b.append(Phrase.toString(m));
-	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
-				addDot(b);
-				m.clear();
-			}
-		}
+		addAnalysisIdentifier(b);
 		
 		addPartitionDescription(b);
 				
+		addSiteModelDescription(b, posterior);
         
-        // collect model descriptions of all partitions
-        List<String> partitionIDs = new ArrayList<>();
-        List<String> smPartitionIDs = new ArrayList<>();
-        List<String> cmPartitionIDs = new ArrayList<>();
-        List<List<Phrase>> siteModels = new ArrayList<>();
-        List<List<Phrase>> clockModels = new ArrayList<>();
+		addClockModelDescription(b, posterior);
+
+		addTreePrior(b, posterior);
+
+		// has FixMeanMutationRatesOperator?
+        addFixMeanMutationRatesOperator(mcmc, b);
+
+        addOtherInformation(b, posterior);
         
+
+        cleanText(b.toString());
+        
+		Log.warning(text);
+		Log.warning("Done!");
+				
+	}
+	
+	private void cleanText(String b) {
+		text = b;
+		// clean up
+		text = text.replaceAll("  ", " ");
+		text = text.replaceAll("\n\n", "\n");
+		text = text.replaceAll("\\s([\\.,\\)])", "$1");
+		for (char c : new char[]{'a','e','i','o','u'}) {
+			text = text.replaceAll(" a " + c, " an " + c);					
+		}				
+	}
+
+
+	/** any priors other than parameter and tree priors? **/
+	private void addOtherInformation(StringBuilder b, CompoundDistribution posterior) {
+		List<Phrase> m = new ArrayList<>();
+
+        List<String> others = new ArrayList<>();
         for (Distribution distr : posterior.pDistributions.get()) {
-            if (distr.getID().equals("likelihood")) {
-                for (Distribution likelihood : ((CompoundDistribution) distr).pDistributions.get()) {
-                    if (likelihood instanceof GenericTreeLikelihood) {
-                        GenericTreeLikelihood treeLikelihood = (GenericTreeLikelihood) likelihood;
-                    	partitionIDs.add(treeLikelihood.dataInput.get().getID());
-                    	
-                    	BEASTInterface siteModel = (BEASTInterface) treeLikelihood.siteModelInput.get();
-                		List<Phrase> sm = MethodsTextFactory.getModelDescription(siteModel, treeLikelihood, treeLikelihood.siteModelInput, beautiDoc);
-                		// sm.get(0).setInput(treeLikelihood, treeLikelihood.siteModelInput);
-                		// sm.add(new Phrase("\n"));
-                		siteModels.add(sm);
-                		smPartitionIDs.add(beautiDoc.parsePartition(siteModel.getID()));
-                		
-                		BEASTInterface clockModel = treeLikelihood.branchRateModelInput.get();
-                		List<Phrase> cm = MethodsTextFactory.getModelDescription(clockModel, treeLikelihood, treeLikelihood.branchRateModelInput, beautiDoc);
-                		// cm.get(0).setInput(treeLikelihood, treeLikelihood.branchRateModelInput);
-                		// cm.add(new Phrase("\n"));
-                		clockModels.add(cm);
-                		cmPartitionIDs.add(beautiDoc.parsePartition(clockModel.getID()));
-                    }
+            if (!distr.getID().equals("likelihood")) {
+                for (Distribution prior : ((CompoundDistribution) distr).pDistributions.get()) {
+                	if (!(prior instanceof beast.math.distributions.Prior || prior instanceof TreeDistribution)) {
+                    	m = MethodsTextFactory.getModelDescription(prior, null, null, beautiDoc);
+                    	if (m.size() > 0) {
+                    		others.add(Phrase.toSimpleString(m));
+                    	}
+                	}
                 }
             }
         }
-        
-        // amalgamate partitions
-        amalgamate(siteModels, partitionIDs, smPartitionIDs, b);
-        addDot(b);
-        amalgamate(clockModels, partitionIDs, cmPartitionIDs, b);
-        addDot(b);
+    	if (others.size() > 0) {
+    		completePhrase(b, "\nOther information:\n");
+    		String longestPostfix = getLongestPostix(others);
 
-        List<Phrase> [] phrases = new List[1];
-//    	m.add(new Phrase(b.toString()));
-    	phrases[0] = m;
-//        Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
-        
+			for (String other : others) {
+				completePhrase(b, other.substring(0, other.length() - longestPostfix.length()).trim());
+        		addDot(b);
+			}
+        	if (longestPostfix.length() != 0) {
+        		completePhrase(b, "All have " + longestPostfix.substring(1));
+        	}
+    	}
+	}
+
+
+	private void addTreePrior(StringBuilder b, CompoundDistribution posterior) {
+		List<Phrase> m = new ArrayList<>();
+
         // tree priors        
         Set<TreeInterface> trees = new LinkedHashSet<>();
         // List<GenericTreeLikelihood> likelihoods = new ArrayList<>();
@@ -237,56 +247,85 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         }
         
         addDot(b);
-        
-        // has FixMeanMutationRatesOperator?
-        StringBuilder b2 = new StringBuilder();
-        b2.append("\n\n");
-        addFixMeanMutationRatesOperator(mcmc, b2, m);
-        b.append(b2.toString());
+ 		
+	}
 
-        // any priors other than parameter and tree priors?
-        List<String> others = new ArrayList<>();
+
+	private void addSiteModelDescription(StringBuilder b, CompoundDistribution posterior) {
+        // collect model descriptions of all partitions
+        List<String> partitionIDs = new ArrayList<>();
+        List<String> smPartitionIDs = new ArrayList<>();
+        List<List<Phrase>> siteModels = new ArrayList<>();
+        
         for (Distribution distr : posterior.pDistributions.get()) {
-            if (!distr.getID().equals("likelihood")) {
-                for (Distribution prior : ((CompoundDistribution) distr).pDistributions.get()) {
-                	if (!(prior instanceof beast.math.distributions.Prior || prior instanceof TreeDistribution)) {
-                    	m = MethodsTextFactory.getModelDescription(prior, null, null, beautiDoc);
-                    	if (m.size() > 0) {
-                    		others.add(Phrase.toSimpleString(m));
-                    	}
-                	}
+            if (distr.getID().equals("likelihood")) {
+                for (Distribution likelihood : ((CompoundDistribution) distr).pDistributions.get()) {
+                    if (likelihood instanceof GenericTreeLikelihood) {
+                        GenericTreeLikelihood treeLikelihood = (GenericTreeLikelihood) likelihood;
+                    	partitionIDs.add(treeLikelihood.dataInput.get().getID());
+                    	
+                    	BEASTInterface siteModel = (BEASTInterface) treeLikelihood.siteModelInput.get();
+                		List<Phrase> sm = MethodsTextFactory.getModelDescription(siteModel, treeLikelihood, treeLikelihood.siteModelInput, beautiDoc);
+                		// sm.get(0).setInput(treeLikelihood, treeLikelihood.siteModelInput);
+                		// sm.add(new Phrase("\n"));
+                		siteModels.add(sm);
+                		smPartitionIDs.add(beautiDoc.parsePartition(siteModel.getID()));
+                    }
                 }
             }
         }
-    	if (others.size() > 0) {
-    		completePhrase(b, "\nOther information:\n");
-    		String longestPostfix = getLongestPostix(others);
-
-			for (String other : others) {
-				completePhrase(b, other.substring(0, other.length() - longestPostfix.length()).trim());
-        		addDot(b);
-			}
-        	if (longestPostfix.length() != 0) {
-        		completePhrase(b, "All have " + longestPostfix.substring(1));
-        	}
-    	}
-
         
-		text = b.toString();
-		
-		text = text.replaceAll("  ", " ");
-		text = text.replaceAll("\n\n", "\n");
-		text = text.replaceAll("\\s\\.", ".");
-		text = text.replaceAll("\\s\\)", ")");
-		for (char c : new char[]{'a','e','i','o','u'}) {
-			text = text.replaceAll(" a " + c, " an " + c);					
-		}				
-
-		Log.warning(text);
-		Log.warning("Done!");
-				
+        // amalgamate partitions
+        amalgamate(siteModels, partitionIDs, smPartitionIDs, b);
+        addDot(b);
 	}
-	
+
+
+	private void addClockModelDescription(StringBuilder b, CompoundDistribution posterior) {
+        // collect model descriptions of all partitions
+        List<String> partitionIDs = new ArrayList<>();
+        List<String> cmPartitionIDs = new ArrayList<>();
+        List<List<Phrase>> clockModels = new ArrayList<>();
+        
+        for (Distribution distr : posterior.pDistributions.get()) {
+            if (distr.getID().equals("likelihood")) {
+                for (Distribution likelihood : ((CompoundDistribution) distr).pDistributions.get()) {
+                    if (likelihood instanceof GenericTreeLikelihood) {
+                        GenericTreeLikelihood treeLikelihood = (GenericTreeLikelihood) likelihood;
+                    	partitionIDs.add(treeLikelihood.dataInput.get().getID());
+                		
+                		BEASTInterface clockModel = treeLikelihood.branchRateModelInput.get();
+                		List<Phrase> cm = MethodsTextFactory.getModelDescription(clockModel, treeLikelihood, treeLikelihood.branchRateModelInput, beautiDoc);
+                		// cm.get(0).setInput(treeLikelihood, treeLikelihood.branchRateModelInput);
+                		// cm.add(new Phrase("\n"));
+                		clockModels.add(cm);
+                		cmPartitionIDs.add(beautiDoc.parsePartition(clockModel.getID()));
+                    }
+                }
+            }
+        }
+        
+        // amalgamate partitions
+        amalgamate(clockModels, partitionIDs, cmPartitionIDs, b);
+        addDot(b);
+	}
+
+	private void addAnalysisIdentifier(StringBuilder b) {
+		List<Phrase> m = new ArrayList<>();
+		methods.implementation.BeautiSubTemplate.initialise();
+		for (String analysisIdentifier : methods.implementation.BeautiSubTemplate.analysisIdentifiers) {
+			if (beautiDoc.pluginmap.containsKey(analysisIdentifier)) {
+	        	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get(analysisIdentifier);
+	        	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
+	        	b.append(Phrase.toString(m));
+	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+				addDot(b);
+				m.clear();
+			}
+		}
+	}
+
+
 	private String getLongestPostix(List<String> others) {
 		if (others.size() <= 1) {
 			return "";
@@ -450,7 +489,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
      }
 
 
-	private void addFixMeanMutationRatesOperator(MCMC mcmc, StringBuilder b, List<Phrase> m) {
+	private void addFixMeanMutationRatesOperator(MCMC mcmc, StringBuilder b) {
+		List<Phrase> m = new ArrayList<>();
         for (Operator op : mcmc.operatorsInput.get()) {
         	if (op.getID().equals("FixMeanMutationRatesOperator")) {
                 List<String> partitionIDs = new ArrayList<>();

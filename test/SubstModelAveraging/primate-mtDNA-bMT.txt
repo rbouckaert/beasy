@@ -1,7 +1,6 @@
-There are 4 partitions (noncoding, 1stpos, 2ndpos and 3rdpos ) with 205, 231, 231 and 231 sites respectively.
-All partitions share a bModelTest site model with 4 gamma categories using transitionTransversionSplit substitution models .
+There are 4 partitions (noncoding, 1stpos, 2ndpos and 3rdpos) with 205, 231, 231 and 231 sites respectively.
+All partitions share a bModelTest site model with 4 gamma categories using transitionTransversionSplit substitution models.
 
-All partitions share a strict clock with clock rate 1.0 .
+All partitions share a strict clock with clock rate 1.0.
 
 There is a single tree with Yule model with birth rate (tree) prior uniformly distributed (lower=0.0 and upper=Infinity).
-

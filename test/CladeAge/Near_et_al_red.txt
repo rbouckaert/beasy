@@ -4,35 +4,34 @@ All partitions share a bModelTest site model with 4 gamma categories using named
 All partitions share an uncorrelated log-normal relaxed clock with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity) and standard deviation gamma distributed (alpha= 0.5396 and beta= 0.3819).
 
 There is a single tree with birth death model with unscaled tree type, birth rate prior uniformly distributed (lower=0.0 and upper=1000.0), death rate prior uniformly distributed (lower=0.0 and upper=1.0) and sample probability.
-
 Relative substitution rates among all partitions are estimated.
 
 Other information:
-Clade African cichlids has fossil prior with occurrance age (min= 45.0 , max= 46.0).
-Clade Afro-American cichlids has fossil prior with occurrance age (min= 45.0 , max= 46.0).
-Clade Anabantaria has fossil prior with occurrance age (min= 45.5 , max= 50.7).
-Clade Anabantiformes has fossil prior with occurrance age (min= 45.5 , max= 50.7).
-Clade Atherinomorphae has fossil prior with occurrance age (min= 49.1 , max= 49.4).
-Clade Batrachoidiaria has fossil prior with occurrance age (min= 27.82 , max= 33.9).
-Clade Carangaria has fossil prior with occurrance age (min= 55.8 , max= 57.23).
-Clade Cichlids has fossil prior with occurrance age (min= 45.0 , max= 46.0).
-Clade Eupercaria has fossil prior with occurrance age (min= 83.5 , max= 99.6).
-Clade Gadiformes has fossil prior with occurrance age (min= 59.7 , max= 62.8).
-Clade Gobiaria has fossil prior with occurrance age (min= 30.7 , max= 33.9).
-Clade Heterochromini has fossil prior with occurrance age (min= 15.97 , max= 33.9).
-Clade Holocentrimorphaceae has fossil prior with occurrance age (min= 97.8 , max= 99.1).
-Clade Neotropical cichlids has fossil prior with occurrance age (min= 39.9 , max= 45.0).
-Clade Ophidiaria has fossil prior with occurrance age (min= 55.8 , max= 57.23).
-Clade Other African cichlid tribes has fossil prior with occurrance age (min= 45.0 , max= 46.0).
-Clade Other Neotropical cichlid tribes has fossil prior with occurrance age (min= 39.9 , max= 45.0).
-Clade Ovalentaria has fossil prior with occurrance age (min= 49.1 , max= 49.4).
-Clade Paracanthopterygii has fossil prior with occurrance age (min= 69.2 , max= 76.4).
-Clade Pelagaria has fossil prior with occurrance age (min= 56.6 , max= 66.043).
-Clade Percomorphaceae has fossil prior with occurrance age (min= 83.5 , max= 99.6).
-Clade Percopsaria has fossil prior with occurrance age (min= 61.1 , max= 66.043).
-Clade Polymixiipterygii has fossil prior with occurrance age (min= 93.5 , max= 96.0).
-Clade Retroculini and Cichlini has fossil prior with occurrance age (min= 5.332 , max= 23.03).
-Clade Syngnatharia has fossil prior with occurrance age (min= 49.1 , max= 49.4).
-Clade Zeiariae has fossil prior with occurrance age (min= 69.2 , max= 76.4).
-Clade Acanthopterygii has fossil prior with occurrance age (min= 97.8 , max= 99.1).
-All have divergence rate (min= 0.041 , max= 0.081), turnover rate (min= 0.0011 , max= 0.37), sampling rate (min= 0.0066 , max= 0.01806), and sample gap (min= 0.0 , max= 0.0) 
+Clade African cichlids has fossil prior with occurrance age (min= 45.0, max= 46.0).
+Clade Afro-American cichlids has fossil prior with occurrance age (min= 45.0, max= 46.0).
+Clade Anabantaria has fossil prior with occurrance age (min= 45.5, max= 50.7).
+Clade Anabantiformes has fossil prior with occurrance age (min= 45.5, max= 50.7).
+Clade Atherinomorphae has fossil prior with occurrance age (min= 49.1, max= 49.4).
+Clade Batrachoidiaria has fossil prior with occurrance age (min= 27.82, max= 33.9).
+Clade Carangaria has fossil prior with occurrance age (min= 55.8, max= 57.23).
+Clade Cichlids has fossil prior with occurrance age (min= 45.0, max= 46.0).
+Clade Eupercaria has fossil prior with occurrance age (min= 83.5, max= 99.6).
+Clade Gadiformes has fossil prior with occurrance age (min= 59.7, max= 62.8).
+Clade Gobiaria has fossil prior with occurrance age (min= 30.7, max= 33.9).
+Clade Heterochromini has fossil prior with occurrance age (min= 15.97, max= 33.9).
+Clade Holocentrimorphaceae has fossil prior with occurrance age (min= 97.8, max= 99.1).
+Clade Neotropical cichlids has fossil prior with occurrance age (min= 39.9, max= 45.0).
+Clade Ophidiaria has fossil prior with occurrance age (min= 55.8, max= 57.23).
+Clade Other African cichlid tribes has fossil prior with occurrance age (min= 45.0, max= 46.0).
+Clade Other Neotropical cichlid tribes has fossil prior with occurrance age (min= 39.9, max= 45.0).
+Clade Ovalentaria has fossil prior with occurrance age (min= 49.1, max= 49.4).
+Clade Paracanthopterygii has fossil prior with occurrance age (min= 69.2, max= 76.4).
+Clade Pelagaria has fossil prior with occurrance age (min= 56.6, max= 66.043).
+Clade Percomorphaceae has fossil prior with occurrance age (min= 83.5, max= 99.6).
+Clade Percopsaria has fossil prior with occurrance age (min= 61.1, max= 66.043).
+Clade Polymixiipterygii has fossil prior with occurrance age (min= 93.5, max= 96.0).
+Clade Retroculini and Cichlini has fossil prior with occurrance age (min= 5.332, max= 23.03).
+Clade Syngnatharia has fossil prior with occurrance age (min= 49.1, max= 49.4).
+Clade Zeiariae has fossil prior with occurrance age (min= 69.2, max= 76.4).
+Clade Acanthopterygii has fossil prior with occurrance age (min= 97.8, max= 99.1).
+All have divergence rate (min= 0.041, max= 0.081), turnover rate (min= 0.0011, max= 0.37), sampling rate (min= 0.0066, max= 0.01806), and sample gap (min= 0.0, max= 0.0) 

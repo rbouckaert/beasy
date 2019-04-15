@@ -6,7 +6,6 @@ All partitions share a species tree clock model with clock rate log-normally dis
 
 Tree prior: Yule model with birth rate 180.0.
 
-
 Other information:
 geneTree.t:59 has ploidy 2.0.
 geneTree.t:53 has ploidy 2.0.

@@ -30,11 +30,10 @@ public class SiteModel implements MethodsText {
 			b.add(new Phrase(" with gamma rate heterogeneity using " + sm.gammaCategoryCount.get() + " categories "));
 			RealParameter shape = sm.shapeParameterInput.get();
 			if (shape.isEstimatedInput.get()) {
-				b.add(new Phrase(" (shape "));
+				b.add(new Phrase(" and shape "));
 				b.addAll(describePriors(shape, sm, sm.shapeParameterInput, doc));
-				b.add(new Phrase(")"));
 			} else {
-				b.add(new Phrase("(shape = " + shape.getValue() + ")"));
+				b.add(new Phrase(" and shape = " + shape.getValue() + ""));
 			}
 		}
 		if (sm.invarParameterInput.get() != null && sm.invarParameterInput.get().getValue() > 0) {

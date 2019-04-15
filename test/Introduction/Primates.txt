@@ -1,10 +1,9 @@
 There are 4 partitions (noncoding, 1stpos, 2ndpos and 3rdpos) with 205, 231, 231 and 231 sites respectively.
-All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies with gamma rate heterogeneity using 4 categories (shape exponentially distributed (mean= 1.0)).
+All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies with gamma rate heterogeneity using 4 categories and shape exponentially distributed (mean= 1.0).
 
 All partitions share a strict clock with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity).
 
 There is a single tree with Calibrated Yule model with birth rate (tree) gamma distributed (alpha=0.001 and beta=1000.0).
-
 Relative substitution rates among all partitions are estimated.
 
 Other information:

@@ -47,4 +47,9 @@ java -cp "$CP" methods.XML2TextPane SubstModelAveraging/primate-mtDNA-bMT.xml Su
 # BEAST 2.4 XML:
 #java -cp "$CP" methods.XML2TextPane StructuredCoalescent/MTT.xml StructuredCoalescent/MTT.txt
 
+
+for s in */*.txt; do java -cp "$CP" methods.XML2TextPane ${s%.txt}.xml $s; done
+
 for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/$s; done
+
+for s in */*.txt; do cp $s ../test/$s; done

@@ -1,7 +1,6 @@
 There is one alignment with 139 taxa, and 1738 characters.
-The partition has a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25 ) and estimated frequencies with gamma rate heterogeneity using 4 categories (shape exponentially distributed (mean= 1.0 ) ) .
+The partition has a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and estimated frequencies with gamma rate heterogeneity using 4 categories and shape exponentially distributed (mean= 1.0).
 
-The partition has a strict clock with clock rate log-normally distributed (mean-log= 0.001 and stdev-log= 1.25 ) .
+The partition has a strict clock with clock rate log-normally distributed (mean-log= 0.001 and stdev-log= 1.25).
 
-There is a single tree with dated tips (in dates not ages) birth-death skyline model with with origin gamma distributed (alpha=0.5 and beta=2.0), reproductive number log-normally distributed (mean-log=0.0 and stdev-log=1.0), rho , and sampling proportion log-normally distributed (mean-log=0.001 and stdev-log=1.25).
-
+There is a single tree with dated tips (in dates not ages) birth-death skyline model with with origin gamma distributed (alpha=0.5 and beta=2.0), reproductive number log-normally distributed (mean-log=0.0 and stdev-log=1.0), rho, and sampling proportion log-normally distributed (mean-log=0.001 and stdev-log=1.25).

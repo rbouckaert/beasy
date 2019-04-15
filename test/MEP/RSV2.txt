@@ -1,8 +1,7 @@
-There are 3 partitions (RSV2_1, RSV2_2 and RSV2_3 ) with 209, 210 and 210 sites respectively.
-All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25 ) and empirical frequencies .
+There are 3 partitions (RSV2_1, RSV2_2 and RSV2_3) with 209, 210 and 210 sites respectively.
+All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies.
 
-All partitions share a strict clock with clock rate log-normally distributed (mean-log= -5.0 and stdev-log= 1.25 ) .
+All partitions share a strict clock with clock rate log-normally distributed (mean-log= -5.0 and stdev-log= 1.25).
 
 There is a single tree with dated tips (in dates not ages) using constant coalescent tree prior with population size 1/X distributed.
-
 Relative substitution rates among all partitions are estimated.

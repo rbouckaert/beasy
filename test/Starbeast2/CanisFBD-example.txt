@@ -7,7 +7,6 @@ Partitions APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, C
 Partitions morphology_canis2, morphology_canis3, morphology_canis4 and morphology_canis5 share a strict clock with clock rate 1/X distributed.
 
 Tree prior: Tree Tree.t:Species has dated tips (in ages not dates). using a fossilised birth death model, with diversification rate prior uniformly distributed (lower=0.0 and upper=Infinity), turnover rate prior uniformly distributed (lower=0.0 and upper=1.0), sampling proportion prior uniformly distributed (lower=0.0 and upper=1.0) and removal probability 0.0. Condition on rho sampling is true, rho 1.0, and origina prior uniformly distributed (lower=0.0 and upper=Infinity).
-
 Relative substitution rates among partitions APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2 and VWF are estimated.
 
 Other information:

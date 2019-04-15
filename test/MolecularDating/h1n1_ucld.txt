@@ -1,7 +1,6 @@
 There is one alignment with 100 taxa, and 13154 characters.
-The partition has a bModelTest site model with 4 gamma categories using transitionTransversionSplit substitution models .
+The partition has a bModelTest site model with 4 gamma categories using transitionTransversionSplit substitution models.
 
-The partition has an uncorrelated log-normal relaxed clock with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity ) and standard deviation gamma distributed (alpha= 0.5396 and beta= 0.3819 ) .
+The partition has an uncorrelated log-normal relaxed clock with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity) and standard deviation gamma distributed (alpha= 0.5396 and beta= 0.3819).
 
 There is a single tree with dated tips (in dates not ages) using exponential coalescent tree prior with population size 1/X distributed and growth rate Laplace distributed (mu=0.001 and scale=30.701135).
-

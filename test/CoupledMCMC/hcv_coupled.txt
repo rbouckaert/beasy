@@ -1,8 +1,6 @@
 There is one alignment with 63 taxa, and 411 characters.
-The partition has a gamma site model and GTR substitution model with rateAC gamma distributed (alpha= 0.05 and beta= 10.0 ) , rateAG gamma distributed (alpha= 0.05 and beta= 20.0 ) , rateAT gamma distributed (alpha= 0.05 and beta= 10.0 ) , rateCG gamma distributed (alpha= 0.05 and beta= 10.0 ) , rateCT 1.0 rateGT gamma distributed (alpha= 0.05 and beta= 10.0 ) and estimated frequencies with gamma rate heterogeneity using 4 categories (shape exponentially distributed (mean= 1.0 ) ) .
+The partition has a gamma site model and GTR substitution model with rateAC gamma distributed (alpha= 0.05 and beta= 10.0), rateAG gamma distributed (alpha= 0.05 and beta= 20.0), rateAT gamma distributed (alpha= 0.05 and beta= 10.0), rateCG gamma distributed (alpha= 0.05 and beta= 10.0), rateCT 1.0 rateGT gamma distributed (alpha= 0.05 and beta= 10.0) and estimated frequencies with gamma rate heterogeneity using 4 categories and shape exponentially distributed (mean= 1.0).
 
-The partition has a strict clock with clock rate 7.9E-4 .
+The partition has a strict clock with clock rate 7.9E-4.
 
-There is a single tree with using Bayesian skyline tree prior with population size markov chain distribution with parameter is (hcv) .
-
-Other prior: .
+There is a single tree with using Bayesian skyline tree prior with population size markov chain distribution with parameter is (hcv).

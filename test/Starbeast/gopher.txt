@@ -6,4 +6,3 @@ Partitions 26 has a strict clock with clock rate 1.0
 Partitions 29 and 47 individually have a strict clock with clock rate exponentially distributed (mean= 1.0).
 
 Tree prior: gene tree for species tree distribution with gene tree for species tree distribution with gene tree for species tree distribution with Yule model with birth rate (Species) log-normally distributed (mean-log=4.0 and stdev-log=1.25).
-

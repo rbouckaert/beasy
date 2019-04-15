@@ -1,11 +1,10 @@
-This is a multi-species coalescent (StarBeast2) analysis with population model dummy model with and population shape 3.0.
+This is a multi-species coalescent (StarBeast2) analysis with population model dummy model with.
 There are 16 partitions (APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2 and VWF) with 702, 633, 489, 705, 741, 705, 735, 921, 601, 730, 503, 736, 741, 615, 546 and 732 sites respectively.
 All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies.
 
 All partitions share a species tree clock model with clock rate 0.001 and uncorrelated rates with stdev log-normally distributed (mean-log= 1.0 and stdev-log= 2.0).
 
 Tree prior: birth death model with unscaled tree type, birth rate prior uniformly distributed (lower=0.0 and upper=10000.0), death rate prior uniformly distributed (lower=0.0 and upper=1.0) and sample probability.
-
 Relative substitution rates among all partitions are estimated.
 
 Other information:

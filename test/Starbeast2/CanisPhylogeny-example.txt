@@ -5,7 +5,6 @@ All partitions individually have a gamma site model and HKY substitution model w
 All partitions share a strict clock with clock rate 0.001.
 
 Tree prior: birth death model with unscaled tree type, birth rate prior uniformly distributed (lower=0.0 and upper=10000.0), death rate prior uniformly distributed (lower=0.0 and upper=1.0) and sample probability.
-
 Relative substitution rates among all partitions are estimated.
 
 Other information:
