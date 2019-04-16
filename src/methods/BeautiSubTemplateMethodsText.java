@@ -131,13 +131,13 @@ public class BeautiSubTemplateMethodsText {
 						beast.app.beauti.PartitionContext partition = doc.getContextFor(bi);
 						str = BeautiDoc.translatePartitionNames(str, partition);
 						BEASTInterface o2 = doc.pluginmap.get(str);
-						m.add(new CitationPhrase(o2));
+						m.add(CitationPhrase.createCitationPhrase(o2));
 					} else if (doc.pluginmap.containsKey(str) && !(doc.pluginmap.get(str) instanceof beast.app.beauti.BeautiSubTemplate)) {
 						BEASTInterface o2 = doc.pluginmap.get(str);
-						m.add(new CitationPhrase(o2));
+						m.add(CitationPhrase.createCitationPhrase(o2));
 					} else {
 						// assume it is a DOI
-						m.add(new CitationPhrase(str));
+						m.add(CitationPhrase.createCitationPhrase(str));
 					}
 					
 				} else if (str.contains("$(n)")) {

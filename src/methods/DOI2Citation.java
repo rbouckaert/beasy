@@ -17,7 +17,7 @@ import beast.core.Input;
 import beast.core.Runnable;
 import beast.core.util.Log;
 
-@Description("Resolves citation entry for a DOI, e.g. in bibtex format")
+@Description("Resolves citation entry for a DOI, e.g. to bibtex format")
 public class DOI2Citation extends Runnable {
 	final public static String DOI2BIB_FILE = "/beasy/doi2bib.properties";
 	

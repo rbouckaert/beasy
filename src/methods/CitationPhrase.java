@@ -14,7 +14,28 @@ public class CitationPhrase extends Phrase {
 	
 	public static mode CitationMode = mode.text;
 
-	public CitationPhrase(Object source) {
+	static public CitationPhrase createCitationPhrase(Object source) {
+		if (source instanceof BEASTInterface) {
+			BEASTInterface bi = (BEASTInterface) source;
+			List<Citation> c = bi.getCitationList();
+			if (c != null && c.size() > 0) {				
+				if (citations.containsKey(c.get(0).DOI())) {
+					return citations.get(c.get(0).DOI());
+				}
+			}
+		}
+		
+		return new CitationPhrase(source);		
+	}
+	
+	static public CitationPhrase createCitationPhrase(String DOI) {
+		if (citations.containsKey(DOI)) {
+			return citations.get(DOI);
+		}		
+		return new CitationPhrase(DOI);		
+	}	
+	
+	private CitationPhrase(Object source) {
 		super(source, "");
 		
 		if (source instanceof BEASTInterface) {
@@ -31,7 +52,7 @@ public class CitationPhrase extends Phrase {
 		citations.put(DOI,this);
 	}
 
-	public CitationPhrase(String DOI) {
+	private CitationPhrase(String DOI) {
 		super(DOI);
 		this.DOI = DOI;		
 		setText(toString());
@@ -59,24 +80,24 @@ public class CitationPhrase extends Phrase {
 			return bibtex2markdownRef(citation);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "[@" + DOI + "]";
+			return " ([@" + DOI + "])";
 		}
 	}
 
 	public static String bibtex2markdownRef(String citation) {
 		String ref = bibtex2textRef(citation);
 		ref = ref.replaceAll("[\\(\\) ]","");
-		return "[@" + ref + "]";
+		return " ([@" + ref + "])";
 	}
 
 
 	private String textRef() {
 		try {
 			String citation = DOI2Citation.resolve(DOI);
-			return bibtex2textRef(citation);
+			return " (" + bibtex2textRef(citation) +")";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "(" + DOI + ")";
+			return " (" + DOI + ")";
 		}
 	}
 

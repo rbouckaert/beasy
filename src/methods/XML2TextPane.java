@@ -43,6 +43,7 @@ import beast.evolution.tree.Tree;
 import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
 import beast.util.XMLParser;
+import methods.CitationPhrase.mode;
 import methods.implementation.BEASTObjectMethodsText;
 import beast.core.MCMC;
 import beast.core.Operator;
@@ -153,7 +154,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 					String reference = citation.toReference();
 					completePhrase(b, reference + "\n\n");
 				} catch (Exception e) {
-					e.printStackTrace();
+					completePhrase(b, "Unknown reference " + e.getMessage() + " \n\n");
 				}
 			}
 		}
@@ -330,9 +331,9 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 	private void addAnalysisIdentifier(StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
-		m.add(new Phrase("This analysis is for BEAST 2 ("));
-		m.add(new CitationPhrase("10.1371/journal.pcbi.1003537"));
-		m.add(new Phrase(").\n\n"));
+		m.add(new Phrase("This analysis is for BEAST 2"));
+		m.add(CitationPhrase.createCitationPhrase("10.1371/journal.pcbi.1003537"));
+		m.add(new Phrase(".\n\n"));
     	b.append(Phrase.toString(m));
         //Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
 		m.clear();
@@ -767,7 +768,12 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	}
 
 	public static void main(String[] args) throws Exception {
-        final XML2TextPane textPane = new XML2TextPane(args);
+		if (System.getProperty("beasy.style") != null) {
+			String style = System.getProperty("beasy.style");
+			CitationPhrase.CitationMode = mode.valueOf(style);
+		}
+
+		final XML2TextPane textPane = new XML2TextPane(args);
         
         JScrollPane paneScrollPane = new JScrollPane(textPane);
         paneScrollPane.setVerticalScrollBarPolicy(

@@ -1,6 +1,6 @@
 #export H=/Users/remco/workspace
 #export CP=`perl t.pl`:$H/beasy/build
-export CP=`perl -e '$s = system("grep","BEAST","/Users/remco/.beast/beauti.properties");$s =~ s/\\\\\\\\//g;$s =~ s/.*=//;print $s;'`:/Users/remco/beasy/build
+export CP=`perl -e '$s = system("grep","BEAST","/Users/remco/.beast/beauti.properties");$s =~ s/\\\\\\\\//g;$s =~ s/.*=//;print $s;'`:/Users/remco/workspace/beasy/build
 
 java -cp "$CP" methods.XML2TextPane SkylinePlots/hcv_bdsky.xml SkylinePlots/hcv_bdsky.txt
 
@@ -50,6 +50,22 @@ java -cp "$CP" methods.XML2TextPane SubstModelAveraging/primate-mtDNA-bMT.xml Su
 
 for s in */*.txt; do java -cp "$CP" methods.XML2TextPane ${s%.txt}.xml $s; done
 
-for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/$s; done
+for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/text/$s; done
 
-for s in */*.txt; do cp $s ../test/$s; done
+for s in */*.txt; do cp $s ../test/text/$s; done
+
+
+
+for s in */*.txt; do java -Dbeasy.style=bibtex -cp "$CP" methods.XML2TextPane ${s%.txt}.xml $s; done
+
+for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/latex/$s; done
+
+for s in */*.txt; do cp $s ../test/latex/$s; done
+
+
+
+for s in */*.txt; do java -Dbeasy.style=markdown -cp "$CP" methods.XML2TextPane ${s%.txt}.xml $s; done
+
+for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/markdown/$s; done
+
+for s in */*.txt; do cp $s ../test/markdown/$s; done
