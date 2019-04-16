@@ -47,9 +47,9 @@ beast.mascot.dynamics.Constant," constant population using population size ",Ne,
 "NewickTree.t:$(n)","Newick starting tree"
 
 "StrictClock.c:$(n)","strict clock"," with clock rate @clock.rate","clock.rate"
-"ExponentialRelaxedClock.c:$(n)","uncorrelated exponential relaxed clock"," with clock rate @clock.rate","clock.rate"
-"RelaxedClock.c:$(n)","uncorrelated log-normal relaxed clock"," with clock rate @clock.rate","clock.rate"," and standard deviation ","ucldStdev.c:$(n)"
-"RandomLocalClock.c:$(n)","random local clock"," with clock rate @clock.rate","clock.rate"
+"ExponentialRelaxedClock.c:$(n)","uncorrelated exponential relaxed clock (","cite(ExponentialRelaxedClock.c:$(n))",") with clock rate @clock.rate","clock.rate"
+"RelaxedClock.c:$(n)","uncorrelated log-normal relaxed clock (","cite(RelaxedClock.c:$(n))",") with clock rate @clock.rate","clock.rate"," and standard deviation ","ucldStdev.c:$(n)"
+"RandomLocalClock.c:$(n)","random local clock (","cite(RandomLocalClock.c:$(n))",") with clock rate @clock.rate","clock.rate"
 
 "JC69.s:$(n)","Jukes Cantor"," substitution model (","cite(JC69.s:$(n))",")"
 "hky.s:$(n)","HKY"," substitution model (","cite(hky.s:$(n))",") with kappa @kappa","kappa.s:$(n)"," and ","frequencies"

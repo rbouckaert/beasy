@@ -124,7 +124,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 		addAnalysisIdentifier(b);
 		
-		addPartitionDescription(b);
+		addPartitionSection(b);
 				
 		addSiteModelDescription(b, posterior);
         
@@ -132,12 +132,12 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 		addTreePrior(b, posterior);
 
-		// has FixMeanMutationRatesOperator?
         addFixMeanMutationRatesOperator(mcmc, b);
 
         addOtherInformation(b, posterior);
         
-
+        addReferenceSection(b);
+        
         cleanText(b.toString());
         
 		Log.warning(text);
@@ -145,12 +145,28 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 				
 	}
 	
+	private void addReferenceSection(StringBuilder b) {
+		if (CitationPhrase.citations.size() > 0) {
+			completePhrase(b, "\nReferences:\n");
+			for (CitationPhrase citation : CitationPhrase.citations.values()) {
+				try {
+					String reference = citation.toReference();
+					completePhrase(b, reference + "\n\n");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+
 	private void cleanText(String b) {
 		text = b;
 		// clean up
 		text = text.replaceAll("  ", " ");
 		text = text.replaceAll("\n\n", "\n");
-		text = text.replaceAll("\\s([\\.,\\)])", "$1");
+		text = text.replaceAll("\\s([\\.,\\)\\}\\]])", "$1");
+		text = text.replaceAll("([\\[\\{\\(])\\s", "$1");
 		for (char c : new char[]{'a','e','i','o','u'}) {
 			text = text.replaceAll(" a " + c, " an " + c);					
 		}				
@@ -314,6 +330,13 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 	private void addAnalysisIdentifier(StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
+		m.add(new Phrase("This analysis is for BEAST 2 ("));
+		m.add(new CitationPhrase("10.1371/journal.pcbi.1003537"));
+		m.add(new Phrase(").\n\n"));
+    	b.append(Phrase.toString(m));
+        //Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+		m.clear();
+		
 		methods.BeautiSubTemplateMethodsText.initialise();
 		for (String analysisIdentifier : methods.BeautiSubTemplateMethodsText.analysisIdentifiers) {
 			if (beautiDoc.pluginmap.containsKey(analysisIdentifier)) {
@@ -363,7 +386,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
 	}
 
-	private void addPartitionDescription(StringBuilder b) {
+	private void addPartitionSection(StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
 
 		List<BEASTInterface> parts = beautiDoc.getPartitions("Partitions");
@@ -491,6 +514,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
      }
 
 
+	// has FixMeanMutationRatesOperator? If so, say so.
 	private void addFixMeanMutationRatesOperator(MCMC mcmc, StringBuilder b) {
 		List<Phrase> m = new ArrayList<>();
         for (Operator op : mcmc.operatorsInput.get()) {

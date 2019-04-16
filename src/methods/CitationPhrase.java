@@ -1,10 +1,12 @@
 package methods;
 
-import java.util.List;
+import java.util.*;
 
 import beast.core.*;
 
 public class CitationPhrase extends Phrase {
+	static public Map<String,CitationPhrase> citations = new LinkedHashMap<>();
+	
 	String DOI;
 	Citation citation;
 	
@@ -26,12 +28,14 @@ public class CitationPhrase extends Phrase {
 				}
 			}
 		}
+		citations.put(DOI,this);
 	}
 
 	public CitationPhrase(String DOI) {
 		super(DOI);
 		this.DOI = DOI;		
 		setText(toString());
+		citations.put(DOI,this);
 	}
 	
 	@Override
@@ -117,5 +121,21 @@ public class CitationPhrase extends Phrase {
 		} catch (Exception e) {
 			return "\\cite{" + DOI + "}";
 		}
+	}
+
+	public String toReference() throws Exception {
+		switch (CitationMode) {
+		case none:
+			return "";
+		case bibtex:
+			return DOI2Citation.resolve(DOI);
+		case text:
+			return DOI2Citation.resolve(DOI, "apa");
+		case markdown:
+			String ref = markdownRef();
+			ref = ref.substring(2, ref.length() - 1);
+			return ref + ": " + DOI2Citation.resolve(DOI, "apa");
+		}
+		return "";		
 	}
 }

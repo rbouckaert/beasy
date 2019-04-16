@@ -48,14 +48,14 @@ public class BeautiSubTemplateMethodsText {
             }
         }
         
-        String METHODS_CFG = "methods.cfg";
+        String METHODS_CSV = "methods.csv";
 
         // read methods.cfg, try all template directories
         Set<String> alreadySpecified = new LinkedHashSet<>();
         for (String dirName : dirs) {
-            File cfgFile = new File(dirName + fileSep + METHODS_CFG);
+            File cfgFile = new File(dirName + fileSep + METHODS_CSV);
             if (!cfgFile.exists()) {
-                cfgFile = new File(dirName + fileSep + "templates" + fileSep + METHODS_CFG);
+                cfgFile = new File(dirName + fileSep + "templates" + fileSep + METHODS_CSV);
             }
             if (cfgFile.exists()) {
             	try {
