@@ -9,6 +9,7 @@ public class CitationPhrase extends Phrase {
 	
 	String DOI;
 	Citation citation;
+	int counter;
 	
 	public enum mode {none,bibtex,markdown,text}
 	
@@ -45,25 +46,28 @@ public class CitationPhrase extends Phrase {
 				citation = c.get(0);
 				DOI = citation.DOI();
 				if (DOI != null) {
+					counter = citations.size() + 1;
 					setText(toString());
 				}
 			}
 		}
 		citations.put(DOI,this);
+		counter = citations.size();
 	}
 
 	private CitationPhrase(String DOI) {
 		super(DOI);
 		this.DOI = DOI;		
-		setText(toString());
 		citations.put(DOI,this);
+		counter = citations.size();
+		setText(toString());
 	}
 	
 	@Override
 	public String toString() {
 		switch (CitationMode) {
 		case none:
-			return "";
+			return "[" + counter + "]";
 		case bibtex:
 			return bibtexRef();
 		case text:
@@ -147,7 +151,7 @@ public class CitationPhrase extends Phrase {
 	public String toReference() throws Exception {
 		switch (CitationMode) {
 		case none:
-			return "";
+			return counter + ": " + DOI2Citation.resolve(DOI, "apa");
 		case bibtex:
 			return DOI2Citation.resolve(DOI);
 		case text:

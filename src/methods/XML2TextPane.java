@@ -55,6 +55,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	BeautiDoc beautiDoc;
 	String text;
 	
+	List<Phrase> m;
+	
 	public XML2TextPane(String [] args) throws Exception {
 		beautiDoc = new BeautiDoc();
 		File file = new File(args[0]);
@@ -122,39 +124,44 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	public void initialise(MCMC mcmc) throws Exception {
         CompoundDistribution posterior = (CompoundDistribution) mcmc.posteriorInput.get();
 		StringBuilder b = new StringBuilder();
+		m = new ArrayList<>();
 
-		addAnalysisIdentifier(b);
+		addAnalysisIdentifier();
 		
-		addPartitionSection(b);
+		addPartitionSection();
 				
-		addSiteModelDescription(b, posterior);
+		addSiteModelDescription(posterior);
         
-		addClockModelDescription(b, posterior);
+		addClockModelDescription(posterior);
 
-		addTreePrior(b, posterior);
+		addTreePrior(posterior);
 
-        addFixMeanMutationRatesOperator(mcmc, b);
+        addFixMeanMutationRatesOperator(mcmc);
 
-        addOtherInformation(b, posterior);
+        addOtherInformation(posterior);
         
-        addReferenceSection(b);
+        addReferenceSection();
         
-        cleanText(b.toString());
+        cleanText(Phrase.toString(m));
+        
+        
+        Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+        
         
 		Log.warning(text);
 		Log.warning("Done!");
 				
 	}
 	
-	private void addReferenceSection(StringBuilder b) {
+	private void addReferenceSection() {
 		if (CitationPhrase.citations.size() > 0) {
-			completePhrase(b, "\nReferences:\n");
+			completePhrase("\nReferences:\n");
 			for (CitationPhrase citation : CitationPhrase.citations.values()) {
 				try {
 					String reference = citation.toReference();
-					completePhrase(b, reference + "\n\n");
+					completePhrase(reference + "\n\n");
 				} catch (Exception e) {
-					completePhrase(b, "Unknown reference " + e.getMessage() + " \n\n");
+					completePhrase("Unknown reference " + e.getMessage() + " \n\n");
 				}
 			}
 		}
@@ -175,7 +182,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 
 	/** any priors other than parameter and tree priors? **/
-	private void addOtherInformation(StringBuilder b, CompoundDistribution posterior) {
+	private void addOtherInformation(CompoundDistribution posterior) {
 		List<Phrase> m = new ArrayList<>();
 
         List<String> others = new ArrayList<>();
@@ -192,21 +199,21 @@ public class XML2TextPane extends JTextPane implements ActionListener {
             }
         }
     	if (others.size() > 0) {
-    		completePhrase(b, "\nOther information:\n");
+    		completePhrase("\nOther information:\n");
     		String longestPostfix = getLongestPostix(others);
 
 			for (String other : others) {
-				completePhrase(b, other.substring(0, other.length() - longestPostfix.length()).trim());
-        		addDot(b);
+				completePhrase(other.substring(0, other.length() - longestPostfix.length()).trim());
+        		addDot();
 			}
         	if (longestPostfix.length() != 0) {
-        		completePhrase(b, "All have " + longestPostfix.substring(1));
+        		completePhrase("All have " + longestPostfix.substring(1));
         	}
     	}
 	}
 
 
-	private void addTreePrior(StringBuilder b, CompoundDistribution posterior) {
+	private void addTreePrior(CompoundDistribution posterior) {
 		List<Phrase> m = new ArrayList<>();
 
         // tree priors        
@@ -234,8 +241,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         				"ages not dates" : "dates not ages";
          		m.add(1, new Phrase(" dated tips (in " + direction + ") "));
         	}
-        	b.append(Phrase.toString(m));
-            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+            addPhrases(m);
         } else if (beautiDoc.pluginmap.containsKey("Tree.t:Species")) {
         	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get("Tree.t:Species");
         	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
@@ -248,8 +254,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	        	}
         	}
         	m.add(0, new Phrase("\nTree prior: "));
-        	b.append(Phrase.toString(m));
-            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);        	
+            addPhrases(m);        	
         } else {
 	        for (TreeInterface tree : trees) {
 	        	m = MethodsTextFactory.getModelDescription(tree, null, null, beautiDoc);
@@ -260,17 +265,16 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	        		m.add(1, new Phrase("Tree " + tree.getID() +" has dated tips (in " + direction + ")."));
 	        	}
 	        	m.add(0, new Phrase("\nTree prior: "));
-	        	b.append(Phrase.toString(m));
-	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+	            addPhrases(m);
 	        }
         }
         
-        addDot(b);
+        addDot();
  		
 	}
 
 
-	private void addSiteModelDescription(StringBuilder b, CompoundDistribution posterior) {
+	private void addSiteModelDescription(CompoundDistribution posterior) {
         // collect model descriptions of all partitions
         List<String> partitionIDs = new ArrayList<>();
         List<String> smPartitionIDs = new ArrayList<>();
@@ -295,12 +299,12 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         }
         
         // amalgamate partitions
-        amalgamate(siteModels, partitionIDs, smPartitionIDs, b);
-        addDot(b);
+        amalgamate(siteModels, partitionIDs, smPartitionIDs);
+        addDot();
 	}
 
 
-	private void addClockModelDescription(StringBuilder b, CompoundDistribution posterior) {
+	private void addClockModelDescription(CompoundDistribution posterior) {
         // collect model descriptions of all partitions
         List<String> partitionIDs = new ArrayList<>();
         List<String> cmPartitionIDs = new ArrayList<>();
@@ -325,17 +329,16 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         }
         
         // amalgamate partitions
-        amalgamate(clockModels, partitionIDs, cmPartitionIDs, b);
-        addDot(b);
+        amalgamate(clockModels, partitionIDs, cmPartitionIDs);
+        addDot();
 	}
 
-	private void addAnalysisIdentifier(StringBuilder b) {
+	private void addAnalysisIdentifier() {
 		List<Phrase> m = new ArrayList<>();
 		m.add(new Phrase("This analysis is for BEAST 2"));
 		m.add(CitationPhrase.createCitationPhrase("10.1371/journal.pcbi.1003537"));
 		m.add(new Phrase(".\n\n"));
-    	b.append(Phrase.toString(m));
-        //Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+        addPhrases(m);
 		m.clear();
 		
 		methods.BeautiSubTemplateMethodsText.initialise();
@@ -343,9 +346,8 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 			if (beautiDoc.pluginmap.containsKey(analysisIdentifier)) {
 	        	BEASTInterface speciesTree = (BEASTInterface) beautiDoc.pluginmap.get(analysisIdentifier);
 	        	m = MethodsTextFactory.getModelDescription(speciesTree, null, null, beautiDoc);
-	        	b.append(Phrase.toString(m));
-	            Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
-				addDot(b);
+	            addPhrases(m);
+				addDot();
 				m.clear();
 			}
 		}
@@ -374,23 +376,11 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	}
 
 
-	private void addDot(StringBuilder b) {
-		completePhrase(b, ".\n\n");
-	}
-
-	private void completePhrase(StringBuilder b, String str) {
-        b.append(str);
-        List<Phrase> [] phrases = new List[1];
-		List<Phrase> m = new ArrayList<>();
-		m.add(new Phrase(str));
-    	phrases[0] = m;
-        Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
-	}
-
-	private void addPartitionSection(StringBuilder b) {
+	private void addPartitionSection() {
 		List<Phrase> m = new ArrayList<>();
 
 		List<BEASTInterface> parts = beautiDoc.getPartitions("Partitions");
+		StringBuilder b = new StringBuilder();
 		if (parts.size() == 1) {
 			b.append("There is one alignment with ");
 			Alignment data = (Alignment) parts.get(0);
@@ -415,13 +405,13 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		}
 		b.append("\n");
 		m.add(new PartitionPhrase(b.toString()));
-        Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
+        addPhrases(m);
 		
 	}
 
 
 	private void amalgamate(List<List<Phrase>> models, List<String> partitionIDs, 
-			List<String> xPartitionIDs, StringBuilder b) {
+			List<String> xPartitionIDs) {
 		List<Phrase> m = new ArrayList<>();
 
 		for (int i = 0; i < partitionIDs.size(); i++) {
@@ -480,7 +470,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 	}
                 	m.add(new PartitionPhrase(b2.toString()));
                 	b2.append(model);
-                	b.append(b2.toString());
+                	//b.append(b2.toString());
                 } else if (currentPartitionIDs.size() > 1) {
                 	StringBuilder b2 = new StringBuilder();
                 	b2.append("\nPartitions ");
@@ -496,28 +486,27 @@ public class XML2TextPane extends JTextPane implements ActionListener {
                 	}
                 	m.add(new PartitionPhrase(b2.toString()));
                 	b2.append(model);
-                	b.append(b2.toString());
+                	//b.append(b2.toString());
 
                 } else {
                 	m.add(new PartitionPhrase("\nPartition " + currentPartitionIDs.get(0) + " has a "));
-                	b.append("\nPartitions " + currentPartitionIDs.get(0) + " has a " + model);                	
+                	//b.append("\nPartitions " + currentPartitionIDs.get(0) + " has a " + model);                	
                 }
                 
                 if (model.trim().length() > 0) {
-                	List<Phrase> [] phrases = new List[1];
-                	phrases[0] = m;
-                	Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, phrases);
+                	addPhrases(m);
                 }
 
-                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, selected.toArray(new List[]{}));
+                addPhraseSet(selected);
         	}
         }
      }
 
 
 	// has FixMeanMutationRatesOperator? If so, say so.
-	private void addFixMeanMutationRatesOperator(MCMC mcmc, StringBuilder b) {
+	private void addFixMeanMutationRatesOperator(MCMC mcmc) {
 		List<Phrase> m = new ArrayList<>();
+		StringBuilder b = new StringBuilder();
         for (Operator op : mcmc.operatorsInput.get()) {
         	if (op.getID().equals("FixMeanMutationRatesOperator")) {
                 List<String> partitionIDs = new ArrayList<>();
@@ -532,10 +521,27 @@ public class XML2TextPane extends JTextPane implements ActionListener {
         		b.append("are estimated");
         		m.clear();
         		m.add(new Phrase(b.toString()));
-                Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
-                addDot(b);
+                addPhrases(m);
+                addDot();
         	}
         }
+	}
+
+
+	private void addPhrases(List<Phrase> m) {
+		this.m.addAll(m);		
+	}
+
+	private void addPhraseSet(List<List<Phrase>> selected) {
+		addPhrases(selected.get(0));
+	}
+
+	private void addDot() {
+		m.add(new Phrase(".\n\n"));
+	}
+
+	private void completePhrase(String str) {
+		m.add(new Phrase(str));
 	}
 
 
