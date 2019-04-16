@@ -742,7 +742,6 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 		return XML2TextPane.printParitions(partitionIDs, -1);	
 	}
 
-
 	public static void main(String[] args) throws Exception {
         final XML2TextPane textPane = new XML2TextPane(args);
         

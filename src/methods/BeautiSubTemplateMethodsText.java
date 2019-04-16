@@ -124,6 +124,22 @@ public class BeautiSubTemplateMethodsText {
 				str = match[i];
 				if (str.equals("id") && o instanceof BEASTInterface) {
 					m.add(new Phrase(((BEASTInterface)o).getID()));					
+				} else if (str.startsWith("cite(")) {
+					str = str.substring(5, str.length() - 1);
+					
+					if (str.contains("$(n)")) {
+						beast.app.beauti.PartitionContext partition = doc.getContextFor(bi);
+						str = BeautiDoc.translatePartitionNames(str, partition);
+						BEASTInterface o2 = doc.pluginmap.get(str);
+						m.add(new CitationPhrase(o2));
+					} else if (doc.pluginmap.containsKey(str) && !(doc.pluginmap.get(str) instanceof beast.app.beauti.BeautiSubTemplate)) {
+						BEASTInterface o2 = doc.pluginmap.get(str);
+						m.add(new CitationPhrase(o2));
+					} else {
+						// assume it is a DOI
+						m.add(new CitationPhrase(str));
+					}
+					
 				} else if (str.contains("$(n)")) {
 					beast.app.beauti.PartitionContext partition = doc.getContextFor(bi);
 					str = BeautiDoc.translatePartitionNames(str, partition);
