@@ -283,34 +283,91 @@ public class Phrase {
     }
 	
 	
-	static public String toHTML(List<Phrase> [] phrases) {
+	static String toHTML(BeautiDoc beautiDoc, List<Phrase> basePhrases) {
+		
 		StringBuilder b = new StringBuilder();
-		List<Phrase> basePhrases = phrases[0];
+		
 		for (int i = 0; i < basePhrases.size(); i++) {
 			Phrase phrase = basePhrases.get(i);
-			b.append(phrase.toString());
 
-			if (phrase.source instanceof StateNode && ((StateNode) phrase.source).isEstimatedInput.get()) {
-				Set<String> ids = new LinkedHashSet<>();
-				for (int j = 0; j < phrases.length; j++) {
-					String id = ((StateNode)phrases[j].get(i).source).getID();
-					id = BeautiDoc.parsePartition(id);
-					ids.add(id);
+			if (phrase instanceof PartitionPhrase) {
+				
+				b.append("<a href='/cmd=PartitionEditor'>" + phrase.toHTML() + "</a>\n");
+
+			} else if (phrase instanceof CitationPhrase) {
+				int counter = ((CitationPhrase)phrase).counter;
+	        	String ref = "unknown";
+				try {
+					ref = ((CitationPhrase)phrase).toReference();
+				} catch (Exception e) {
 				}
-				List<String> ids2 = new ArrayList<>();
-				ids2.addAll(ids);
-				b.append("(" + XML2TextPane.printParitions(ids2).trim() +")");					
-			}
-		}
-		return b.toString();
-	}
+				b.append("<sup><a href='/cmd/CitationPhrase counter=" + counter+ "'>[" + counter + "]</a></sup>");
+//						"<div class='tooltip'><sup>"
+//						+  +
+//						  "<span class='tooltiptext'>" + ref + "</span>" +
+//						"</div>\n");
+			} else if (phrase.source instanceof RealParameter) {
+				b.append(" <a href='/cmd/RealParameter id=" + ((BEASTInterface) phrase.source).getID()+ "'>" + phrase.toString() + "</a>");
+
+			} else if (phrase.parent != null && phrase.parent instanceof Parameter<?> && phrase.input.getName().equals("value")) {
+				String source = phrase.parent.getID() + " " + phrase.input.getName();
+		        String text = phrase.source.toString();
+		        text = text.substring(1, text.length() - 1);
+				b.append("<input size='5' onkeyup='window.location=\"/val=\"+value+\" source=" + source +"' value='" + text +"'/>");
+
+			} else if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
+		        InputEditorFactory inputEditorFactory = beautiDoc.getInputEditorFactory();
+		        List<BeautiSubTemplate> plugins = inputEditorFactory.getAvailableTemplates(phrase.input, phrase.parent, null, beautiDoc);
+		        if (plugins.size() > 0) {
+		        	StringBuilder b2 = new StringBuilder();
+		        	b2.append("<select onchange='window.location=\"/cmd=select val=\"+value+\" source="+ phrase.parent.getID() + " " + phrase.input.getName() + "\"'>");
+
+			        String id = ((BEASTInterface)phrase.source).getID();
+                    if (id != null && id.indexOf('.') != -1) {
+                    	id = id.substring(0,  id.indexOf('.'));
+                    }
+                    boolean isSelected = false;
+                    for (int k = 0; k < plugins.size(); k++) {
+                        BeautiSubTemplate template = plugins.get(k);
+                        if (template.getMainID().replaceAll(".\\$\\(n\\)", "").equals(id) ||
+                        		template.getMainID().replaceAll(".s:\\$\\(n\\)", "").equals(id) || 
+                        		template.getMainID().replaceAll(".c:\\$\\(n\\)", "").equals(id) || 
+                        		template.getMainID().replaceAll(".t:\\$\\(n\\)", "").equals(id) ||
+                        		(template.getShortClassName() != null && template.getShortClassName().equals(id))) {
+                        	b2.append("<option selected='true' value='" + template.toString() +"'>" + template.toString() + "</option>\n");
+                        	isSelected = true;
+                        } else {
+                        	b2.append("<option value='" + template.toString() +"'>" + template.toString() + "</option>\n");
+                        }
+                    }
+                    b2.append("</select>\n");
 	
+			        if (isSelected) {
+						b.append(b2.toString());					
+			        } else {
+						b.append(phrase.toHTML());					
+			        }
+		        } else {
+					b.append(phrase.toHTML());					
+		        }
+			} else {
+				b.append(phrase.toHTML());					
+			}
+		}	
+		
+		return b.toString();
+    }
+	
+
 	
 	@Override
 	public String toString() {
 		return text;
 	}
 
+	public String toHTML() {
+		return text.replaceAll("\n", "\n<p>");
+	}
 
 	public void setInputX(BEASTInterface parent, Input<?> input) {
 		this.parent = parent;

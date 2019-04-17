@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -105,8 +106,8 @@ public class XML2HTMLPane extends JPanel {
 			"<style>\n" +
 			".tooltip {\n" +
 			"  position: relative;\n" +
-			"  display: inline-block;\n" +
-			"  border-bottom: 1px dotted black;\n" +
+//			"  display: inline-block;\n" +
+//			"  border-bottom: 1px dotted black;\n" +
 			"}\n" +
 			"\n" +
 			".tooltip .tooltiptext {\n" +
@@ -126,29 +127,23 @@ public class XML2HTMLPane extends JPanel {
 			"  transition: opacity 0.3s;\n" +
 			"}\n" +
 			"\n" +
-			".tooltip .tooltiptext::after {\n" +
-			"  content: \"\";\n" +
-			"  position: absolute;\n" +
-			"  top: 100%;\n" +
-			"  left: 50%;\n" +
-			"  margin-left: -5px;\n" +
-			"  border-width: 5px;\n" +
-			"  border-style: solid;\n" +
-			"  border-color: #555 transparent transparent transparent;\n" +
-			"}\n" +
-			"\n" +
 			".tooltip:hover .tooltiptext {\n" +
 			"  visibility: visible;\n" +
 			"  opacity: 1;\n" +
 			"}\n" +
-			"</style>";
+			"</style>\n<body>\n";
 	
 	public void initialise(MCMC mcmc) throws Exception {		
 		xml2textProducer = new XML2Text(beautiDoc);
 		xml2textProducer.initialise((MCMC) beautiDoc.mcmc.get());
 		m = xml2textProducer.getPhrases();
 		
-		html = header + Phrase.toString(m).replaceAll("\n", "<p>");
+		html = header + Phrase.toHTML(beautiDoc, m) + "</body>\n</html>";
+		
+        FileWriter outfile = new FileWriter("/tmp/index.html");
+        outfile.write(html);
+        outfile.close();
+		
 		updateState(html);
 	}
 
