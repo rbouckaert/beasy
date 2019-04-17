@@ -48,24 +48,11 @@ java -cp "$CP" methods.XML2TextPane SubstModelAveraging/primate-mtDNA-bMT.xml Su
 #java -cp "$CP" methods.XML2TextPane StructuredCoalescent/MTT.xml StructuredCoalescent/MTT.txt
 
 
-for s in */*.txt; do java -cp "$CP" methods.XML2TextPane ${s%.txt}.xml $s; done
+for s in */*.txt; do java -cp "$CP" methods.XML2Text -xml ${s%.txt}.xml -out $s; done
 
-for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/text/$s; done
+for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/$s; done
 
-for s in */*.txt; do cp $s ../test/text/$s; done
+for s in */*.txt; do cp $s ../test/$s; done
 
+for s in */*.txt; do java -cp "$CP" methods.XML2Text -xml ${s%.txt}.xml -out $s -citationMode none; done
 
-
-for s in */*.txt; do java -Dbeasy.style=bibtex -cp "$CP" methods.XML2TextPane ${s%.txt}.xml $s; done
-
-for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/latex/$s; done
-
-for s in */*.txt; do cp $s ../test/latex/$s; done
-
-
-
-for s in */*.txt; do java -Dbeasy.style=markdown -cp "$CP" methods.XML2TextPane ${s%.txt}.xml $s; done
-
-for s in */*.txt; do echo $s;diff ../ttb-xml/$s ../test/markdown/$s; done
-
-for s in */*.txt; do cp $s ../test/markdown/$s; done

@@ -196,7 +196,7 @@ public class BeautiSubTemplateMethodsText {
 				input2 = hasInput(bi, strs[1]);
 				m.add(new Phrase(input2.get(), bi, input2, strs[0]));
 			} else {
-				m.add(new Phrase(str));
+				m.add(new Phrase(o, parentX, inputX, str));
 			}
 		}		
 	}

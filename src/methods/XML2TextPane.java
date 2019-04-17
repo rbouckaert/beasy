@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.PrintStream;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import javax.swing.*;
@@ -29,24 +28,12 @@ import beast.app.draw.InputEditor;
 import beast.app.draw.InputEditor.ExpandOption;
 import beast.core.BEASTInterface;
 import beast.core.Description;
-import beast.core.Distribution;
 import beast.core.Input;
-import beast.core.StateNode;
 import beast.core.parameter.RealParameter;
-import beast.core.util.CompoundDistribution;
-import beast.core.util.Log;
-import beast.evolution.alignment.Alignment;
-import beast.evolution.likelihood.GenericTreeLikelihood;
-import beast.evolution.operators.DeltaExchangeOperator;
-import beast.evolution.tree.TraitSet;
-import beast.evolution.tree.Tree;
-import beast.evolution.tree.TreeDistribution;
-import beast.evolution.tree.TreeInterface;
 import beast.util.XMLParser;
 import methods.CitationPhrase.mode;
 import methods.implementation.BEASTObjectMethodsText;
 import beast.core.MCMC;
-import beast.core.Operator;
 
 @Description("Convert MCMC analysis in XML file to a methods section")
 public class XML2TextPane extends JTextPane implements ActionListener {
@@ -116,6 +103,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 //		beautiDoc.save("/tmp/beast.xml");		
 		beautiDoc.determinePartitions();
 		beautiDoc.scrubAll(false, false);
+		CitationPhrase.citations.clear();
 
 		StyledDocument doc = getStyledDocument();
 		doc.remove(0, doc.getLength());
@@ -126,15 +114,10 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	}
 	
 	public void initialise(MCMC mcmc) throws Exception {		
-		
+		xml2textProducer = new XML2Text(beautiDoc);
 		text = xml2textProducer.initialise((MCMC) beautiDoc.mcmc.get());
 		m = xml2textProducer.getPhrases();
         Phrase.addTextToDocument(getStyledDocument(), this, beautiDoc, m);
-        
-        
-		Log.warning(text);
-		Log.warning("Done!");
-				
 	}
 
 	@Override
@@ -155,9 +138,24 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 			editPartition(e);
 		} else if (cmd.startsWith("RealParameter")) {
 			editRealParameter(e);
+		} else if (cmd.startsWith("CitationPhrase")) {
+			showCitation(e);
 		}
 		
 	}
+
+	private void showCitation(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		String citation = cmd.substring(cmd.indexOf(' ') + 1);
+    	JTextArea textArea = new JTextArea(citation);
+    	textArea.setLineWrap(true);
+    	textArea.setRows(5);
+    	textArea.setColumns(50);
+    	textArea.setEditable(true);
+    	JScrollPane scroller = new JScrollPane(textArea);
+    	JOptionPane.showMessageDialog(this, scroller);
+	}
+
 
 	private void editRealParameter(ActionEvent e) {
 		String cmd = e.getActionCommand();

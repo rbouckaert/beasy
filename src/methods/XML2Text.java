@@ -50,6 +50,12 @@ public class XML2Text extends Runnable {
 	private List<Phrase> m;
 	
 	
+	public XML2Text() {}
+	
+	public XML2Text(BeautiDoc beautiDoc) {
+		this.beautiDoc = beautiDoc;
+	}
+	
 	@Override
 	public void initAndValidate() {
 	}
@@ -415,11 +421,19 @@ public class XML2Text extends Runnable {
                 if (selected.size() > 0) {
 	                for (int k = 0; k < selected.get(0).size(); k++) {
 	                	Object source = models.get(i).get(k).source;
-	                	Set<Phrase> set = MethodsText.partitionGroupMap.get(source);
-	                	for (int j = 0; j < selected.size(); j++) {
-	                		Phrase phrase = selected.get(j).get(k);
-	                		set.add(phrase);
-	                		MethodsText.partitionGroupMap.put(phrase.source, set);	                		
+	                	if (source != null) {
+		                	Set<Phrase> set = MethodsText.partitionGroupMap.get(source);
+		                	if (set != null) {
+			                	for (int j = 0; j < selected.size(); j++) {
+			                		Phrase phrase = selected.get(j).get(k);
+			                		set.add(phrase);
+			                		MethodsText.partitionGroupMap.put(phrase.source, set);	                		
+			                	}
+		                	} else {
+		                		int h = 3;
+		                		h++;
+		                	}
+		                	
 	                	}
 	                }
                 }
