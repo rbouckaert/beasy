@@ -15,7 +15,6 @@ import java.util.List;
 
 import javafx.application.*;
 import javafx.beans.value.*;
-import javafx.collections.*;
 import javafx.concurrent.*;
 import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
@@ -30,12 +29,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.swing.text.StyledDocument;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventListener;
-import org.xml.sax.SAXException;
 
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
@@ -43,7 +41,6 @@ import beast.app.beauti.InputFilter;
 import beast.core.BEASTInterface;
 import beast.core.MCMC;
 import beast.util.XMLParser;
-import beast.util.XMLParserException;
 
 
 public class XML2HTMLPane extends JPanel {
@@ -238,6 +235,20 @@ public class XML2HTMLPane extends JPanel {
 							public void run() {
 								System.out.println("status changed:");
 								System.out.println(event.getData());
+//								ModelEditor me = new ModelEditor();
+//								if (me.handleCmd(event.getData(), beautiDoc, panel)) {
+//									beautiDoc.determinePartitions();
+//									beautiDoc.scrubAll(false, false);
+//									CitationPhrase.citations.clear();
+//
+//									MethodsText.clear();
+//									try {
+//										initialise((MCMC) beautiDoc.mcmc.get());
+//									} catch (Exception e) {
+//										// TODO Auto-generated catch block
+//										e.printStackTrace();
+//									}
+//								}
 							}
 						});
 					}
@@ -251,6 +262,20 @@ public class XML2HTMLPane extends JPanel {
 							public void run() {
 								System.out.println("changed:");
 								System.out.println(newValue);
+								ModelEditor me = new ModelEditor();
+								if (me.handleCmd(newValue, beautiDoc, panel)) {
+									beautiDoc.determinePartitions();
+									beautiDoc.scrubAll(false, false);
+									CitationPhrase.citations.clear();
+
+									MethodsText.clear();
+									try {
+										initialise((MCMC) beautiDoc.mcmc.get());
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
 							}
 						});
 					}
@@ -302,7 +327,15 @@ public class XML2HTMLPane extends JPanel {
 		});
 	}
 
+	public void refreshText()  throws Exception {
+		beautiDoc.determinePartitions();
+		beautiDoc.scrubAll(false, false);
+		CitationPhrase.citations.clear();
 
+		MethodsText.clear();
+		initialise((MCMC) beautiDoc.mcmc.get());
+	}
+	
 	/**
 	 * change html text and enable/disable buttons (where appropriate) *
 	 */

@@ -127,7 +127,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
     	} if (e.getSource() instanceof JComboBox) {
     		handleComboBox(e);
     	} else if (e.getSource() instanceof JTextField) {
-    		handleTextFeild(e);
+    		handleTextField(e);
     		
     	}
     }
@@ -287,7 +287,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 	}
 
 
-	private void handleTextFeild(ActionEvent e) {
+	private void handleTextField(ActionEvent e) {
 		JTextField b = (JTextField) e.getSource();
 		String cmd = e.getActionCommand();
 		int k = cmd.lastIndexOf(' ');
