@@ -59,6 +59,8 @@ public class XML2HTMLPane extends JPanel {
 	String html;
 	List<Phrase> m;
 	XML2Text xml2textProducer;
+	
+	File tmpFile = null;
 
 	
 	public XML2HTMLPane(String [] args) throws Exception {
@@ -131,7 +133,7 @@ public class XML2HTMLPane extends JPanel {
 			"  visibility: visible;\n" +
 			"  opacity: 1;\n" +
 			"}\n" +
-			"</style>\n<body>\n";
+			"</style>\n<body style='font: 12pt arial, sans-serif;'>\n";
 	
 	public void initialise(MCMC mcmc) throws Exception {		
 		xml2textProducer = new XML2Text(beautiDoc);
@@ -162,7 +164,8 @@ public class XML2HTMLPane extends JPanel {
 		add(scroller, BorderLayout.CENTER);
 
 		try {
-			updateState(new URL("file://" + "/Users/remco/workspace/beasy/src/methods/index.html"));
+			//updateState(new URL("file://" + "/Users/remco/workspace/beasy/src/methods/index.html"));
+			updateState(new URL("file://" + "/tmp/index.html"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -208,9 +211,9 @@ public class XML2HTMLPane extends JPanel {
 							org.w3c.dom.Document doc = engine.getDocument();
 							Element el = doc.getElementById("a");
 							NodeList lista = doc.getElementsByTagName("a");
-							for (int i = 0; i < lista.getLength(); i++)
-								((org.w3c.dom.events.EventTarget) lista.item(i)).addEventListener("click", listener,
-										false);
+							for (int i = 0; i < lista.getLength(); i++) {
+								((org.w3c.dom.events.EventTarget) lista.item(i)).addEventListener("click", listener, false);
+							}
 						}
 					}
 				});
@@ -233,6 +236,7 @@ public class XML2HTMLPane extends JPanel {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override
 							public void run() {
+								System.out.println("status changed:");
 								System.out.println(event.getData());
 							}
 						});
@@ -304,10 +308,35 @@ public class XML2HTMLPane extends JPanel {
 	 */
 	void updateState(Object page) {
 		if (page instanceof String) {
+			try {
+				if (tmpFile == null) {
+					tmpFile = File.createTempFile("index", "html");
+				}
+				FileWriter outfile = new FileWriter(tmpFile);
+				outfile.write(html);
+				outfile.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					engine.loadContent(page.toString());
+					engine.load("file://" + tmpFile);					
+					engine.load("file://" + tmpFile);
+					
+					// the following does not appear to be
+					// able the handle select.onchanged events
+					// but loading from file does -- not sure why
+					//engine.loadContent((String)page);
+					//engine.setJavaScriptEnabled(true);
 				}
 			});
 			zoom(zoom);
@@ -358,6 +387,7 @@ public class XML2HTMLPane extends JPanel {
 		JFrame frame = new JFrame();
 		frame.setSize(700, 500);
 		frame.add(new XML2HTMLPane(args));
+//		frame.add(new XML2HTMLPane());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}

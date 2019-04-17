@@ -3,8 +3,11 @@ package methods;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
+import java.awt.geom.AffineTransform;
 import java.util.*;
 
 import javax.swing.BorderFactory;
@@ -320,12 +323,12 @@ public class Phrase {
 		        List<BeautiSubTemplate> plugins = inputEditorFactory.getAvailableTemplates(phrase.input, phrase.parent, null, beautiDoc);
 		        if (plugins.size() > 0) {
 		        	StringBuilder b2 = new StringBuilder();
-		        	b2.append("<select onchange='window.location=\"/cmd=select val=\"+value+\" source="+ phrase.parent.getID() + " " + phrase.input.getName() + "\"'>");
 
 			        String id = ((BEASTInterface)phrase.source).getID();
                     if (id != null && id.indexOf('.') != -1) {
                     	id = id.substring(0,  id.indexOf('.'));
                     }
+		        	int width = id.length() * 8;
                     boolean isSelected = false;
                     for (int k = 0; k < plugins.size(); k++) {
                         BeautiSubTemplate template = plugins.get(k);
@@ -335,14 +338,19 @@ public class Phrase {
                         		template.getMainID().replaceAll(".t:\\$\\(n\\)", "").equals(id) ||
                         		(template.getShortClassName() != null && template.getShortClassName().equals(id))) {
                         	b2.append("<option selected='true' value='" + template.toString() +"'>" + template.toString() + "</option>\n");
+                        	
+                        	FontRenderContext frc = new FontRenderContext(new AffineTransform(),true,true);     
+                        	Font font = new Font("Arial", Font.PLAIN, 12);
+                        	width = 17 + (int)(font.getStringBounds(template.toString(), frc).getWidth());
                         	isSelected = true;
                         } else {
                         	b2.append("<option value='" + template.toString() +"'>" + template.toString() + "</option>\n");
                         }
                     }
                     b2.append("</select>\n");
-	
+
 			        if (isSelected) {
+			        	b.append("<select style='width:" + width + "pt;color:#a0a;font: 12pt arial, sans-serif;border: 0px solid transparent;' onchange='window.location=\"/cmd=select val=\"+value+\" source="+ phrase.parent.getID() + " " + phrase.input.getName() + "\"'>");
 						b.append(b2.toString());					
 			        } else {
 						b.append(phrase.toHTML());					

@@ -10,35 +10,35 @@ auxTreePrior,beast.math.distributions.MultiMRCAPriors
 
 #beast.math.distributions.MRCAPrior,"Clade ",taxonset," is ",distr
 # CladAage
-beast.math.distributions.FossilPrior,"Clade ",taxonset," has fossil prior ",fossilDistr
+beast.math.distributions.FossilPrior,"Clade ",taxonset," has fossil prior",cite(10.1093/sysbio/syw076)," ",fossilDistr
 beast.math.distributions.FossilCalibration," with occurrance age (min=",minOccuranceAge,"&comma; max=",maxOccuranceAge,")&comma; divergence rate (min=",minDivRate,"&comma; max=",maxDivRate,")&comma; turnover rate (min=",minTurnoverRate,"&comma; max=",maxTurnoverRate,")&comma; sampling rate (min=",minSamplingRate,"&comma; max=",maxSamplingRate,")&comma; and sample gap (min=",minSamplingGap,"&comma; max=",maxSamplingGap,")"
 
 auxTreePrior,beast.math.distributions.FossilPrior
 
 # StarBeast2
-popModelBridge.Species,"This is a multi-species coalescent (StarBeast2) analysis with population model ",childModel
+popModelBridge.Species,"This is a multi-species coalescent (StarBeast2",cite(10.1093/molbev/msx126),") analysis with population model ",childModel
 starbeast2.StarBeastClock," species tree clock model with clock rate ",clock.rate," and ",branchRatesModel.Species
 starbeast2.GeneTree,id," has ploidy ",ploidy
 
 auxTreePrior,starbeast2.GeneTree
 auxTreePrior,starbeast2.GeneTreeWithMigration
 
-popModelAIM.Species,"This is a mutli-species coalescent with migration analysis with population sizes ",Ne,"&comma; mean population ",NeMean,"&comma; ",m,"&comma; migration model ",migrationModel,"&comma; and rate is forward is ",rateIsForward
+popModelAIM.Species,"This is a mutli-species coalescent with migration analysis",cite(10.1093/molbev/msx307)," with population sizes ",Ne,"&comma; mean population ",NeMean,"&comma; ",m,"&comma; migration model ",migrationModel,"&comma; and rate is forward is ",rateIsForward
 migIndicatorSumPrior.Species,"sum of migration indicators ",distr
 migRatesPrior.Species,"rates of migration ",distr
 starbeast2.AllEqual," all equal rates "
 starbeast2.GeneTreeWithMigration
 
 # sampled ancestors
-beast.evolution.speciation.SABirthDeathModel," using a fossilised birth death model&comma; with diversification rate ",diversificationRate,"&comma; turnover rate ",turnover,"&comma; sampling proportion",samplingProportion,", and removal probability ",removalProbability,". Condition on rho sampling is ",conditionOnRhoSampling,"&comma; rho ",rho,"&comma; and origina ",origin
+beast.evolution.speciation.SABirthDeathModel," using a fossilised birth death model",cite(10.1371/journal.pcbi.1003919),"&comma; with diversification rate ",diversificationRate,"&comma; turnover rate ",turnover,"&comma; sampling proportion",samplingProportion,", and removal probability ",removalProbability,". Condition on rho sampling is ",conditionOnRhoSampling,"&comma; rho ",rho,"&comma; and origina ",origin
 
 # bdmm?
-beast.evolution.speciation.BirthDeathSkylineModel,"birth-death skyline model with with origin ",origin,"&comma; reproductive number ",reproductiveNumber,"&comma; rho ",rho,"&comma; and sampling proportion ",samplingProportion
+beast.evolution.speciation.BirthDeathSkylineModel,"birth-death skyline model",cite(10.1371/journal.pcbi.1003919)," with with origin ",origin,"&comma; reproductive number ",reproductiveNumber,"&comma; rho ",rho,"&comma; and sampling proportion ",samplingProportion
 
 beast.evolution.alignment.TaxonSet,id
 
 # MASCOT
-beast.mascot.distribution.Mascot,"structured coalescent approximated through MASCOT with ","dynamics"
+beast.mascot.distribution.Mascot,"structured coalescent approximated through MASCOT",cite(10.1093/molbev/msx186)," with ","dynamics"
 beast.mascot.dynamics.Constant," constant population using population size ",Ne," and backward migration rates ",backwardsMigration
 
 # starting tree
@@ -68,16 +68,16 @@ beast.mascot.dynamics.Constant," constant population using population size ",Ne,
 "equalFreqs.s:$(n)","equal"," frequencies"
 
 "YuleModel.t:$(n)","Yule model"," with birth rate @birthDiffRate","birthDiffRate"
-"CalibratedYuleModel.t:$(n)","Calibrated Yule model"," with birth rate @birthRate","birthRate"
-"BirthDeath.t:$(n)","birth death model"," with ","type"," tree type&comma; birth rate ","birthDiffRate","&comma; death rate ","relativeDeathRate"," and sample probability ","sampleProbability"
-"BirthDeathModel.t:$(n)","birth death model"," with ","type"," tree type&comma; birth rate ","birthDiffRate","&comma; death rate ","relativeDeathRate"," and sample probability ","sampleProbability"
+"CalibratedYuleModel.t:$(n)","Calibrated Yule model",cite(CalibratedYuleModel.t:$(n))," with birth rate @birthRate","birthRate"
+"BirthDeath.t:$(n)","birth death model",cite(BirthDeath.t:$(n))," with ","type"," tree type&comma; birth rate ","birthDiffRate","&comma; death rate ","relativeDeathRate"," and sample probability ","sampleProbability"
+"BirthDeathModel.t:$(n)","birth death model",cite(BirthDeathModel.t:$(n))," with ","type"," tree type&comma; birth rate ","birthDiffRate","&comma; death rate ","relativeDeathRate"," and sample probability ","sampleProbability"
 "CoalescentConstant.t:$(n)","constant coalescent"," tree prior with population size ","popSize.t:$(n)"
 "CoalescentExponential.t:$(n)","exponential coalescent"," tree prior with population size ","ePopSize.t:$(n)"," and growth rate ","growthRate.t:$(n)"
-"BayesianSkyline.t:$(n)","Bayesian skyline"," tree prior with population size ","bPopSizes.t:$(n)"
+"BayesianSkyline.t:$(n)","Bayesian skyline",cite(BayesianSkyline.t:$(n))," tree prior with population size ","bPopSizes.t:$(n)"
 "ExtendedBayesianSkyline.t:$(n)","extended Bayesian skyline"," tree prior with population size ","popSizes.alltrees"," and population mean ","populationMean.alltrees"
 
 #"Tree.t:Species","SpeciesTreePopSize.Species"
-"SpeciesTreePopSize.Species","This is a multi-species coalescent (*BEAST) analysis with a ","popFunction"," population function and gamma ","gammaParameter"
+"SpeciesTreePopSize.Species","This is a multi-species coalescent (*BEAST",cite(10.1093/molbev/msp274),") analysis with a ","popFunction"," population function and gamma ","gammaParameter"
 
 
 "beast.math.distributions.Uniform","prior ","uniformly"," distributed ","(lower=","lower"," and upper=","upper",")"
