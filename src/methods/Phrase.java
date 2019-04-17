@@ -162,8 +162,8 @@ public class Phrase {
 
 		        button.setCursor(Cursor.getDefaultCursor());
 		        try {
+					button.setActionCommand("CitationPhrase " + ((CitationPhrase)phrase).counter);
 		        	String ref = ((CitationPhrase)phrase).toReference();
-					button.setActionCommand("CitationPhrase " + ref);
 					button.setToolTipText(ref);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -316,7 +316,7 @@ public class Phrase {
 				String source = phrase.parent.getID() + " " + phrase.input.getName();
 		        String text = phrase.source.toString();
 		        text = text.substring(1, text.length() - 1);
-				b.append("<input size='5' onkeyup='window.location=\"/cmd=text value=\"+value+\" source=" + source +"' value='" + text +"'/>");
+				b.append("<input size='5' onkeyup='window.location=\"/cmd=Text value=\"+value+\" source=" + source +"' value='" + text +"'/>");
 
 			} else if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
 		        InputEditorFactory inputEditorFactory = beautiDoc.getInputEditorFactory();
@@ -351,7 +351,7 @@ public class Phrase {
 
 			        if (isSelected) {
 			        	b.append("<select style='width:" + width + "pt;color:#a0a;font: 12pt arial, sans-serif;border: 0px solid transparent;' "
-			        			+ "onchange='window.location=\"/cmd=select value=\"+value+\" source="+ phrase.parent.getID() + " input=" + phrase.input.getName() + "\"'>");
+			        			+ "onchange='window.location=\"/cmd=Select value=\"+value+\" source="+ phrase.parent.getID() + " input=" + phrase.input.getName() + "\"'>");
 						b.append(b2.toString());					
 			        } else {
 						b.append(phrase.toHTML());					

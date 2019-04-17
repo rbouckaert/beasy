@@ -103,34 +103,8 @@ public class XML2HTMLPane extends JPanel {
 	final static String header = "<!DOCTYPE html>\n" +
 			"<html>\n" +
 			"<style>\n" +
-			".tooltip {\n" +
-			"  position: relative;\n" +
-//			"  display: inline-block;\n" +
-//			"  border-bottom: 1px dotted black;\n" +
-			"}\n" +
-			"\n" +
-			".tooltip .tooltiptext {\n" +
-			"  visibility: hidden;\n" +
-			"  width: 120px;\n" +
-			"  background-color: #555;\n" +
-			"  color: #fff;\n" +
-			"  text-align: center;\n" +
-			"  border-radius: 6px;\n" +
-			"  padding: 5px 0;\n" +
-			"  position: absolute;\n" +
-			"  z-index: 1;\n" +
-			"  bottom: 125%;\n" +
-			"  left: 50%;\n" +
-			"  margin-left: -60px;\n" +
-			"  opacity: 0;\n" +
-			"  transition: opacity 0.3s;\n" +
-			"}\n" +
-			"\n" +
-			".tooltip:hover .tooltiptext {\n" +
-			"  visibility: visible;\n" +
-			"  opacity: 1;\n" +
-			"}\n" +
-			"</style>\n<body style='font: 12pt arial, sans-serif;'>\n";
+			"</style>\n" +
+			"<body style='font: 12pt arial, sans-serif;'>\n";
 	
 	public void initialise(MCMC mcmc) throws Exception {		
 		xml2textProducer = new XML2Text(beautiDoc);
@@ -352,24 +326,17 @@ public class XML2HTMLPane extends JPanel {
 				e.printStackTrace();
 			}
 
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					engine.load("file://" + tmpFile);					
-					engine.load("file://" + tmpFile);
 					
 					// the following does not appear to be
 					// able the handle select.onchanged events
 					// but loading from file does -- not sure why
-					//engine.loadContent((String)page);
-					//engine.setJavaScriptEnabled(true);
+					engine.loadContent((String)page);
+					engine.setJavaScriptEnabled(true);
+
+					engine.load("file://" + tmpFile);
 				}
 			});
 			zoom(zoom);

@@ -122,190 +122,46 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
+		ModelEditor me = new ModelEditor();
+		boolean refresh = false;
+		
     	if (e.getSource() instanceof JButton) {
-    		handleButton(e);
+    		String cmd = e.getActionCommand();
+    		if (cmd.startsWith("PartitionEditor")) {
+    			cmd="cmd=PartitionEditor";
+    		} else if (cmd.startsWith("RealParameter")) {
+    			String id = cmd.split(" ")[1];
+    			cmd="cmd=RealParameter id="+id;
+    		} else if (cmd.startsWith("CitationPhrase")) {
+    			cmd="cmd=CitationPhrase counter=" + cmd.substring(cmd.indexOf(' ') + 1);;
+    		}
+    		refresh = me.handleCmd(cmd, beautiDoc, this);
     	} if (e.getSource() instanceof JComboBox) {
-    		handleComboBox(e);
+    		JComboBox<String> b = (JComboBox<String>) e.getSource();
+    		String cmd = e.getActionCommand();
+    		int k = cmd.lastIndexOf(' ');
+    		String pid = cmd.substring(0, k);
+    		String inputName = cmd.substring(k + 1);    		
+            BeautiSubTemplate selected = (BeautiSubTemplate) b.getSelectedItem();
+            refresh = me.handleCmd("cmd=Select value=\"" + selected.toString()+"\" source=" + pid + " input=" + inputName, beautiDoc, this);
     	} else if (e.getSource() instanceof JTextField) {
-    		handleTextField(e);
-    		
+    		JTextField b = (JTextField) e.getSource();
+    		String cmd = e.getActionCommand();
+    		int k = cmd.lastIndexOf(' ');
+    		String id = cmd.substring(0, k);
+    		String inputName = cmd.substring(k + 1);
+    		String value = b.getText();
+    		refresh = me.handleCmd("cmd=Text id=" + id + " value=\"" + value + "\" input=" + inputName, beautiDoc, this);
+    	}
+    	
+    	if (refresh) {
+    		try {
+				refreshText();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
     	}
     }
-
-	private void handleButton(ActionEvent e) {
-		String cmd = e.getActionCommand();
-		if (cmd.startsWith("PartitionEditor")) {
-			editPartition(e);
-		} else if (cmd.startsWith("RealParameter")) {
-			editRealParameter(e);
-		} else if (cmd.startsWith("CitationPhrase")) {
-			showCitation(e);
-		}
-		
-	}
-
-	private void showCitation(ActionEvent e) {
-		String cmd = e.getActionCommand();
-		String citation = cmd.substring(cmd.indexOf(' ') + 1);
-    	JTextArea textArea = new JTextArea(citation);
-    	textArea.setLineWrap(true);
-    	textArea.setRows(5);
-    	textArea.setColumns(50);
-    	textArea.setEditable(true);
-    	JScrollPane scroller = new JScrollPane(textArea);
-    	JOptionPane.showMessageDialog(this, scroller);
-	}
-
-
-	private void editRealParameter(ActionEvent e) {
-		String cmd = e.getActionCommand();
-		String id = cmd.split(" ")[1];
-		RealParameter param = (RealParameter) beautiDoc.pluginmap.get(id);
-		
-		List<Phrase> set = new ArrayList<>(); 
-		set.addAll(MethodsText.partitionGroupMap.get(param));
-		if (set.size() > 1) {
-			String [] options = new String[set.size() + 1];
-			int i = 0;
-			options[i++] = "All";
-			for (Phrase p : set) {
-				options[i++] = ((RealParameter) p.source).getID();
-			}
-			i = JOptionPane.showOptionDialog(this, "Which parameter?", null, JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "All");
-			if (i > 0) {
-				Phrase x = set.get(i-1);
-				set.clear();
-				set.add(x);
-				param = (RealParameter) beautiDoc.pluginmap.get(options[i]);
-			}
-		}
-		
-        BEASTObjectDialog dlg = new BEASTObjectDialog(param, RealParameter.class, beautiDoc);
-        if (dlg.showDialog()) {
-        	for (Phrase p : set) {
-        		param = (RealParameter) p.source;
-                String id2 = param.getID();
-        		dlg.accept((BEASTInterface) param, beautiDoc);
-        		param.setID(id2);
-        	}
-            try {
-            	refreshText();
-            } catch (Exception ex) {
-				ex.printStackTrace();
-			}
-        }		
-	}
-
-
-	private void editPartition(ActionEvent e) {
-		BeautiPanelConfig config = new BeautiPanelConfig();
-		config.initByName("path","distribution/distribution[id=\"likelihood\"]/distribution/data",
-				"panelname", "Partitions", "tiptext", "Data Partitions",
-	            "hasPartitions", "none", "forceExpansion", "FALSE",
-	            "type", "beast.evolution.alignment.Alignment"    				
-				);
-		final Input<?> input = config.resolveInput(beautiDoc, 0);    		
-		AlignmentListInputEditor ie = new AlignmentListInputEditor(beautiDoc);
-		ie.init(input, config, -1, ExpandOption.FALSE, false);
-        ((JComponent) ie).setBorder(BorderFactory.createEmptyBorder());
-        ie.getComponent().setVisible(true);
-        JOptionPane optionPane = new JOptionPane(ie,
-                JOptionPane.PLAIN_MESSAGE,
-                JOptionPane.OK_CANCEL_OPTION,
-                null,
-                new String[]{"OK"},
-                "OK");
-        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-        final JDialog dialog = optionPane.createDialog(this, "Partition panel");
-        dialog.setResizable(true);
-        dialog.pack();
-
-        dialog.setVisible(true);
-        
-        try {
-			refreshText();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}		
-	}
-
-
-	private void handleComboBox(ActionEvent e) {
-		JComboBox<String> b = (JComboBox<String>) e.getSource();
-		String cmd = e.getActionCommand();
-		int k = cmd.lastIndexOf(' ');
-		String pid = cmd.substring(0, k);
-		String inputName = cmd.substring(k + 1);
-		System.out.println("You selected " + b.getSelectedItem() + " for " + e.getActionCommand());
-		BEASTInterface m_beastObject = beautiDoc.pluginmap.get(pid);
-		Input<?> input = m_beastObject.getInput(inputName);
-		
-        BeautiSubTemplate selected = (BeautiSubTemplate) b.getSelectedItem();
-        BEASTInterface beastObject = (BEASTInterface) input.get();
-        String id = beastObject.getID();
-        String partition = id.indexOf('.') >= 0 ? 
-        		id.substring(id.indexOf('.') + 1) : "";
-        if (partition.indexOf(':') >= 0) {
-        	partition = id.substring(id.indexOf(':') + 1);
-        }
-        if (selected.equals(InputEditor.NO_VALUE)) {
-            beastObject = null;
-        } else {
-            try {
-                beastObject = selected.createSubNet(beautiDoc.getContextFor(beastObject), m_beastObject, input, true);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Could not select beastObject: " +
-                        ex.getClass().getName() + " " +
-                        ex.getMessage()
-                );
-            }
-        }
-
-
-        try {
-            if (beastObject == null) {
-                b.setSelectedItem(InputEditor.NO_VALUE);
-            } else {
-                if (!input.canSetValue(beastObject, m_beastObject)) {
-                    throw new IllegalArgumentException("Cannot set input to this value");
-                }
-            }
-
-            input.setValue(beastObject, m_beastObject);
-
-            refreshText();
-        } catch (Exception ex) {
-            id = ((BEASTInterface) input.get()).getID();
-            b.setSelectedItem(id);
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Could not change beastObject: " +
-                    ex.getClass().getName() + " " +
-                    ex.getMessage() 
-            );
-        }
-	}
-
-
-	private void handleTextField(ActionEvent e) {
-		JTextField b = (JTextField) e.getSource();
-		String cmd = e.getActionCommand();
-		int k = cmd.lastIndexOf(' ');
-		String id = cmd.substring(0, k);
-		String inputName = cmd.substring(k + 1);
-		String value = b.getText();
-		System.out.println("You selected " + b.getText() + " for " + cmd);
-		BEASTInterface o = beautiDoc.pluginmap.get(id);
-		Input<?> input = o.getInput(inputName);
-		if (input.canSetValue(value, o)) {
-			try {
-				input.setValue(value, o);
-			} catch (RuntimeException ex) {
-				// could not set the value after all...
-			}
-		}
-		System.out.println(id + "." + input.getName() + " set to " + input.get().toString());
-	}
 
 	static String printParitions(List<String> partitionIDs, int totalPartitionCount) {
 		StringBuilder b = new StringBuilder();

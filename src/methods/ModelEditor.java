@@ -36,10 +36,10 @@ public class ModelEditor {
 		switch (c) {
 		case "PartitionEditor": return editPartition(cmd, doc, w);
 		case "CitationPhrase": return showCitation(cmd, doc, w);
-		case "ref": return showCitation(cmd, doc, w);
-		case "text": return handleTextField(cmd, doc, w);
+		case "Tef": return showCitation(cmd, doc, w);
+		case "Text": return handleTextField(cmd, doc, w);
 		case "RealParameter": return editRealParameter(cmd, doc, w);
-		case "select": return handleComboBox(cmd, doc, w);
+		case "Select": return handleComboBox(cmd, doc, w);
 		}
 		
 		return false;
