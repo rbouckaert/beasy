@@ -1,8 +1,13 @@
 package methods;
 
 import java.awt.Component;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -10,6 +15,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import beast.app.beauti.AlignmentListInputEditor;
@@ -23,11 +29,50 @@ import beast.app.draw.InputEditor.ExpandOption;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.parameter.RealParameter;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 public class ModelEditor {
 	
+	boolean useSwingThreads;
+	
+	public ModelEditor(boolean useSwingThreads) {
+		this.useSwingThreads = useSwingThreads;
+	}
+	boolean refresh = false;
 	
 	public boolean handleCmd(String cmd, BeautiDoc doc, Component w) {
+//		if (useSwingThreads) {
+//			CountDownLatch countDownLatch = new CountDownLatch(1);			
+//
+//			new Thread() {
+//				public void run() {
+//				SwingUtilities.invokeLater(new Runnable() {
+//					@Override
+//					public void run() {
+//						refresh = handleCmd2(cmd, doc, w);
+//						countDownLatch.countDown();			
+//					}
+//				});
+//				}
+//			}.start();
+//			
+//			try {
+//				countDownLatch.await();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			return refresh;
+//		} else {
+			return handleCmd2(cmd, doc, w);
+//		}
+	}
+	
+	private boolean handleCmd2(String cmd, BeautiDoc doc, Component w) {
 		String c = getAttribute("cmd", cmd);
 		if (c == null) {
 			return false;
@@ -35,8 +80,8 @@ public class ModelEditor {
 		System.out.println(c);
 		switch (c) {
 		case "PartitionEditor": return editPartition(cmd, doc, w);
-		case "CitationPhrase": return showCitation(cmd, doc, w);
-		case "Tef": return showCitation(cmd, doc, w);
+		case "CitationPhrase": 
+		case "Ref": return showCitation(cmd, doc, w);
 		case "Text": return handleTextField(cmd, doc, w);
 		case "RealParameter": return editRealParameter(cmd, doc, w);
 		case "Select": return handleComboBox(cmd, doc, w);
@@ -47,24 +92,49 @@ public class ModelEditor {
 
 	public boolean showCitation(String cmd, BeautiDoc doc, Component w) {
 		int counter = Integer.parseInt(getAttribute("counter", cmd));
-		String citation = "Unknown citation";
+		CitationPhrase citation = null;
 		for (CitationPhrase p : CitationPhrase.citations.values()) {
 			if (p.counter == counter) {
-				try {
-					citation = p.toReference();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				citation = p;
 				break;
 			}
 		}
-    	JTextArea textArea = new JTextArea(citation);
-    	textArea.setLineWrap(true);
-    	textArea.setRows(5);
-    	textArea.setColumns(50);
-    	textArea.setEditable(true);
-    	JScrollPane scroller = new JScrollPane(textArea);
-    	JOptionPane.showMessageDialog(w, scroller);
+		try {
+			if (useSwingThreads) {
+		    	JTextArea textArea = new JTextArea(citation.toReference());
+		    	textArea.setLineWrap(true);
+		    	textArea.setRows(5);
+		    	textArea.setColumns(50);
+		    	textArea.setEditable(true);
+		    	JScrollPane scroller = new JScrollPane(textArea);
+		    	JOptionPane.showMessageDialog(w, scroller);
+			} else {
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setTitle("Reference Dialog");
+				alert.setHeaderText("Copy to clipboard?");
+				alert.setContentText(citation.DOI);
+	
+	
+				TextArea textArea = new TextArea(citation.toReference());
+				textArea.setEditable(false);
+				textArea.setWrapText(true);
+	
+				textArea.setMaxWidth(Double.MAX_VALUE);
+				textArea.setMaxHeight(Double.MAX_VALUE);
+
+				alert.getDialogPane().setExpandableContent(textArea);
+				alert.getDialogPane().setExpanded(true);
+	
+				if (alert.showAndWait().get() == ButtonType.OK) {
+					StringSelection stringSelection = new StringSelection(citation.toReference());
+					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					clipboard.setContents(stringSelection, null);				
+	
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     	return false;
 	}
 
@@ -239,12 +309,15 @@ public class ModelEditor {
 			return null;
 		}
 		String value = cmd.substring(i + attr.length() + 1);
+		if (value.indexOf('=') > 0) {
+			value = value.substring(0, value.indexOf('='));
+		}		
 		if (value.charAt(0) == '"') {
 			value = value.substring(1, value.indexOf('"', 1));
 		} else if (value.charAt(0) == '\'') {
 			value = value.substring(1, value.indexOf('\'', 1));
 		} else if (value.indexOf(' ') > 0) {
-			value = value.substring(0, value.indexOf(' '));
+			value = value.substring(0, value.lastIndexOf(' '));
 		}
 		return value;
 	}

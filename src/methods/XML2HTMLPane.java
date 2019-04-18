@@ -97,7 +97,7 @@ public class XML2HTMLPane extends JPanel {
 		BEASTObjectMethodsText.setBeautiCFG(beautiDoc.beautiConfig);
 		
 		MethodsText.initNameMap();
-		initialise((MCMC) beautiDoc.mcmc.get());
+		initialise((MCMC) beautiDoc.mcmc.get(), true);		
 	}
 	
 	final static String header = "<!DOCTYPE html>\n" +
@@ -106,7 +106,7 @@ public class XML2HTMLPane extends JPanel {
 			"</style>\n" +
 			"<body style='font: 12pt arial, sans-serif;'>\n";
 	
-	public void initialise(MCMC mcmc) throws Exception {		
+	public void initialise(MCMC mcmc, boolean update) throws Exception {		
 		xml2textProducer = new XML2Text(beautiDoc);
 		xml2textProducer.initialise((MCMC) beautiDoc.mcmc.get());
 		m = xml2textProducer.getPhrases();
@@ -117,7 +117,11 @@ public class XML2HTMLPane extends JPanel {
         outfile.write(html);
         outfile.close();
 		
-		updateState(html);
+        if (update) {
+        	updateState(html);
+        } else {
+        	load(html);
+        }
 	}
 
 	
@@ -134,12 +138,12 @@ public class XML2HTMLPane extends JPanel {
 		JScrollPane scroller = new JScrollPane(panel);
 		add(scroller, BorderLayout.CENTER);
 
-		try {
-			//updateState(new URL("file://" + "/Users/remco/workspace/beasy/src/methods/index.html"));
-			updateState(new URL("file://" + "/tmp/index.html"));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+//		try {
+////			//updateState(new URL("file://" + "/Users/remco/workspace/beasy/src/methods/index.html"));
+//			updateState(new URL("file://" + "/tmp/index.html"));
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
 
 	} // c'tor
 
@@ -231,12 +235,12 @@ public class XML2HTMLPane extends JPanel {
 				engine.locationProperty().addListener(new ChangeListener<String>() {
 					@Override
 					public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
+//						SwingUtilities.invokeLater(new Runnable() {
+//							@Override
+//							public void run() {
 								System.out.println("changed:");
 								System.out.println(newValue);
-								ModelEditor me = new ModelEditor();
+								ModelEditor me = new ModelEditor(false);
 								if (me.handleCmd(newValue, beautiDoc, panel)) {
 									beautiDoc.determinePartitions();
 									beautiDoc.scrubAll(false, false);
@@ -244,15 +248,16 @@ public class XML2HTMLPane extends JPanel {
 
 									MethodsText.clear();
 									try {
-										initialise((MCMC) beautiDoc.mcmc.get());
+										initialise((MCMC) beautiDoc.mcmc.get(), false);
+										load(html);
 									} catch (Exception e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
 								}
 							}
-						});
-					}
+//						});
+//					}
 				});
 
 				engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
@@ -300,44 +305,20 @@ public class XML2HTMLPane extends JPanel {
 			}
 		});
 	}
-
-	public void refreshText()  throws Exception {
-		beautiDoc.determinePartitions();
-		beautiDoc.scrubAll(false, false);
-		CitationPhrase.citations.clear();
-
-		MethodsText.clear();
-		initialise((MCMC) beautiDoc.mcmc.get());
-	}
 	
 	/**
 	 * change html text and enable/disable buttons (where appropriate) *
 	 */
 	void updateState(Object page) {
 		if (page instanceof String) {
-			try {
-				if (tmpFile == null) {
-					tmpFile = File.createTempFile("index", "html");
-				}
-				FileWriter outfile = new FileWriter(tmpFile);
-				outfile.write(html);
-				outfile.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					
-					// the following does not appear to be
-					// able the handle select.onchanged events
-					// but loading from file does -- not sure why
-					engine.loadContent((String)page);
-					engine.setJavaScriptEnabled(true);
-
-					engine.load("file://" + tmpFile);
+					load((String) page);
+					//engine.loadContent((String) page);
 				}
+
 			});
 			zoom(zoom);
 		} else if (page instanceof URL) {
@@ -362,7 +343,27 @@ public class XML2HTMLPane extends JPanel {
 		}
 	} // updateState
 
+	public void load(String page) {
+		try {
+			if (tmpFile == null) {
+				tmpFile = File.createTempFile("index", ".html");
+				System.err.println(tmpFile.getPath());
+			}
+			FileWriter outfile = new FileWriter(tmpFile);
+			outfile.write(html);
+			outfile.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// the following does not appear to be
+		// able the handle select.onchanged events
+		// but loading from file does -- not sure why
+//		engine.loadContent((String)page, "text/html");
+//		engine.setJavaScriptEnabled(true);
+		engine.load("file://" + tmpFile);
+	}
 
+	
 	private void zoomIn() {
 		zoom(zoom * 1.1);
 	}

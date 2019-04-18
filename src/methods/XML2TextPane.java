@@ -122,7 +122,7 @@ public class XML2TextPane extends JTextPane implements ActionListener {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-		ModelEditor me = new ModelEditor();
+		ModelEditor me = new ModelEditor(true);
 		boolean refresh = false;
 		
     	if (e.getSource() instanceof JButton) {
