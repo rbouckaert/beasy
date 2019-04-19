@@ -35,6 +35,8 @@ import beast.util.Randomizer;
  * including a pointer to where the phrase came from 
  */
 public class Phrase {
+	public enum PhraseType{regular, reference};
+	
 	/** object being described **/
 	Object source;
 		
@@ -47,6 +49,9 @@ public class Phrase {
 	/** text description of the object **/
 	String text;
 	
+	/** differentiates types to allow different CSS styles **/
+	PhraseType type = PhraseType.regular;
+
 	public Phrase(Object source, BEASTInterface parent, Input<?> parameter, String phrase) {
 		this.source = source;
 		this.parent = parent;
@@ -290,8 +295,19 @@ public class Phrase {
 		
 		StringBuilder b = new StringBuilder();
 		
+		
+		PhraseType phraseType = null;
 		for (int i = 0; i < basePhrases.size(); i++) {
 			Phrase phrase = basePhrases.get(i);
+
+			if (i > 0) {
+				if (phrase.getType() != phraseType) {
+					b.append("</div>\n<div class='"+ phrase.getType()+"'>");
+				}
+			} else {
+				b.append("<div class='"+ phrase.getType()+"'>");
+			}
+			phraseType = phrase.getType();
 
 			if (phrase instanceof PartitionPhrase) {
 				
@@ -360,10 +376,11 @@ public class Phrase {
 					b.append(phrase.toHTML());					
 		        }
 			} else {
-				b.append(phrase.toHTML());					
+				b.append(phrase.toHTML());
 			}
+			
 		}	
-		
+		b.append("</div>");
 		return b.toString();
     }
 	
@@ -388,5 +405,12 @@ public class Phrase {
 		this.text = text;		
 	}
 
-	
+
+	public void setType(PhraseType type) {
+		this.type = type;
+	}
+
+	public PhraseType getType() {
+		return type;
+	}
 }

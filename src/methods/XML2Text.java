@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.*;
 
+import com.sun.javafx.css.converters.StringConverter;
 
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
@@ -31,6 +32,7 @@ import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
 import beast.util.XMLParser;
 import methods.CitationPhrase.mode;
+import methods.Phrase.PhraseType;
 import methods.implementation.BEASTObjectMethodsText;
 import beast.core.MCMC;
 import beast.core.Operator;
@@ -138,16 +140,36 @@ public class XML2Text extends Runnable {
 	}
 	
 	private void addReferenceSection() {
+		int i = m.size();
+		m.add(new Phrase("\nThis analysis is for BEAST 2"));
+		m.add(CitationPhrase.createCitationPhrase("10.1371/journal.pcbi.1003537"));
+		m.add(new Phrase(".\n\n"));
+
 		if (CitationPhrase.citations.size() > 0) {
 			completePhrase("\nReferences:\n");
 			for (CitationPhrase citation : CitationPhrase.citations.values()) {
 				try {
 					String reference = citation.toReference();
+					StringBuilder b = new StringBuilder();
+					for (int k = 0; k < reference.length(); k++) {
+						int j = reference.charAt(k);
+						if (j < 128) {
+							b.append((char) j);
+						} else {
+							b.append("&#");
+							b.append(j);
+							b.append(';');
+						}
+					}
+					reference = b.toString();
 					completePhrase(reference + "\n\n");
 				} catch (Exception e) {
 					completePhrase("Unknown reference " + e.getMessage() + " \n\n");
 				}
 			}
+		}
+		while (i < m.size()) {
+			m.get(i++).setType(PhraseType.reference);
 		}
 	}
 
@@ -319,11 +341,6 @@ public class XML2Text extends Runnable {
 
 	private void addAnalysisIdentifier() {
 		List<Phrase> m = new ArrayList<>();
-		m.add(new Phrase("This analysis is for BEAST 2"));
-		m.add(CitationPhrase.createCitationPhrase("10.1371/journal.pcbi.1003537"));
-		m.add(new Phrase(".\n\n"));
-        addPhrases(m);
-		m.clear();
 		
 		methods.BeautiSubTemplateMethodsText.initialise();
 		for (String analysisIdentifier : methods.BeautiSubTemplateMethodsText.analysisIdentifiers) {

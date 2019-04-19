@@ -29,7 +29,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.text.StyledDocument;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -103,6 +102,7 @@ public class XML2HTMLPane extends JPanel {
 	final static String header = "<!DOCTYPE html>\n" +
 			"<html>\n" +
 			"<style>\n" +
+			".reference {font-size:10pt;color:#aaa;}\n" +
 			"</style>\n" +
 			"<body style='font: 12pt arial, sans-serif;'>\n";
 	
