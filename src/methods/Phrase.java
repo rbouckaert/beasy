@@ -366,7 +366,7 @@ public class Phrase {
                     b2.append("</select>\n");
 
 			        if (isSelected) {
-			        	b.append("<select style='width:" + width + "pt;color:#a0a;font: 12pt arial, sans-serif;border: 0px solid transparent;' "
+			        	b.append("<select style='width:" + width + "pt;font: 12pt arial, sans-serif;border: 0px solid transparent;' "
 			        			+ "onchange='window.location=\"/cmd=Select value=\"+value+\" source="+ phrase.parent.getID() + " input=" + phrase.input.getName() + "\"'>");
 						b.append(b2.toString());					
 			        } else {
@@ -381,7 +381,18 @@ public class Phrase {
 			
 		}	
 		b.append("</div>");
-		return b.toString();
+		StringBuilder b2 = new StringBuilder();
+		for (int k = 0; k < b.length(); k++) {
+			int j = b.charAt(k);
+			if (j < 128) {
+				b2.append((char) j);
+			} else {
+				b2.append("&#");
+				b2.append(j);
+				b2.append(';');
+			}
+		}
+		return b2.toString();
     }
 	
 

@@ -103,6 +103,8 @@ public class XML2HTMLPane extends JPanel {
 			"<html>\n" +
 			"<style>\n" +
 			".reference {font-size:10pt;color:#aaa;}\n" +
+			"a{color:#44b;text-decoration:none;}\n" +
+			"select{color:#44b;font-weight:bold;text-decoration:underline;}\n" +			
 			"</style>\n" +
 			"<body style='font: 12pt arial, sans-serif;'>\n";
 	

@@ -150,18 +150,6 @@ public class XML2Text extends Runnable {
 			for (CitationPhrase citation : CitationPhrase.citations.values()) {
 				try {
 					String reference = citation.toReference();
-					StringBuilder b = new StringBuilder();
-					for (int k = 0; k < reference.length(); k++) {
-						int j = reference.charAt(k);
-						if (j < 128) {
-							b.append((char) j);
-						} else {
-							b.append("&#");
-							b.append(j);
-							b.append(';');
-						}
-					}
-					reference = b.toString();
 					completePhrase(reference + "\n\n");
 				} catch (Exception e) {
 					completePhrase("Unknown reference " + e.getMessage() + " \n\n");
