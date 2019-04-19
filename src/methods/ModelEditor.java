@@ -13,6 +13,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -23,18 +24,22 @@ import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiPanelConfig;
 import beast.app.beauti.BeautiSubTemplate;
 import beast.app.draw.BEASTObjectDialog;
+import beast.app.draw.BEASTObjectPanel;
 import beast.app.draw.InputEditor;
 import beast.app.draw.InputEditorFactory;
 import beast.app.draw.InputEditor.ExpandOption;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.parameter.RealParameter;
+import javafx.embed.swing.SwingNode;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 
 public class ModelEditor {
 	
@@ -152,7 +157,21 @@ public class ModelEditor {
 			for (Phrase p : set) {
 				options[i++] = ((RealParameter) p.source).getID();
 			}
-			i = JOptionPane.showOptionDialog(w, "Which parameter?", null, JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "All");
+			if (useSwingThreads) {
+				i = JOptionPane.showOptionDialog(w, "Which parameter?", null, JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "All");
+			} else {
+				List<ButtonType> optionsB = new ArrayList<>();
+				for (String option : options) {
+					optionsB.add(new ButtonType(option));
+				}
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setTitle("Confirmation Dialog with Custom Actions");
+				alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+				alert.setContentText("Choose your option.");
+				alert.getButtonTypes().setAll(optionsB.toArray(new ButtonType[]{}));
+				Optional<ButtonType> result = alert.showAndWait();
+				i = optionsB.indexOf(result);
+			}
 			if (i > 0) {
 				Phrase x = set.get(i-1);
 				set.clear();
@@ -160,21 +179,64 @@ public class ModelEditor {
 				param = (RealParameter) doc.pluginmap.get(options[i]);
 			}
 		}
-		
-        BEASTObjectDialog dlg = new BEASTObjectDialog(param, RealParameter.class, doc);
-        if (dlg.showDialog()) {
-        	for (Phrase p : set) {
-        		param = (RealParameter) p.source;
-                String id2 = param.getID();
-        		dlg.accept((BEASTInterface) param, doc);
-        		param.setID(id2);
-        	}
-            try {
-            	return true;
-            } catch (Exception ex) {
-				ex.printStackTrace();
+		if (useSwingThreads) {
+	        BEASTObjectDialog dlg = new BEASTObjectDialog(param, RealParameter.class, doc);
+	        if (dlg.showDialog()) {
+	        	for (Phrase p : set) {
+	        		param = (RealParameter) p.source;
+	                String id2 = param.getID();
+	        		dlg.accept((BEASTInterface) param, doc);
+	        		param.setID(id2);
+	        	}
+	            return true;
+	        }		
+		} else {
+	        // BEASTObjectDialog dlg = new BEASTObjectDialog(param, RealParameter.class, doc);
+			BEASTObjectPanel panel = new BEASTObjectPanel(param, RealParameter.class, doc);
+			final SwingNode swingNode = new SwingNode();
+
+			SwingUtilities.invokeLater(new Runnable() {
+	            @Override
+	            public void run() {
+	                swingNode.setContent(panel);
+	            }
+	        });
+
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Parameter Dialog");
+			alert.setHeaderText("Edit parameters");
+			alert.setContentText(null);
+
+			DialogPane pane = alert.getDialogPane();
+			pane.setExpandableContent(swingNode);
+			pane.setExpanded(true);
+			pane.setMinHeight(500);
+			pane.setMinWidth(500);
+
+
+			if (alert.showAndWait().get() == ButtonType.OK) {
+	        	for (Phrase p : set) {
+	        		param = (RealParameter) p.source;
+	                String id2 = param.getID();
+
+	                for (Input<?> input : panel.m_beastObject.listInputs()) {
+	                	if (input.get() != null && (input.get() instanceof List)) {
+	                        // setInpuValue (below) on lists does not lead to expected result
+	                		// it appends values to the list instead, so we have to clear it first
+	                        List<?> list = (List<?>)param.getInput(input.getName()).get();
+	                        list.clear();
+	                	}
+	                	param.setInputValue(input.getName(), input.get());
+	                }
+	                param.setID(panel.m_beastObject.getID());
+	                if (doc != null) {
+	                	doc.addPlugin(param);
+	                }
+	        		param.setID(id2);
+	        	}
+				return true;
 			}
-        }		
+		}
     	return false;
 	}
 
@@ -191,19 +253,49 @@ public class ModelEditor {
 		ie.init(input, config, -1, ExpandOption.FALSE, false);
         ((JComponent) ie).setBorder(BorderFactory.createEmptyBorder());
         ie.getComponent().setVisible(true);
-        JOptionPane optionPane = new JOptionPane(ie,
-                JOptionPane.PLAIN_MESSAGE,
-                JOptionPane.OK_CANCEL_OPTION,
-                null,
-                new String[]{"OK"},
-                "OK");
-        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-        final JDialog dialog = optionPane.createDialog(w, "Partition panel");
-        dialog.setResizable(true);
-        dialog.pack();
+		if (useSwingThreads) {
+	        JOptionPane optionPane = new JOptionPane(ie,
+	                JOptionPane.PLAIN_MESSAGE,
+	                JOptionPane.OK_CANCEL_OPTION,
+	                null,
+	                new String[]{"OK"},
+	                "OK");
+	        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+			final JDialog dialog = optionPane.createDialog(w, "Partition panel");
+			dialog.setResizable(true);
+			dialog.pack();
 
-        dialog.setVisible(true);
+			dialog.setVisible(true);
+		} else {
+			final SwingNode swingNode = new SwingNode() {
+				@Override
+				public boolean isResizable() {
+					return false;
+				}
+			};
+
+			SwingUtilities.invokeLater(new Runnable() {
+	            @Override
+	            public void run() {
+	                swingNode.setContent(ie);
+	            }
+	        });
+
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Partition Dialog");
+			alert.setHeaderText("Edit partitions");
+			alert.setContentText(null);
+
+			DialogPane pane = alert.getDialogPane();
+			pane.setExpandableContent(swingNode);
+			pane.setExpanded(true);
+			pane.setMinHeight(500);
+			pane.setMinWidth(1024);
+
+			alert.showAndWait();
+			
+		}
         
         try {
 			return true;
@@ -248,13 +340,11 @@ public class ModelEditor {
             try {
                 beastObject = selected.createSubNet(doc.getContextFor(beastObject), m_beastObject, input, true);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Could not select beastObject: " +
+            	messageDialog("Could not select beastObject: " +
                         ex.getClass().getName() + " " +
-                        ex.getMessage()
-                );
+                        ex.getMessage());
             }
         }
-
 
         try {
             if (beastObject == null) {
@@ -272,7 +362,7 @@ public class ModelEditor {
             id = ((BEASTInterface) input.get()).getID();
             //b.setSelectedItem(id);
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Could not change beastObject: " +
+            messageDialog("Could not change beastObject: " +
                     ex.getClass().getName() + " " +
                     ex.getMessage() 
             );
@@ -280,6 +370,18 @@ public class ModelEditor {
     	return false;
 	}
 
+
+	private void messageDialog(String string) {
+    	if (useSwingThreads) {
+            JOptionPane.showMessageDialog(null,string);
+        } else {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Information");
+			alert.setHeaderText("You got a new message:");
+			alert.setContentText(string);
+			alert.showAndWait();
+		}		
+	}
 
 	private boolean handleTextField(String cmd, BeautiDoc doc, Component w) {
 		//JTextField b = (JTextField) e.getSource();
