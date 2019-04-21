@@ -11,7 +11,7 @@ public class CitationPhrase extends Phrase {
 	Citation citation;
 	int counter;
 	
-	public enum mode {none,bibtex,markdown,text}
+	public enum mode {none,bibtex,markdown,text,pandocmd}
 	
 	public static mode CitationMode = mode.text;
 
@@ -74,6 +74,8 @@ public class CitationPhrase extends Phrase {
 			return textRef();
 		case markdown:
 			return markdownRef();
+		case pandocmd:
+			return "^[" + counter + "](http://doi.org/" + DOI + ")^";
 		}
 		return "";
 	}
@@ -160,6 +162,8 @@ public class CitationPhrase extends Phrase {
 			String ref = markdownRef();
 			ref = ref.substring(2, ref.length() - 1);
 			return ref + ": " + DOI2Citation.resolve(DOI, "apa");
+		case pandocmd:
+			return "\n" + counter + ": "+ DOI2Citation.resolve(DOI, "apa");
 		}
 		return "";		
 	}

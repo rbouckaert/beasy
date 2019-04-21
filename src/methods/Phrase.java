@@ -111,7 +111,17 @@ public class Phrase {
 				b.append("(" + XML2TextPane.printParitions(ids2).trim() +")");					
 			}
 		}
-		return b.toString();
+
+		String text = b.toString();
+		// clean up
+		text = text.replaceAll("  ", " ");
+		text = text.replaceAll("\n\n", "\n");
+		text = text.replaceAll("\\s([\\.,\\)\\}\\]])", "$1");
+		text = text.replaceAll("([\\[\\{\\(])\\s", "$1");
+		for (char c : new char[]{'a','e','i','o','u'}) {
+			text = text.replaceAll(" a " + c, " an " + c);					
+		}
+		return text;
 	}
 
 	static void addTextToDocument(StyledDocument doc, ActionListener al, BeautiDoc beautiDoc, List<Phrase> m) {
@@ -311,7 +321,7 @@ public class Phrase {
 
 			if (phrase instanceof PartitionPhrase) {
 				
-				b.append("<a href='/cmd=PartitionEditor'>" + phrase.toHTML() + "</a>\n");
+				b.append("<a class='pe' href='/cmd=PartitionEditor'>" + phrase.toHTML() + "</a>\n");
 
 			} else if (phrase instanceof CitationPhrase) {
 				int counter = ((CitationPhrase)phrase).counter;
@@ -326,7 +336,7 @@ public class Phrase {
 //						  "<span class='tooltiptext'>" + ref + "</span>" +
 //						"</div>\n");
 			} else if (phrase.source instanceof RealParameter) {
-				b.append(" <a href='/cmd=RealParameter id=" + ((BEASTInterface) phrase.source).getID()+ "'>" + phrase.toString() + "</a>");
+				b.append(" <a class='para' href='/cmd=RealParameter id=" + ((BEASTInterface) phrase.source).getID()+ "'>" + phrase.toString() + "</a>");
 
 			} else if (phrase.parent != null && phrase.parent instanceof Parameter<?> && phrase.input.getName().equals("value")) {
 				String source = phrase.parent.getID() + " " + phrase.input.getName();
@@ -357,7 +367,7 @@ public class Phrase {
                         	
                         	FontRenderContext frc = new FontRenderContext(new AffineTransform(),true,true);     
                         	Font font = new Font("Arial", Font.PLAIN, 12);
-                        	width = 17 + (int)(font.getStringBounds(template.toString(), frc).getWidth());
+                        	width = 1 + (int)(font.getStringBounds(template.toString(), frc).getWidth());
                         	isSelected = true;
                         } else {
                         	b2.append("<option value='" + template.toString() +"'>" + template.toString() + "</option>\n");

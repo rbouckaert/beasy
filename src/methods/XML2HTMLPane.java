@@ -5,6 +5,11 @@ import static javafx.concurrent.Worker.State.FAILED;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileWriter;
@@ -24,6 +29,7 @@ import javafx.scene.web.*;
 import methods.implementation.BEASTObjectMethodsText;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -102,9 +108,11 @@ public class XML2HTMLPane extends JPanel {
 	final static String header = "<!DOCTYPE html>\n" +
 			"<html>\n" +
 			"<style>\n" +
-			".reference {font-size:10pt;color:#aaa;}\n" +
-			"a{color:#44b;text-decoration:none;}\n" +
-			"select{color:#44b;font-weight:bold;text-decoration:underline;}\n" +			
+			".reference {font-size:10pt;color:#aaa;}\n" + 
+			"a{color:#555;text-decoration:none;background-color:#fafafa;}\n" + 
+			".pe {color:#555;background-color:#fafafa;}\n" + 
+			".para {color:#555;background-color:#fafafa;}\n" + 
+			"select{color:#555;font-weight:normal;-webkit-appearance:none;background-color:#fafafa;border-width:5pt;}\n" + 
 			"</style>\n" +
 			"<body style='font: 12pt arial, sans-serif;'>\n";
 	
@@ -385,12 +393,41 @@ public class XML2HTMLPane extends JPanel {
 			}
 		});
 	}
+	
+	public String getText(CitationPhrase.mode mode) throws Exception {		
+		CitationPhrase.CitationMode = mode;
+		xml2textProducer = new XML2Text(beautiDoc);
+		xml2textProducer.initialise((MCMC) beautiDoc.mcmc.get());
+		m = xml2textProducer.getPhrases();
+		return Phrase.toString(m);
+	}
 
 	public static void main(String[] args) throws Exception {
 		JFrame frame = new JFrame();
 		frame.setSize(700, 500);
-		frame.add(new XML2HTMLPane(args));
+		XML2HTMLPane textPane = new XML2HTMLPane(args);
+		frame.add(textPane);
 //		frame.add(new XML2HTMLPane());
+        JButton copyButton = new JButton("Copy text to clipboard");
+        frame.add(copyButton, BorderLayout.SOUTH);
+        copyButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int i = JOptionPane.showOptionDialog(frame, "Choose format", "Copy text",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, 
+						CitationPhrase.mode.values(), CitationPhrase.CitationMode);
+				CitationPhrase.mode mode = CitationPhrase.mode.values()[i];
+				StringSelection stringSelection;
+				try {
+					stringSelection = new StringSelection(textPane.getText(mode));
+					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					clipboard.setContents(stringSelection, null);				
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}

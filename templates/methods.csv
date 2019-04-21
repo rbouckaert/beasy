@@ -80,7 +80,7 @@ beast.mascot.dynamics.Constant," constant population using population size ",Ne,
 "SpeciesTreePopSize.Species","This is a multi-species coalescent (*BEAST",cite(10.1093/molbev/msp274),") analysis with a ","popFunction"," population function and gamma ","gammaParameter"
 
 
-"beast.math.distributions.Uniform","prior ","uniformly"," distributed ","(lower=","lower"," and upper=","upper",")"
+"beast.math.distributions.Uniform","uniformly"," distributed ","(lower=","lower"," and upper=","upper",")"
 "beast.math.distributions.Normal","normally"," distributed ","(mean=","mean"," and sigma=","sigma",")"
 "beast.math.distributions.OneOnX","1/X"," distributed"
 "beast.math.distributions.LogNormalDistributionModel","log-normally"," distributed ","(mean-log=","M"," and stdev-log=","S",")"
