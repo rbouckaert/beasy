@@ -3,12 +3,16 @@ package methods;
 
 import static javafx.concurrent.Worker.State.FAILED;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.application.*;
 import javafx.beans.value.*;
@@ -18,11 +22,15 @@ import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.web.*;
 import methods.implementation.BEASTObjectMethodsText;
 
 import javax.swing.SwingUtilities;
 
+import org.tbee.javafx.scene.layout.MigPane;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventListener;
@@ -97,97 +105,78 @@ public class XML2HTMLPaneFX extends Application {
 	@Override
 	public void start(javafx.stage.Stage stage) throws Exception {		
 		WebView view = new WebView();
+		view.setPrefHeight(1024);
 		engine = view.getEngine();
 
-		engine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
-			@Override
-			public void changed(ObservableValue ov, State oldState, State newState) {
-				if (newState == Worker.State.SUCCEEDED) {
-					// note next classes are from org.w3c.dom domain
-					EventListener listener = new EventListener() {
-						@Override
-						public void handleEvent(org.w3c.dom.events.Event evt) {
-							String href = ((Element) evt.getTarget()).getAttribute("href");
-							System.out.println("link:" + href);
-							// goToLink(href);
-						}
-					};
-
-					org.w3c.dom.Document doc = engine.getDocument();
-					Element el = doc.getElementById("a");
-					NodeList lista = doc.getElementsByTagName("a");
-					for (int i = 0; i < lista.getLength(); i++) {
-						((org.w3c.dom.events.EventTarget) lista.item(i)).addEventListener("click", listener, false);
-					}
-				}
-			}
-		});
-		engine.titleProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue,
-					final String newValue) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						// System.out.println(newValue);
-					}
-				});
-			}
-		});
-
-		engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
-			@Override
-			public void handle(final WebEvent<String> event) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						System.out.println("status changed:");
-						System.out.println(event.getData());
-//						ModelEditor me = new ModelEditor();
-//						if (me.handleCmd(event.getData(), beautiDoc, panel)) {
-//							beautiDoc.determinePartitions();
-//							beautiDoc.scrubAll(false, false);
-//							CitationPhrase.citations.clear();
-//
-//							MethodsText.clear();
-//							try {
-//								initialise((MCMC) beautiDoc.mcmc.get());
-//							} catch (Exception e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
+//		engine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
+//			@Override
+//			public void changed(ObservableValue ov, State oldState, State newState) {
+//				if (newState == Worker.State.SUCCEEDED) {
+//					// note next classes are from org.w3c.dom domain
+//					EventListener listener = new EventListener() {
+//						@Override
+//						public void handleEvent(org.w3c.dom.events.Event evt) {
+//							String href = ((Element) evt.getTarget()).getAttribute("href");
+//							System.out.println("link:" + href);
+//							// goToLink(href);
 //						}
-					}
-				});
-			}
-		});
+//					};
+//
+//					org.w3c.dom.Document doc = engine.getDocument();
+//					Element el = doc.getElementById("a");
+//					NodeList lista = doc.getElementsByTagName("a");
+//					for (int i = 0; i < lista.getLength(); i++) {
+//						((org.w3c.dom.events.EventTarget) lista.item(i)).addEventListener("click", listener, false);
+//					}
+//				}
+//			}
+//		});
+//		engine.titleProperty().addListener(new ChangeListener<String>() {
+//			@Override
+//			public void changed(ObservableValue<? extends String> observable, String oldValue,
+//					final String newValue) {
+//				SwingUtilities.invokeLater(new Runnable() {
+//					@Override
+//					public void run() {
+//						// System.out.println(newValue);
+//					}
+//				});
+//			}
+//		});
+
+//		engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
+//			@Override
+//			public void handle(final WebEvent<String> event) {
+//				SwingUtilities.invokeLater(new Runnable() {
+//					@Override
+//					public void run() {
+//						System.out.println("status changed:");
+//						System.out.println(event.getData());
+//					}
+//				});
+//			}
+//		});
 
 		engine.locationProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
-//				SwingUtilities.invokeLater(new Runnable() {
-//					@Override
-//					public void run() {
-						System.out.println("changed:");
-						System.out.println(newValue);
-						ModelEditor me = new ModelEditor(false);
-						if (me.handleCmd(newValue, beautiDoc, null)) {
-							beautiDoc.determinePartitions();
-							beautiDoc.scrubAll(false, false);
-							CitationPhrase.citations.clear();
+				System.out.println("changed:");
+				System.out.println(newValue);
+				ModelEditor me = new ModelEditor(false);
+				if (me.handleCmd(newValue, beautiDoc, null)) {
+					beautiDoc.determinePartitions();
+					beautiDoc.scrubAll(false, false);
+					CitationPhrase.citations.clear();
 
-							MethodsText.clear();
-							try {
-								initialise((MCMC) beautiDoc.mcmc.get(), false);
-								load(html);
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
+					MethodsText.clear();
+					try {
+						initialise((MCMC) beautiDoc.mcmc.get(), false);
+						load(html);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-//				});
-//			}
+				}
+			}
 		});
 
 		engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
@@ -206,31 +195,47 @@ public class XML2HTMLPaneFX extends Application {
 			}
 		});
 
+		view.setOnKeyReleased((KeyEvent e) -> {
+			System.out.println(e);
+			if (e.getText().equals("-")) {
+				zoomOut();
+			}
+			if (e.getText().equals("+")) {
+				zoomIn();
+			}
+		});
+		
+		MigPane pane = new MigPane("","[grow]","[grow][shrink]");
+		pane.add(view, "north");
+		Button copyButton = new Button("Export");
+		pane.add(copyButton, "south");
+		copyButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+			public void handle(javafx.event.ActionEvent event) {
 
-//		jfxPanel.addKeyListener(new KeyListener() {
-//
-//			@Override
-//			public void keyTyped(java.awt.event.KeyEvent e) {
-//			}
-//
-//			@Override
-//			public void keyReleased(java.awt.event.KeyEvent e) {
-//				System.out.println(e);
-//				if (e.getKeyChar() == '-') {
-//					zoomOut();
-//				}
-//				if (e.getKeyChar() == '+') {
-//					zoomIn();
-//				}
-//
-//			}
-//
-//			@Override
-//			public void keyPressed(java.awt.event.KeyEvent e) {
-//			}
-//		});
+				ChoiceDialog<CitationPhrase.mode> dialog = new ChoiceDialog<>(CitationPhrase.CitationMode, 
+						CitationPhrase.mode.values());
+				dialog.setTitle("Export Dialog");
+				dialog.setHeaderText("Export methods section");
+				dialog.setContentText("Choose format:");
 
-		Scene scene = new Scene(view, 1024, 768);
+				// Traditional way to get the response value.
+				Optional<CitationPhrase.mode> result = dialog.showAndWait();
+				if (result.isPresent()){
+				    System.out.println("Your choice: " + result.get());
+					CitationPhrase.mode mode = result.get();
+					StringSelection stringSelection;
+					try {
+						stringSelection = new StringSelection(getText(mode));
+						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+						clipboard.setContents(stringSelection, null);				
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		
+		Scene scene = new Scene(pane, 1024, 768);
 		stage.setScene(scene);
 		stage.show();
 		
@@ -359,35 +364,5 @@ public class XML2HTMLPaneFX extends Application {
 
 	public static void main(String[] args) throws Exception {		
 		launch(args);
-		
-		
-//		
-//		JFrame frame = new JFrame();
-//		frame.setSize(700, 500);
-//		XML2HTMLPaneFX textPane = new XML2HTMLPaneFX(args);
-//		frame.add(textPane);
-////		frame.add(new XML2HTMLPane());
-//        JButton copyButton = new JButton("Copy text to clipboard");
-//        frame.add(copyButton, BorderLayout.SOUTH);
-//        copyButton.addActionListener(new ActionListener() {
-//			
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				int i = JOptionPane.showOptionDialog(frame, "Choose format", "Copy text",
-//						JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, 
-//						CitationPhrase.mode.values(), CitationPhrase.CitationMode);
-//				CitationPhrase.mode mode = CitationPhrase.mode.values()[i];
-//				StringSelection stringSelection;
-//				try {
-//					stringSelection = new StringSelection(textPane.getText(mode));
-//					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-//					clipboard.setContents(stringSelection, null);				
-//				} catch (Exception e1) {
-//					e1.printStackTrace();
-//				}
-//			}
-//		});
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		frame.setVisible(true);
 	}
 }
