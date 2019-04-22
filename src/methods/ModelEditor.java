@@ -1,19 +1,20 @@
 package methods;
 
+
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -38,9 +39,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 
 public class ModelEditor {
 	
@@ -52,33 +50,6 @@ public class ModelEditor {
 	boolean refresh = false;
 	
 	public boolean handleCmd(String cmd, BeautiDoc doc, Component w) {
-//		if (useSwingThreads) {
-//			CountDownLatch countDownLatch = new CountDownLatch(1);			
-//
-//			new Thread() {
-//				public void run() {
-//				SwingUtilities.invokeLater(new Runnable() {
-//					@Override
-//					public void run() {
-//						refresh = handleCmd2(cmd, doc, w);
-//						countDownLatch.countDown();			
-//					}
-//				});
-//				}
-//			}.start();
-//			
-//			try {
-//				countDownLatch.await();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//			return refresh;
-//		} else {
-			return handleCmd2(cmd, doc, w);
-//		}
-	}
-	
-	private boolean handleCmd2(String cmd, BeautiDoc doc, Component w) {
 		String c = getAttribute("cmd", cmd);
 		if (c == null) {
 			return false;
@@ -182,7 +153,7 @@ public class ModelEditor {
 			} else {
 				Alert alert = new Alert(AlertType.CONFIRMATION);
 				alert.setTitle("Reference Dialog");
-				alert.setHeaderText("Copy to clipboard?");
+				alert.setHeaderText("Open paper in browser?");
 				alert.setContentText(citation.DOI);
 	
 	
@@ -197,10 +168,12 @@ public class ModelEditor {
 				alert.getDialogPane().setExpanded(true);
 	
 				if (alert.showAndWait().get() == ButtonType.OK) {
-					StringSelection stringSelection = new StringSelection(citation.toReference());
-					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-					clipboard.setContents(stringSelection, null);				
-	
+					if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+					    Desktop.getDesktop().browse(new URI("http://doi.org/" + citation.DOI));
+					}
+//					StringSelection stringSelection = new StringSelection(citation.toReference());
+//					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//					clipboard.setContents(stringSelection, null);				
 				}
 			}
 		} catch (Exception e) {

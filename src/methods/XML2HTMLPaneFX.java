@@ -1,6 +1,7 @@
 package methods;
 
 
+
 import static javafx.concurrent.Worker.State.FAILED;
 
 import java.awt.Toolkit;
@@ -14,15 +15,23 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.UIManager;
+import javax.xml.parsers.ParserConfigurationException;
+
 import javafx.application.*;
 import javafx.beans.value.*;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.web.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -31,14 +40,16 @@ import methods.implementation.BEASTObjectMethodsText;
 import netscape.javascript.JSObject;
 import javafx.concurrent.Worker.State;
 
-import org.tbee.javafx.scene.layout.MigPane;
+import org.xml.sax.SAXException;
 
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.InputFilter;
+import beast.app.util.Utils;
 import beast.core.BEASTInterface;
 import beast.core.MCMC;
 import beast.util.XMLParser;
+import beast.util.XMLParserException;
 import beast.util.XMLProducer;
 
 
@@ -102,6 +113,7 @@ public class XML2HTMLPaneFX extends Application {
 	
 	@Override
 	public void start(javafx.stage.Stage stage) throws Exception {
+		
 		mainStage = stage;
 		WebView view = new WebView();
 		view.setPrefHeight(1024);
@@ -114,17 +126,7 @@ public class XML2HTMLPaneFX extends Application {
 				System.out.println("changed:");
 				System.out.println(newValue);
 				if (me.handleCmd(newValue, beautiDoc, null)) {
-					beautiDoc.determinePartitions();
-					beautiDoc.scrubAll(false, false);
-					CitationPhrase.citations.clear();
-
-					MethodsText.clear();
-					try {
-						initialise((MCMC) beautiDoc.mcmc.get(), false);
-						load(html);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					refresh();
 				}
 			}
 		});
@@ -166,64 +168,17 @@ public class XML2HTMLPaneFX extends Application {
 				zoomIn();
 			}
 		});
-		
-		MigPane pane = new MigPane("","[grow]","[grow][shrink]");
-		pane.add(view, "cell 0 0 2 1");
-		Button copyButton = new Button("Export");
-		pane.add(copyButton, "cell 0 1");
-		copyButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-			public void handle(javafx.event.ActionEvent event) {
-
-				ChoiceDialog<CitationPhrase.mode> dialog = new ChoiceDialog<>(CitationPhrase.CitationMode, 
-						CitationPhrase.mode.values());
-				dialog.setTitle("Export Dialog");
-				dialog.setHeaderText("Export methods section");
-				dialog.setContentText("Choose format:");
-
-				// Traditional way to get the response value.
-				Optional<CitationPhrase.mode> result = dialog.showAndWait();
-				if (result.isPresent()){
-				    System.out.println("Your choice: " + result.get());
-					CitationPhrase.mode mode = result.get();
-					StringSelection stringSelection;
-					try {
-						stringSelection = new StringSelection(getText(mode));
-						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-						clipboard.setContents(stringSelection, null);				
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-			}
-		});
-		
-		Button saveButton = new Button("Save");
-		pane.add(saveButton, "cell 1 1");
-		saveButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-			public void handle(javafx.event.ActionEvent event) {
-
-				 FileChooser fileChooser = new FileChooser();
-				 fileChooser.setTitle("Open Resource File");
-				 fileChooser.getExtensionFilters().addAll(
-				         new FileChooser.ExtensionFilter("XML Files", "*.xml"),
-				         new FileChooser.ExtensionFilter("All Files", "*.*"));
-				 File selectedFile = fileChooser.showSaveDialog(mainStage);
-				 if (selectedFile != null) {
-				    XMLProducer producer = new XMLProducer();
-				    String xml = producer.toXML(beautiDoc.mcmc.get());
-					try {
-				        FileWriter outfile = new FileWriter(selectedFile.getPath());
-				        outfile.write(xml);
-				        outfile.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				 }
-			}
-		});
 				
-		Scene scene = new Scene(pane, 768, 668);
+		MenuBar menubar= createMenu();
+		
+		if (Utils.isMac()) {
+			menubar.useSystemMenuBarProperty().set(true);
+		}
+		BorderPane vb = new BorderPane();
+		vb.setTop(menubar);
+		vb.setCenter(view); 
+
+		Scene scene = new Scene(vb, 768, 668);
 		stage.setScene(scene);
 		stage.show();
 		
@@ -231,6 +186,113 @@ public class XML2HTMLPaneFX extends Application {
 		processArgs(args.toArray(new String[]{}));
 	};
 
+
+	private MenuBar createMenu() {
+		boolean isMac = Utils.isMac();
+		// create a menu 
+        Menu fileMenu = new Menu("_File");        
+        addMenu("Load", isMac?"Meta+L":"Ctrl+L", fileMenu, event ->{load();});
+        addMenu("Save", isMac?"Meta+S":"Ctrl+S", fileMenu, event ->{save();});
+        addMenu("Quit", isMac?"Meta+Q":"Ctrl+Q", fileMenu, event ->{System.exit(0);});  
+
+		// create a menu 
+        Menu editMenu = new Menu("_Edit"); 
+        addMenu("Export", "Ctrl+E", editMenu, event ->{export();});  
+        
+        
+        Menu helpMenu = new Menu("_Help");
+                
+        addMenu("About", "Meta+A", helpMenu, event ->{export();});  
+
+        MenuBar mb = new MenuBar();         
+        mb.getMenus().add(fileMenu); 
+        mb.getMenus().add(editMenu); 
+        mb.getMenus().add(helpMenu); 
+  
+        return mb;
+	}
+
+	
+	private void addMenu(String name, String accelerator, Menu menu, EventHandler<ActionEvent> event) {
+        MenuItem menuItem = new MenuItem(name);
+        menuItem.setOnAction(event);
+        menuItem.setAccelerator(KeyCombination.valueOf(accelerator));
+        menu.getItems().add(menuItem);		
+	}
+
+	private void export() {
+		ChoiceDialog<CitationPhrase.mode> dialog = new ChoiceDialog<>(CitationPhrase.CitationMode, 
+				CitationPhrase.mode.values());
+		dialog.setTitle("Export Dialog");
+		dialog.setHeaderText("Export methods section");
+		dialog.setContentText("Choose format:");
+
+		// Traditional way to get the response value.
+		Optional<CitationPhrase.mode> result = dialog.showAndWait();
+		if (result.isPresent()){
+		    System.out.println("Your choice: " + result.get());
+			CitationPhrase.mode mode = result.get();
+			StringSelection stringSelection;
+			try {
+				stringSelection = new StringSelection(getText(mode));
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(stringSelection, null);				
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	private void refresh() {
+		beautiDoc.determinePartitions();
+		beautiDoc.scrubAll(false, false);
+		CitationPhrase.citations.clear();
+
+		MethodsText.clear();
+		try {
+			initialise((MCMC) beautiDoc.mcmc.get(), false);
+			load(html);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void load() {
+		 FileChooser fileChooser = new FileChooser();
+		 fileChooser.setTitle("Save BEAST File");
+		 fileChooser.getExtensionFilters().addAll(
+		         new FileChooser.ExtensionFilter("XML Files", "*.xml"),
+		         new FileChooser.ExtensionFilter("All Files", "*.*"));
+		 File selectedFile = fileChooser.showOpenDialog(mainStage);
+		 if (selectedFile != null) {
+			 try {
+				beautiDoc.loadXML(selectedFile);
+				refresh();
+			} catch (IOException | XMLParserException | SAXException | ParserConfigurationException e) {
+				e.printStackTrace();
+			}
+		 }		
+	}
+	
+	private void save() {
+		 FileChooser fileChooser = new FileChooser();
+		 fileChooser.setTitle("Save BEAST File");
+		 fileChooser.getExtensionFilters().addAll(
+		         new FileChooser.ExtensionFilter("XML Files", "*.xml"),
+		         new FileChooser.ExtensionFilter("All Files", "*.*"));
+		 File selectedFile = fileChooser.showSaveDialog(mainStage);
+		 if (selectedFile != null) {
+		    XMLProducer producer = new XMLProducer();
+		    String xml = producer.toXML(beautiDoc.mcmc.get());
+			try {
+		        FileWriter outfile = new FileWriter(selectedFile.getPath());
+		        outfile.write(xml);
+		        outfile.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		 }
+	}
 
 	final static String header = "<!DOCTYPE html>\n" +
 			"<html>\n" +
@@ -377,6 +439,10 @@ public class XML2HTMLPaneFX extends Application {
     }
 
     public static void main(String[] args) throws Exception {		
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "XML2HTMLPandFX");
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
 		launch(args);
 	}
 
