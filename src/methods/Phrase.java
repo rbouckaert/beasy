@@ -30,12 +30,13 @@ import beast.core.*;
 import beast.core.parameter.Parameter;
 import beast.core.parameter.RealParameter;
 import beast.util.Randomizer;
+import methods.Phrase.PhraseType;
 
 /** Contains information about a word or phrase in the MethodsText,
  * including a pointer to where the phrase came from 
  */
 public class Phrase {
-	public enum PhraseType{regular, reference};
+	public enum PhraseType{regular, reference, tipdates};
 	
 	/** object being described **/
 	Object source;
@@ -73,6 +74,11 @@ public class Phrase {
 		this(null, phrase);
 	}
 	
+	public Phrase(String phrase, PhraseType type) {
+		this(null, phrase);
+		this.type = type;
+	}
+
 	static String toSimpleString(List<Phrase> phrases) {
 		StringBuilder b = new StringBuilder();
 		for (Phrase phrase : phrases) {
@@ -312,17 +318,26 @@ public class Phrase {
 
 			if (i > 0) {
 				if (phrase.getType() != phraseType) {
-					b.append("</div>\n<div class='"+ phrase.getType()+"'>");
+					if (phraseType == PhraseType.reference) {
+						b.append("</div>\n"); 
+					} else {
+						b.append("</span>\n"); 
+					}
+					if (phrase.getType() == PhraseType.reference) {
+						b.append("<div class='"+ phrase.getType()+"'>");
+					} else {
+						b.append("<span class='"+ phrase.getType()+"'>");
+					}
 				}
 			} else {
 				b.append("<div class='"+ phrase.getType()+"'>");
 			}
 			phraseType = phrase.getType();
 
-			if (phrase instanceof PartitionPhrase) {
-				
+			if (phrase instanceof PartitionPhrase) {				
 				b.append("<a class='pe' href='/cmd=PartitionEditor'>" + phrase.toHTML() + "</a>\n");
-
+			} else if (phrase.type ==  PhraseType.tipdates) {
+				b.append("<a class='pe' href='/cmd=TipDates'>" + phrase.toHTML() + "</a>");
 			} else if (phrase instanceof CitationPhrase) {
 				int counter = ((CitationPhrase)phrase).counter;
 	        	String ref = "unknown";
@@ -342,7 +357,14 @@ public class Phrase {
 				String source = phrase.parent.getID() + " " + phrase.input.getName();
 		        String text = phrase.source.toString();
 		        text = text.substring(1, text.length() - 1);
-				b.append("<input size='5' onkeyup='window.location=\"/cmd=Text value=\"+value+\" source=" + source +"' value='" + text +"'/>");
+				//b.append("<input size='5' onkeyup='window.location=\"/cmd=Text value=\"+value+\" source=" + source +"' value='" + text +"'/>");
+				b.append("<input size='5' onkeyup='window.myObject.doIt(value,\"" + source + "\")' value='" + text +"'/>");
+
+			} else if (phrase.parent != null && phrase.parent instanceof BEASTInterface && phrase.input.getType() == Double.class) {
+				String source = phrase.parent.getID() + " " + phrase.input.getName();
+		        String text = phrase.source.toString();
+				//b.append("<input size='5' onkeyup='window.location=\"/cmd=Text value=\"+value+\" source=" + source +"' value='" + text +"'/>");
+				b.append("<input size='5' onkeyup='window.myObject.doIt(value,\"" + source + "\")' value='" + text +"'/>");
 
 			} else if (phrase.source instanceof BEASTInterface && phrase.input != null && phrase.parent != null) {
 		        InputEditorFactory inputEditorFactory = beautiDoc.getInputEditorFactory();
@@ -377,7 +399,8 @@ public class Phrase {
 
 			        if (isSelected) {
 			        	b.append("<select style='width:" + width + "pt;font: 12pt arial, sans-serif;border: 0px solid transparent;' "
-			        			+ "onchange='window.location=\"/cmd=Select value=\"+value+\" source="+ phrase.parent.getID() + " input=" + phrase.input.getName() + "\"'>");
+			        			+ "onchange='window.location=\"/cmd=Select value=\"+value+\" source="+ phrase.parent.getID() + " input=" + phrase.input.getName() +
+			        			" object=" +  ((BEASTInterface)phrase.source).getID() + "\"'>");
 						b.append(b2.toString());					
 			        } else {
 						b.append(phrase.toHTML());					

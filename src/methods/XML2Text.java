@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.*;
 
-import com.sun.javafx.css.converters.StringConverter;
-
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.InputFilter;
@@ -228,12 +226,12 @@ public class XML2Text extends Runnable {
         if (trees.size() == 1) {
         	TreeInterface tree = (TreeInterface) trees.toArray()[0];
         	m = MethodsTextFactory.getModelDescription(tree, null, null, beautiDoc);
-        	m.add(0, new Phrase("\nThere is a single tree with "));
+        	m.add(0, new Phrase("\nThere is a single tree with ", PhraseType.tipdates));
         	TraitSet traitSet = ((Tree) tree).getDateTrait();
         	if (traitSet != null) {
         		String direction = traitSet.getDateType().equals(TraitSet.DATE_BACKWARD_TRAIT) ? 
         				"ages not dates" : "dates not ages";
-         		m.add(1, new Phrase(" dated tips (in " + direction + ") "));
+         		m.add(1, new Phrase(" dated tips (in " + direction + ") ", PhraseType.tipdates));
         	}
             addPhrases(m);
         } else if (beautiDoc.pluginmap.containsKey("Tree.t:Species")) {
@@ -244,10 +242,10 @@ public class XML2Text extends Runnable {
 	        	if (traitSet != null) {
 	        		String direction = traitSet.getDateType().equals(TraitSet.DATE_BACKWARD_TRAIT) ? 
 	        				"ages not dates" : "dates not ages";
-	        		m.add(1, new Phrase("Tree " + speciesTree.getID() +" has dated tips (in " + direction + ")."));
+	        		m.add(1, new Phrase("Tree " + speciesTree.getID() +" has dated tips (in " + direction + ").", PhraseType.tipdates));
 	        	}
         	}
-        	m.add(0, new Phrase("\nTree prior: "));
+        	m.add(0, new Phrase("\nTree prior: ", PhraseType.tipdates));
             addPhrases(m);        	
         } else {
 	        for (TreeInterface tree : trees) {
@@ -256,9 +254,9 @@ public class XML2Text extends Runnable {
 	        	if (traitSet != null) {
 	        		String direction = traitSet.getDateType().equals(TraitSet.DATE_BACKWARD_TRAIT) ? 
 	        				"ages not dates" : "dates not ages";
-	        		m.add(1, new Phrase("Tree " + tree.getID() +" has dated tips (in " + direction + ")."));
+	        		m.add(1, new Phrase("Tree " + tree.getID() +" has dated tips (in " + direction + ").", PhraseType.tipdates));
 	        	}
-	        	m.add(0, new Phrase("\nTree prior: "));
+	        	m.add(0, new Phrase("\nTree prior: ", PhraseType.tipdates));
 	            addPhrases(m);
 	        }
         }

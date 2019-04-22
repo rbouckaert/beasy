@@ -23,6 +23,7 @@ import beast.app.beauti.AlignmentListInputEditor;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiPanelConfig;
 import beast.app.beauti.BeautiSubTemplate;
+import beast.app.beauti.TipDatesInputEditor;
 import beast.app.draw.BEASTObjectDialog;
 import beast.app.draw.BEASTObjectPanel;
 import beast.app.draw.InputEditor;
@@ -90,9 +91,74 @@ public class ModelEditor {
 		case "Text": return handleTextField(cmd, doc, w);
 		case "RealParameter": return editRealParameter(cmd, doc, w);
 		case "Select": return handleComboBox(cmd, doc, w);
+		case "TipDates": return handleTipDates(cmd, doc, w);
 		}
 		
 		return false;
+	}
+
+	private boolean handleTipDates(String cmd, BeautiDoc doc, Component w) {
+		BeautiPanelConfig config = new BeautiPanelConfig();
+		config.initByName("path","tree",
+				"panelname", "Partitions", "tiptext", "Data Partitions",
+	            "hasPartitions", "Tree", "forceExpansion", "TRUE"
+				);
+		final Input<?> input = config.resolveInput(doc, 0);
+		
+		TipDatesInputEditor ie = new TipDatesInputEditor(doc);
+        ((JComponent) ie).setBorder(BorderFactory.createEmptyBorder());
+		ie.init(input, config, -1, ExpandOption.FALSE, false);
+        ie.getComponent().setVisible(true);
+
+		if (useSwingThreads) {
+	        JOptionPane optionPane = new JOptionPane(ie,
+	                JOptionPane.PLAIN_MESSAGE,
+	                JOptionPane.OK_CANCEL_OPTION,
+	                null,
+	                new String[]{"OK"},
+	                "OK");
+	        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+			final JDialog dialog = optionPane.createDialog(w, "Partition panel");
+			dialog.setResizable(true);
+			dialog.pack();
+
+			dialog.setVisible(true);
+		} else {
+			final SwingNode swingNode = new SwingNode() {
+				@Override
+				public boolean isResizable() {
+					return false;
+				}
+			};
+
+			SwingUtilities.invokeLater(new Runnable() {
+	            @Override
+	            public void run() {
+	                swingNode.setContent(ie);
+	            }
+	        });
+
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Partition Dialog");
+			alert.setHeaderText("Edit partitions");
+			alert.setContentText(null);
+
+			DialogPane pane = alert.getDialogPane();
+			pane.setExpandableContent(swingNode);
+			pane.setExpanded(true);
+			pane.setMinHeight(500);
+			pane.setMinWidth(1024);
+
+			alert.showAndWait();
+			
+		}
+        
+        try {
+			return true;
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}		
+    	return false;
 	}
 
 	public boolean showCitation(String cmd, BeautiDoc doc, Component w) {
@@ -327,18 +393,27 @@ public class ModelEditor {
         	}
         }
         
-        BEASTInterface beastObject = (BEASTInterface) input.get();
-        String id = beastObject.getID();
+        
+        String id = getAttribute("object", cmd);
+        BEASTInterface oldBeastObject = doc.pluginmap.get(id); // (BEASTInterface) input.get();
+        BEASTInterface newBeastObject = null;
+        //String id = beastObject.getID();
         String partition = id.indexOf('.') >= 0 ? 
         		id.substring(id.indexOf('.') + 1) : "";
         if (partition.indexOf(':') >= 0) {
         	partition = id.substring(id.indexOf(':') + 1);
         }
         if (selected.equals(InputEditor.NO_VALUE)) {
-            beastObject = null;
+            newBeastObject = null;
         } else {
             try {
-                beastObject = selected.createSubNet(doc.getContextFor(beastObject), m_beastObject, input, true);
+                if (input.get() instanceof  List) {
+                	List objects = ((List)input.get());
+                	int i = objects.indexOf(oldBeastObject);
+                	newBeastObject = selected.createSubNet(doc.getContextFor(oldBeastObject), objects, i, true);
+                } else {
+                	newBeastObject = selected.createSubNet(doc.getContextFor(oldBeastObject), m_beastObject, input, true);
+                }
             } catch (Exception ex) {
             	messageDialog("Could not select beastObject: " +
                         ex.getClass().getName() + " " +
@@ -347,15 +422,19 @@ public class ModelEditor {
         }
 
         try {
-            if (beastObject == null) {
+            if (newBeastObject == null) {
                 //b.setSelectedItem(InputEditor.NO_VALUE);
             } else {
-                if (!input.canSetValue(beastObject, m_beastObject)) {
+                if (!input.canSetValue(newBeastObject, m_beastObject)) {
                     throw new IllegalArgumentException("Cannot set input to this value");
                 }
             }
 
-            input.setValue(beastObject, m_beastObject);
+            if (!(input.get() instanceof  List)) {
+            	input.setValue(newBeastObject, m_beastObject);
+            } else {
+            	newBeastObject.getOutputs().add(m_beastObject);
+            }
 
             return true;
         } catch (Exception ex) {
@@ -385,11 +464,11 @@ public class ModelEditor {
 
 	private boolean handleTextField(String cmd, BeautiDoc doc, Component w) {
 		//JTextField b = (JTextField) e.getSource();
-		int k = cmd.lastIndexOf(' ');
-		String id = cmd.substring(0, k);
-		String inputName = cmd.substring(k + 1);
+		String source = getAttribute("source", cmd);
+		int k = source.lastIndexOf(' ');
+		String id = source.substring(0, k);
+		String inputName = source.substring(k + 1);
 		String value = getAttribute("value", cmd);
-		//System.out.println("You selected " + b.getText() + " for " + cmd);
 		BEASTInterface o = doc.pluginmap.get(id);
 		Input<?> input = o.getInput(inputName);
 		if (input.canSetValue(value, o)) {

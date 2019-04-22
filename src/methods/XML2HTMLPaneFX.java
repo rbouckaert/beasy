@@ -16,8 +16,6 @@ import java.util.Optional;
 
 import javafx.application.*;
 import javafx.beans.value.*;
-import javafx.concurrent.*;
-import javafx.concurrent.Worker.State;
 import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
@@ -26,14 +24,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.web.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import methods.implementation.BEASTObjectMethodsText;
 
-import javax.swing.SwingUtilities;
+import netscape.javascript.JSObject;
+import javafx.concurrent.Worker.State;
 
 import org.tbee.javafx.scene.layout.MigPane;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.events.EventListener;
 
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
@@ -41,6 +39,7 @@ import beast.app.beauti.InputFilter;
 import beast.core.BEASTInterface;
 import beast.core.MCMC;
 import beast.util.XMLParser;
+import beast.util.XMLProducer;
 
 
 public class XML2HTMLPaneFX extends Application {
@@ -55,14 +54,13 @@ public class XML2HTMLPaneFX extends Application {
 	
 	File tmpFile = null;
 
-	
+	XML2HTMLPaneFX thisPane;
+	ModelEditor me = new ModelEditor(false);
+	Stage mainStage;
+
 	public XML2HTMLPaneFX() {
-
-//		JScrollPane scroller = new JScrollPane(panel);
-//		add(scroller, BorderLayout.CENTER);
-
-
-	} // c'tor
+		thisPane = this;
+	}
 
 	public void processArgs(String [] args) throws Exception {		
 		beautiDoc = new BeautiDoc();
@@ -103,66 +101,18 @@ public class XML2HTMLPaneFX extends Application {
 	}
 	
 	@Override
-	public void start(javafx.stage.Stage stage) throws Exception {		
+	public void start(javafx.stage.Stage stage) throws Exception {
+		mainStage = stage;
 		WebView view = new WebView();
 		view.setPrefHeight(1024);
+		view.setContextMenuEnabled(false);
 		engine = view.getEngine();
-
-//		engine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
-//			@Override
-//			public void changed(ObservableValue ov, State oldState, State newState) {
-//				if (newState == Worker.State.SUCCEEDED) {
-//					// note next classes are from org.w3c.dom domain
-//					EventListener listener = new EventListener() {
-//						@Override
-//						public void handleEvent(org.w3c.dom.events.Event evt) {
-//							String href = ((Element) evt.getTarget()).getAttribute("href");
-//							System.out.println("link:" + href);
-//							// goToLink(href);
-//						}
-//					};
-//
-//					org.w3c.dom.Document doc = engine.getDocument();
-//					Element el = doc.getElementById("a");
-//					NodeList lista = doc.getElementsByTagName("a");
-//					for (int i = 0; i < lista.getLength(); i++) {
-//						((org.w3c.dom.events.EventTarget) lista.item(i)).addEventListener("click", listener, false);
-//					}
-//				}
-//			}
-//		});
-//		engine.titleProperty().addListener(new ChangeListener<String>() {
-//			@Override
-//			public void changed(ObservableValue<? extends String> observable, String oldValue,
-//					final String newValue) {
-//				SwingUtilities.invokeLater(new Runnable() {
-//					@Override
-//					public void run() {
-//						// System.out.println(newValue);
-//					}
-//				});
-//			}
-//		});
-
-//		engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
-//			@Override
-//			public void handle(final WebEvent<String> event) {
-//				SwingUtilities.invokeLater(new Runnable() {
-//					@Override
-//					public void run() {
-//						System.out.println("status changed:");
-//						System.out.println(event.getData());
-//					}
-//				});
-//			}
-//		});
 
 		engine.locationProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
 				System.out.println("changed:");
 				System.out.println(newValue);
-				ModelEditor me = new ModelEditor(false);
 				if (me.handleCmd(newValue, beautiDoc, null)) {
 					beautiDoc.determinePartitions();
 					beautiDoc.scrubAll(false, false);
@@ -195,6 +145,18 @@ public class XML2HTMLPaneFX extends Application {
 			}
 		});
 
+		
+		 // process page loading
+        engine.getLoadWorker().stateProperty().addListener(
+            (ObservableValue<? extends State> ov, State oldState, 
+                State newState) -> {
+                    if (newState == State.SUCCEEDED) {
+                        JSObject win
+                                = (JSObject) engine.executeScript("window");
+                        win.setMember("myObject", thisPane);// new MyObject());
+                    }
+        });
+        
 		view.setOnKeyReleased((KeyEvent e) -> {
 			System.out.println(e);
 			if (e.getText().equals("-")) {
@@ -206,9 +168,9 @@ public class XML2HTMLPaneFX extends Application {
 		});
 		
 		MigPane pane = new MigPane("","[grow]","[grow][shrink]");
-		pane.add(view, "north");
+		pane.add(view, "cell 0 0 2 1");
 		Button copyButton = new Button("Export");
-		pane.add(copyButton, "south");
+		pane.add(copyButton, "cell 0 1");
 		copyButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
 			public void handle(javafx.event.ActionEvent event) {
 
@@ -235,7 +197,33 @@ public class XML2HTMLPaneFX extends Application {
 			}
 		});
 		
-		Scene scene = new Scene(pane, 1024, 768);
+		Button saveButton = new Button("Save");
+		pane.add(saveButton, "cell 1 1");
+		saveButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+			public void handle(javafx.event.ActionEvent event) {
+
+				 FileChooser fileChooser = new FileChooser();
+				 fileChooser.setTitle("Open Resource File");
+				 fileChooser.getExtensionFilters().addAll(
+				         new FileChooser.ExtensionFilter("XML Files", "*.xml"),
+				         new FileChooser.ExtensionFilter("All Files", "*.*"));
+				 File selectedFile = fileChooser.showSaveDialog(mainStage);
+				 if (selectedFile != null) {
+				    XMLProducer producer = new XMLProducer();
+				    String xml = producer.toXML(beautiDoc.mcmc.get());
+					try {
+				        FileWriter outfile = new FileWriter(selectedFile.getPath());
+				        outfile.write(xml);
+				        outfile.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				 }
+			}
+		});
+				
+		Scene scene = new Scene(pane, 768, 668);
 		stage.setScene(scene);
 		stage.show();
 		
@@ -247,13 +235,18 @@ public class XML2HTMLPaneFX extends Application {
 	final static String header = "<!DOCTYPE html>\n" +
 			"<html>\n" +
 			"<style>\n" +
-			".reference {font-size:10pt;color:#aaa;}\n" + 
+			".reference {font-size:10pt;color:#aaa;}\n" +
+			".tipdates {display:inline;}\n" +
 			"a{color:#555;text-decoration:none;background-color:#fafafa;}\n" + 
 			".pe {color:#555;background-color:#fafafa;}\n" + 
 			".para {color:#555;background-color:#fafafa;}\n" + 
 			"select{color:#555;font-weight:normal;-webkit-appearance:none;background-color:#fafafa;border-width:5pt;}\n" + 
+			"a:hover{background-color:#aaa;}\n" + 
+			"select:hover{background-color:#aaa;}\n" + 
 			"</style>\n" +
-			"<body style='font: 12pt arial, sans-serif;'>\n";
+			"<body style='font: 12pt arial, sans-serif;'>"
+			//+ "<input type='button' onclick='window.myObject.doIt(\"ok\");' value='Click me'/>\n"
+			;
 	
 	public void initialise(MCMC mcmc, boolean update) throws Exception {		
 		xml2textProducer = new XML2Text(beautiDoc);
@@ -262,18 +255,16 @@ public class XML2HTMLPaneFX extends Application {
 		
 		html = header + Phrase.toHTML(beautiDoc, m) + "</body>\n</html>";
 		
-        FileWriter outfile = new FileWriter("/tmp/index.html");
-        outfile.write(html);
-        outfile.close();
-		
         if (update) {
         	updateState(html);
         } else {
         	load(html);
         }
-	}
 
-	
+        FileWriter outfile = new FileWriter("/tmp/index.html");
+        outfile.write(html);
+        outfile.close();
+	}
 
 	
 	/**
@@ -362,7 +353,31 @@ public class XML2HTMLPaneFX extends Application {
 		return Phrase.toString(m);
 	}
 
-	public static void main(String[] args) throws Exception {		
+    public void doIt(String str) {
+        System.out.println("doIt(" + str + ") called");
+		if (me.handleCmd("/cmd=" + str, beautiDoc, null)) {
+			beautiDoc.determinePartitions();
+			beautiDoc.scrubAll(false, false);
+			CitationPhrase.citations.clear();
+
+			MethodsText.clear();
+			try {
+				initialise((MCMC) beautiDoc.mcmc.get(), false);
+				load(html);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+    }
+    
+    public void doIt(String str, String source) {
+        System.out.println("doIt(" + str + ") called with source = " + source);
+        me.handleCmd("/cmd=Text value=\""+str+"\" source=\"" + source + "\"", beautiDoc, null);
+    }
+
+    public static void main(String[] args) throws Exception {		
 		launch(args);
 	}
+
 }

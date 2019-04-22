@@ -72,7 +72,7 @@ public class MethodsTextFactory {
 			@Override
 			public List<Phrase> getModelDescription(Object o, BEASTInterface parent, Input<?> input, BeautiDoc doc) {
 				List<Phrase> m = new ArrayList<>();
-				m.add(new Phrase(o.toString()));
+				m.add(new Phrase(o, parent, input, o.toString()));
 				return m;
 			}
 		};
