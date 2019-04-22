@@ -12,10 +12,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import javafx.application.*;
@@ -24,11 +27,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -40,14 +46,22 @@ import methods.implementation.BEASTObjectMethodsText;
 import netscape.javascript.JSObject;
 import javafx.concurrent.Worker.State;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import beast.app.beauti.BeautiAlignmentProvider;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.InputFilter;
+import beast.app.beauti.BeautiDoc.DOC_STATUS;
 import beast.app.util.Utils;
 import beast.core.BEASTInterface;
 import beast.core.MCMC;
+import beast.core.util.Log;
+import beast.evolution.alignment.Alignment;
+import beast.math.distributions.MRCAPrior;
+import beast.util.PackageManager;
 import beast.util.XMLParser;
 import beast.util.XMLParserException;
 import beast.util.XMLProducer;
@@ -71,14 +85,14 @@ public class XML2HTMLPaneFX extends Application {
 
 	public XML2HTMLPaneFX() {
 		thisPane = this;
+		beautiDoc = new BeautiDoc();
+		beautiDoc.beautiConfig = new BeautiConfig();
+		beautiDoc.beautiConfig.initAndValidate();		
 	}
 
 	public void processArgs(String [] args) throws Exception {		
-		beautiDoc = new BeautiDoc();
 		File file = new File(args[0]);
 		beautiDoc.setFileName(file.getAbsolutePath());
-		beautiDoc.beautiConfig = new BeautiConfig();
-		beautiDoc.beautiConfig.initAndValidate();		
 		String xml = BeautiDoc.load(file);
 		int i = xml.indexOf("beautitemplate=");
 		if (i > 0) {
@@ -187,15 +201,26 @@ public class XML2HTMLPaneFX extends Application {
 	};
 
 
+	Menu fileMenu;
 	private MenuBar createMenu() {
-		boolean isMac = Utils.isMac();
 		// create a menu 
-        Menu fileMenu = new Menu("_File");        
-        addMenu("Load", isMac?"Meta+L":"Ctrl+L", fileMenu, event ->{load();});
-        addMenu("Save", isMac?"Meta+S":"Ctrl+S", fileMenu, event ->{save();});
-        addMenu("Quit", isMac?"Meta+Q":"Ctrl+Q", fileMenu, event ->{System.exit(0);});  
+        fileMenu = new Menu("_File");
+        createFileMenu();
+//        Menu workDirMenu = new Menu("Set working dir");
+//        fileMenu.getItems().add(workDirMenu);
+//        List<AbstractAction> workDirMenuActions = getWorkDirActions();
+//        for (AbstractAction a : workDirMenuActions) {
+//        	workDirMenu.add(a);
+//        }
+//        templateMenu.addSeparator();
+//        templateMenu.add(a_template);
+//        fileMenu.add(a_managePackages);
+//        fileMenu.add(a_clearClassPath);
+//        fileMenu.add(a_appLauncher);
 
-		// create a menu 
+        
+        
+        // create a menu 
         Menu editMenu = new Menu("_Edit"); 
         addMenu("Export", "Ctrl+E", editMenu, event ->{export();});  
         
@@ -211,12 +236,206 @@ public class XML2HTMLPaneFX extends Application {
   
         return mb;
 	}
-
 	
+    private void createFileMenu() {
+		boolean isMac = Utils.isMac();
+
+		// first clear menu
+   		fileMenu.getItems().removeAll();
+
+   		
+        addMenu("Load", isMac?"Meta+L":"Ctrl+L", fileMenu, event ->{load();});
+        addMenu("Save", isMac?"Meta+S":"Ctrl+S", fileMenu, event ->{save();});
+        addMenu("Save As", null, fileMenu, event ->{saveAs();});
+
+        fileMenu.getItems().add(new SeparatorMenuItem());
+        addAlignmentProviderMenus(fileMenu);
+        fileMenu.getItems().add(new SeparatorMenuItem());
+
+        Menu templateMenu = new Menu("Template");
+        fileMenu.getItems().add(templateMenu);
+        List<TemplateMenu> templateActions = getTemplateActions();
+        for (TemplateMenu a : templateActions) {
+            templateMenu.getItems().add(a);
+        }
+
+        fileMenu.getItems().add(new SeparatorMenuItem());
+        addMenu("Quit", isMac?"Meta+Q":"Ctrl+Q", fileMenu, event ->{System.exit(0);});  
+	}
+
+	private void addAlignmentProviderMenus(Menu fileMenu) {
+        List<BeautiAlignmentProvider> providers = beautiDoc.beautiConfig.alignmentProvider;
+        for (BeautiAlignmentProvider provider : providers) {
+        	MenuItem action = new MenuItem();
+        	action.setOnAction(e -> addPartition(provider));
+            String providerInfo = provider.toString().replaceAll("Add ", "Add partition for ");
+            //action.putValue(Action.SHORT_DESCRIPTION, providerInfo);
+            //action.putValue(Action.LONG_DESCRIPTION, providerInfo);
+            // TODO: add tooltip text
+            action.setText(provider.toString());
+        	fileMenu.getItems().add(action);
+        }
+	}
+	
+	void addPartition(BeautiAlignmentProvider provider) {
+        try {
+//            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+            // get user-specified alignments
+	        List<BEASTInterface> beastObjects = provider.getAlignments(beautiDoc);
+	        if (beastObjects != null) {
+		        for (BEASTInterface o : beastObjects) {
+		        	if (o instanceof Alignment) {
+		        		try {
+		        			BeautiDoc.createTaxonSet((Alignment) o, beautiDoc);
+		        		} catch(Exception ex) {
+		        			ex.printStackTrace();
+		        		}
+		        	}
+		        }
+	        }
+
+	        beautiDoc.scrubAll(true, true);
+	        // beautiDoc.fireDocHasChanged();
+            
+	        if (beastObjects != null) {
+		        for (BEASTInterface o : beastObjects) {
+		        	if (o instanceof MRCAPrior) {
+		        		beautiDoc.addMRCAPrior((MRCAPrior) o);
+		        	}
+		        }
+	        }
+            // a_save.setEnabled(true);
+            // a_saveas.setEnabled(true);
+        } catch (Exception exx) {
+            exx.printStackTrace();
+
+            String text = "Something went wrong importing the alignment:\n";
+            JTextArea textArea = new JTextArea(text);
+            textArea.setColumns(30);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.append(exx.getMessage());
+            textArea.setSize(textArea.getPreferredSize().width, 1);
+            textArea.setOpaque(false);
+        }
+//        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
+	}
+	
+	private List<TemplateMenu> getTemplateActions() {
+        List<TemplateMenu> actions = new ArrayList<>();
+        List<String> beastDirectories = PackageManager.getBeastDirectories();
+        for (String dirName : beastDirectories) {
+            File dir = new File(dirName + "/templates");
+            getTemplateActionForDir(dir, actions);
+        }
+        return actions;
+    }
+
+    private void getTemplateActionForDir(File dir, List<TemplateMenu> actions) {
+        if (dir.exists() && dir.isDirectory()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File template : files) {
+                    if (template.getName().toLowerCase().endsWith(".xml")) {
+                        try {
+                            String xml2 = BeautiDoc.load(template.getAbsolutePath());
+                            if (xml2.contains("templateinfo=")) {
+                            	String fileName = template.getName();
+                                fileName = fileName.substring(0, fileName.length() - 4);
+                                boolean duplicate = false;
+                            	for (TemplateMenu action : actions) {
+                            		String name = action.getText();
+                            		if (name.equals(fileName)) {
+                            			duplicate = true;
+                            		}
+                            	}
+                            	if (!duplicate) {
+                            		TemplateMenu menu = new TemplateMenu(template);
+                            		actions.add(menu);
+                            	}
+                            }
+                        } catch (Exception e) {
+                        	Log.warning.println(e.getMessage());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public class TemplateMenu extends MenuItem {
+
+        String fileName;
+        String templateInfo;
+
+        public TemplateMenu(File file) {
+            super("xx");
+            fileName = file.getAbsolutePath();
+            String fileSep = System.getProperty("file.separator");
+            if (fileSep.equals("\\")) {
+                fileSep = "\\";
+            }
+            int i = fileName.lastIndexOf(fileSep) + 1;
+            String name = fileName.substring(
+                    i, fileName.length() - 4);
+            
+            setText(name);
+            try {
+                DocumentBuilderFactory factory = DocumentBuilderFactory
+                        .newInstance();
+                Document doc = factory.newDocumentBuilder().parse(file);
+                doc.normalize();
+                // get name and version of add-on
+                Element template = doc.getDocumentElement();
+                templateInfo = template.getAttribute("templateinfo");
+                if (templateInfo == null || templateInfo.length() == 0) {
+                    templateInfo = "switch to " + name + " template";
+                }
+                // TODO: install tool tip
+                //Tooltip.install(this, new Tooltip(templateInfo));
+            } catch (Exception e) {
+                // ignore
+            }
+            setOnAction(e -> {loadTemplate(this);});
+        }
+    }
+    
+    void loadTemplate(TemplateMenu a) {
+        try {
+            if (beautiDoc.validateModel() == DOC_STATUS.NO_DOCUMENT) {
+            	beautiDoc.loadNewTemplate(a.fileName);
+//              createFileMenu();
+				refresh();
+            } else {
+    			Alert alert = new Alert(AlertType.INFORMATION);
+    			alert.setTitle("Switching templates");
+    			alert.setHeaderText("Are you sure:");
+    			alert.setContentText("Changing templates means the information input so far will be lost. "
+                        + "Are you sure you want to change templates?");
+    			if (alert.showAndWait().get() == ButtonType.OK) {            	
+    				beautiDoc.loadNewTemplate(a.fileName);
+                    createFileMenu();
+    				refresh();
+    			}
+    		}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Switching templates");
+			alert.setHeaderText("Something went wrong loading the template:");
+			alert.setContentText(ex.getMessage());
+			alert.showAndWait();
+        }
+    }
+    
 	private void addMenu(String name, String accelerator, Menu menu, EventHandler<ActionEvent> event) {
         MenuItem menuItem = new MenuItem(name);
         menuItem.setOnAction(event);
-        menuItem.setAccelerator(KeyCombination.valueOf(accelerator));
+        if (accelerator != null) {
+        	menuItem.setAccelerator(KeyCombination.valueOf(accelerator));
+        }
         menu.getItems().add(menuItem);		
 	}
 
@@ -275,6 +494,14 @@ public class XML2HTMLPaneFX extends Application {
 	}
 	
 	private void save() {
+	    if (!beautiDoc.getFileName().equals("")) {
+	        saveFile(beautiDoc.getFileName());
+	    } else {
+	        saveAs();
+	    }
+	}
+	
+	private void saveAs() {
 		 FileChooser fileChooser = new FileChooser();
 		 fileChooser.setTitle("Save BEAST File");
 		 fileChooser.getExtensionFilters().addAll(
@@ -282,16 +509,20 @@ public class XML2HTMLPaneFX extends Application {
 		         new FileChooser.ExtensionFilter("All Files", "*.*"));
 		 File selectedFile = fileChooser.showSaveDialog(mainStage);
 		 if (selectedFile != null) {
-		    XMLProducer producer = new XMLProducer();
-		    String xml = producer.toXML(beautiDoc.mcmc.get());
-			try {
-		        FileWriter outfile = new FileWriter(selectedFile.getPath());
-		        outfile.write(xml);
-		        outfile.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			 saveFile(selectedFile.getPath());
 		 }
+	}
+
+	private void saveFile(String path) {
+	    XMLProducer producer = new XMLProducer();
+	    String xml = producer.toXML(beautiDoc.mcmc.get());
+		try {
+	        FileWriter outfile = new FileWriter(path);
+	        outfile.write(xml);
+	        outfile.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	final static String header = "<!DOCTYPE html>\n" +

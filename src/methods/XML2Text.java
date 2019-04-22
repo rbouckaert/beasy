@@ -3,7 +3,9 @@ package methods;
 
 
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.PrintStream;
 import java.util.*;
 
@@ -28,7 +30,9 @@ import beast.evolution.tree.TraitSet;
 import beast.evolution.tree.Tree;
 import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
+import beast.util.PackageManager;
 import beast.util.XMLParser;
+import beast.util.XMLProducer;
 import methods.CitationPhrase.mode;
 import methods.Phrase.PhraseType;
 import methods.implementation.BEASTObjectMethodsText;
@@ -139,8 +143,25 @@ public class XML2Text extends Runnable {
 	
 	private void addReferenceSection() {
 		int i = m.size();
-		m.add(new Phrase("\nThis analysis is for BEAST 2"));
+		m.add(new Phrase("\nThis analysis is for BEAST "));
 		m.add(CitationPhrase.createCitationPhrase("10.1371/journal.pcbi.1003537"));
+
+		XMLProducer producer = new XMLProducer();
+		beautiDoc.scrubAll(false, false);
+		String [] packages = producer.getPackagesAndVersions(beautiDoc.mcmc.get()).toArray(new String[]{});
+		if (packages.length > 0) {
+			m.add(new Phrase(" using "));
+			for (String pkg : packages) {
+				m.add(new Phrase(pkg));
+				m.add(new Phrase(", "));
+			}
+			m.remove(m.size() - 1);
+			if (packages.length > 1) {
+				m.get(m.size() - 2).text = ", and ";				
+			}
+		}
+		
+		
 		m.add(new Phrase(".\n\n"));
 
 		if (CitationPhrase.citations.size() > 0) {
