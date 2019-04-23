@@ -13,9 +13,15 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,16 +34,20 @@ import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.Skin;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -50,6 +60,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.sun.javafx.scene.control.skin.ContextMenuContent;
+
+import beast.app.BEASTVersion;
+import beast.app.BEASTVersion2;
+import beast.app.beauti.Beauti;
 import beast.app.beauti.BeautiAlignmentProvider;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
@@ -61,6 +76,7 @@ import beast.core.MCMC;
 import beast.core.util.Log;
 import beast.evolution.alignment.Alignment;
 import beast.math.distributions.MRCAPrior;
+import beast.util.Package;
 import beast.util.PackageManager;
 import beast.util.XMLParser;
 import beast.util.XMLParserException;
@@ -73,6 +89,7 @@ public class XML2HTMLPaneFX extends Application {
 	double zoom = 1.0;
 	
 	BeautiDoc beautiDoc;
+	Beauti beauti;
 	String html;
 	List<Phrase> m;
 	XML2Text xml2textProducer;
@@ -87,7 +104,8 @@ public class XML2HTMLPaneFX extends Application {
 		thisPane = this;
 		beautiDoc = new BeautiDoc();
 		beautiDoc.beautiConfig = new BeautiConfig();
-		beautiDoc.beautiConfig.initAndValidate();		
+		beautiDoc.beautiConfig.initAndValidate();
+		beauti = new Beauti(beautiDoc);
 	}
 
 	public void processArgs(String [] args) throws Exception {		
@@ -218,30 +236,67 @@ public class XML2HTMLPaneFX extends Application {
 //        fileMenu.add(a_clearClassPath);
 //        fileMenu.add(a_appLauncher);
 
-        
-        
-        // create a menu 
         Menu editMenu = new Menu("_Edit"); 
         addMenu("Export", "Ctrl+E", editMenu, event ->{export();});  
         
+        Menu modeMenu = new Menu("Mode");
+
+        CheckMenuItem clockRateMenu = new CheckMenuItem("Automatic set clock rate");
+        clockRateMenu.setSelected(beautiDoc.autoSetClockRate);
+        clockRateMenu.setOnAction(e -> {
+        		beautiDoc.autoSetClockRate = ((CheckMenuItem)e.getSource()).isSelected();
+        		refresh();
+        	});
+        modeMenu.getItems().add(clockRateMenu);
+
+        CheckMenuItem allowLinkingMenu = new CheckMenuItem("Allow parameter linking");
+        allowLinkingMenu.setSelected(beautiDoc.allowLinking);
+        allowLinkingMenu.setOnAction(e -> {
+        		beautiDoc.allowLinking = ((CheckMenuItem)e.getSource()).isSelected();
+        		refresh();
+        	});
+        modeMenu.getItems().add(allowLinkingMenu);
         
+
+        CheckMenuItem autoUpdateFixMeanSubstRate = new CheckMenuItem("Automatic set fix mean substitution rate flag");
+        autoUpdateFixMeanSubstRate.setSelected(beautiDoc.autoUpdateFixMeanSubstRate);
+        autoUpdateFixMeanSubstRate.setOnAction(e -> {
+        		beautiDoc.autoUpdateFixMeanSubstRate = ((CheckMenuItem)e.getSource()).isSelected();
+        		refresh();
+        	});
+        modeMenu.getItems().add(autoUpdateFixMeanSubstRate);
+                
         Menu helpMenu = new Menu("_Help");
                 
-        addMenu("About", "Meta+A", helpMenu, event ->{export();});  
+        addMenu("About", "Meta+A", helpMenu, event ->{about();});  
 
         MenuBar mb = new MenuBar();         
         mb.getMenus().add(fileMenu); 
         mb.getMenus().add(editMenu); 
+        mb.getMenus().add(modeMenu); 
         mb.getMenus().add(helpMenu); 
   
         return mb;
 	}
 	
-    private void createFileMenu() {
+    private void about() {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("About Beasy Magic Methods Section");
+        Map<String, Package> packageMap = new TreeMap<>(Comparator.comparing(String::toLowerCase));
+        PackageManager.addInstalledPackages(packageMap);
+        Package pkg = packageMap.get("beasy");
+		alert.setHeaderText("Beasy Magic Methods Section\nVersion " + pkg.getInstalledVersion());
+		alert.setContentText("Complaints and suggestions to Remco Bouckaert: "
+				+ "r.bouckaert@auckland.ac.nz or raise an issue in the "
+				+ "beasy project at: https://github.com/rbouckaert/beasy");
+		alert.showAndWait();
+	}
+
+	private void createFileMenu() {
 		boolean isMac = Utils.isMac();
 
 		// first clear menu
-   		fileMenu.getItems().removeAll();
+   		fileMenu.getItems().clear();
 
    		
         addMenu("Load", isMac?"Meta+L":"Ctrl+L", fileMenu, event ->{load();});
@@ -394,11 +449,49 @@ public class XML2HTMLPaneFX extends Application {
                     templateInfo = "switch to " + name + " template";
                 }
                 // TODO: install tool tip
-                //Tooltip.install(this, new Tooltip(templateInfo));
+                setToolTip(templateInfo);
+                // Tooltip.install(getStyleableNode(), new Tooltip(templateInfo));
             } catch (Exception e) {
                 // ignore
             }
             setOnAction(e -> {loadTemplate(this);});
+        }
+        
+        
+        
+        private void setToolTip(String toolTip) {
+        	// not working - what's wrong?
+        	addEventHandler(MenuButton.ON_SHOWN, e -> {
+        	    Log.info("not getting here?");
+        	    // install tooltips here
+        	});
+
+        	ChangeListener<Skin> skinListener = (src, ov, skin) -> {
+        	    ContextMenuContent content = (ContextMenuContent) skin.getNode();
+        	    VBox menuBox = (VBox) content.getChildrenUnmodifiable().get(0);
+        	    menuBox.getChildren().forEach(node -> {
+        	        // implementation detail: the menuItem is set in the node's properties
+        	        if (node.getProperties().get(MenuItem.class) instanceof MenuItem) {
+        	            MenuItem item = (MenuItem) node.getProperties().get(MenuItem.class);
+        	            if (node != null && item.getProperties().get(toolTip) instanceof Tooltip) {
+        	                Tooltip tip = (Tooltip) item.getProperties().get(toolTip);
+        	                Tooltip.install(node, tip);
+        	            }
+
+        	        }
+
+        	    });
+        	};
+//        	showingProperty().addListener((src, ov, nv) -> {
+//        	    ContextMenu popup = submenu.getParentPopup();
+//        	    if (popup != null) {
+//        	        if (popup.getSkin() == null) {
+//        	            popup.skinProperty().addListener(skinListener);
+//        	        } else {
+//        	            popup.skinProperty().removeListener(skinListener);
+//        	        }
+//        	    }
+//        	});
         }
     }
     
@@ -414,7 +507,8 @@ public class XML2HTMLPaneFX extends Application {
     			alert.setHeaderText("Are you sure:");
     			alert.setContentText("Changing templates means the information input so far will be lost. "
                         + "Are you sure you want to change templates?");
-    			if (alert.showAndWait().get() == ButtonType.OK) {            	
+    			if (alert.showAndWait().get() == ButtonType.OK) {
+    				beauti.isInitialising = true;
     				beautiDoc.loadNewTemplate(a.fileName);
                     createFileMenu();
     				refresh();

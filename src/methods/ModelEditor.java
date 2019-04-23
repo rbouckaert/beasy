@@ -169,7 +169,11 @@ public class ModelEditor {
 	
 				if (alert.showAndWait().get() == ButtonType.OK) {
 					if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-					    Desktop.getDesktop().browse(new URI("http://doi.org/" + citation.DOI));
+						String url = citation.DOI;
+						if (!url.toLowerCase().startsWith("http")) {
+							url = "http://doi.org/" + url;
+						}
+					    Desktop.getDesktop().browse(new URI(url));
 					}
 //					StringSelection stringSelection = new StringSelection(citation.toReference());
 //					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

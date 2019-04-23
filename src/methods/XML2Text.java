@@ -607,7 +607,9 @@ public class XML2Text extends Runnable {
 	    			b.append(" and ");
 	    		}
 	    	}
-	    	b.append(partitionIDs.get(partitionIDs.size() - 1) + " ");
+	    	if (partitionIDs.size() > 0) {
+	    		b.append(partitionIDs.get(partitionIDs.size() - 1) + " ");
+	    	}
 		}
 		return b.toString();
 	}
