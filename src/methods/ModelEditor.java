@@ -24,15 +24,20 @@ import beast.app.beauti.AlignmentListInputEditor;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiPanelConfig;
 import beast.app.beauti.BeautiSubTemplate;
+import beast.app.beauti.PriorListInputEditor;
+import beast.app.beauti.PriorProvider;
 import beast.app.beauti.TipDatesInputEditor;
+import beast.app.beauti.PriorListInputEditor.MRCAPriorProvider;
 import beast.app.draw.BEASTObjectDialog;
 import beast.app.draw.BEASTObjectPanel;
 import beast.app.draw.InputEditor;
 import beast.app.draw.InputEditorFactory;
 import beast.app.draw.InputEditor.ExpandOption;
 import beast.core.BEASTInterface;
+import beast.core.Distribution;
 import beast.core.Input;
 import beast.core.parameter.RealParameter;
+import beast.util.PackageManager;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -63,11 +68,78 @@ public class ModelEditor {
 		case "RealParameter": return editRealParameter(cmd, doc, w);
 		case "Select": return handleComboBox(cmd, doc, w);
 		case "TipDates": return handleTipDates(cmd, doc, w);
+		case "AddPrior": return handleAddPrior(cmd, doc, w);
 		}
 		
 		return false;
 	}
 
+	private boolean handleAddPrior(String cmd, BeautiDoc doc, Component w) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+    static private List<PriorProvider> priorProviders = null;
+    
+    private void initProviders(BeautiDoc doc) {
+    	priorProviders = new ArrayList<>();
+    	priorProviders.add(new PriorListInputEditor(doc).new MRCAPriorProvider());
+    	
+        // build up list of data types
+        List<String> importerClasses = PackageManager.find(PriorProvider.class, new String[]{"beast.app"});
+        for (String _class: importerClasses) {
+        	try {
+        		if (!_class.startsWith(this.getClass().getName())) {
+        			PriorProvider priorProvider = (PriorProvider) Class.forName(_class).newInstance();
+					priorProviders.add(priorProvider);
+        		}
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+
+    }
+    
+	protected List<BEASTInterface> pluginSelector(Input<?> input, BEASTInterface parent, List<String> tabooList, BeautiDoc doc) {
+    	if (priorProviders == null) {
+    		initProviders(doc);
+    	}
+    	PriorProvider priorProvider = priorProviders.get(0);
+    	if (priorProviders.size() > 1) {
+			// let user choose a PriorProvider
+			List<String> descriptions = new ArrayList<>();
+			List<PriorProvider> availableProviders = new ArrayList<>();
+			for (PriorProvider i : priorProviders) {
+				if (i.canProvidePrior(doc)) {
+					descriptions.add(i.getDescription());
+					availableProviders.add(i);
+				}
+			}
+			String option = (String)JOptionPane.showInputDialog(null, "Which prior do you want to add", "Option",
+                    JOptionPane.WARNING_MESSAGE, null, descriptions.toArray(), descriptions.get(0));
+			if (option == null) {
+				return null;
+			}
+			int i = descriptions.indexOf(option);
+			priorProvider = availableProviders.get(i);
+
+    	}
+    	
+        List<BEASTInterface> selectedPlugins = new ArrayList<>();
+        
+        List<Distribution> distrs = priorProvider.createDistribution(doc);
+        if (distrs == null) {
+        	return null;
+        }
+        for (Distribution distr : distrs) {
+        	selectedPlugins.add(distr);
+        }
+        return selectedPlugins;
+    }
+ 
+	
+	
 	private boolean handleTipDates(String cmd, BeautiDoc doc, Component w) {
 		BeautiPanelConfig config = new BeautiPanelConfig();
 		config.initByName("path","tree",

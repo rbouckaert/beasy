@@ -26,37 +26,27 @@ import javafx.application.*;
 import javafx.beans.value.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Skin;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.*;
 import javafx.stage.FileChooser;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import methods.implementation.BEASTObjectMethodsText;
 
 import netscape.javascript.JSObject;
@@ -150,12 +140,6 @@ public class XML2HTMLPaneFX extends Application {
 		initialise((MCMC) beautiDoc.mcmc.get(), true);		
 	}
 	
-	
-	  private Pane splashLayout;
-	  private ProgressBar loadProgress;
-	  private Label progressText;
-	  int SPLASH_WIDTH = 676;
-	  int SPLASH_HEIGHT = 227;
 		  
 	@Override
 	public void start(javafx.stage.Stage stage) throws Exception {		
@@ -232,10 +216,10 @@ public class XML2HTMLPaneFX extends Application {
 		stage.setTitle("Loading...");
 		stage.show();
 		
-		engine.loadContent("<html><body style='position:absolute;left:43%;top:30%;'>"
+		engine.loadContent("<html><body style='position:absolute;left:35%;top:30%;'>"
 				+ "<img src='data:image/png;base64," 
-				+ ImageUtil.getIcon("beast/app/draw/icons/beast.png", "png")+ "'>"
-				+ "<p>Loading...<body></html>");
+				+ ImageUtil.getIcon("methods/beasy.png", "png")+ "'>"
+				+ "<p><center>Loading...<body></html>");
 		
 		new Thread() {
 			@Override
@@ -668,17 +652,21 @@ public class XML2HTMLPaneFX extends Application {
 			".para {color:#555;background-color:#fafafa;}\n" + 
 			"select{color:#555;font-weight:normal;-webkit-appearance:none;background-color:#fafafa;border-width:5pt;}\n" + 
 			"a:hover{background-color:#aaa;}\n" + 
-			"select:hover{background-color:#aaa;}\n" + 
+			"select:hover{background-color:#aaa;}\n" +
+			".extra {font-size:10pt;color:#aaf;}\n"+
 			"</style>\n" +
 			"<body style='font: 12pt arial, sans-serif;'>"
 			//+ "<input type='button' onclick='window.myObject.doIt(\"ok\");' value='Click me'/>\n"
 			;
+
+	final static String footer = "<p><a class='extra' href=\"/cmd=AddPrior\">Add other prior</a>\n";
 	
 	public void initialise(MCMC mcmc, boolean update) throws Exception {		
 		xml2textProducer = new XML2Text(beautiDoc);
 		xml2textProducer.initialise((MCMC) beautiDoc.mcmc.get());
 		m = xml2textProducer.getPhrases();
 		
+//		html = header + Phrase.toHTML(beautiDoc, m) + footer + "</body>\n</html>";
 		html = header + Phrase.toHTML(beautiDoc, m) + "</body>\n</html>";
 		
         if (update) {
