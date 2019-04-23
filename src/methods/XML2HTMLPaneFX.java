@@ -13,17 +13,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -31,26 +26,37 @@ import javafx.application.*;
 import javafx.beans.value.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Skin;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import methods.implementation.BEASTObjectMethodsText;
 
 import netscape.javascript.JSObject;
@@ -62,8 +68,6 @@ import org.xml.sax.SAXException;
 
 import com.sun.javafx.scene.control.skin.ContextMenuContent;
 
-import beast.app.BEASTVersion;
-import beast.app.BEASTVersion2;
 import beast.app.beauti.Beauti;
 import beast.app.beauti.BeautiAlignmentProvider;
 import beast.app.beauti.BeautiConfig;
@@ -95,12 +99,14 @@ public class XML2HTMLPaneFX extends Application {
 	XML2Text xml2textProducer;
 	
 	File tmpFile = null;
+	File file = null;
 
 	XML2HTMLPaneFX thisPane;
 	ModelEditor me = new ModelEditor(false);
 	Stage mainStage;
 
 	public XML2HTMLPaneFX() {
+		Utils.logToSplashScreen("Starting");
 		thisPane = this;
 		beautiDoc = new BeautiDoc();
 		beautiDoc.beautiConfig = new BeautiConfig();
@@ -140,12 +146,19 @@ public class XML2HTMLPaneFX extends Application {
 		BEASTObjectMethodsText.setBeautiCFG(beautiDoc.beautiConfig);
 		
 		MethodsText.initNameMap();
+		this.file = file;
 		initialise((MCMC) beautiDoc.mcmc.get(), true);		
 	}
 	
+	
+	  private Pane splashLayout;
+	  private ProgressBar loadProgress;
+	  private Label progressText;
+	  int SPLASH_WIDTH = 676;
+	  int SPLASH_HEIGHT = 227;
+		  
 	@Override
-	public void start(javafx.stage.Stage stage) throws Exception {
-		
+	public void start(javafx.stage.Stage stage) throws Exception {		
 		mainStage = stage;
 		WebView view = new WebView();
 		view.setPrefHeight(1024);
@@ -159,6 +172,9 @@ public class XML2HTMLPaneFX extends Application {
 				System.out.println(newValue);
 				if (me.handleCmd(newValue, beautiDoc, null)) {
 					refresh();
+				}
+				if (file != null) {
+					mainStage.setTitle(file.getPath());
 				}
 			}
 		});
@@ -211,14 +227,30 @@ public class XML2HTMLPaneFX extends Application {
 		vb.setCenter(view); 
 
 		Scene scene = new Scene(vb, 768, 668);
+
 		stage.setScene(scene);
+		stage.setTitle("Loading...");
 		stage.show();
 		
-		List<String> args = getParameters().getRaw();
-		processArgs(args.toArray(new String[]{}));
-	};
+		engine.loadContent("<html><body style='position:absolute;left:43%;top:30%;'>"
+				+ "<img src='data:image/png;base64," 
+				+ ImageUtil.getIcon("beast/app/draw/icons/beast.png", "png")+ "'>"
+				+ "<p>Loading...<body></html>");
+		
+		new Thread() {
+			@Override
+			public void run() {
+				List<String> args = getParameters().getRaw();
+				try {
+					processArgs(args.toArray(new String[]{}));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
 
-
+	};	
+	
 	Menu fileMenu;
 	private MenuBar createMenu() {
 		// create a menu 
@@ -364,15 +396,22 @@ public class XML2HTMLPaneFX extends Application {
             // a_saveas.setEnabled(true);
         } catch (Exception exx) {
             exx.printStackTrace();
+            
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Warning Dialog");
+			alert.setHeaderText("Something went wrong importing the alignment:\n");
+			alert.setContentText(exx.getMessage());
 
-            String text = "Something went wrong importing the alignment:\n";
-            JTextArea textArea = new JTextArea(text);
-            textArea.setColumns(30);
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-            textArea.append(exx.getMessage());
-            textArea.setSize(textArea.getPreferredSize().width, 1);
-            textArea.setOpaque(false);
+			TextArea textArea = new TextArea(exx.getMessage());
+			textArea.setEditable(false);
+			textArea.setWrapText(true);
+
+			textArea.setMaxWidth(Double.MAX_VALUE);
+			textArea.setMaxHeight(Double.MAX_VALUE);
+
+			alert.getDialogPane().setExpandableContent(textArea);
+			alert.getDialogPane().setExpanded(true);
+			alert.showAndWait();
         }
 //        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
@@ -766,7 +805,6 @@ public class XML2HTMLPaneFX extends Application {
     public static void main(String[] args) throws Exception {		
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "XML2HTMLPandFX");
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
 		launch(args);
 	}

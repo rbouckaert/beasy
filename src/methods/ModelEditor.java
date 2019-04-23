@@ -110,8 +110,8 @@ public class ModelEditor {
 	        });
 
 			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Partition Dialog");
-			alert.setHeaderText("Edit partitions");
+			alert.setTitle("Tip dates Dialog");
+			alert.setHeaderText("Edit tip dates");
 			alert.setContentText(null);
 
 			DialogPane pane = alert.getDialogPane();

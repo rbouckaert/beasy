@@ -3,9 +3,7 @@ package methods;
 
 
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.PrintStream;
 import java.util.*;
 
@@ -30,7 +28,6 @@ import beast.evolution.tree.TraitSet;
 import beast.evolution.tree.Tree;
 import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
-import beast.util.PackageManager;
 import beast.util.XMLParser;
 import beast.util.XMLProducer;
 import methods.CitationPhrase.mode;
