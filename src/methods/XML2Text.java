@@ -195,14 +195,15 @@ public class XML2Text extends Runnable {
 	private void addOtherInformation(CompoundDistribution posterior) {
 		List<Phrase> m = new ArrayList<>();
 
-        List<String> others = new ArrayList<>();
+        List<List<Phrase>> others = new ArrayList<>();
         for (Distribution distr : posterior.pDistributions.get()) {
             if (!distr.getID().equals("likelihood")) {
                 for (Distribution prior : ((CompoundDistribution) distr).pDistributions.get()) {
                 	if (!(prior instanceof beast.math.distributions.Prior || prior instanceof TreeDistribution)) {
                     	m = MethodsTextFactory.getModelDescription(prior, null, null, beautiDoc);
                     	if (m.size() > 0) {
-                    		others.add(Phrase.toSimpleString(m));
+//                    		others.add(Phrase.toSimpleString(m));
+                    		others.add(m);
                     	}
                 	}
                 }
@@ -210,14 +211,23 @@ public class XML2Text extends Runnable {
         }
     	if (others.size() > 0) {
     		completePhrase("\nOther information:\n");
-    		String longestPostfix = getLongestPostix(others);
+    		int n = getLongestPostixX(others);
 
-			for (String other : others) {
-				completePhrase(other.substring(0, other.length() - longestPostfix.length()).trim());
+			for (List<Phrase> other : others) {
+				for (int i = 0; i < n; i++) {
+					this.m.add(other.get(i));
+				}
+//				completePhrase(other.substring(0, other.length() - longestPostfix.length()).trim());
         		addDot();
 			}
-        	if (longestPostfix.length() != 0) {
-        		completePhrase("All have " + longestPostfix.substring(1));
+        	if (n != others.get(0).size()) {
+        		String haveAreStr = others.get(0).get(n).text.trim().startsWith("is") ? "are": "have";
+        		this.m.add(new Phrase("All " + haveAreStr + " "));
+        		for (int i = n; i < others.get(0).size(); i++) {
+        			this.m.add(others.get(0).get(i));
+        		}
+        		addDot();
+        		//completePhrase("All have " + longestPostfix.substring(1));
         	}
     	}
 	}
@@ -380,6 +390,26 @@ public class XML2Text extends Runnable {
 		return postfix;
 	}
 
+	private int getLongestPostixX(List<List<Phrase>> others) {
+		if (others.size() <= 1) {
+			return others.get(0).size();
+		}
+		int postfix = others.get(0).size();
+		int k = others.get(0).size() - 1;
+		while (k > 0) {			
+			String str = others.get(0).get(k).text;
+			for (int i = 1; i < others.size(); i++) {
+				List<Phrase> other = others.get(i);
+				int k2 = other.size() - (others.get(0).size() - k);
+				if (k2 <= 0 || !other.get(k2).text.equals(str)) {
+					return postfix;
+				}
+			}
+			postfix--;
+			k--;
+		}
+		return postfix;
+	}
 
 	private void addPartitionSection() {
 		List<Phrase> m = new ArrayList<>();

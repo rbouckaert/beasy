@@ -6,6 +6,7 @@ import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,25 +28,27 @@ import beast.app.beauti.BeautiSubTemplate;
 import beast.app.beauti.PriorListInputEditor;
 import beast.app.beauti.PriorProvider;
 import beast.app.beauti.TipDatesInputEditor;
-import beast.app.beauti.PriorListInputEditor.MRCAPriorProvider;
 import beast.app.draw.BEASTObjectDialog;
 import beast.app.draw.BEASTObjectPanel;
 import beast.app.draw.InputEditor;
 import beast.app.draw.InputEditorFactory;
 import beast.app.draw.InputEditor.ExpandOption;
 import beast.core.BEASTInterface;
+import beast.core.BEASTObject;
 import beast.core.Distribution;
 import beast.core.Input;
 import beast.core.parameter.RealParameter;
+import beast.core.util.CompoundDistribution;
 import beast.util.PackageManager;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextArea;
 
-public class ModelEditor {
+public class ModelEditor extends BEASTObject {
 	
 	boolean useSwingThreads;
 	
@@ -69,13 +72,82 @@ public class ModelEditor {
 		case "Select": return handleComboBox(cmd, doc, w);
 		case "TipDates": return handleTipDates(cmd, doc, w);
 		case "AddPrior": return handleAddPrior(cmd, doc, w);
+		case "EditObject": return handleObject(cmd, doc, w);
+		
 		}
 		
 		return false;
 	}
 
+	
+	
+
+    class FlexibleInput<T> extends Input<T> {
+        FlexibleInput() {
+            // sets name to something non-trivial This is used by canSetValue()
+            super("xx", "");
+        }
+
+        public FlexibleInput(T arrayList) {
+            super("xx", "", arrayList);
+        }
+
+        @Override
+		public void setType(Class<?> type) {
+            theClass = type;
+        }
+    }
+
+    FlexibleInput<?> _input = new FlexibleInput<>();
+	InputEditor editor = null;
+
+	private boolean handleObject(String cmd, BeautiDoc doc, Component w) {
+		String id = getAttribute("source", cmd);
+		BEASTInterface o = doc.pluginmap.get(id);
+		
+		_input.setType(Object.class);
+	    _input.set(o);
+
+	    editor = null;
+		try {
+			editor = doc.getInputEditorFactory().createInputEditor(_input, o, doc);
+		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+			return false;
+		}
+		final SwingNode swingNode = new SwingNode() {
+			@Override
+			public boolean isResizable() {
+				return false;
+			}
+		};
+
+		SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                swingNode.setContent((JComponent) editor);
+            }
+        });
+		
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Tip dates Dialog");
+		alert.setHeaderText("Edit tip dates");
+		alert.setContentText(null);
+
+		DialogPane pane = alert.getDialogPane();
+		pane.setExpandableContent(swingNode);
+		pane.setExpanded(true);
+		pane.setMinHeight(500);
+		pane.setMinWidth(1024);
+
+		alert.showAndWait();
+		
+		return true;
+	}
+
 	private boolean handleAddPrior(String cmd, BeautiDoc doc, Component w) {
-		// TODO Auto-generated method stub
+		pluginSelector(doc);
 		return false;
 	}
 
@@ -101,11 +173,13 @@ public class ModelEditor {
 
     }
     
-	protected List<BEASTInterface> pluginSelector(Input<?> input, BEASTInterface parent, List<String> tabooList, BeautiDoc doc) {
+	PriorProvider priorProvider = null;
+	
+	protected void pluginSelector(BeautiDoc doc) {
     	if (priorProviders == null) {
     		initProviders(doc);
     	}
-    	PriorProvider priorProvider = priorProviders.get(0);
+    	priorProvider = priorProviders.get(0);
     	if (priorProviders.size() > 1) {
 			// let user choose a PriorProvider
 			List<String> descriptions = new ArrayList<>();
@@ -116,26 +190,44 @@ public class ModelEditor {
 					availableProviders.add(i);
 				}
 			}
-			String option = (String)JOptionPane.showInputDialog(null, "Which prior do you want to add", "Option",
-                    JOptionPane.WARNING_MESSAGE, null, descriptions.toArray(), descriptions.get(0));
-			if (option == null) {
-				return null;
-			}
-			int i = descriptions.indexOf(option);
-			priorProvider = availableProviders.get(i);
 
+			List<String> priorProviderStrings = new ArrayList<>();
+			for (PriorProvider p : priorProviders) {
+				priorProviderStrings.add(p.getDescription());
+			}
+			ChoiceDialog<String> dialog = new ChoiceDialog<>(priorProviders.get(0).getDescription(), priorProviderStrings);
+			dialog.setTitle("Add Prior Dialog");
+			dialog.setHeaderText("Add Extra Prior");
+			dialog.setContentText("Choose prior:");
+
+			// Traditional way to get the response value.
+			Optional<String> result = dialog.showAndWait();
+			if (!result.isPresent()){
+				return;
+			}
+			System.out.println("Your choice: " + result.get());
+			int i = priorProviderStrings.indexOf(result.get());
+			priorProvider = priorProviders.get(i);
     	}
     	
-        List<BEASTInterface> selectedPlugins = new ArrayList<>();
+//        List<BEASTInterface> selectedPlugins = new ArrayList<>();
         
-        List<Distribution> distrs = priorProvider.createDistribution(doc);
-        if (distrs == null) {
-        	return null;
-        }
-        for (Distribution distr : distrs) {
-        	selectedPlugins.add(distr);
-        }
-        return selectedPlugins;
+        SwingUtilities.invokeLater( ()-> {
+        		List<Distribution> distrs = priorProvider.createDistribution(doc);
+        		CompoundDistribution prior = (CompoundDistribution) doc.pluginmap.get("prior");
+        		prior.pDistributions.get().addAll(distrs);
+                if (distrs != null) {
+                	
+                }
+        	}
+        );
+//        if (distrs == null) {
+//        	return null;
+//        }
+//        for (Distribution distr : distrs) {
+//        	selectedPlugins.add(distr);
+//        }
+//        return selectedPlugins;
     }
  
 	
@@ -550,6 +642,10 @@ public class ModelEditor {
 			value = value.substring(0, value.lastIndexOf(' '));
 		}
 		return value;
+	}
+
+	@Override
+	public void initAndValidate() {
 	}
 
 }

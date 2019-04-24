@@ -311,11 +311,10 @@ public class Phrase {
 		
 		StringBuilder b = new StringBuilder();
 		
-		
 		PhraseType phraseType = null;
 		for (int i = 0; i < basePhrases.size(); i++) {
 			Phrase phrase = basePhrases.get(i);
-
+			
 			if (i > 0) {
 				if (phrase.getType() != phraseType) {
 					if (phraseType == PhraseType.reference) {
@@ -408,6 +407,9 @@ public class Phrase {
 		        } else {
 					b.append(phrase.toHTML());					
 		        }
+			} else if (phrase.source != null & phrase.source instanceof BEASTInterface) {
+				b.append("<a href='/cmd=EditObject source=" + ((BEASTInterface)phrase.source).getID() + "'>" 
+						+ phrase.text + "</a>");				
 			} else {
 				b.append(phrase.toHTML());
 			}

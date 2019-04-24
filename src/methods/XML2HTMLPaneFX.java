@@ -96,12 +96,7 @@ public class XML2HTMLPaneFX extends Application {
 	Stage mainStage;
 
 	public XML2HTMLPaneFX() {
-		Utils.logToSplashScreen("Starting");
 		thisPane = this;
-		beautiDoc = new BeautiDoc();
-		beautiDoc.beautiConfig = new BeautiConfig();
-		beautiDoc.beautiConfig.initAndValidate();
-		beauti = new Beauti(beautiDoc);
 	}
 
 	public void processArgs(String [] args) throws Exception {		
@@ -159,6 +154,7 @@ public class XML2HTMLPaneFX extends Application {
 				}
 				if (file != null) {
 					mainStage.setTitle(file.getPath());
+					createFileMenu();
 				}
 			}
 		});
@@ -224,6 +220,11 @@ public class XML2HTMLPaneFX extends Application {
 		new Thread() {
 			@Override
 			public void run() {
+				beautiDoc = new BeautiDoc();
+				beautiDoc.beautiConfig = new BeautiConfig();
+				beautiDoc.beautiConfig.initAndValidate();
+				beauti = new Beauti(beautiDoc);
+
 				List<String> args = getParameters().getRaw();
 				try {
 					processArgs(args.toArray(new String[]{}));
@@ -236,10 +237,11 @@ public class XML2HTMLPaneFX extends Application {
 	};	
 	
 	Menu fileMenu;
+	Menu modeMenu;
 	private MenuBar createMenu() {
 		// create a menu 
         fileMenu = new Menu("_File");
-        createFileMenu();
+        // createFileMenu();
 //        Menu workDirMenu = new Menu("Set working dir");
 //        fileMenu.getItems().add(workDirMenu);
 //        List<AbstractAction> workDirMenuActions = getWorkDirActions();
@@ -255,33 +257,8 @@ public class XML2HTMLPaneFX extends Application {
         Menu editMenu = new Menu("_Edit"); 
         addMenu("Export", "Ctrl+E", editMenu, event ->{export();});  
         
-        Menu modeMenu = new Menu("Mode");
-
-        CheckMenuItem clockRateMenu = new CheckMenuItem("Automatic set clock rate");
-        clockRateMenu.setSelected(beautiDoc.autoSetClockRate);
-        clockRateMenu.setOnAction(e -> {
-        		beautiDoc.autoSetClockRate = ((CheckMenuItem)e.getSource()).isSelected();
-        		refresh();
-        	});
-        modeMenu.getItems().add(clockRateMenu);
-
-        CheckMenuItem allowLinkingMenu = new CheckMenuItem("Allow parameter linking");
-        allowLinkingMenu.setSelected(beautiDoc.allowLinking);
-        allowLinkingMenu.setOnAction(e -> {
-        		beautiDoc.allowLinking = ((CheckMenuItem)e.getSource()).isSelected();
-        		refresh();
-        	});
-        modeMenu.getItems().add(allowLinkingMenu);
-        
-
-        CheckMenuItem autoUpdateFixMeanSubstRate = new CheckMenuItem("Automatic set fix mean substitution rate flag");
-        autoUpdateFixMeanSubstRate.setSelected(beautiDoc.autoUpdateFixMeanSubstRate);
-        autoUpdateFixMeanSubstRate.setOnAction(e -> {
-        		beautiDoc.autoUpdateFixMeanSubstRate = ((CheckMenuItem)e.getSource()).isSelected();
-        		refresh();
-        	});
-        modeMenu.getItems().add(autoUpdateFixMeanSubstRate);
-                
+        modeMenu = new Menu("Mode");
+             
         Menu helpMenu = new Menu("_Help");
                 
         addMenu("About", "Meta+A", helpMenu, event ->{about();});  
@@ -331,7 +308,37 @@ public class XML2HTMLPaneFX extends Application {
         }
 
         fileMenu.getItems().add(new SeparatorMenuItem());
-        addMenu("Quit", isMac?"Meta+Q":"Ctrl+Q", fileMenu, event ->{System.exit(0);});  
+        addMenu("Quit", isMac?"Meta+Q":"Ctrl+Q", fileMenu, event ->{System.exit(0);});
+        
+        
+        
+        
+        modeMenu.getItems().clear();
+        CheckMenuItem clockRateMenu = new CheckMenuItem("Automatic set clock rate");
+        clockRateMenu.setSelected(beautiDoc.autoSetClockRate);
+        clockRateMenu.setOnAction(e -> {
+        		beautiDoc.autoSetClockRate = ((CheckMenuItem)e.getSource()).isSelected();
+        		refresh();
+        	});
+        modeMenu.getItems().add(clockRateMenu);
+
+        CheckMenuItem allowLinkingMenu = new CheckMenuItem("Allow parameter linking");
+        allowLinkingMenu.setSelected(beautiDoc.allowLinking);
+        allowLinkingMenu.setOnAction(e -> {
+        		beautiDoc.allowLinking = ((CheckMenuItem)e.getSource()).isSelected();
+        		refresh();
+        	});
+        modeMenu.getItems().add(allowLinkingMenu);
+        
+
+        CheckMenuItem autoUpdateFixMeanSubstRate = new CheckMenuItem("Automatic set fix mean substitution rate flag");
+        autoUpdateFixMeanSubstRate.setSelected(beautiDoc.autoUpdateFixMeanSubstRate);
+        autoUpdateFixMeanSubstRate.setOnAction(e -> {
+        		beautiDoc.autoUpdateFixMeanSubstRate = ((CheckMenuItem)e.getSource()).isSelected();
+        		refresh();
+        	});
+        modeMenu.getItems().add(autoUpdateFixMeanSubstRate);
+   
 	}
 
 	private void addAlignmentProviderMenus(Menu fileMenu) {
@@ -653,21 +660,19 @@ public class XML2HTMLPaneFX extends Application {
 			"select{color:#555;font-weight:normal;-webkit-appearance:none;background-color:#fafafa;border-width:5pt;}\n" + 
 			"a:hover{background-color:#aaa;}\n" + 
 			"select:hover{background-color:#aaa;}\n" +
-			".extra {font-size:10pt;color:#aaf;}\n"+
 			"</style>\n" +
 			"<body style='font: 12pt arial, sans-serif;'>"
 			//+ "<input type='button' onclick='window.myObject.doIt(\"ok\");' value='Click me'/>\n"
 			;
 
-	final static String footer = "<p><a class='extra' href=\"/cmd=AddPrior\">Add other prior</a>\n";
+	final static String footer = "<p><a style='{font-size:10pt;color:#aaf;}' href=\"/cmd=AddPrior\">Add other prior</a>\n";
 	
 	public void initialise(MCMC mcmc, boolean update) throws Exception {		
 		xml2textProducer = new XML2Text(beautiDoc);
 		xml2textProducer.initialise((MCMC) beautiDoc.mcmc.get());
 		m = xml2textProducer.getPhrases();
 		
-//		html = header + Phrase.toHTML(beautiDoc, m) + footer + "</body>\n</html>";
-		html = header + Phrase.toHTML(beautiDoc, m) + "</body>\n</html>";
+		html = header + Phrase.toHTML(beautiDoc, m) + footer + "</body>\n</html>";
 		
         if (update) {
         	updateState(html);
