@@ -9,5 +9,9 @@
               class="beasy.BeasyREPL"
               args=""
             />
+	    <packageapp description="Methods Section Generator"
+              class="methods.XML2HTMLPaneFX"
+              args=""
+            />
 
 </addon>

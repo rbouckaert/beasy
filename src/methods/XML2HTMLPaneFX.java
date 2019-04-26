@@ -665,7 +665,8 @@ public class XML2HTMLPaneFX extends Application {
 			//+ "<input type='button' onclick='window.myObject.doIt(\"ok\");' value='Click me'/>\n"
 			;
 
-	final static String footer = "<p><a style='{font-size:10pt;color:#aaf;}' href=\"/cmd=AddPrior\">Add other prior</a>\n";
+	final static String footer = "<p><a style='font-size:10pt;color:#aaf;' "
+			+ "href=\"/cmd=AddPrior\">Add other prior</a>\n";
 	
 	public void initialise(MCMC mcmc, boolean update) throws Exception {		
 		xml2textProducer = new XML2Text(beautiDoc);

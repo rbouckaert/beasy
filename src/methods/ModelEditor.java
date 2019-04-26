@@ -32,6 +32,7 @@ import beast.app.draw.BEASTObjectDialog;
 import beast.app.draw.BEASTObjectPanel;
 import beast.app.draw.InputEditor;
 import beast.app.draw.InputEditorFactory;
+import beast.app.draw.InputEditor.ButtonStatus;
 import beast.app.draw.InputEditor.ExpandOption;
 import beast.core.BEASTInterface;
 import beast.core.BEASTObject;
@@ -98,19 +99,21 @@ public class ModelEditor extends BEASTObject {
         }
     }
 
-    FlexibleInput<?> _input = new FlexibleInput<>();
+    FlexibleInput<?> _input = new FlexibleInput<>(new ArrayList<>());
 	InputEditor editor = null;
 
 	private boolean handleObject(String cmd, BeautiDoc doc, Component w) {
 		String id = getAttribute("source", cmd);
 		BEASTInterface o = doc.pluginmap.get(id);
-		
 		_input.setType(Object.class);
-	    _input.set(o);
-
+	    ((List)_input.get()).clear();
+	    ((List)_input.get()).add(o);
+	    
 	    editor = null;
 		try {
-			editor = doc.getInputEditorFactory().createInputEditor(_input, o, doc);
+			editor = doc.getInputEditorFactory().createInputEditor(_input, 0, o, false, 
+					ExpandOption.FALSE, 
+					ButtonStatus.NONE, null, doc);
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
@@ -216,6 +219,9 @@ public class ModelEditor extends BEASTObject {
         		List<Distribution> distrs = priorProvider.createDistribution(doc);
         		CompoundDistribution prior = (CompoundDistribution) doc.pluginmap.get("prior");
         		prior.pDistributions.get().addAll(distrs);
+        		for (Distribution distr : distrs) {
+        			distr.getOutputs().add(prior);
+        		}
                 if (distrs != null) {
                 	
                 }
