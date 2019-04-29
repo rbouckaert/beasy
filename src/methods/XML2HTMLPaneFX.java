@@ -661,7 +661,7 @@ public class XML2HTMLPaneFX extends Application {
 			"a:hover{background-color:#aaa;}\n" + 
 			"select:hover{background-color:#aaa;}\n" +
 			"</style>\n" +
-			"<body style='font: 12pt arial, sans-serif;'>"
+			"<body style='font: 12pt arial, sans-serif;margin: 50pt 100pt 50pt 100pt;'>"
 			//+ "<input type='button' onclick='window.myObject.doIt(\"ok\");' value='Click me'/>\n"
 			;
 
