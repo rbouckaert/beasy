@@ -666,7 +666,9 @@ public class XML2HTMLPaneFX extends Application {
 			;
 
 	final static String footer = "<p><a style='font-size:10pt;color:#aaf;' "
-			+ "href=\"/cmd=AddPrior\">Add other prior</a>\n";
+			+ "href=\"/cmd=AddPrior\">Add other prior</a>\n"
+			+ "<p><center><img src='data:image/png;base64," 
+				+ ImageUtil.getIcon("methods/beasy.png", "png")+ "'></center>";
 	
 	public void initialise(MCMC mcmc, boolean update) throws Exception {		
 		xml2textProducer = new XML2Text(beautiDoc);
