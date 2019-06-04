@@ -649,7 +649,7 @@ public class XML2HTMLPaneFX extends Application {
 		}
 	}
 
-	final static String header = "<!DOCTYPE html>\n" +
+	public final static String header = "<!DOCTYPE html>\n" +
 			"<html>\n" +
 			"<style>\n" +
 			".reference {font-size:10pt;color:#aaa;}\n" +
@@ -665,7 +665,7 @@ public class XML2HTMLPaneFX extends Application {
 			//+ "<input type='button' onclick='window.myObject.doIt(\"ok\");' value='Click me'/>\n"
 			;
 
-	final static String footer = "<p><a style='font-size:10pt;color:#aaf;' "
+	public final static String footer = "<p><a style='font-size:10pt;color:#aaf;' "
 			+ "href=\"/cmd=AddPrior\">Add other prior</a>\n"
 			+ "<p><center><img src='data:image/png;base64," 
 				+ ImageUtil.getIcon("methods/beasy.png", "png")+ "'></center>";

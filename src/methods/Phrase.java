@@ -307,7 +307,15 @@ public class Phrase {
     }
 	
 	
-	static String toHTML(BeautiDoc beautiDoc, List<Phrase> basePhrases) {
+	public static String toText(BeautiDoc beautiDoc, List<Phrase> basePhrases) {
+		StringBuilder b = new StringBuilder();
+		for (Phrase p : basePhrases) {
+			b.append(p.toString());
+		}
+		return b.toString();
+	}
+	
+	public static String toHTML(BeautiDoc beautiDoc, List<Phrase> basePhrases) {
 		
 		StringBuilder b = new StringBuilder();
 		
