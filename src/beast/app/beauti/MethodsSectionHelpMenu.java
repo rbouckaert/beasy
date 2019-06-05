@@ -1,56 +1,169 @@
 package beast.app.beauti;
 
+import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.List;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.*;
 
+import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
+import javax.swing.SwingWorker;
 
 import beast.core.MCMC;
+import beast.util.PackageManager;
+import methods.CitationPhrase;
 import methods.MethodsText;
 import methods.Phrase;
 import methods.XML2Text;
 
-/** Custom menu for BEAUti, which appears as "Help => Methods Section" menu item **/
+/**
+ * Custom menu for BEAUti, which appears as "Help => Methods Section" menu item
+ **/
 public class MethodsSectionHelpMenu extends BeautiHelpAction {
 	private static final long serialVersionUID = 1L;
-	
+
 	BeautiDoc doc;
-	
+	MCMC mcmc;
+
 	public MethodsSectionHelpMenu(BeautiDoc doc) {
 		super("Methods section", "Attempts to convert model into a methods section", "methods", -1);
 		this.doc = doc;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		beast.core.Runnable runnable = doc.mcmc.get();
 		if (runnable instanceof MCMC) {
-			JFrame frame = doc.getFrame();
-			if (frame != null) frame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			MCMC mcmc = (MCMC) runnable;
-			MethodsText.initNameMap();
-			XML2Text xml2textProducer = new XML2Text(doc);
-			try {
-				xml2textProducer.initialise(mcmc);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			List<Phrase> m = xml2textProducer.getPhrases();
-			String text = Phrase.toText(doc, m);
-			if (frame != null) frame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        	JTextArea textArea = new JTextArea(text);
-        	textArea.setRows(40);
-        	textArea.setColumns(50);
-        	textArea.setLineWrap(true);
-        	textArea.setEditable(true);
-        	JScrollPane scroller = new JScrollPane(textArea);
-        	JOptionPane.showMessageDialog(doc.getFrame(), scroller);
+			mcmc = (MCMC) runnable;
+			javax.swing.SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					JFrame frame = new JFrame("Methods text");
+
+					MethodsWindow methodsWindow = new MethodsWindow();
+					methodsWindow.setOpaque(true);
+					frame.setContentPane(methodsWindow);
+
+					frame.pack();
+					frame.setVisible(true);
+					methodsWindow.actionPerformed(null);
+					}
+			});
 		}
 	}
 
+	public class MethodsWindow extends JPanel implements ActionListener, PropertyChangeListener {
+
+		private static final long serialVersionUID = 1L;
+
+		private JProgressBar progressBar;
+		private JComboBox<CitationPhrase.mode> citationMode;
+		private JTextArea textArea;
+		private Task task;
+
+		class Task extends SwingWorker<Void, Void> {
+			/*
+			 * Main task. Executed in background thread.
+			 */
+			@Override
+			public Void doInBackground() {
+				setProgress(0);
+				
+				MethodsText.initNameMap();
+				
+		    	if (PackageManager.getRawClassToPackageMap().size() == 0) {
+		    		List<String> dirs = PackageManager.getBeastDirectories();
+		    		int k = 0;
+		            for (String jarDirName : dirs) {
+		            	PackageManager.initPackageMap(jarDirName);
+		            	k++;
+						setProgress(90 * k / dirs.size());
+		            }
+		    	}
+				
+				XML2Text xml2textProducer = new XML2Text(doc);
+				try {
+					xml2textProducer.initialise(mcmc);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				setProgress(95);
+				List<Phrase> m = xml2textProducer.getPhrases();
+				String text = Phrase.toText(doc, m);
+				setProgress(100);
+				textArea.setText(text);
+				return null;
+			}
+
+			@Override
+			public void done() {
+				citationMode.setEnabled(true);
+				setCursor(null); // turn off the wait cursor
+			}
+
+			public void setProgress_(int percentage) {
+				super.setProgress(percentage);
+			}
+		}
+
+		
+		public MethodsWindow() {
+			super(new BorderLayout());
+
+			// Create the demo's UI.
+			citationMode = new JComboBox<>(CitationPhrase.mode.values());
+			citationMode.setActionCommand("start");
+			citationMode.addActionListener(this);
+
+			progressBar = new JProgressBar(0, 100);
+			progressBar.setValue(0);
+			progressBar.setStringPainted(true);
+
+			textArea = new JTextArea(40, 50);
+			textArea.setWrapStyleWord(true);
+			textArea.setLineWrap(true);
+			textArea.setMargin(new Insets(5, 5, 5, 5));
+			textArea.setEditable(false);
+
+			JPanel panel = new JPanel();
+			panel.add(citationMode);
+			panel.add(progressBar);
+
+			add(panel, BorderLayout.PAGE_START);
+			add(new JScrollPane(textArea), BorderLayout.CENTER);
+			setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+		}
+
+		public void actionPerformed(ActionEvent evt) {
+			citationMode.setEnabled(false);
+			CitationPhrase.CitationMode = (CitationPhrase.mode) citationMode.getSelectedItem();
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			task = new Task();
+			task.addPropertyChangeListener(this);
+			task.execute();
+		}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			if ("progress" == evt.getPropertyName()) {
+				int progress = (Integer) evt.getNewValue();
+				progressBar.setValue(progress);
+				if (task.getProgress() < 100) {
+					textArea.append(task.getProgress() + " completed.\n");
+				}
+			}
+		}
+
+	}
+
+	
 }
