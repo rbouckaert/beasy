@@ -82,7 +82,7 @@ public class XML2HTMLPaneFX extends Application {
 	private WebEngine engine;
 	double zoom = 1.0;
 	
-	BeautiDoc beautiDoc;
+	static BeautiDoc beautiDoc;
 	Beauti beauti;
 	String html;
 	List<Phrase> m;
@@ -99,39 +99,48 @@ public class XML2HTMLPaneFX extends Application {
 		thisPane = this;
 	}
 
-	public void processArgs(String [] args) throws Exception {		
-		File file = new File(args[0]);
-		beautiDoc.setFileName(file.getAbsolutePath());
-		String xml = BeautiDoc.load(file);
-		int i = xml.indexOf("beautitemplate=");
-		if (i > 0) {
-			i += 15;
-			char c = xml.charAt(i);
-			i++;
-			int start = i;
-			while (xml.charAt(i) != c) {
+	public void processArgs(String [] args) throws Exception {
+		MCMC mcmc = null;
+		if (args.length > 0) {
+			File file = new File(args[0]);
+			beautiDoc.setFileName(file.getAbsolutePath());
+			String xml = BeautiDoc.load(file);
+			int i = xml.indexOf("beautitemplate=");
+			if (i > 0) {
+				i += 15;
+				char c = xml.charAt(i);
 				i++;
+				int start = i;
+				while (xml.charAt(i) != c) {
+					i++;
+				}
+				String template = xml.substring(start, i);
+				if (!template.endsWith("xml")) {
+					template = template + ".xml";
+				}
+				beautiDoc.loadNewTemplate(template);
+			} else {
+				beautiDoc.loadNewTemplate("Standard.xml");
 			}
-			String template = xml.substring(start, i);
-			if (!template.endsWith("xml")) {
-				template = template + ".xml";
-			}
-			beautiDoc.loadNewTemplate(template);
+			
+			
+			XMLParser parser = new XMLParser();
+			mcmc = (MCMC) parser.parseFile(file);
+			this.file = file;
 		} else {
-			beautiDoc.loadNewTemplate("Standard.xml");
+			mcmc = (MCMC) beautiDoc.mcmc.get();
 		}
-		
-		XMLParser parser = new XMLParser();
-		MCMC mcmc = (MCMC) parser.parseFile(file);
+
 		beautiDoc.mcmc.setValue(mcmc, beautiDoc);
 		for (BEASTInterface o : InputFilter.getDocumentObjects(beautiDoc.mcmc.get())) {
-			beautiDoc.registerPlugin(o);
+			if (o != null) {
+				beautiDoc.registerPlugin(o);
+			}
 		}
 		beautiDoc.determinePartitions();
 		BEASTObjectMethodsText.setBeautiCFG(beautiDoc.beautiConfig);
 		
 		MethodsText.initNameMap();
-		this.file = file;
 		initialise((MCMC) beautiDoc.mcmc.get(), true);		
 	}
 	
@@ -220,7 +229,9 @@ public class XML2HTMLPaneFX extends Application {
 		new Thread() {
 			@Override
 			public void run() {
-				beautiDoc = new BeautiDoc();
+				if (beautiDoc == null) {
+					beautiDoc = new BeautiDoc();
+				}
 				beautiDoc.beautiConfig = new BeautiConfig();
 				beautiDoc.beautiConfig.initAndValidate();
 				beauti = new Beauti(beautiDoc);
@@ -803,6 +814,14 @@ public class XML2HTMLPaneFX extends Application {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "XML2HTMLPandFX");
 
 		launch(args);
+	}
+
+	public static void launchForDoc(BeautiDoc doc) {
+		beautiDoc = doc;
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "XML2HTMLPandFX");
+
+		launch(new String[]{});		
 	}
 
 }

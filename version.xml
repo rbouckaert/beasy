@@ -1,5 +1,5 @@
-<addon name='Beasy' version='0.0.1'>
-	<depends on='beast2' atleast='2.5.2'/>
+<addon name='Beasy' version='0.0.2'>
+	<depends on='beast2' atleast='2.6.0'/>
 	
 	    <packageapp description="Beasy Script Interpreter"
               class="beasy.BeasyInterpreter"
@@ -9,7 +9,7 @@
               class="beasy.BeasyREPL"
               args=""
             />
-	    <packageapp description="Methods Section Generator"
+	    <packageapp description="Interactive Methods Section Generator"
               class="methods.XML2HTMLPaneFX"
               args=""
             />

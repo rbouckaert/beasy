@@ -10,9 +10,10 @@ import java.beans.PropertyChangeListener;
 import java.util.*;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -24,6 +25,7 @@ import beast.util.PackageManager;
 import methods.CitationPhrase;
 import methods.MethodsText;
 import methods.Phrase;
+import methods.XML2HTMLPaneFX;
 import methods.XML2Text;
 
 /**
@@ -107,6 +109,7 @@ public class MethodsSectionHelpMenu extends BeautiHelpAction {
 			@Override
 			public void done() {
 				citationMode.setEnabled(true);
+				progressBar.setVisible(false);
 				setCursor(null); // turn off the wait cursor
 			}
 
@@ -134,7 +137,14 @@ public class MethodsSectionHelpMenu extends BeautiHelpAction {
 			textArea.setMargin(new Insets(5, 5, 5, 5));
 			textArea.setEditable(false);
 
+			JButton editButton = new JButton("Edit interactively");
+			editButton.addActionListener(e -> {
+				XML2HTMLPaneFX.launchForDoc(doc);
+			});
+			add(editButton, BorderLayout.SOUTH);
+			
 			JPanel panel = new JPanel();
+			panel.add(new JLabel("Citation mode:"));
 			panel.add(citationMode);
 			panel.add(progressBar);
 
@@ -146,6 +156,7 @@ public class MethodsSectionHelpMenu extends BeautiHelpAction {
 
 		public void actionPerformed(ActionEvent evt) {
 			citationMode.setEnabled(false);
+			progressBar.setVisible(true);
 			CitationPhrase.CitationMode = (CitationPhrase.mode) citationMode.getSelectedItem();
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			task = new Task();
