@@ -5,19 +5,21 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import beast.core.util.Log;
-import sun.misc.BASE64Encoder;
+import beast.util.BEASTClassLoader;
 
 public class ImageUtil {
 
 	
 	public static String getIcon(String iconLocation, String type) {
 	    try {
-	        URL url = ClassLoader.getSystemResource(iconLocation);
+	        URL url = BEASTClassLoader.classLoader.getResource(iconLocation);
 	        if (url == null) {
 	            return null;
 	        }
@@ -49,8 +51,8 @@ public class ImageUtil {
             ImageIO.write(image, type, bos);
             byte[] imageBytes = bos.toByteArray();
 
-            BASE64Encoder encoder = new BASE64Encoder();
-            imageString = encoder.encode(imageBytes);
+            Encoder encoder = Base64.getEncoder();
+            imageString = encoder.encodeToString(imageBytes);
 
             bos.close();
         } catch (IOException e) {

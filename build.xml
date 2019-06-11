@@ -32,6 +32,23 @@
     <property name="dist" location="dist"/>
     <property name="pack" location="${dist}/package"/>
 
+    <property name="beast2lib" location="../beast2/lib/"/>
+    <property name="beastlabsbuild" location="../BEASTLabs/build/"/>
+
+    <path id="classpath">
+        <fileset dir="${beast2lib}" includes="beagle.jar"/>
+        <fileset dir="${beast2lib}" includes="jam.jar"/>
+        <fileset dir="${beast2lib}" includes="colt.jar"/>
+        <fileset dir="${beast2lib}" includes="fest.jar"/>
+        <fileset dir="${beast2lib}" includes="junit-4.8.2.jar"/>
+        <fileset dir="${beast2lib}" includes="antlr-runtime-4.7.jar"/>
+        
+        <pathelement path="../BEASTLabs/build/"/>
+        <pathelement path="../beast2/build/"/>
+    </path>
+
+
+
     <!-- Prepare for compilation -->
     <target name="init">
 
@@ -116,6 +133,15 @@
         <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}" includeantruntime="false">
             <classpath>
                 <pathelement path="${classpath}"/>
+        <fileset dir="${beast2lib}" includes="beagle.jar"/>
+        <fileset dir="${beast2lib}" includes="jam.jar"/>
+        <fileset dir="${beast2lib}" includes="colt.jar"/>
+        <fileset dir="${beast2lib}" includes="fest.jar"/>
+        <fileset dir="${beast2lib}" includes="junit-4.8.2.jar"/>
+        <fileset dir="${beast2lib}" includes="antlr-runtime-4.7.jar"/>
+        
+        <pathelement path="../BEASTLabs/build/"/>
+        <pathelement path="../beast2/build/"/>
                 <fileset dir="${build-lib}" includes="*.jar"/>
             </classpath>
         </javac>

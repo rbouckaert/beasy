@@ -40,6 +40,7 @@ import beast.core.Distribution;
 import beast.core.Input;
 import beast.core.parameter.RealParameter;
 import beast.core.util.CompoundDistribution;
+import beast.util.BEASTClassLoader;
 import beast.util.PackageManager;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.Alert;
@@ -165,7 +166,7 @@ public class ModelEditor extends BEASTObject {
         for (String _class: importerClasses) {
         	try {
         		if (!_class.startsWith(this.getClass().getName())) {
-        			PriorProvider priorProvider = (PriorProvider) Class.forName(_class).newInstance();
+        			PriorProvider priorProvider = (PriorProvider) BEASTClassLoader.forName(_class).newInstance();
 					priorProviders.add(priorProvider);
         		}
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {

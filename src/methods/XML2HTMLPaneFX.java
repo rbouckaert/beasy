@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import javax.swing.text.AbstractDocument.Content;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -32,6 +33,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
@@ -56,7 +58,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.sun.javafx.scene.control.skin.ContextMenuContent;
+//import com.sun.javafx.scene.control.skin.ContextMenuContent;
 
 import beast.app.beauti.Beauti;
 import beast.app.beauti.BeautiAlignmentProvider;
@@ -461,13 +463,13 @@ public class XML2HTMLPaneFX extends Application {
         }
     }
 
-    public class TemplateMenu extends MenuItem {
+    public class TemplateMenu extends CustomMenuItem {
 
         String fileName;
         String templateInfo;
 
         public TemplateMenu(File file) {
-            super("xx");
+            super();
             fileName = file.getAbsolutePath();
             String fileSep = System.getProperty("file.separator");
             if (fileSep.equals("\\")) {
@@ -490,50 +492,14 @@ public class XML2HTMLPaneFX extends Application {
                     templateInfo = "switch to " + name + " template";
                 }
                 // TODO: install tool tip
-                setToolTip(templateInfo);
+                Tooltip.install(this.getContent(), new Tooltip(templateInfo));
+                // setToolTip(templateInfo);
                 // Tooltip.install(getStyleableNode(), new Tooltip(templateInfo));
             } catch (Exception e) {
                 // ignore
             }
             setOnAction(e -> {loadTemplate(this);});
-        }
-        
-        
-        
-        private void setToolTip(String toolTip) {
-        	// not working - what's wrong?
-        	addEventHandler(MenuButton.ON_SHOWN, e -> {
-        	    Log.info("not getting here?");
-        	    // install tooltips here
-        	});
-
-        	ChangeListener<Skin> skinListener = (src, ov, skin) -> {
-        	    ContextMenuContent content = (ContextMenuContent) skin.getNode();
-        	    VBox menuBox = (VBox) content.getChildrenUnmodifiable().get(0);
-        	    menuBox.getChildren().forEach(node -> {
-        	        // implementation detail: the menuItem is set in the node's properties
-        	        if (node.getProperties().get(MenuItem.class) instanceof MenuItem) {
-        	            MenuItem item = (MenuItem) node.getProperties().get(MenuItem.class);
-        	            if (node != null && item.getProperties().get(toolTip) instanceof Tooltip) {
-        	                Tooltip tip = (Tooltip) item.getProperties().get(toolTip);
-        	                Tooltip.install(node, tip);
-        	            }
-
-        	        }
-
-        	    });
-        	};
-//        	showingProperty().addListener((src, ov, nv) -> {
-//        	    ContextMenu popup = submenu.getParentPopup();
-//        	    if (popup != null) {
-//        	        if (popup.getSkin() == null) {
-//        	            popup.skinProperty().addListener(skinListener);
-//        	        } else {
-//        	            popup.skinProperty().removeListener(skinListener);
-//        	        }
-//        	    }
-//        	});
-        }
+        }        
     }
     
     void loadTemplate(TemplateMenu a) {
@@ -812,7 +778,7 @@ public class XML2HTMLPaneFX extends Application {
     public static void main(String[] args) throws Exception {		
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "XML2HTMLPandFX");
-
+		
 		launch(args);
 	}
 

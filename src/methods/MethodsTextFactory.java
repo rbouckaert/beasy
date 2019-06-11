@@ -9,6 +9,7 @@ import beast.core.BEASTInterface;
 import beast.core.BEASTObject;
 import beast.core.Input;
 import beast.core.util.Log;
+import beast.util.BEASTClassLoader;
 import beast.util.PackageManager;
 
 public class MethodsTextFactory {
@@ -25,7 +26,7 @@ public class MethodsTextFactory {
         List<String> methodsTypes = PackageManager.find(MethodsText.class, new String[]{"methods"});
         for (String methodsTypeName : methodsTypes) {
             try {
-                MethodsText methodsType = (MethodsText) Class.forName(methodsTypeName).newInstance();
+                MethodsText methodsType = (MethodsText) BEASTClassLoader.forName(methodsTypeName).newInstance();
                 object2MethodsText.put(methodsType.type(), methodsType.getClass());
             } catch (Exception e) {
                 // TODO: handle exception

@@ -28,6 +28,7 @@ import beast.evolution.tree.TraitSet;
 import beast.evolution.tree.Tree;
 import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
+import beast.util.ClassToPackageMap;
 import beast.util.XMLParser;
 import beast.util.XMLProducer;
 import methods.CitationPhrase.mode;
@@ -145,7 +146,7 @@ public class XML2Text extends Runnable {
 
 		XMLProducer producer = new XMLProducer();
 		beautiDoc.scrubAll(false, false);
-		String [] packages = producer.getPackagesAndVersions(beautiDoc.mcmc.get()).toArray(new String[]{});
+		String [] packages = ClassToPackageMap.getPackagesAndVersions(beautiDoc.mcmc.get()).toArray(new String[]{});
 		if (packages.length > 0) {
 			m.add(new Phrase(" using "));
 			for (String pkg : packages) {

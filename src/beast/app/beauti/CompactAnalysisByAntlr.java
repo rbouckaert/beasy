@@ -38,6 +38,7 @@ import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TreeDistribution;
 import beast.math.distributions.MRCAPrior;
+import beast.util.BEASTClassLoader;
 import beast.util.PackageManager;
 
 public class CompactAnalysisByAntlr extends CABaseListener {
@@ -72,7 +73,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
         for (String _class: importerClasses) {
         	try {
         		//if (!_class.startsWith(this.getClass().getName())) {
-        			PriorProvider priorProvider = (PriorProvider) Class.forName(_class).newInstance();
+        			PriorProvider priorProvider = (PriorProvider) BEASTClassLoader.forName(_class).newInstance();
 					priorProviders.add(priorProvider);
 				//	}
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {

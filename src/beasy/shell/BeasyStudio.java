@@ -49,6 +49,7 @@ import beast.app.util.Utils6;
 import beast.core.parameter.RealParameter;
 import beast.math.distributions.Prior;
 import beast.math.distributions.Uniform;
+import beast.util.BEASTClassLoader;
 import beast.util.PackageManager;
 import beasy.BeasyInterpreter;
 import beasy.Help;
@@ -497,7 +498,7 @@ public class BeasyStudio extends JSplitPane {
 	private static void loadJavaFX() {
 		try {
 			// JavaFX already loaded?
-			Class x = Class.forName("javafx.embed.swing.JFXPanel");
+			Class x = BEASTClassLoader.forName("javafx.embed.swing.JFXPanel");
 			// if we got here, all is fine.
 			return;
 		} catch (ClassNotFoundException e) {
@@ -506,19 +507,19 @@ public class BeasyStudio extends JSplitPane {
 				String home = System.getenv("JAVA_HOME");
 				if (home != null) {
 					PackageManager.addURL(new URL("file:" + home + "/jre/lib/jfxrt.jar"));
-					Class.forName("javafx.embed.swing.JFXPanel");
+					BEASTClassLoader.forName("javafx.embed.swing.JFXPanel");
 					return;
 				}
 				String jarfile = System.getenv("JAVAFX_JAR");
 				if (jarfile != null) {
 					PackageManager.addURL(new URL("file:" + jarfile));
-					Class.forName("javafx.embed.swing.JFXPanel");
+					BEASTClassLoader.forName("javafx.embed.swing.JFXPanel");
 					return;
 				}
 				File f = new File("/opt/java/jre/lib/jfxrt.jar"); 
 				if (f.exists()) {
 					PackageManager.addURL(new URL("file:" + f.getPath()));
-					Class.forName("javafx.embed.swing.JFXPanel");
+					BEASTClassLoader.forName("javafx.embed.swing.JFXPanel");
 					return;
 				}
 			} catch (MalformedURLException e1) {
@@ -568,7 +569,7 @@ public class BeasyStudio extends JSplitPane {
             // set up application about-menu for Mac
             // Mac-only stuff
             try {
-                URL url = ClassLoader.getSystemResource(BeasyStudio.ICONPATH + "beauti.png");
+                URL url = BEASTClassLoader.classLoader.getResource(BeasyStudio.ICONPATH + "beauti.png");
                 Icon icon = null;
                 if (url != null) {
                     icon = new ImageIcon(url);
@@ -607,7 +608,7 @@ public class BeasyStudio extends JSplitPane {
                 // ignore
             } 
             try {
-                Class<?> class_ = Class.forName("jam.maconly.OSXAdapter");
+                Class<?> class_ = BEASTClassLoader.forName("jam.maconly.OSXAdapter");
                 Method method = class_.getMethod("enablePrefs", boolean.class);
                 method.invoke(null, false);
             } catch (java.lang.Exception e) {

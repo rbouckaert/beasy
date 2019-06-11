@@ -17,7 +17,7 @@ import beast.core.Description;
 import beast.core.Input;
 import beast.core.Runnable;
 import beast.core.util.Log;
-import beast.util.PackageManager;
+import beast.util.ClassToPackageMap;
 
 @Description("Runs a Beasy file, and save output to XML")
 public class BeasyInterpreter extends Runnable {
@@ -79,7 +79,7 @@ public class BeasyInterpreter extends Runnable {
 	}
 	
 	public static String beasyVersion() {
-		Map<String, String > classToPackageMap = PackageManager.getClassToPackageMap();
+		Map<String, String > classToPackageMap = ClassToPackageMap.getClassToPackageMap();
 		String packageVersion = classToPackageMap.get(BeasyInterpreter.class.getName());
 		return packageVersion;
 	}

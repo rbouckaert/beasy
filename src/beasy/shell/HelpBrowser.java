@@ -48,6 +48,7 @@ import org.w3c.dom.events.EventListener;
 
 
 import beast.app.DocMaker;
+import beast.util.BEASTClassLoader;
 import beast.util.PackageManager;
 
 public class HelpBrowser extends JPanel implements ActionListener { //implements HyperlinkListener {
@@ -127,7 +128,7 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
         JToolBar toolBar = new JToolBar();
         
 		btnPrev = new JButton("");
-		btnPrev.setIcon(new ImageIcon(EditorPanel.class
+		btnPrev.setIcon(new ImageIcon(BEASTClassLoader.classLoader
 				.getResource("/beasy/shell/icons/prev.png")));
 		btnPrev.addActionListener(new ActionListener() {
 			@Override
@@ -146,13 +147,13 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 				goNext();
 			}
 		});
-		btnNext.setIcon(new ImageIcon(EditorPanel.class
+		btnNext.setIcon(new ImageIcon(BEASTClassLoader.classLoader				
 				.getResource("/beasy/shell/icons/next.png")));
 		btnNext.setToolTipText("Show next help page");
 		toolBar.add(btnNext);
 
 		btnHome = new JButton("");
-		btnHome.setIcon(new ImageIcon(EditorPanel.class
+		btnHome.setIcon(new ImageIcon(BEASTClassLoader.classLoader
 				.getResource("/beasy/shell/icons/home.png")));
 		btnHome.setToolTipText("Goto home of help");
 		btnHome.addActionListener(new ActionListener() {
@@ -178,7 +179,7 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 
 
 		
-		image = new ImageIcon(HistoryPanel.class.getResource("/beasy/shell/icons/search.png")).getImage();
+		image = new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/search.png")).getImage();
 		searchField = new JTextField() {
 			private static final long serialVersionUID = 1L;
 
@@ -214,13 +215,13 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 		
 		JButton prevButton = new JButton("");
 		prevButton.setToolTipText("Find Previous");
-		prevButton.setIcon(new ImageIcon(EditorPanel.class.getResource("/beasy/shell/icons/findup.png")));
+		prevButton.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/findup.png")));
 		prevButton.setActionCommand("FindPrev");
 		prevButton.addActionListener(this);
 		toolBar.add(prevButton);
 
 		final JButton nextButton = new JButton("");
-		nextButton.setIcon(new ImageIcon(EditorPanel.class.getResource("/beasy/shell/icons/finddown.png")));
+		nextButton.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/finddown.png")));
 		nextButton.setToolTipText("Find Next");
 		nextButton.setActionCommand("FindNext");
 		nextButton.addActionListener(this);
@@ -604,7 +605,7 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
                 beastObject = beastObject.replaceAll(".html", "");
 				Class c = null;
                 try {
-                	c = Class.forName(beastObject);
+                	c = BEASTClassLoader.forName(beastObject);
 				} catch (ClassNotFoundException e1) {
 					c = null;
 				}
@@ -627,7 +628,7 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
             	// TODO
             	for (String path : importCommands) {
             		String scriptPath = path +"/"+ docPage +".bsh";
-            		InputStream in = Interpreter.class.getResourceAsStream( path );
+            		InputStream in = BEASTClassLoader.classLoader.getResourceAsStream( path );
             		if (in != null) {
             			StringBuffer buf = new StringBuffer();
             			try {

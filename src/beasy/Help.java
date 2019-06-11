@@ -23,6 +23,7 @@ import beast.app.beauti.BeautiSubTemplate;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.util.Log;
+import beast.util.BEASTClassLoader;
 import beast.util.PackageManager;
 import beasy.shell.BeasyStudio;
 
@@ -159,7 +160,7 @@ public class Help {
 			
 	        for (BeautiSubTemplate subTemplate : doc.beautiConfig.subTemplates) {
 	        	try {
-					Class c = Class.forName(subTemplate.classInput.get());
+					Class c = BEASTClassLoader.forName(subTemplate.classInput.get());
 					boolean found = false;
 					for (Input input : inputMap.keySet()) {
 						if (input.getType().isAssignableFrom(c)) {

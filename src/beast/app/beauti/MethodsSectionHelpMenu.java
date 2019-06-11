@@ -21,6 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
 import beast.core.MCMC;
+import beast.util.ClassToPackageMap;
 import beast.util.PackageManager;
 import methods.CitationPhrase;
 import methods.MethodsText;
@@ -82,11 +83,11 @@ public class MethodsSectionHelpMenu extends BeautiHelpAction {
 				
 				MethodsText.initNameMap();
 				
-		    	if (PackageManager.getRawClassToPackageMap().size() == 0) {
+		    	if (ClassToPackageMap.getRawClassToPackageMap().size() == 0) {
 		    		List<String> dirs = PackageManager.getBeastDirectories();
 		    		int k = 0;
 		            for (String jarDirName : dirs) {
-		            	PackageManager.initPackageMap(jarDirName);
+		            	ClassToPackageMap.initPackageMap(jarDirName);
 		            	k++;
 						setProgress(90 * k / dirs.size());
 		            }
