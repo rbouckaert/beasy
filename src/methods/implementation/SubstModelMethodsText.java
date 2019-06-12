@@ -53,7 +53,11 @@ public class SubstModelMethodsText implements MethodsText {
 			if (text.toLowerCase().indexOf("freqs") > 0) {
 				text = text.substring(0, text.toLowerCase().indexOf("freqs"));
 			}
-			m.get(0).setText(text);
+			if (m.size() > 0) {
+				m.get(0).setText(text);
+			} else {
+				m.add(new Phrase(text));
+			}
 			b.addAll(m);
 			b.add(new Phrase(" frequencies"));
 		}

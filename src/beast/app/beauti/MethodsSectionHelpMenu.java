@@ -28,6 +28,7 @@ import methods.MethodsText;
 import methods.Phrase;
 import methods.XML2HTMLPaneFX;
 import methods.XML2Text;
+import methods.implementation.BEASTObjectMethodsText;
 
 /**
  * Custom menu for BEAUti, which appears as "Help => Methods Section" menu item
@@ -41,6 +42,7 @@ public class MethodsSectionHelpMenu extends BeautiHelpAction {
 	public MethodsSectionHelpMenu(BeautiDoc doc) {
 		super("Methods section", "Attempts to convert model into a methods section", "methods", -1);
 		this.doc = doc;
+		BEASTObjectMethodsText.setBeautiCFG(doc.beautiConfig);
 	}
 
 	@Override

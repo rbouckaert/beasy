@@ -228,6 +228,7 @@
         <mkdir dir="${templates}" />
         <copy todir="${pack}/templates">
             <fileset dir="${templates}" includes="*.xml" />
+            <fileset dir="${templates}" includes="*.csv" />
         </copy>
 
         <mkdir dir="${doc}" />
