@@ -320,7 +320,20 @@ public class ModelEditor extends BEASTObject {
 		    	textArea.setColumns(50);
 		    	textArea.setEditable(true);
 		    	JScrollPane scroller = new JScrollPane(textArea);
-		    	JOptionPane.showMessageDialog(w, scroller);
+		        JOptionPane optionPane = new JOptionPane(scroller,
+		                JOptionPane.PLAIN_MESSAGE,
+		                JOptionPane.OK_CANCEL_OPTION,
+		                null,
+		                new String[]{"OK"},
+		                "OK");
+		        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+				final JDialog dialog = optionPane.createDialog(w, "Citation");
+				dialog.setResizable(true);
+				dialog.pack();
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+
+		    	//JOptionPane.showMessageDialog(w, scroller);
 			} else {
 				Alert alert = new Alert(AlertType.CONFIRMATION);
 				alert.setTitle("Reference Dialog");
@@ -479,7 +492,7 @@ public class ModelEditor extends BEASTObject {
 			final JDialog dialog = optionPane.createDialog(w, "Partition panel");
 			dialog.setResizable(true);
 			dialog.pack();
-
+			dialog.setAlwaysOnTop(true);
 			dialog.setVisible(true);
 		} else {
 			final SwingNode swingNode = new SwingNode() {
