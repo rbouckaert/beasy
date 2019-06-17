@@ -1,18 +1,19 @@
 package methods;
 
 
+
 import java.awt.Component;
 import java.awt.Desktop;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -112,41 +113,55 @@ public class ModelEditor extends BEASTObject {
 	    
 	    editor = null;
 		try {
-			editor = doc.getInputEditorFactory().createInputEditor(_input, 0, o, false, 
-					ExpandOption.FALSE, 
-					ButtonStatus.NONE, null, doc);
+			editor = doc.getInputEditorFactory().createInputEditor(_input, 0, o, true, 
+					ExpandOption.TRUE, 
+					ButtonStatus.ALL, null, doc);
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 			return false;
 		}
-		final SwingNode swingNode = new SwingNode() {
-			@Override
-			public boolean isResizable() {
-				return false;
-			}
-		};
 
-		SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                swingNode.setContent((JComponent) editor);
-            }
-        });
 		
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Tip dates Dialog");
-		alert.setHeaderText("Edit tip dates");
-		alert.setContentText(null);
-
-		DialogPane pane = alert.getDialogPane();
-		pane.setExpandableContent(swingNode);
-		pane.setExpanded(true);
-		pane.setMinHeight(500);
-		pane.setMinWidth(1024);
-
-		alert.showAndWait();
-		
+		if (useSwingThreads) {
+	        JOptionPane optionPane = new JOptionPane(editor,
+	                JOptionPane.PLAIN_MESSAGE,
+	                JOptionPane.OK_CANCEL_OPTION,
+	                null,
+	                new String[]{"OK"},
+	                "OK");
+	        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+			final JDialog dialog = optionPane.createDialog(w, "Edit " + o.getClass().getSimpleName());
+			dialog.setResizable(true);
+			dialog.pack();
+			dialog.setAlwaysOnTop(true);
+			dialog.setVisible(true);
+		} else {
+			final SwingNode swingNode = new SwingNode() {
+				@Override
+				public boolean isResizable() {
+					return false;
+				}
+			};
+			SwingUtilities.invokeLater(new Runnable() {
+	            @Override
+	            public void run() {
+	                swingNode.setContent((JComponent) editor);
+	            }
+	        });
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Edit " + o.getClass().getSimpleName());
+			alert.setHeaderText("Edit " + o.getClass().getSimpleName());
+			alert.setContentText(null);
+	
+			DialogPane pane = alert.getDialogPane();
+			pane.setExpandableContent(swingNode);
+			pane.setExpanded(true);
+			pane.setMinHeight(500);
+			pane.setMinWidth(1024);
+	
+			alert.showAndWait();
+		}		
 		return true;
 	}
 
@@ -199,19 +214,40 @@ public class ModelEditor extends BEASTObject {
 			for (PriorProvider p : priorProviders) {
 				priorProviderStrings.add(p.getDescription());
 			}
-			ChoiceDialog<String> dialog = new ChoiceDialog<>(priorProviders.get(0).getDescription(), priorProviderStrings);
-			dialog.setTitle("Add Prior Dialog");
-			dialog.setHeaderText("Add Extra Prior");
-			dialog.setContentText("Choose prior:");
-
-			// Traditional way to get the response value.
-			Optional<String> result = dialog.showAndWait();
-			if (!result.isPresent()){
-				return;
+			
+			if (useSwingThreads) {
+				JComboBox<String> optionBox = new JComboBox<>(priorProviderStrings.toArray(new String[]{}));
+		        optionBox.setSelectedItem("All");
+		        JOptionPane optionPane = new JOptionPane(optionBox,
+		                JOptionPane.PLAIN_MESSAGE,
+		                JOptionPane.OK_OPTION,
+		                null,
+		                new String[]{"OK"},
+		                "OK");
+		        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+				final JDialog dialog = optionPane.createDialog(null, "Choose one:");
+				dialog.setResizable(true);
+				dialog.pack();
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+				int i = optionBox.getSelectedIndex();
+				System.out.println("Your choice: " + priorProviderStrings.get(i));
+				priorProvider = priorProviders.get(i);
+			} else {
+				ChoiceDialog<String> dialog = new ChoiceDialog<>(priorProviders.get(0).getDescription(), priorProviderStrings);
+				dialog.setTitle("Add Prior Dialog");
+				dialog.setHeaderText("Add Extra Prior");
+				dialog.setContentText("Choose prior:");
+	
+				// Traditional way to get the response value.
+				Optional<String> result = dialog.showAndWait();
+				if (!result.isPresent()){
+					return;
+				}
+				System.out.println("Your choice: " + result.get());
+				int i = priorProviderStrings.indexOf(result.get());
+				priorProvider = priorProviders.get(i);
 			}
-			System.out.println("Your choice: " + result.get());
-			int i = priorProviderStrings.indexOf(result.get());
-			priorProvider = priorProviders.get(i);
     	}
     	
 //        List<BEASTInterface> selectedPlugins = new ArrayList<>();
@@ -263,7 +299,7 @@ public class ModelEditor extends BEASTObject {
 			final JDialog dialog = optionPane.createDialog(w, "Partition panel");
 			dialog.setResizable(true);
 			dialog.pack();
-
+			dialog.setAlwaysOnTop(true);
 			dialog.setVisible(true);
 		} else {
 			final SwingNode swingNode = new SwingNode() {
@@ -332,6 +368,8 @@ public class ModelEditor extends BEASTObject {
 				dialog.pack();
 				dialog.setAlwaysOnTop(true);
 				dialog.setVisible(true);
+				dialog.setFocusable(true);
+				dialog.requestFocus();
 
 		    	//JOptionPane.showMessageDialog(w, scroller);
 			} else {
@@ -375,7 +413,7 @@ public class ModelEditor extends BEASTObject {
 		String id = getAttribute("id", cmd);
 		RealParameter param = (RealParameter) doc.pluginmap.get(id);
 		
-		List<Phrase> set = new ArrayList<>(); 
+		Set<Phrase> set = new LinkedHashSet<>(); 
 		set.addAll(MethodsText.partitionGroupMap.get(param));
 		if (set.size() > 1) {
 			String [] options = new String[set.size() + 1];
@@ -385,7 +423,22 @@ public class ModelEditor extends BEASTObject {
 				options[i++] = ((RealParameter) p.source).getID();
 			}
 			if (useSwingThreads) {
-				i = JOptionPane.showOptionDialog(w, "Which parameter?", null, JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "All");
+		        JComboBox<String> optionBox = new JComboBox<>(options);
+		        optionBox.setSelectedItem("All");
+		        JOptionPane optionPane = new JOptionPane(optionBox,
+		                JOptionPane.PLAIN_MESSAGE,
+		                JOptionPane.OK_OPTION,
+		                null,
+		                new String[]{"OK"},
+		                "OK");
+		        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+				final JDialog dialog = optionPane.createDialog(optionBox, "Which parameter?");
+				dialog.setResizable(true);
+				dialog.pack();
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+				i = optionBox.getSelectedIndex();
+				//i = JOptionPane.showOptionDialog(w, "Which parameter?", null, JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "All");
 			} else {
 				List<ButtonType> optionsB = new ArrayList<>();
 				for (String option : options) {
@@ -400,7 +453,7 @@ public class ModelEditor extends BEASTObject {
 				i = optionsB.indexOf(result);
 			}
 			if (i > 0) {
-				Phrase x = set.get(i-1);
+				Phrase x = (Phrase) set.toArray()[i-1];
 				set.clear();
 				set.add(x);
 				param = (RealParameter) doc.pluginmap.get(options[i]);
@@ -408,6 +461,7 @@ public class ModelEditor extends BEASTObject {
 		}
 		if (useSwingThreads) {
 	        BEASTObjectDialog dlg = new BEASTObjectDialog(param, RealParameter.class, doc);
+	        dlg.setAlwaysOnTop(true);
 	        if (dlg.showDialog()) {
 	        	for (Phrase p : set) {
 	        		param = (RealParameter) p.source;
@@ -613,7 +667,18 @@ public class ModelEditor extends BEASTObject {
 
 	private void messageDialog(String string) {
     	if (useSwingThreads) {
-            JOptionPane.showMessageDialog(null,string);
+	        JOptionPane optionPane = new JOptionPane("Message: ",
+	                JOptionPane.PLAIN_MESSAGE,
+	                JOptionPane.OK_OPTION,
+	                null,
+	                new String[]{"OK"},
+	                "OK");
+	        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+			final JDialog dialog = optionPane.createDialog(string);
+			dialog.setResizable(true);
+			dialog.pack();
+			dialog.setAlwaysOnTop(true);
+			dialog.setVisible(true);
         } else {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Information");
