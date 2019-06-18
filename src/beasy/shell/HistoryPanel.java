@@ -69,7 +69,7 @@ public class HistoryPanel extends JPanel implements KeyListener {
 			}
 		});
 		toConsoleButton.setToolTipText("Send selected commands to the console and clipboard");
-		toConsoleButton.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/toconsole.png")));
+		toConsoleButton.setIcon(EditorPanel.getIcon("/beasy/shell/icons/toconsole.png", this));
 		toolBar.add(toConsoleButton);
 		
 		JButton btnNewButton_1 = new JButton("");
@@ -81,17 +81,26 @@ public class HistoryPanel extends JPanel implements KeyListener {
 			}
 		});
 		btnNewButton_1.setToolTipText("remove everything from history");
-		btnNewButton_1.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/removeall.png")));
+		btnNewButton_1.setIcon(EditorPanel.getIcon("/beasy/shell/icons/removeall.png",this));
 		toolBar.add(btnNewButton_1);
 		
-		image = new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/search.png")).getImage();
+		ImageIcon icon = EditorPanel.getIcon("/beasy/shell/icons/search.png",this);
+		if (icon != null) {
+			image = icon.getImage();
+		}
 		searchField = new JTextField() {
 	            @Override
 				protected void paintComponent(Graphics g) {  
-	                super.paintComponent(g);  
-	                int y = (getHeight() - image.getHeight(null))/2;
-	                int x = getWidth() - 17;
-	                g.drawImage(image, x, y, this);
+	                super.paintComponent(g);
+	                if (image != null) {
+		                int y = (getHeight() - image.getHeight(null))/2;
+		                int x = getWidth() - 17;
+		                g.drawImage(image, x, y, this);
+	                } else {
+		                int y = getHeight()/2;
+		                int x = getWidth() - 17;
+		                g.drawString("H", x, y);	                	
+	                }
 	            }  
 	        };  
 		searchField.setToolTipText("filter history by matching expression");
@@ -122,7 +131,7 @@ public class HistoryPanel extends JPanel implements KeyListener {
 			}
 		});
 		btnNewButton_2.setToolTipText("clear filter history");
-		btnNewButton_2.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/clear.png")));
+		btnNewButton_2.setIcon(EditorPanel.getIcon("/beasy/shell/icons/clear.png",this));
 		toolBar.add(btnNewButton_2);
 		
 		new Thread() {

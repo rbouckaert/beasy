@@ -1,5 +1,6 @@
+This analysis is for BEAST 2[1].
 There is one alignment with 24 taxa, and 987 characters.
-The partition has a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies with gamma rate heterogeneity using 4 categories and shape exponentially distributed (mean= 1.0).
+The partition has a gamma site model and HKY substitution model [2] with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies with gamma rate heterogeneity using 4 categories and shape exponentially distributed (mean= 1.0).
 
 The partition has a strict clock with clock rate log-normally distributed (mean-log= 0.005 and stdev-log= 0.25).
 
@@ -7,3 +8,7 @@ There is a single tree with dated tips (in dates not ages) using structured coal
 
 Other information:
 structured coalescent approximated through MASCOT with constant population using population size exponentially distributed (mean= 1.0) and backward migration rates exponentially distributed (mean= 1.0).
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Hasegawa, M., Kishino, H., & Yano, T. (1985). Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. Journal of Molecular Evolution, 22(2), 160–174. doi:10.1007/bf02101694

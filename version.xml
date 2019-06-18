@@ -6,6 +6,10 @@
               class="beasy.BeasyInterpreter"
               args=""
             />
+	    <packageapp description="Beasy Studio"
+              class="beasy.shell.BeasyStudio"
+              args=""
+            />
 	    <packageapp description="Beasy interactive Read-Eval-Print-Loop"
               class="beasy.BeasyREPL"
               args=""

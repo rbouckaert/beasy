@@ -128,8 +128,7 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
         JToolBar toolBar = new JToolBar();
         
 		btnPrev = new JButton("");
-		btnPrev.setIcon(new ImageIcon(BEASTClassLoader.classLoader
-				.getResource("/beasy/shell/icons/prev.png")));
+		btnPrev.setIcon(EditorPanel.getIcon("/beasy/shell/icons/prev.png", this));
 		btnPrev.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -147,14 +146,12 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 				goNext();
 			}
 		});
-		btnNext.setIcon(new ImageIcon(BEASTClassLoader.classLoader				
-				.getResource("/beasy/shell/icons/next.png")));
+		btnNext.setIcon(EditorPanel.getIcon("/beasy/shell/icons/next.png", this));
 		btnNext.setToolTipText("Show next help page");
 		toolBar.add(btnNext);
 
 		btnHome = new JButton("");
-		btnHome.setIcon(new ImageIcon(BEASTClassLoader.classLoader
-				.getResource("/beasy/shell/icons/home.png")));
+		btnHome.setIcon(EditorPanel.getIcon("/beasy/shell/icons/home.png", this));
 		btnHome.setToolTipText("Goto home of help");
 		btnHome.addActionListener(new ActionListener() {
 			@Override
@@ -179,16 +176,25 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 
 
 		
-		image = new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/search.png")).getImage();
+		ImageIcon icon = EditorPanel.getIcon("/beasy/shell/icons/search.png", this);
+		if (icon != null) {
+			image = icon.getImage();
+		}
 		searchField = new JTextField() {
 			private static final long serialVersionUID = 1L;
 
 				@Override
 				protected void paintComponent(Graphics g) {  
-	                super.paintComponent(g);  
-	                int y = (getHeight() - image.getHeight(null))/2;
-	                int x = getWidth() - 17;
-	                g.drawImage(image, x, y, this);
+	                super.paintComponent(g); 
+	                if (image != null) {
+		                int y = (getHeight() - image.getHeight(null))/2;
+		                int x = getWidth() - 17;
+		                g.drawImage(image, x, y, this);
+	                } else {
+		                int y = getHeight()/2;
+		                int x = getWidth() - 17;
+		                g.drawString("H", x, y);
+	                }
 	            }  
 	        };  
 	        searchField.setToolTipText("search help page by matching text");
@@ -215,13 +221,19 @@ public class HelpBrowser extends JPanel implements ActionListener { //implements
 		
 		JButton prevButton = new JButton("");
 		prevButton.setToolTipText("Find Previous");
-		prevButton.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/findup.png")));
+		icon = EditorPanel.getIcon("/beasy/shell/icons/findup.png", this);
+		if(icon != null) {
+			prevButton.setIcon(icon);
+		}
 		prevButton.setActionCommand("FindPrev");
 		prevButton.addActionListener(this);
 		toolBar.add(prevButton);
 
 		final JButton nextButton = new JButton("");
-		nextButton.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/finddown.png")));
+		icon = EditorPanel.getIcon("/beasy/shell/icons/finddown.png", this);
+		if (icon != null) {
+			nextButton.setIcon(icon);
+		}
 		nextButton.setToolTipText("Find Next");
 		nextButton.setActionCommand("FindNext");
 		nextButton.addActionListener(this);

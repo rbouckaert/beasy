@@ -1,8 +1,9 @@
+This analysis is for BEAST 2[1].
 There are 2 partitions (bears_cytb_fossils and bears_irbp_fossils) with 1000 and 1281 sites respectively.
 Partitions bears_cytb_fossils has a gamma site model and GTR substitution model with rateAC gamma distributed (alpha= 2.0 and beta= 0.25), rateAG gamma distributed (alpha= 2.0 and beta= 0.5), rateAT gamma distributed (alpha= 2.0 and beta= 0.25), rateCG gamma distributed (alpha= 2.0 and beta= 0.25), rateCT 1.0 rateGT gamma distributed (alpha= 2.0 and beta= 0.25) and estimated frequencies 
-Partitions bears_irbp_fossils has a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and estimated frequencies with gamma rate heterogeneity using 4 categories and shape exponentially distributed (mean= 1.0).
+Partitions bears_irbp_fossils has a gamma site model and HKY substitution model [2] with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and estimated frequencies with gamma rate heterogeneity using 4 categories and shape exponentially distributed (mean= 1.0).
 
-Both partitions share an uncorrelated log-normal relaxed clock with clock rate exponentially distributed (mean= 10.0) and standard deviation exponentially distributed (mean= 0.3337).
+Both partitions share an uncorrelated log-normal relaxed clock [3] with clock rate exponentially distributed (mean= 10.0) and standard deviation exponentially distributed (mean= 0.3337).
 
 There is a single tree with dated tips (in ages not dates)  using a fossilised birth death model, with diversification rate exponentially distributed (mean=1.0), turnover rate prior uniformly distributed (lower=0.0 and upper=1.0), sampling proportion 2.0 distributed (alpha=2.0 and beta=2.0) and removal probability 0.0. Condition on rho sampling is true, rho 1.0, and origina log-normally distributed (mean-log=8.5 and stdev-log=1.0).
 Relative substitution rates among both partitions are estimated.
@@ -13,3 +14,8 @@ MRCA prior 2_Pandas (7 taxa) is monophyletic.
 MRCA prior 3_Tremarctinae (2 taxa) is monophyletic.
 MRCA prior 4_Ursinae (8 taxa) is monophyletic.
 MRCA prior 5_BrownBears (3 taxa) is monophyletic.
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Hasegawa, M., Kishino, H., & Yano, T. (1985). Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. Journal of Molecular Evolution, 22(2), 160–174. doi:10.1007/bf02101694
+3: Drummond, A. J., Ho, S. Y. W., Phillips, M. J., & Rambaut, A. (2006). Relaxed Phylogenetics and Dating with Confidence. PLoS Biology, 4(5), e88. doi:10.1371/journal.pbio.0040088

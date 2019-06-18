@@ -1,8 +1,13 @@
+This analysis is for BEAST 2[1].
 This is a multi-species coalescent (*BEAST) analysis with a linear_with_constant_root population function and gamma log-normally distributed (mean-log=-5.0 and stdev-log=1.25).
 There are 3 partitions (26, 29 and 47) with 614, 601 and 819 sites respectively.
-All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies.
+All partitions individually have a gamma site model and HKY substitution model [2] with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies.
 
 Partitions 26 has a strict clock with clock rate 1.0 
 Partitions 29 and 47 individually have a strict clock with clock rate exponentially distributed (mean= 1.0).
 
-Tree prior: gene tree for species tree distribution with gene tree for species tree distribution with gene tree for species tree distribution with Yule model with birth rate (Species) log-normally distributed (mean-log=4.0 and stdev-log=1.25).
+Tree prior: Yule model with birth rate (Species) log-normally distributed (mean-log=4.0 and stdev-log=1.25) gene tree for species tree distribution with gene tree for species tree distribution with gene tree for species tree distribution with.
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Hasegawa, M., Kishino, H., & Yano, T. (1985). Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. Journal of Molecular Evolution, 22(2), 160–174. doi:10.1007/bf02101694

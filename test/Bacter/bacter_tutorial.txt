@@ -1,6 +1,11 @@
+This analysis is for BEAST 2[1].
 There are 12 partitions (Ecoli_rplA, Ecoli_rplB, Ecoli_rplC, Ecoli_rplD, Ecoli_rplE, Ecoli_rplF, Ecoli_rplO, Ecoli_rplP, Ecoli_rplQ, Ecoli_rplR, Ecoli_rplS and Ecoli_rplT) with 705, 822, 630, 606, 540, 534, 435, 411, 384, 354, 348 and 357 sites respectively.
-All partitions share a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 0.0 and stdev-log= 2.0) and estimated frequencies.
+All partitions share a gamma site model and HKY substitution model [2] with kappa log-normally distributed (mean-log= 0.0 and stdev-log= 2.0) and estimated frequencies.
 
 All partitions share a strict clock with clock rate 1.0.
 
 There is a single tree with constant coalescent tree prior with population size log-normally distributed (mean-log=0.0 and stdev-log=2.0).
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Hasegawa, M., Kishino, H., & Yano, T. (1985). Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. Journal of Molecular Evolution, 22(2), 160–174. doi:10.1007/bf02101694

@@ -1,6 +1,10 @@
+This analysis is for BEAST 2[1].
 There is one alignment with 63 taxa, and 411 characters.
 The partition has a gamma site model and GTR substitution model with rateAC gamma distributed (alpha= 0.05 and beta= 10.0), rateAG gamma distributed (alpha= 0.05 and beta= 20.0), rateAT gamma distributed (alpha= 0.05 and beta= 10.0), rateCG gamma distributed (alpha= 0.05 and beta= 10.0), rateCT 1.0 rateGT gamma distributed (alpha= 0.05 and beta= 10.0) and estimated frequencies with gamma rate heterogeneity using 4 categories and shape exponentially distributed (mean= 1.0).
 
 The partition has a strict clock with clock rate 7.9E-4.
 
 There is a single tree with birth-death skyline model with with origin log-normally distributed (mean-log=5.0 and stdev-log=0.5), reproductive number log-normally distributed (mean-log=0.0 and stdev-log=1.25), rho 9999.0 distributed (alpha=1.0 and beta=9999.0), and sampling proportion 0.0.
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537

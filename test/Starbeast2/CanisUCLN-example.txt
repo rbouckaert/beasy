@@ -1,6 +1,7 @@
+This analysis is for BEAST 2[1].
 This is a multi-species coalescent (StarBeast2) analysis with population model dummy model with.
 There are 16 partitions (APOBS1, APOBS2, BDNF, BRCA1S1, BRCA1S2, CHST12, CMKOR1, Ch14, Ch21, Ch24, FGFR3, GHRex09, RAG1, TMEM20, VANGL2 and VWF) with 702, 633, 489, 705, 741, 705, 735, 921, 601, 730, 503, 736, 741, 615, 546 and 732 sites respectively.
-All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies.
+All partitions individually have a gamma site model and HKY substitution model [2] with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies.
 
 All partitions share a species tree clock model with clock rate 0.001 and uncorrelated rates with stdev log-normally distributed (mean-log= 1.0 and stdev-log= 2.0).
 
@@ -24,3 +25,7 @@ geneTree.t:RAG1 has ploidy 2.0.
 geneTree.t:TMEM20 has ploidy 2.0.
 geneTree.t:VANGL2 has ploidy 2.0.
 geneTree.t:VWF has ploidy 2.0.
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Hasegawa, M., Kishino, H., & Yano, T. (1985). Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. Journal of Molecular Evolution, 22(2), 160–174. doi:10.1007/bf02101694

@@ -1,6 +1,12 @@
+This analysis is for BEAST 2[1].
 There is one alignment with 100 taxa, and 13154 characters.
-The partition has a bModelTest site model with 4 gamma categories using transitionTransversionSplit substitution models.
+The partition has a bModelTest site model [2] with 4 gamma categories using transitionTransversionSplit substitution models.
 
-The partition has an uncorrelated log-normal relaxed clock with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity) and standard deviation gamma distributed (alpha= 0.5396 and beta= 0.3819).
+The partition has an uncorrelated log-normal relaxed clock [3] with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity) and standard deviation gamma distributed (alpha= 0.5396 and beta= 0.3819).
 
 There is a single tree with dated tips (in dates not ages) using exponential coalescent tree prior with population size 1/X distributed and growth rate Laplace distributed (mu=0.001 and scale=30.701135).
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Bouckaert, R. R., & Drummond, A. J. (2017). bModelTest: Bayesian phylogenetic site model averaging and model comparison. BMC Evolutionary Biology, 17(1). doi:10.1186/s12862-017-0890-6
+3: Drummond, A. J., Ho, S. Y. W., Phillips, M. J., & Rambaut, A. (2006). Relaxed Phylogenetics and Dating with Confidence. PLoS Biology, 4(5), e88. doi:10.1371/journal.pbio.0040088

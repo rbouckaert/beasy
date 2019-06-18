@@ -10,12 +10,16 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +37,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -81,12 +86,12 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 			}
 
 		});
-		btnNewButton.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/new.png")));
+		btnNewButton.setIcon(getIcon("/beasy/shell/icons/new.png", this));
 		btnNewButton.setToolTipText("Start new editor");
 		toolBar.add(btnNewButton);
 
 		JButton btnNewButton_3 = new JButton("");
-		btnNewButton_3.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/open.png")));
+		btnNewButton_3.setIcon(getIcon("/beasy/shell/icons/open.png", this));
 		btnNewButton_3.setToolTipText("Open file");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			@Override
@@ -97,7 +102,7 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 		toolBar.add(btnNewButton_3);
 
 		JButton btnNewButton_1 = new JButton("");
-		btnNewButton_1.setSelectedIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/recent.png")));
+		btnNewButton_1.setSelectedIcon(getIcon("/beasy/shell/icons/recent.png", this));
 		btnNewButton_1.setToolTipText("Recently opened files");
 		toolBar.add(btnNewButton_1);
 
@@ -108,7 +113,7 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 				doSave();
 			}
 		});
-		btnNewButton_2.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/save.png")));
+		btnNewButton_2.setIcon(getIcon("/beasy/shell/icons/save.png", this));
 		btnNewButton_2.setToolTipText("Save current editor");
 		toolBar.add(btnNewButton_2);
 
@@ -119,34 +124,44 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 				doSaveAll();
 			}
 		});
-		btnNewButton_4.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/saveall.png")));
+		btnNewButton_4.setIcon(getIcon("/beasy/shell/icons/saveall.png", this));
 		btnNewButton_4.setToolTipText("Save all files");
 		toolBar.add(btnNewButton_4);
 
 		toolBar.addSeparator();
 
 		// Create a toolbar with searching options.
-		image = new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/search.png")).getImage();
+		//image = Utils.getIcon("/beasy/shell/icons/search.png").getImage();
+		ImageIcon icon = getIcon("/beasy/shell/icons/search.png", this);
+		if (icon != null) {
+			image = icon.getImage();
+		}
 		searchField = new JTextField(30) {
             @Override
 			protected void paintComponent(Graphics g) {  
-                super.paintComponent(g);  
-                int y = (getHeight() - image.getHeight(null))/2;
-                int x = getWidth() - 17;
-                g.drawImage(image, x, y, this);
+                super.paintComponent(g); 
+                if (image != null) {
+                	int y = (getHeight() - image.getHeight(null))/2;
+                	int x = getWidth() - 17;
+                	g.drawImage(image, x, y, this);
+                } else {
+                	int y = getHeight()/2;
+                	int x = getWidth() - 17;
+                	g.drawString("F", x, y);
+                }
             }  
         };  
 		toolBar.add(searchField);
 
 		JButton prevButton = new JButton("");
 		prevButton.setToolTipText("Find Previous");
-		prevButton.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/findup.png")));
+		prevButton.setIcon(getIcon("/beasy/shell/icons/findup.png", this));
 		prevButton.setActionCommand("FindPrev");
 		prevButton.addActionListener(this);
 		toolBar.add(prevButton);
 
 		final JButton nextButton = new JButton("");
-		nextButton.setIcon(new ImageIcon(BEASTClassLoader.classLoader.getResource("/beasy/shell/icons/finddown.png")));
+		nextButton.setIcon(getIcon("/beasy/shell/icons/finddown.png", this));
 		nextButton.setToolTipText("Find Next");
 		nextButton.setActionCommand("FindNext");
 		nextButton.addActionListener(this);
@@ -171,6 +186,33 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 	}
 
 	
+	static ImageIcon getIcon(String string, Object class_) {
+		ImageIcon icon = Utils.getIcon(string);
+		if (icon == null) {
+			ClassLoader classLoader = class_.getClass().getClassLoader();
+			URL url = classLoader.getResource(string);
+			if (url != null) {
+				icon = new ImageIcon(url);
+				return icon;
+			}
+			BufferedImage bimage = null;
+			InputStream is = class_.getClass().getResourceAsStream(string);
+			if (is != null) {
+				try {
+					bimage = ImageIO.read(is);
+				} catch (IOException e) {
+					// ignore
+				}
+	        	if (bimage != null) {
+					icon = new ImageIcon(bimage);
+					return icon;
+				}
+			}
+		}
+		return null;
+	}
+
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -488,7 +530,7 @@ public class EditorPanel extends JPanel implements ActionListener, KeyListener, 
 	        	outfile.write('\n');
 	        }
 	        outfile.close();				
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

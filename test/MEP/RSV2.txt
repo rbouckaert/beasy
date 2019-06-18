@@ -1,7 +1,12 @@
+This analysis is for BEAST 2[1].
 There are 3 partitions (RSV2_1, RSV2_2 and RSV2_3) with 209, 210 and 210 sites respectively.
-All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies.
+All partitions individually have a gamma site model and HKY substitution model [2] with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and empirical frequencies.
 
 All partitions share a strict clock with clock rate log-normally distributed (mean-log= -5.0 and stdev-log= 1.25).
 
 There is a single tree with dated tips (in dates not ages) using constant coalescent tree prior with population size 1/X distributed.
 Relative substitution rates among all partitions are estimated.
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Hasegawa, M., Kishino, H., & Yano, T. (1985). Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. Journal of Molecular Evolution, 22(2), 160–174. doi:10.1007/bf02101694

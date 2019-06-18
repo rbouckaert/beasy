@@ -1,7 +1,8 @@
+This analysis is for BEAST 2[1].
 There are 30 partitions (enc_1st, enc_2nd, enc_3rd, glyt_1st, glyt_2nd, glyt_3rd, myh_1st, myh_2nd, myh_3rd, plag_1st, plag_2nd, plag_3rd, ptr_1st, ptr_2nd, ptr_3rd, RAG1_1st, RAG1_2nd, RAG1_3rd, SH3_1st, SH3_2nd, SH3_3rd, SREB_1st, SREB_2nd, SREB_3rd, TBR_1st, TBR_2nd, TBR_3rd, ZIC_1st, ZIC_2nd and ZIC_3rd) with 270, 270, 270, 295, 295, 295, 245, 245, 245, 231, 231, 231, 237, 237, 237, 469, 469, 469, 235, 235, 235, 329, 329, 329, 254, 254, 254, 294, 294 and 294 sites respectively.
-All partitions share a bModelTest site model with 4 gamma categories using namedExtended substitution models.
+All partitions share a bModelTest site model [2] with 4 gamma categories using namedExtended substitution models.
 
-All partitions share an uncorrelated log-normal relaxed clock with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity) and standard deviation gamma distributed (alpha= 0.5396 and beta= 0.3819).
+All partitions share an uncorrelated log-normal relaxed clock [3] with clock rate prior uniformly distributed (lower= 0.0 and upper= Infinity) and standard deviation gamma distributed (alpha= 0.5396 and beta= 0.3819).
 
 There is a single tree with birth death model with unscaled tree type, birth rate prior uniformly distributed (lower=0.0 and upper=1000.0), death rate prior uniformly distributed (lower=0.0 and upper=1.0) and sample probability.
 Relative substitution rates among all partitions are estimated.
@@ -35,3 +36,7 @@ Clade Syngnatharia has fossil prior with occurrance age (min= 49.1, max= 49.4).
 Clade Zeiariae has fossil prior with occurrance age (min= 69.2, max= 76.4).
 Clade Acanthopterygii has fossil prior with occurrance age (min= 97.8, max= 99.1).
 All have divergence rate (min= 0.041, max= 0.081), turnover rate (min= 0.0011, max= 0.37), sampling rate (min= 0.0066, max= 0.01806), and sample gap (min= 0.0, max= 0.0) 
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Bouckaert, R. R., & Drummond, A. J. (2017). bModelTest: Bayesian phylogenetic site model averaging and model comparison. BMC Evolutionary Biology, 17(1). doi:10.1186/s12862-017-0890-6
+3: Drummond, A. J., Ho, S. Y. W., Phillips, M. J., & Rambaut, A. (2006). Relaxed Phylogenetics and Dating with Confidence. PLoS Biology, 4(5), e88. doi:10.1371/journal.pbio.0040088

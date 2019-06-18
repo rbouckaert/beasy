@@ -1,6 +1,7 @@
+This analysis is for BEAST 2[1].
 This is a multi-species coalescent (StarBeast2) analysis with population model dummy model with.
 There are 7 partitions (26, 29, 47, 53, 59, 64 and 72) with 614, 601, 819, 621, 553, 471 and 706 sites respectively.
-All partitions individually have a gamma site model and HKY substitution model with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and estimated frequencies.
+All partitions individually have a gamma site model and HKY substitution model [2] with kappa log-normally distributed (mean-log= 1.0 and stdev-log= 1.25) and estimated frequencies.
 
 All partitions individually have a strict clock with clock rate 1/X distributed.
 
@@ -15,3 +16,7 @@ geneTree.t:59 has ploidy 2.0.
 geneTree.t:64 has ploidy 2.0.
 geneTree.t:72 has ploidy 2.0.
 MRCA prior root (8 taxa) is monophyletic and exponentially distributed (mean= 0.15).
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Hasegawa, M., Kishino, H., & Yano, T. (1985). Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. Journal of Molecular Evolution, 22(2), 160–174. doi:10.1007/bf02101694

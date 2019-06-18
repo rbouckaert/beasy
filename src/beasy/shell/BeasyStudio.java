@@ -569,12 +569,12 @@ public class BeasyStudio extends JSplitPane {
             // set up application about-menu for Mac
             // Mac-only stuff
             try {
-                URL url = BEASTClassLoader.classLoader.getResource(BeasyStudio.ICONPATH + "beauti.png");
+                URL url = BEASTClassLoader.classLoader.getResource("/beast/app/draw/icons/beauti.png");
                 Icon icon = null;
                 if (url != null) {
                     icon = new ImageIcon(url);
                 } else {
-                    System.err.println("Unable to find image: " + BeasyStudio.ICONPATH + "beauti.png");
+                    System.err.println("Unable to find image: /beast/app/draw/icons/beauti.png");
                 }
                 jam.framework.Application application = new jam.framework.MultiDocApplication(null, "BEAUti", "about", icon) {
 

@@ -233,7 +233,11 @@
 
         <mkdir dir="${doc}" />
         <copy todir="${pack}/doc">
-            <fileset dir="${doc}" includes="*.tex,*.doc,*.lyx,*.txt"/>
+            <fileset dir="${doc}" includes="*.tex,*.doc,*.lyx,*.txt,*.html"/>
+        </copy>
+        <mkdir dir="${doc}/html" />
+        <copy todir="${pack}/doc/html">
+            <fileset dir="${doc}/html" includes="*.tex,*.doc,*.lyx,*.txt,*.html"/>
         </copy>
 
         <copy file="version.xml" todir="${pack}" />

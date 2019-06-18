@@ -1,3 +1,4 @@
+This analysis is for BEAST 2[1].
 There are 2 partitions (bears_cytb_fossils and bears_irbp_fossils) with 1000 and 1281 sites respectively....
 Relative substitution rates among both partitions are estimated.
 
@@ -7,3 +8,6 @@ MRCA prior 2_Pandas (7 taxa) is monophyletic.
 MRCA prior 3_Tremarctinae (2 taxa) is monophyletic.
 MRCA prior 4_Ursinae (8 taxa) is monophyletic.
 MRCA prior 5_BrownBears (3 taxa) is monophyletic.
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537

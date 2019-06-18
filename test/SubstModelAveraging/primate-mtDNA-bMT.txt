@@ -1,6 +1,11 @@
+This analysis is for BEAST 2[1].
 There are 4 partitions (noncoding, 1stpos, 2ndpos and 3rdpos) with 205, 231, 231 and 231 sites respectively.
-All partitions share a bModelTest site model with 4 gamma categories using transitionTransversionSplit substitution models.
+All partitions share a bModelTest site model [2] with 4 gamma categories using transitionTransversionSplit substitution models.
 
 All partitions share a strict clock with clock rate 1.0.
 
 There is a single tree with Yule model with birth rate (tree) prior uniformly distributed (lower=0.0 and upper=Infinity).
+
+References:
+1: Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C.-H., Xie, D., … Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537
+2: Bouckaert, R. R., & Drummond, A. J. (2017). bModelTest: Bayesian phylogenetic site model averaging and model comparison. BMC Evolutionary Biology, 17(1). doi:10.1186/s12862-017-0890-6
