@@ -76,7 +76,7 @@ public class ModelEditor extends BEASTObject {
 		case "TipDates": return handleTipDates(cmd, doc, w);
 		case "AddPrior": return handleAddPrior(cmd, doc, w);
 		case "EditObject": return handleObject(cmd, doc, w);
-		
+		case "SetValue": return handleSetValue(cmd, doc, w);
 		}
 		
 		return false;
@@ -85,7 +85,21 @@ public class ModelEditor extends BEASTObject {
 	
 	
 
-    class FlexibleInput<T> extends Input<T> {
+    private boolean handleSetValue(String cmd, BeautiDoc doc, Component w) {
+		String src = getAttribute("source", cmd);
+		String id = src.substring(0, src.lastIndexOf(' '));
+		String inputName = src.substring(src.lastIndexOf(' ') + 1);
+		BEASTInterface o = doc.pluginmap.get(id);
+		Input input = o.getInput(inputName);
+		String value = getAttribute("value", cmd);
+		input.setValue(value, o);
+		return false;
+	}
+
+
+
+
+	class FlexibleInput<T> extends Input<T> {
         FlexibleInput() {
             // sets name to something non-trivial This is used by canSetValue()
             super("xx", "");
@@ -709,16 +723,16 @@ public class ModelEditor extends BEASTObject {
 	}
 
 
-	private String getAttribute(String attr, String cmd) {
+	public static String getAttribute(String attr, String cmd) {
 		cmd = cmd.replaceAll("%20", " ");
-		int i = cmd.indexOf(attr);
+		int i = cmd.indexOf(attr + "=");
 		if (i < 0) {
 			return null;
 		}
 		String value = cmd.substring(i + attr.length() + 1);
 		if (value.indexOf('=') > 0) {
 			value = value.substring(0, value.indexOf('='));
-		}		
+		}
 		if (value.charAt(0) == '"') {
 			value = value.substring(1, value.indexOf('"', 1));
 		} else if (value.charAt(0) == '\'') {

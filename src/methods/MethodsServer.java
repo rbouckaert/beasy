@@ -19,7 +19,6 @@ import beast.app.beauti.Beauti;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.InputFilter;
-import beast.app.util.Application;
 import beast.core.BEASTInterface;
 import beast.core.MCMC;
 import beast.core.Runnable;
@@ -33,6 +32,7 @@ public class MethodsServer extends Runnable {
 	String html;
 	List<Phrase> m;
 	XML2Text xml2textProducer;
+	final HTMLProducer htmlProducer = new HTMLProducer();
 	
 	File tmpFile = null;
 	File file = null;
@@ -51,52 +51,125 @@ public class MethodsServer extends Runnable {
 		beauti = new Beauti(beautiDoc);
 	}
 	
+	
+	public final static String header = "<!DOCTYPE html>\n" +
+			"<html>\n" +
+			"<style>\n" +
+			".reference {font-size:10pt;color:#aaa;}\n" +
+			".tipdates {display:inline;}\n" +
+			"a{color:#555;text-decoration:none;background-color:#fafafa;}\n" + 
+			".pe {color:#555;background-color:#fafafa;}\n" + 
+			".para {color:#555;background-color:#fafafa;}\n" + 
+			"select{color:#555;font-weight:normal;-webkit-appearance:none;background-color:#fafafa;border-width:5pt;}\n" + 
+			"a:hover{background-color:#aaa;}\n" + 
+			"select:hover{background-color:#aaa;}\n" +
+			"</style>\n" +
+"  <link rel=\"stylesheet\" href=\"//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css\">\n" + 
+"  <link rel=\"stylesheet\" href=\"/resources/demos/style.css\">\n" + 
+"  <script src=\"https://code.jquery.com/jquery-1.12.4.js\"></script>\n" + 
+"  <script src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.js\"></script>\n" +
+"  <script>\n" +
+"  $( function() {\n" +
+"  $( \"#accordion\" ).accordion( {\n" +
+"  collapsible: true,\n" +
+"      heightStyle: \"content\"\n" +
+"  })\n" +
+"  } );\n" +
+"  </script>\n" +
+			"<script>\n" +
+			"function edit(cmd) {\n" +
+			"	var xhttp = new XMLHttpRequest();\n" +
+			"   xhttp.onreadystatechange = function() {\n" +
+			"    if (this.readyState == 4 && this.status == 200) {\n" +
+			"       // Typical action to be performed when the document is ready:\n" +
+			"       document.getElementById('dialogs').innerHTML = xhttp.responseText;\n" +
+			"		       $( \"#dialog\" ).dialog({\n" +
+			"		    	      modal: true,\n" +
+			"		    	      buttons: {\n" +
+			"		    	        Ok: function() {\n" +
+			"		    	          $( this ).dialog( \"close\" );\n" +
+			"		    	        }\n" +
+			"		    	      }\n" +
+			"		    	    });\n" +
+			"    }\n" +
+			"   }\n" +
+			"	xhttp.open(\"GET\", \"/cmd=Edit id=\" + cmd, true);\n" +
+			"	xhttp.send();\n" +
+			"};\n" +
+			"function doIt(value, cmd) {\n" +
+			"	var xhttp = new XMLHttpRequest();\n" +
+			"	xhttp.open(\"GET\", \"/cmd=SetValue source=\" + cmd+\" value=\"+value, true);\n" +
+			"	xhttp.send();\n" +
+			"}\n" +
+			"</script>\n"+
+			"<body style='font: 12pt arial, sans-serif;margin: 50pt 100pt 50pt 100pt;' >\n" +
+			"<div id='accordion'>\n"
+			//+ "<input type='button' onclick='window.myObject.doIt(\"ok\");' value='Click me'/>\n"
+			;
+
+	public final static String footer = "</div>\n" 
+			+ "<p><a style='font-size:10pt;color:#aaf;' "
+			+ "href=\"/cmd=AddPrior\">Add other prior</a>\n"
+			+ "<div id=\"dialogs\"></div>\n"
+			+ "<p><center><img src='data:image/png;base64," 
+				+ ImageUtil.getIcon("methods/beasy.png", "png")+ "'></center>";
+
     class MyHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
     		Log.warning.println(t.getRequestMethod());
         	String request = t.getRequestURI().toString().replaceAll("%20", " ");
         	Log.warning.println(">>" + request + "<<");
-        	
-            
-        	me.handleCmd(request, beautiDoc, null);
         	String response = null;
-            
-    		try {
-    			response = processCmd(request);
-    			if (response == null) {
-    				response = "null";
-    			}
-                t.sendResponseHeaders(200, response.length());
-                OutputStream os = t.getResponseBody();
-                os.write(response.getBytes());
-                os.close();
-    		} catch (Exception e) {
-    			e.printStackTrace();
-                t.sendResponseHeaders(200, e.getMessage().length());
-                OutputStream os = t.getResponseBody();
-                os.write(e.getMessage().getBytes());
-                os.close();
-    		}
+        	if (request.startsWith("/cmd=Edit")) {
+        		String id = ModelEditor.getAttribute("id", request);
+        		BEASTInterface o = beautiDoc.pluginmap.get(id);
+        		response = htmlProducer.getHTMLEditor(o, beautiDoc);
+
+        	} else {
+        		me.handleCmd(request, beautiDoc, null);
+	    		try {
+	    			response = processCmd(request);
+	    			if (response == null) {
+	    				response = "null";
+	    			}
+	                t.sendResponseHeaders(200, response.length());
+	                OutputStream os = t.getResponseBody();
+	                os.write(response.getBytes());
+	                os.close();
+	    		} catch (Exception e) {
+	    			e.printStackTrace();
+	                t.sendResponseHeaders(200, e.getMessage().length());
+	                OutputStream os = t.getResponseBody();
+	                os.write(e.getMessage().getBytes());
+	                os.close();
+	    		}
+        	}        	
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
         }
 
+
 		private String processCmd(String request) throws Exception {
 			XML2Text xml2textProducer = new XML2Text(beautiDoc);
 			xml2textProducer.initialise((MCMC) beautiDoc.mcmc.get());
 			List<Phrase> m = xml2textProducer.getPhrases();
 			
-			String html = XML2HTMLPaneFX.header + Phrase.toHTML(beautiDoc, m) + XML2HTMLPaneFX.footer + "</body>\n</html>";
+			String html = header + toHTML(m) + footer + "</body>\n</html>";
 			
 	        FileWriter outfile = new FileWriter("/tmp/index.html");
 	        outfile.write(html);
 	        outfile.close();
 	        return html;
 		}
+
     }
+
+	private String toHTML(List<Phrase> m) {
+		return htmlProducer.toHTML(beautiDoc, m);
+	}
     
 	@Override
 	public void initAndValidate() {

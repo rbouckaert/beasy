@@ -114,8 +114,8 @@ public class XML2Text extends Runnable {
 		
 	public String initialise(MCMC mcmc) throws Exception {
         CompoundDistribution posterior = (CompoundDistribution) mcmc.posteriorInput.get();
+        
 		m = new ArrayList<>();
-
 		addAnalysisIdentifier();
 		
 		addPartitionSection();
@@ -140,6 +140,7 @@ public class XML2Text extends Runnable {
 	}
 	
 	private void addReferenceSection() {
+		m.add(new SectionPhrase("References"));
 		int i = m.size();
 		m.add(new Phrase("\nThis analysis is for BEAST "));
 		m.add(CitationPhrase.createCitationPhrase("10.1371/journal.pcbi.1003537"));
@@ -235,6 +236,7 @@ public class XML2Text extends Runnable {
 
 
 	private void addTreePrior(CompoundDistribution posterior) {
+		m.add(new SectionPhrase("Tree"));
 		List<Phrase> m = new ArrayList<>();
 
         // tree priors        
@@ -296,6 +298,7 @@ public class XML2Text extends Runnable {
 
 
 	private void addSiteModelDescription(CompoundDistribution posterior) {
+		m.add(new SectionPhrase("Site model"));
         // collect model descriptions of all partitions
         List<String> partitionIDs = new ArrayList<>();
         List<String> smPartitionIDs = new ArrayList<>();
@@ -326,6 +329,7 @@ public class XML2Text extends Runnable {
 
 
 	private void addClockModelDescription(CompoundDistribution posterior) {
+		m.add(new SectionPhrase("Clock model"));
         // collect model descriptions of all partitions
         List<String> partitionIDs = new ArrayList<>();
         List<String> cmPartitionIDs = new ArrayList<>();
@@ -413,6 +417,7 @@ public class XML2Text extends Runnable {
 	}
 
 	private void addPartitionSection() {
+		m.add(new SectionPhrase("Data"));
 		List<Phrase> m = new ArrayList<>();
 
 		List<BEASTInterface> parts = beautiDoc.getPartitions("Partitions");
