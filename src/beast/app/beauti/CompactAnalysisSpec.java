@@ -20,12 +20,14 @@ import beast.core.Description;
 import beast.core.Distribution;
 import beast.core.Input;
 import beast.core.MCMC;
+import beast.core.Operator;
 import beast.core.Param;
 import beast.core.parameter.Parameter;
 import beast.core.util.CompoundDistribution;
 import beast.evolution.alignment.Alignment;
 import beast.evolution.branchratemodel.BranchRateModel;
 import beast.evolution.likelihood.GenericTreeLikelihood;
+import beast.evolution.operators.DeltaExchangeOperator;
 import beast.evolution.sitemodel.SiteModelInterface;
 import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
@@ -170,6 +172,19 @@ public class CompactAnalysisSpec extends BEASTObject {
 			throw new IllegalArgumentException("Could not match '" + providerID+"' to one of these providers: " + providers);
 		}
 		
+		
+    	Operator operator = (DeltaExchangeOperator) doc.pluginmap.get("FixMeanMutationRatesOperator");
+    	if (operator == null) {
+    		operator = new DeltaExchangeOperator();
+    		try {
+    			operator.setID("FixMeanMutationRatesOperator");
+				operator.initByName("weight", 2.0, "delta", 0.75);
+			} catch (Throwable e1) {
+				// ignore initAndValidate exception
+			}
+    		doc.addPlugin(operator);
+    	}
+
 		//provider.template.setValue(doc.beautiConfig.partitionTemplate.get(), provider);
         List<BEASTInterface> beastObjects = provider.getAlignments(doc, new File[]{new File(strs[strs.length - 1])}, args);
 //        if (!provider.getClass().equals(BeautiAlignmentProvider.class)) {
@@ -202,6 +217,7 @@ public class CompactAnalysisSpec extends BEASTObject {
 		PartitionContext p = doc.partitionNames.get(doc.partitionNames.size() - 1);
 		partitionContext.clear();
 		partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
+		
 
 		doc.scrubAll(true, false);
 	}

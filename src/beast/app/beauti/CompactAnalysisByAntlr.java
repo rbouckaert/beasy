@@ -30,12 +30,14 @@ import beast.core.BEASTInterface;
 import beast.core.Distribution;
 import beast.core.Input;
 import beast.core.MCMC;
+import beast.core.Operator;
 import beast.core.parameter.Parameter;
 import beast.core.util.CompoundDistribution;
 import beast.core.util.Log;
 import beast.evolution.alignment.Alignment;
 import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
+import beast.evolution.operators.DeltaExchangeOperator;
 import beast.evolution.tree.TreeDistribution;
 import beast.math.distributions.MRCAPrior;
 import beast.util.BEASTClassLoader;
@@ -235,7 +237,10 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				providerID = ctx.getChild(1).getText();
 				if (providerID.startsWith("'") && providerID.endsWith("'")) {
 					providerID = providerID.substring(1, providerID.length()-1);
+				} else if (providerID.startsWith("\"") && providerID.endsWith("\"")) {
+					providerID = providerID.substring(1, providerID.length()-1);
 				}
+
 				providerID = ".*" + providerID + ".*";
 				fileName = ctx.getChild(2).getText();
 				for (int i = 3; i < ctx.children.size(); i++) {
@@ -266,7 +271,19 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				return null;
 			}
 			
-	        List<BEASTInterface> beastObjects = provider.getAlignments(doc, new File[]{new File(fileName)}, args.toArray(new String[]{}));
+	    	Operator operator = (DeltaExchangeOperator) doc.pluginmap.get("FixMeanMutationRatesOperator");
+	    	if (operator == null) {
+	    		operator = new DeltaExchangeOperator();
+	    		try {
+	    			operator.setID("FixMeanMutationRatesOperator");
+					operator.initByName("weight", 2.0, "delta", 0.75);
+				} catch (Throwable e1) {
+					// ignore initAndValidate exception
+				}
+	    		doc.addPlugin(operator);
+	    	}
+	    	
+	    	List<BEASTInterface> beastObjects = provider.getAlignments(doc, new File[]{new File(fileName)}, args.toArray(new String[]{}));
 
 	        if (beastObjects != null) {
 		        for (BEASTInterface o : beastObjects) {
@@ -280,6 +297,17 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		        }
 	        }
 
+	        
+			List<Operator> operators = ((MCMC) doc.mcmc.get()).operatorsInput.get();
+			if (SiteModelInputEditor.customConnector(doc)) {
+				// connect DeltaExchangeOperator
+				if (!operators.contains(operator)) {
+					operators.add(operator);
+				}
+			} else {
+				operators.remove(operator);
+			}
+			
 	        doc.connectModel();
 	        doc.fireDocHasChanged();
 	        
@@ -294,8 +322,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			PartitionContext p = doc.partitionNames.get(doc.partitionNames.size() - 1);
 			partitionContext.clear();
 			partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
-
-			doc.scrubAll(true, false);
+	    	
+	    	doc.scrubAll(true, false);
 			return null;
 		}
 		
@@ -452,7 +480,13 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			}
 
 			if (inputSet.size() == 0) {
-				parser.notifyErrorListeners("Command set: cannot find suitable match for " + ctx.getText());
+				StringBuilder buf = new StringBuilder();
+				for (int i = 0; i < ctx.getChildCount(); i++) {
+					ParseTree child = ctx.getChild(i);
+					buf.append(child.getText());
+					buf.append(' ');
+				}
+				parser.notifyErrorListeners("Command set: cannot find suitable match for " + buf.toString());
 				return null;
 			}
 			return null;
