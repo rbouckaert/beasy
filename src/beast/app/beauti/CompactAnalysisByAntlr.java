@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -388,6 +389,12 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 		int linkType = BeautiDoc.ALIGNMENT_PARTITION;
 		
 		@Override
+		public Object visitSharetype(SharetypeContext ctx) {
+			linkType = 100;
+			return linkType;
+		}
+		
+		@Override
 		public Object visitLinktype(LinktypeContext ctx) {
 			String linktype = ctx.getText();
 			linkType = -1;
@@ -416,17 +423,38 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				return null;
 			}
 
-			Integer linktype = (Integer) visit(ctx.getChild(1));
-			if (ctx.getChildCount() == 2) {
-				processPattern(".*");
+			ParseTree p = ctx.getChild(1);
+			Integer linktype = (Integer) visit(p);
+			
+			if (linktype < 100) {
+				// link tree, clock or site partitions
+				if (ctx.getChildCount() == 2) {
+					processPattern(".*");
+				} else {
+					processPattern(ctx.getChild(2), linktype);
+				}
+				if (partitionContext.size() <= 1) {
+					parser.notifyErrorListeners("Link command : At least two partitions must be selected '" + ctx.getText() + "'");
+					return null;
+				}
+				DocumentEditor.link(doc, linktype, partitionContext);
 			} else {
-				processPattern(ctx.getChild(2), linktype);
+				// link a parameter
+				visit(ctx.getChild(2));
+				if (inputSet.size() == 0) {
+					parser.notifyErrorListeners("Link command : could not match any input with '" + ctx.getText() + "'");
+					return null;
+				}
+				if (inputSet.size() == 1) {
+					parser.notifyErrorListeners("Link command : At least two inputs must be selected '" + ctx.getText() + "'");
+					return null;
+				}
+				Input<?> input = (Input<?>) inputSet.toArray()[0];
+				Object o = input.get();
+				for (Input<?> input2 : inputSet) {
+					input2.set(o);
+				}
 			}
-			if (partitionContext.size() <= 1) {
-				parser.notifyErrorListeners("Link command : At least two partitions must be selected '" + ctx.getText() + "'");
-				return null;
-			}
-			DocumentEditor.link(doc, linktype, partitionContext);
 			return null;
 		}
 		
@@ -438,16 +466,39 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			}
 
 			Integer linktype = (Integer) visit(ctx.getChild(1));
-			if (ctx.getChildCount() == 2) {
-				processPattern(".*");
+			if (linktype < 100) {
+				// unlink tree, clock or site partitions
+				if (ctx.getChildCount() == 2) {
+					processPattern(".*");
+				} else {
+					processPattern(ctx.getChild(2), linktype);
+				}
+				if (partitionContext.size() <= 1) {
+					parser.notifyErrorListeners("Command unlink: At least two partitions must be selected " + ctx.getText());
+					return null;
+				}
+				DocumentEditor.unlink(doc, linktype, partitionContext);
 			} else {
-				processPattern(ctx.getChild(2), linktype);
+				// unlink a parameter
+				visit(ctx.getChild(2));
+				if (inputSet.size() == 0) {
+					parser.notifyErrorListeners("Unlink command : could not match any input with '" + ctx.getText() + "'");
+					return null;
+				}
+
+				Map<Input<?>, BEASTInterface> map = new LinkedHashMap<>();
+				for (BEASTInterface o2 : doc.pluginmap.values()) {
+					for (Input<?> input2 : o2.listInputs()) {
+						map.put(input2, o2);
+					}
+				}
+				for (Input<?> input2 : inputSet) {
+					BEASTInterface o2 = map.get(input2);
+					BEASTInterface candidate = doc.getUnlinkCandidate(input2, o2);
+					input2.setValue(candidate, o2);
+				}
+				
 			}
-			if (partitionContext.size() <= 1) {
-				parser.notifyErrorListeners("Command unlink: At least two partitions must be selected " + ctx.getText());
-				return null;
-			}
-			DocumentEditor.unlink(doc, linktype, partitionContext);
 			return null;
 		}
 		

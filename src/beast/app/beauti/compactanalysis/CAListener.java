@@ -168,6 +168,16 @@ public interface CAListener extends ParseTreeListener {
 	 */
 	void exitLinktype(CAParser.LinktypeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CAParser#sharetype}.
+	 * @param ctx the parse tree
+	 */
+	void enterSharetype(CAParser.SharetypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CAParser#sharetype}.
+	 * @param ctx the parse tree
+	 */
+	void exitSharetype(CAParser.SharetypeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CAParser#unlink}.
 	 * @param ctx the parse tree
 	 */

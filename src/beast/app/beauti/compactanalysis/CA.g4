@@ -32,10 +32,11 @@ alignmentprovider : STRING ;
 
 arg : STRING ;
 
-link : LINKTOKEN linktype partitionPattern? ;
+link : LINKTOKEN linktype partitionPattern?  |  LINKTOKEN sharetype inputidentifier;
 linktype : LINKTYPE ;
+sharetype : SHARETYPE ;
  
-unlink : UNLINKTOKEN linktype partitionPattern? ;
+unlink : UNLINKTOKEN linktype partitionPattern? |  UNLINKTOKEN sharetype inputidentifier ;
 
 set : SETTOKEN inputidentifier '=' STRING ;
 
@@ -74,6 +75,7 @@ RMTOKEN : 'rm' ;
 TAXONSETTOKEN: 'taxonset' ;
 
 LINKTYPE : 'clock' | 'tree' | 'sitemodel' ;
+SHARETYPE : 'param' ;
 
 STRING :
     [a-zA-Z0-9|#*%/.\-+_&:$]+  // these chars don't need quotes
