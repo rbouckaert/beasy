@@ -92,6 +92,8 @@ public class JConsole extends JScrollPane
     private final static String	PASTE =	"Paste";
 
 	private	OutputStream outPipe;
+	private static boolean suppressOutput = false;
+	public static void setSuppressOutput(boolean suppressOutput) {JConsole.suppressOutput = suppressOutput;}
 	private	InputStream inPipe;
 	private	InputStream in;
 	private	PrintStream out;
@@ -1143,6 +1145,7 @@ public class JConsole extends JScrollPane
         	boas = new ByteArrayOutputStream() {
         		@Override
         		public synchronized void write(byte[] b, int off, int len) {
+        			if (suppressOutput) return;
         			super.write(b, off, len);
     				for (int i = off; i < off + len; i++) {
     					printHint("" + (char) b[i], Color.blue);
@@ -1151,12 +1154,14 @@ public class JConsole extends JScrollPane
 
 				@Override
         		public synchronized void write(int b) {
+        			if (suppressOutput) return;
         			super.write(b);
 					printHint("" + (char) b, Color.blue);
         		};
 
         		@Override
         		public void write(byte[] b) throws java.io.IOException {
+        			if (suppressOutput) return;
         			super.write(b);
     				for (int i = 0; i < b.length; i++) {
     					printHint("" + (char) b[i], Color.blue);
@@ -1165,11 +1170,13 @@ public class JConsole extends JScrollPane
 
         		@Override
         		public void flush() throws java.io.IOException {
+        			if (suppressOutput) return;
         			super.flush();
         		};
 
         		@Override
         		public void close() throws IOException {
+        			if (suppressOutput) return;
         			super.close();
         		}
         	};
@@ -1179,6 +1186,7 @@ public class JConsole extends JScrollPane
         	boas = new ByteArrayOutputStream() {
         		@Override
         		public synchronized void write(byte[] b, int off, int len) {
+        			if (suppressOutput) return;
         			super.write(b, off, len);
     				for (int i = off; i < off + len; i++) {
     					printHint("" + (char) b[i], Color.red);
@@ -1187,12 +1195,14 @@ public class JConsole extends JScrollPane
 
         		@Override
         		public synchronized void write(int b) {
+        			if (suppressOutput) return;
         			super.write(b);
 					printHint("" + (char) b, Color.red);
         		};
 
         		@Override
         		public void write(byte[] b) throws java.io.IOException {
+        			if (suppressOutput) return;
         			super.write(b);
     				for (int i = 0; i < b.length; i++) {
     					printHint("" + (char) b[i], Color.red);
@@ -1240,6 +1250,9 @@ public class JConsole extends JScrollPane
 		new Thread() {
 			@Override
 			public void run() {
+				if (line.trim().startsWith("import")) {
+        			setSuppressOutput(true);
+				}
 				try {
 					mutex.acquire();
 				} catch (InterruptedException e) {
@@ -1249,6 +1262,7 @@ public class JConsole extends JScrollPane
 				}
 				studio.interpreter.run(line);
 				mutex.release();
+				setSuppressOutput(false);
 			}
 		}.start();
 		//text.repaint();
@@ -1461,7 +1475,9 @@ public class JConsole extends JScrollPane
 		byte []	ba = new byte [256]; //	arbitrary blocking factor
 		int read;
 		while (	(read =	inPipe.read(ba)) != -1 ) {
-			print( new String(ba, 0, read) );
+			if (!suppressOutput) {
+				print( new String(ba, 0, read) );
+			}
 			//text.repaint();
 		}
 

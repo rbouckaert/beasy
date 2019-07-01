@@ -3,6 +3,7 @@ package beast.app.beauti;
 
 
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +44,7 @@ import beast.evolution.tree.TreeDistribution;
 import beast.math.distributions.MRCAPrior;
 import beast.util.BEASTClassLoader;
 import beast.util.PackageManager;
+import beasy.JConsole;
 
 public class CompactAnalysisByAntlr extends CABaseListener {
 	BeautiDoc doc = null;
@@ -283,7 +285,9 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				}
 	    		doc.addPlugin(operator);
 	    	}
-	    	
+
+	    	JConsole.setSuppressOutput(true);
+
 	    	List<BEASTInterface> beastObjects = provider.getAlignments(doc, new File[]{new File(fileName)}, args.toArray(new String[]{}));
 
 	        if (beastObjects != null) {
@@ -325,6 +329,10 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			partitionContext.add(new PartitionContext(p.partition, p.siteModel, p.clockModel, p.tree));
 	    	
 	    	doc.scrubAll(true, false);
+	    	
+	    	JConsole.setSuppressOutput(false);
+
+	    	Log.info("Done importing");
 			return null;
 		}
 		
@@ -451,8 +459,18 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				}
 				Input<?> input = (Input<?>) inputSet.toArray()[0];
 				Object o = input.get();
+				
+				Map<Input<?>, BEASTInterface> map = new LinkedHashMap<>();
+				for (BEASTInterface o2 : doc.pluginmap.values()) {
+					for (Input<?> input2 : o2.listInputs()) {
+						map.put(input2, o2);
+					}
+				}
+
+				
 				for (Input<?> input2 : inputSet) {
-					input2.set(o);
+					BEASTInterface beastObject = map.get(input2);
+					input2.setValue(o, beastObject);
 				}
 			}
 			return null;
@@ -493,9 +511,18 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 					}
 				}
 				for (Input<?> input2 : inputSet) {
-					BEASTInterface o2 = map.get(input2);
-					BEASTInterface candidate = doc.getUnlinkCandidate(input2, o2);
-					input2.setValue(candidate, o2);
+					try {
+						BEASTInterface beastObject = map.get(input2);
+				        PartitionContext oldContext = doc.getContextFor((BEASTInterface)input2.get());
+				        PartitionContext newContext = doc.getContextFor(beastObject);
+				        if (oldContext != newContext) {						
+				        	BEASTInterface candidate = doc.getUnlinkCandidate(input2, beastObject);
+				        	input2.setValue(candidate, beastObject);
+				        }
+					} catch (Throwable e) {
+						// ignore
+						System.err.println(e.getMessage());
+					}
 				}
 				
 			}
