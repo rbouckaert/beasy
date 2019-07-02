@@ -24,7 +24,7 @@ public class EntryEditor extends ObjectEditor.Base {
 	public String toHTML(Object o, Input<?> input) {
 		String source = BEASTObjectStore.getId(o) + " " + input.getName();
 		String text = input.get() + "";
-		return "<p>" + input.getName() + ": <input size='5' onkeyup='doIt(value,\"" + source + "\")' value='" + text +"'/>\n";
+		return "<td>" + input.getName() + "</td><td> <input size='5' onkeyup='doIt(value,\"" + source + "\")' value='" + text +"'/></td>\n";
 	}
 
 }

@@ -445,7 +445,9 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 					parser.notifyErrorListeners("Link command : At least two partitions must be selected '" + ctx.getText() + "'");
 					return null;
 				}
+				JConsole.setSuppressOutput(true);
 				DocumentEditor.link(doc, linktype, partitionContext);
+				JConsole.setSuppressOutput(false);
 			} else {
 				// link a parameter
 				visit(ctx.getChild(2));
@@ -495,7 +497,9 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 					parser.notifyErrorListeners("Command unlink: At least two partitions must be selected " + ctx.getText());
 					return null;
 				}
+				JConsole.setSuppressOutput(true);
 				DocumentEditor.unlink(doc, linktype, partitionContext);
+				JConsole.setSuppressOutput(false);
 			} else {
 				// unlink a parameter
 				visit(ctx.getChild(2));
@@ -510,6 +514,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 						map.put(input2, o2);
 					}
 				}
+
+				JConsole.setSuppressOutput(true);
 				for (Input<?> input2 : inputSet) {
 					try {
 						BEASTInterface beastObject = map.get(input2);
@@ -524,7 +530,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 						System.err.println(e.getMessage());
 					}
 				}
-				
+				JConsole.setSuppressOutput(false);
+
 			}
 			return null;
 		}
@@ -809,6 +816,11 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 				if (subTemplateName.equals("use")) {
 					subTemplateName = ctx.getChild(1).getText();
 				}
+			}
+			if (subTemplateName.length() > 1 && 
+					((subTemplateName.charAt(0) == '\''  && subTemplateName.charAt(subTemplateName.length() - 1) == '\'')) ||
+					((subTemplateName.charAt(0) == '"'  && subTemplateName.charAt(subTemplateName.length() - 1) == '"'))) {
+				subTemplateName = subTemplateName.substring(1, subTemplateName.length() - 1);
 			}
 			if (subTemplateName.indexOf('(') >= 0) {
 				subTemplateName = subTemplateName.substring(0, subTemplateName.indexOf('('));

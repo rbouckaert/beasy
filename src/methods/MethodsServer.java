@@ -70,7 +70,7 @@ public class MethodsServer extends Runnable {
 "  <script src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.js\"></script>\n" +
 "  <script>\n" +
 "  $( function() {\n" +
-"  $( \"#accordion\" ).accordion( {\n" +
+"  $( \".accordion\" ).accordion( {\n" +
 "  collapsible: true,\n" +
 "      heightStyle: \"content\"\n" +
 "  })\n" +
@@ -102,13 +102,13 @@ public class MethodsServer extends Runnable {
 			"	xhttp.send();\n" +
 			"}\n" +
 			"</script>\n"+
-			"<body style='font: 12pt arial, sans-serif;margin: 50pt 100pt 50pt 100pt;' >\n" +
-			"<div id='accordion'>\n"
+			"<body style='font: 12pt arial, sans-serif;margin: 50pt 100pt 50pt 100pt;' >\n"
+			// "<div id='accordion'>\n"
 			//+ "<input type='button' onclick='window.myObject.doIt(\"ok\");' value='Click me'/>\n"
 			;
 
-	public final static String footer = "</div>\n" 
-			+ "<p><a style='font-size:10pt;color:#aaf;' "
+	public final static String footer = //"</div>\n" + 
+			  "<p><a style='font-size:10pt;color:#aaf;' "
 			+ "href=\"/cmd=AddPrior\">Add other prior</a>\n"
 			+ "<div id=\"dialogs\"></div>\n"
 			+ "<p><center><img src='data:image/png;base64," 
@@ -125,7 +125,7 @@ public class MethodsServer extends Runnable {
         		String id = ModelEditor.getAttribute("id", request);
         		BEASTInterface o = beautiDoc.pluginmap.get(id);
         		response = htmlProducer.getHTMLEditor(o, beautiDoc);
-
+System.out.println(response);
         	} else {
         		me.handleCmd(request, beautiDoc, null);
 	    		try {

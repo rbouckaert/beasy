@@ -24,38 +24,17 @@ public class HTMLProducer {
 		StringBuilder b = new StringBuilder();
 		int sectionCount = 0;
 		
-		PhraseType phraseType = null;
 		for (int i = 0; i < basePhrases.size(); i++) {
 			Phrase phrase = basePhrases.get(i);
-			phraseType = phrase.getType();
 
 			if (phrase instanceof SectionPhrase) {
 				if (sectionCount > 0) {
-					b.append("</div></div>\n");
+					b.append("</div></div></div>\n");
 				}
 				sectionCount++;
-				b.append("<h3>" + phrase.toHTML() + "</h3><div><div class='"+ basePhrases.get(i+1).getType() +"'>\n");
+				b.append("<div class='accordion'><h3>" + phrase.toHTML() + "</h3><div><div class='"+ basePhrases.get(i+1).getType() +"'>\n");
 			}
 			
-			/*
-			if (i > 0) {
-				if (phrase.getType() != phraseType) {
-					if (phraseType == PhraseType.reference) {
-						b.append("</div>\n"); 
-					} else {
-						b.append("</span>\n"); 
-					}
-					if (phrase.getType() == PhraseType.reference) {
-						b.append("<div class='"+ phrase.getType()+"'>");
-					} else {
-						b.append("<span class='"+ phrase.getType()+"'>");
-					}
-				}
-			} else {
-				b.append("<div class='"+ phrase.getType()+"'>");
-			}
-			*/
-
 			if (phrase instanceof SectionPhrase) {
 			} else if (phrase instanceof PartitionPhrase) {				
 				b.append("<a class='pe' href='/cmd=PartitionEditor'>" + phrase.toHTML() + "</a>\n");
@@ -169,14 +148,18 @@ public class HTMLProducer {
 		
 		StringBuilder html = new StringBuilder();
 		html.append("<div id=\"dialog\" title=\"Edit " + o.getID() + "\">\n");
+		html.append("<table>\n");
 		for (Input<?> input : o.listInputs()) {
 			try {
 				ObjectEditor editor = objectEditorFactory.getObjectEditor(o, input, doc);
+				html.append("<tr>");
 				html.append(editor.toHTML(o, input));
+				html.append("</tr>\n");
 			} catch (Throwable e) {
 				// ignore 
 			}
 		}
+		html.append("</table>\n");
 		html.append("</div>\n");
 		return html.toString();
 	}

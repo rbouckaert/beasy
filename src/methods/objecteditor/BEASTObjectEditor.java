@@ -23,13 +23,16 @@ public class BEASTObjectEditor extends Base {
 	@Override
 	public String toHTML(Object o, Input<?> input) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		StringBuilder html = new StringBuilder();
+		html.append("<table>\n");
 		BEASTInterface o2 = (BEASTInterface) input.get();
 		for (Input<?> input2 : o2.listInputs()) {
+			html.append("<tr>\n");
 			ObjectEditor editor = objectEditorFactory.getObjectEditor(o2, input2, doc);
 			html.append("<p>" + input.getName() + ": ");
 			html.append(editor.toHTML(o, input));			
-			html.append("\n");
+			html.append("</tr>\n");
 		}		
+		html.append("</table>\n");
 		return html.toString();
 	}
 

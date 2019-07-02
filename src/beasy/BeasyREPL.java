@@ -92,6 +92,9 @@ public class BeasyREPL {
 				}
 			}
 			doc.scrubAll(true, false);
+			if (strs[1].endsWith(";")) {
+				strs[1] = strs[1].substring(0, strs[1].length() - 1);
+			}
 			BeasyInterpreter.save(xmlProducer.toXML(mcmc), cmd, new File(strs[1]));
 		} catch (IOException e) {
 			e.printStackTrace();
