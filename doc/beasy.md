@@ -298,3 +298,29 @@ set tipsonly[Hominidae.prior] = true
 # Syntax
 
 The Beasy syntax is defined by a antlr grammar that can be found [here](https://github.com/rbouckaert/beasy/blob/master/src/beast/app/beauti/compactanalysis/CA.g4).
+
+
+# Parameterised scripts
+
+If you need to run an analysis on different inputs, it is handy to import data from a file, where the filename is a parameter to `BeasyInterpreter` (similar to how BEAST deals with parameters in XML files). `BeasyInterpreter` has the `-D` input where you can define one (or more) name/value pairs that are substituted in the script. For example, when you have
+
+```
+import $(file);
+```
+
+in the script, and start `BeasyInterpreter` like so
+
+```
+applauncher BeasyInterpreter -D file=nexus/dna.nex -in BeasyScript.bea -out beast.xml
+```
+
+the script will be interpreted as
+
+```
+import nexus/dna.nex;
+```
+
+
+
+
+

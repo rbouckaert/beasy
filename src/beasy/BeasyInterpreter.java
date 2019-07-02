@@ -3,7 +3,9 @@ package beasy;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import beast.app.beauti.Beauti;
@@ -23,6 +25,7 @@ import beast.util.ClassToPackageMap;
 public class BeasyInterpreter extends Runnable {
 	final public Input<InFile> inputFileInput = new Input<>("in", "Input file with BEASY specification.");
 	final public Input<OutFile> outFileInput = new Input<>("out", "Output XML file. If not specified, input file will be used with .xml extension");
+	final public Input<List<String>> definitionsInput = new Input<>("D", "attribute-value pairs to be replaced in the Beasy Script, e.g., -D \"arg1=10,arg2=20\"", new ArrayList<>());
     public enum MODE {
         overwrite, ask, dontoverwrite
     }
@@ -63,6 +66,10 @@ public class BeasyInterpreter extends Runnable {
 
 		String script = BeautiDoc.load(inputFileInput.get());
 		
+		script = processDefinitions(script);
+		
+		
+		
 		try {
 			CompactAnalysisByAntlr parser = new CompactAnalysisByAntlr(doc);
 			parser.parseCA(script + ";");
@@ -78,6 +85,34 @@ public class BeasyInterpreter extends Runnable {
 		
 	}
 	
+	private String processDefinitions(String script) {
+		for (String arg : definitionsInput.get()) {
+	        String [] strs = arg.split("=",-1);
+	        for (int eqIdx = 0; eqIdx<strs.length-1; eqIdx++) {
+	            int lastCommaIdx = strs[eqIdx].lastIndexOf(",");
+	
+	            if (lastCommaIdx != -1 && eqIdx == 0)
+	                throw new IllegalArgumentException("Argument to -D is not well-formed: expecting comma-separated name=value pairs");
+	
+	            String name = strs[eqIdx].substring(lastCommaIdx+1);
+	
+	            lastCommaIdx = strs[eqIdx+1].lastIndexOf(",");
+	            String value;
+	            if (eqIdx+1 == strs.length-1) {
+	                value = strs[eqIdx+1];
+	            } else {
+	                if (lastCommaIdx == -1)
+	                    throw new IllegalArgumentException("Argument to -D is not well-formed: expecting comma-separated name=value pairs");
+	
+	                value = strs[eqIdx+1].substring(0, lastCommaIdx);
+	            }
+	            script = script.replaceAll("\\$\\(" + name + "\\)", value);
+			}
+		}
+		return script;
+	}
+
+
 	public static String beasyVersion() {
 		Map<String, String > classToPackageMap = ClassToPackageMap.getClassToPackageMap();
 		String packageVersion = classToPackageMap.get(BeasyInterpreter.class.getName());
