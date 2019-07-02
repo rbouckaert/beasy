@@ -18,7 +18,6 @@ use branchRateModel{clock} = RelaxedClockLogNormal;
 use substModel{codon1,codon2,codon3} = HKY;
 set mutationRate@estimate{codon1,codon2,codon3} = true;
 use frequencies{codon1,codon2,codon3} = Empirical;
-use [mcmc] = FixMeanRate;
 // unlink sitemodel;
 
 // constant coalescent prior

@@ -23,7 +23,6 @@ set shape@estimate {noncoding,1stpos,2ndpos,3rdpos} = true;
 // unlink sitemodel;
 
 set mutationRate@estimate {noncoding,1stpos,2ndpos,3rdpos} = true;
-use [mcmc]=FixMeanRate;
 
 //use [prior]=YuleModel;
 

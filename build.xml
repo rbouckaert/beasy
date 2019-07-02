@@ -221,7 +221,7 @@
 
         <mkdir dir="${examples}" />
         <copy todir="${pack}/examples">
-            <fileset dir="${examples}" includes="**/*.xml" />
+            <fileset dir="${examples}" includes="**/*.bea" />
             <fileset dir="${examples}" includes="**/*.fasta" />
         </copy>
 

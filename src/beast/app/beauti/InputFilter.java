@@ -102,24 +102,26 @@ public class InputFilter {
 					String id = o2.getID();
 					String p = id;
 					int currentContext = BeautiDoc.ALIGNMENT_PARTITION;
-					if (id.indexOf(':') > 1) {
-						p = id.substring(id.indexOf(':') + 1);
-						switch (id.charAt(id.indexOf(':') - 1)) {
-						case 's':
-							currentContext = BeautiDoc.SITEMODEL_PARTITION;
-							break;
-						case 't':
-							currentContext = BeautiDoc.TREEMODEL_PARTITION;
-							break;
-						case 'c':
-							currentContext = BeautiDoc.CLOCKMODEL_PARTITION;
-							break;
+					if (id != null) {
+						if (id.indexOf(':') > 1) {
+							p = id.substring(id.indexOf(':') + 1);
+							switch (id.charAt(id.indexOf(':') - 1)) {
+							case 's':
+								currentContext = BeautiDoc.SITEMODEL_PARTITION;
+								break;
+							case 't':
+								currentContext = BeautiDoc.TREEMODEL_PARTITION;
+								break;
+							case 'c':
+								currentContext = BeautiDoc.CLOCKMODEL_PARTITION;
+								break;
+							}
 						}
-					}
-					for (String match : matches) {
-						if (p.matches(match) || id.matches(match)) {
-							if (context == BeautiDoc.ALIGNMENT_PARTITION || currentContext == context) {
-								newInputSet.add(input);
+						for (String match : matches) {
+							if (p.matches(match) || id.matches(match)) {
+								if (context == BeautiDoc.ALIGNMENT_PARTITION || currentContext == context) {
+									newInputSet.add(input);
+								}
 							}
 						}
 					}

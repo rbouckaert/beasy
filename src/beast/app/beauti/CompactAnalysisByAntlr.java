@@ -161,6 +161,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (!template.toLowerCase().endsWith("xml")) {
 				template += ".xml";
 			}
+			doc = new BeautiDoc();
 			doc.loadNewTemplate(template);
 			
 			return super.visitTemplate(ctx);
@@ -910,6 +911,8 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			String value = ctx.getText();
 			if (doc.pluginmap.containsKey(value)) {
 				return doc.pluginmap.get(value);
+			} else if (doc.taxaset.containsKey(value)) {
+				return doc.taxaset.get(value);
 			} else {
 				return value;
 			}

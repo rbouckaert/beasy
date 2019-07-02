@@ -17,7 +17,6 @@ use RelaxedClockLogNormal;
 // Set the site model to HKY (empirical frequencies)
 use HKY;
 set mutationRate@estimate = true;
-use [mcmc] = FixMeanRate;
 use frequencies = Empirical;
 // unlink sitemodel;
 

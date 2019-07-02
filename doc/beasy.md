@@ -22,7 +22,7 @@ use [prior] = CoalescentExponentialPopulation;
 This is the canonical form, where every input-identifier is explicitly formulated. When there is no ambiguity, for instance, because there is only a single place in the model where a substitution model or clock model would fit, the input-identifier can be omitted, giving the abbreviated form below:
 
 ```
-mode compact;
+// mode compact
 template Standard;
 import ../beast2/examples/nexus/dna.nex;
 use HKY;
