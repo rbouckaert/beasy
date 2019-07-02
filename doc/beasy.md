@@ -3,7 +3,7 @@
 <center>
 Remco Bouckaert 
 
-[remco@cs.auckland.ac.nz](mailto:remco@cs.auckland.ac.nz)
+[r.bouckaert@auckland.ac.nz](mailto:r.bouckaert@auckland.ac.nz)
 </center>
 
 # Introduction
@@ -123,7 +123,13 @@ The first thing to specify is a template using `template <template name>`, e.g.,
 template StarBeast2;
 ```
 
-To find out which template names are available in BeasyStudio, type `template ` followed by the `tab` key and a list will be displayed in the "Hints" window. These are the same template names as shown in BEAuti under the `File/Templates` menu.
+To find out which template names are available in BeasyStudio, type `template ` followed by the `tab` key and a list will be displayed in the "Hints" window. These are the same template names as shown in BEAuti under the `File/Templates` menu. Using
+
+```
+?template 
+```
+will show the templates in the `Help` window in `BeasyStudio`.
+
 
 ## Importing data and creating partitions
 
@@ -155,6 +161,25 @@ After linking, the three partitions share the same clock model and it will have 
 unlink sitemodel {1stpos};
 ```
 
+## Linking/Unlinking parameters
+
+Parameters, like the gamma shape parameter for sitemodel with gamma rate heterogeneity, can be shared among partitions, using the same `link` command, but with `param` as first argument and input-identifier as second, e.g., 
+
+```
+link param shape
+```
+
+This links the parameter that is in the shape input of the site model -- be aware that this also matches all other inputs with name `shape`, so you may be a bit more specific and specify this as
+
+```
+link param shape[SiteModel]
+```
+
+Likewise, if you have a parameter that is shared among a number of inputs, these can be unlinked using the `unlink` command, like so:
+
+```
+unlink param shape[SiteModel]
+```
 
 ## Changing substitution models
 
@@ -182,11 +207,14 @@ By default, a strict clock model is assumed in most templates. To change it to a
 use branchRateModel{1stpos} = RelaxedClockLogNormal;
 ```
 
-Rates tend to differ in different partitions. To estimate rates across partitions such that the mean rate is the fixed to that of the branch rate model, use
+Rates tend to differ in different partitions. To estimate rates across partitions such that the mean rate is the fixed (`fix mean rate` in BEAUti) make sure the mutation rate for the site models are estimated. If that is not desirable, you can keep mutation rates fixed at their starting value (default 1) using
 
 ```
-use [mcmc]=FixMeanRate;
+set estimate[mutationRate] = false;
 ```
+
+Warning: you should not estimate both relative rates and clock rates, since these are not identifiable (see [how to set up rates](http://www.beast2.org/2015/06/23/help-beast-acts-weird-or-how-to-set-up-rates.html) for more on this).
+
 
 ## Changing tree priors
 
@@ -265,3 +293,8 @@ set tipsonly[Hominidae.prior] = true
 ```
 
 
+
+
+# Syntax
+
+The Beasy syntax is defined by a antlr grammar that can be found [here](https://github.com/rbouckaert/beasy/blob/master/src/beast/app/beauti/compactanalysis/CA.g4).
