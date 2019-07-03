@@ -38,7 +38,7 @@ public class HistoryPanel extends JPanel implements KeyListener {
 	private static final long serialVersionUID = 1L;
 
 	JTextField searchField;
-	JTextArea textPane;
+	static public JTextArea textPane;
 	Image image;
 	BeasyStudio studio = null;
 	List<String> history;

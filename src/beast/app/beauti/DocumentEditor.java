@@ -225,20 +225,23 @@ public class DocumentEditor {
 
 
 	public static void removePartition(BeautiDoc doc, Alignment data) {
-		Object o = doc.pluginmap.get("likelihood");
-		if (o != null && o instanceof CompoundDistribution) {
-			CompoundDistribution likelihood = (CompoundDistribution) o;
-			List<Distribution> distrs = likelihood.pDistributions.get();
-			BEASTInterface bo = null;
-			for (Distribution d : distrs) {
-				if (d instanceof GenericTreeLikelihood && ((GenericTreeLikelihood)d).dataInput.get() == data) {
-					bo = d;
-				}
-			}
-			distrs.remove(bo);
-		}
+		
+		doc.delAlignmentWithSubnet(data);
 		MRCAPriorInputEditor.customConnector(doc);
-		doc.determinePartitions();
-		doc.scrubAll(true, false);
+
+//		Object o = doc.pluginmap.get("likelihood");
+//		if (o != null && o instanceof CompoundDistribution) {
+//			CompoundDistribution likelihood = (CompoundDistribution) o;
+//			List<Distribution> distrs = likelihood.pDistributions.get();
+//			BEASTInterface bo = null;
+//			for (Distribution d : distrs) {
+//				if (d instanceof GenericTreeLikelihood && ((GenericTreeLikelihood)d).dataInput.get() == data) {
+//					bo = d;
+//				}
+//			}
+//			distrs.remove(bo);
+//		}
+//		doc.determinePartitions();
+//		doc.scrubAll(true, false);
 	} // removePartition
 }

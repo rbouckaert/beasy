@@ -1,7 +1,7 @@
 template Standard;
 
 // nexus file contains 4 partitions and 1 calibration
-//import ../beast2/examples/nexus/primate-mtDNA.nex;
+// import ../beast2/examples/nexus/primate-mtDNA.nex;
 import examples/nexus/primate-mtDNA.nex;
 
 //rm [treeLikelihood.coding];

@@ -14,6 +14,7 @@ import beast.core.Operator;
 import beast.core.util.Log;
 import beast.evolution.operators.DeltaExchangeOperator;
 import beast.util.XMLProducer;
+import beasy.shell.HistoryPanel;
 
 /** A simple Read-Eval-Print-Loop for Beasy: a Compact Analysis language for BEAST **/ 
 public class BeasyREPL {
@@ -95,6 +96,13 @@ public class BeasyREPL {
 			if (strs[1].endsWith(";")) {
 				strs[1] = strs[1].substring(0, strs[1].length() - 1);
 			}
+			if (cmd.trim().startsWith("save") && HistoryPanel.textPane != null) {
+				cmd = HistoryPanel.textPane.getText();
+				if (cmd.contains("template")) {
+					cmd = cmd.substring(cmd.lastIndexOf("template"), cmd.length()); 
+				}
+			}
+			
 			BeasyInterpreter.save(xmlProducer.toXML(mcmc), cmd, new File(strs[1]));
 		} catch (IOException e) {
 			e.printStackTrace();

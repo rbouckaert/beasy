@@ -115,6 +115,11 @@ public class BeasyInterpreter extends Runnable {
 
 	public static String beasyVersion() {
 		Map<String, String > classToPackageMap = ClassToPackageMap.getClassToPackageMap();
+		for (String s : classToPackageMap.keySet()) {
+			if (s.startsWith("beasy")) {
+				System.out.println(s + " " + classToPackageMap.get(s));
+			}
+		}
 		String packageVersion = classToPackageMap.get(BeasyInterpreter.class.getName());
 		return packageVersion;
 	}

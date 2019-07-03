@@ -161,7 +161,12 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			if (!template.toLowerCase().endsWith("xml")) {
 				template += ".xml";
 			}
-			doc = new BeautiDoc();
+			Object [] plugins = doc.pluginmap.keySet().toArray();
+			for (Object plugin : plugins) {
+				if (plugin instanceof BEASTInterface) {
+					doc.unregisterPlugin((BEASTInterface) plugin);
+				}
+			}
 			doc.loadNewTemplate(template);
 			
 			return super.visitTemplate(ctx);
@@ -587,6 +592,7 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			
 			// set up inputSet
 			mapInputToObject = InputFilter.initInputMap(doc);
+			inputSet = null;
 			super.visitUse(ctx);
 			if (inputSet == null || inputSet.size() == 0) {
 				setupInputSet(((MCMC)doc.mcmc.get()).posteriorInput.get());
