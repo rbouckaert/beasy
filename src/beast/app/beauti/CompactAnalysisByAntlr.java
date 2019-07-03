@@ -45,6 +45,7 @@ import beast.math.distributions.MRCAPrior;
 import beast.util.BEASTClassLoader;
 import beast.util.PackageManager;
 import beasy.JConsole;
+import jdk.nashorn.internal.runtime.Context.ThrowErrorManager;
 
 public class CompactAnalysisByAntlr extends CABaseListener {
 	BeautiDoc doc = null;
@@ -1102,6 +1103,28 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			}
 			doc.registerPlugin(taxonset);
 			return super.visitTaxonset(ctx);
+		}
+		
+		@Override
+		public Object visitMode_(Mode_Context ctx) {
+			
+			String modeName = ctx.getChild(1).getText();
+			String value = ctx.getChild(3).getText();
+			try {
+			if (modeName.length() > 4 && "autoUpdateFixMeanSubstRate".startsWith(modeName)) {
+				doc.autoUpdateFixMeanSubstRate = Boolean.parseBoolean(value);
+				Log.warning("autoUpdateFixMeanSubstRate set to " + doc.autoUpdateFixMeanSubstRate);
+			} else if (modeName.length() > 4 && "autoSetClockRate".startsWith(modeName)) {
+				doc.autoSetClockRate = Boolean.parseBoolean(value);
+				Log.warning("autoSetClockRate set to " + doc.autoSetClockRate);
+			}
+			} catch (Throwable e) {
+				Log.warning("Could not interpret command: " + ctx.getText());
+				Log.warning("Expected 'mode autoUpdateFixMeanSubstRate = true/false' or");
+				Log.warning("Expected 'mode autoSetClockRate = true/false'");
+			}
+
+			return null;
 		}
 		
 	}

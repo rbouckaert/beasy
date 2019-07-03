@@ -1,0 +1,13 @@
+<h2 id="input-identifiers">Input identifiers</h2>
+<p>To identify the input(s) that need to be updated, we use <code>inputidentifiers</code>. Inputs can be identified by id, by name, by name of the element in the XML followed by the input name, and these can be conditioned on partitions that they are in. To give a few examples</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="co">// all inputs with name branchRateModel:</span>
+branchRateModel 
+
+<span class="co">// branchRateModel inputs for partition coding1 and coding2, but no other partitions:</span>
+branchRateModel{coding1, coding2} 
+
+<span class="co">// branchRateModel for object with id=&quot;treeLikelihood1&quot;:</span>
+branchRateModel[treeLikelihood1] 
+
+<span class="co">// all branchRateModel inputs for distribution elements:</span>
+distribution<span class="at">@branchRateModel</span> </code></pre></div>

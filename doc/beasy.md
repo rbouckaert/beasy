@@ -8,7 +8,7 @@ Remco Bouckaert
 
 # Introduction
 
-Beasy is a small scripting language for building BEAST XML files. This difference between Beasy and [other scripts](http://www.beast2.org/2018/03/09/10-ways-to-generate-beast-xml.html) is that Beasy relies on BEAUti templates. Many BEAST packages come with BEAUti templates, which allow these packages to be used from within BEAUti. With Beasy, these templates can be used as well. This means that when new packages become available, they will be immediately available, where other scripts requires updates. So, Beasy will **always be up to date** with the latest packages.
+Beasy is a small scripting language for building BEAST XML files. This difference between Beasy and [other scripts](http://www.beast2.org/2018/03/09/10-ways-to-generate-beast-xml.html)^[http://www.beast2.org/2018/03/09/10-ways-to-generate-beast-xml.html] is that Beasy relies on BEAUti templates. Many BEAST packages come with BEAUti templates, which allow these packages to be used from within BEAUti. With Beasy, these templates can be used as well. This means that when new packages become available, they will be immediately available, where other scripts requires updates. So, Beasy will **always be up to date** with the latest packages.
 
 Beasy is **compact**. For example to specify a standard analysis with HKY substitution model with a relaxed clock and coalescent with exponential growth, the following will be sufficient:
 
@@ -22,7 +22,7 @@ use [prior] = CoalescentExponentialPopulation;
 This is the canonical form, where every input-identifier is explicitly formulated. When there is no ambiguity, for instance, because there is only a single place in the model where a substitution model or clock model would fit, the input-identifier can be omitted, giving the abbreviated form below:
 
 ```
-// mode compact
+// compact mode 
 template Standard;
 import ../beast2/examples/nexus/dna.nex;
 use HKY;
@@ -38,7 +38,7 @@ Beasy allows you to do pretty much **everything you can do in BEAUti**, like sel
 
 # Using Beasy
 
-To use Beasy, first you need to install the Beasy package in the [package manager](http://www.beast2.org/managing-packages/). 
+To use Beasy, first you need to install the Beasy package in the [package manager](http://www.beast2.org/managing-packages/)^[http://www.beast2.org/managing-packages/]. 
 
 There are three ways to use Beasy: as a script interpreter (converting a Beasy script from file to XML), interactively using the Read-Eval-Print-Loop (REPL) or interactively using Beasy Studio. All these can be started using the AppLauncher either from a terminal, or via Beauti using the `File/Launch Apps` menu.
 
@@ -78,6 +78,8 @@ This is followed by a number of other commands. The order only matters in the se
 ## Beasy commands
 
 Commands are `template`, `import`, `link`, `ulink`, `use`, `set`, `taxonset`, `add`, `rename`, `rm`.
+
+The Beasy syntax is defined by a antlr grammar that can be found [here](https://github.com/rbouckaert/beasy/blob/master/src/beast/app/beauti/compactanalysis/CA.g4)^[https://github.com/rbouckaert/beasy/blob/master/src/beast/app/beauti/compactanalysis/CA.g4].
 
 
 ## Input identifiers
@@ -119,13 +121,13 @@ import ../beast2/examples/nexus/28.nex;
 
 The first thing to specify is a template using `template <template name>`, e.g.,
 
-```
+```java
 template StarBeast2;
 ```
 
 To find out which template names are available in BeasyStudio, type `template ` followed by the `tab` key and a list will be displayed in the "Hints" window. These are the same template names as shown in BEAuti under the `File/Templates` menu. Using
 
-```
+```java
 ?template 
 ```
 will show the templates in the `Help` window in `BeasyStudio`.
@@ -135,7 +137,7 @@ will show the templates in the `Help` window in `BeasyStudio`.
 
 Importing single or multiple  sequence alignments from a nexus or fasta file can be done using the `import` command, for example `import ../beast2/examples/nexus/primatesmtDNA.nex` would import the `primates-mtDNA.nex` file from the BEAST 2 examples directory. Filenames are auto-completed in BeasyStudio using the `tab` key.
 
-```
+```java
 import alignmentprovider? filename ( '(' arg (',' arg)* ')' )? 
 ```
 
@@ -143,7 +145,7 @@ import alignmentprovider? filename ( '(' arg (',' arg)* ')' )?
 
 To remove a partition use the `rm <inputidentifier>` command. It takes as argument an `<inputidentifier>` that identifies an alignment, and removes the partitions associated with this identifier. For example, to remove the `coding` partition, which is created when importing the `primates-mtDNA.nex` file, use
 
-```
+```java
 rm {coding};
 ```
 
@@ -151,13 +153,13 @@ rm {coding};
 
 Partitions can have their `tree`, `clock` and/or `sitemodel` shared by linking them using the `link` command. The format of the link command is `link <partition> {partition1, partition2, ...}` where `<partition>` is either `tree`, `clock` or `sitemodel` and `partition1`, `partition2`, etc. the names of the partitions. For example, link site models for partitions `1stpos`, `2ndpos` and `3rdpos` use
 
-```
+```java
 link sitemodel {1stpos,2ndpos,3rdpos};
 ```
 
 After linking, the three partitions share the same clock model and it will have the label of `1stpos`. To unlink partitions, use the `unlink` command which has the same format as the `link` command but with `link` replaced by `unlink`. So, to unlink the site models linked above use
 
-```
+```java
 unlink sitemodel {1stpos};
 ```
 
@@ -165,27 +167,27 @@ unlink sitemodel {1stpos};
 
 Parameters, like the gamma shape parameter for sitemodel with gamma rate heterogeneity, can be shared among partitions, using the same `link` command, but with `param` as first argument and input-identifier as second, e.g., 
 
-```
-link param shape
+```java
+link param shape;
 ```
 
 This links the parameter that is in the shape input of the site model -- be aware that this also matches all other inputs with name `shape`, so you may be a bit more specific and specify this as
 
-```
-link param shape[SiteModel]
+```java
+link param shape[SiteModel];
 ```
 
 Likewise, if you have a parameter that is shared among a number of inputs, these can be unlinked using the `unlink` command, like so:
 
-```
-unlink param shape[SiteModel]
+```java
+unlink param shape[SiteModel];
 ```
 
 ## Changing substitution models
 
 The `use` command allows changing models by invoking available sub-templates, and is usually used in the format `use <input identifier> = <sub template>`, where `<input identier>` identifies inputs as outlined in the [Input Identifier] section, and `<sub template>` one of the available sub-templates. For example, to set the substitution model of the `1stpos` partition to HKY, use
 
-```
+```java
 use substModel{1stpos} = HKY;
 ```
 
@@ -193,7 +195,7 @@ In the compact notation, `use HKY` (that is, with input identifier omitted) will
 
 To set site models of a selected set of partitions, for example, for partitions `1stpos`, `2ndpos` and `3rdpos` use
 
-```
+```java
 use substModel{1stpos,2ndpos,3rdpos} = HKY;
 ```
 
@@ -203,24 +205,24 @@ Alternatively, you can link the `sitemodel`s of the partitions, set the model, t
 
 By default, a strict clock model is assumed in most templates. To change it to a relaxed clock with log normal distributed rates, use
 
-```
+```java
 use branchRateModel{1stpos} = RelaxedClockLogNormal;
 ```
 
 Rates tend to differ in different partitions. To estimate rates across partitions such that the mean rate is the fixed (`fix mean rate` in BEAUti) make sure the mutation rate for the site models are estimated. If that is not desirable, you can keep mutation rates fixed at their starting value (default 1) using
 
-```
+```java
 set estimate[mutationRate] = false;
 ```
 
-Warning: you should not estimate both relative rates and clock rates, since these are not identifiable (see [how to set up rates](http://www.beast2.org/2015/06/23/help-beast-acts-weird-or-how-to-set-up-rates.html) for more on this).
+Warning: you should not estimate both relative rates and clock rates, since these are not identifiable (see [how to set up rates](http://www.beast2.org/2015/06/23/help-beast-acts-weird-or-how-to-set-up-rates.html)^[http://www.beast2.org/2015/06/23/help-beast-acts-weird-or-how-to-set-up-rates.html] for more on this).
 
 
 ## Changing tree priors
 
 Since tree priors are input to the `prior` distribution, changing the tree prior means changing input with `id=prior`, for example, like so
 
-```
+```java
 use [prior] = CoalescentConstantPopulation;
 ```
 
@@ -229,13 +231,13 @@ use [prior] = CoalescentConstantPopulation;
 
 To set values of primitive inputs, the `set` command, which has the format `set <input identifier> = <value>` where `<input identifier>` identifies inputs as outlined in the [Input Identifier] section, and `<value>` a value that is admitted for the input. For instance, by default, the kappa paramater for the HKY model is set to 2. To set it to 1 for partition `1stpos`, use
 
-```
+```java
 set kappa{1stpos} = 1
 ```
 
 Alternatively, when setting up the substitution model, you can pass it as an extra parameter to the template, like so:
 
-```
+```java
 use substModel{1stpos} = HKY(kappa=1.0)
 ```
 
@@ -244,7 +246,7 @@ use substModel{1stpos} = HKY(kappa=1.0)
 
 Tip dates and tip calibrations are easiest set in the NEXUS file by adding `sets` and `assumptions` blocks and use the `import` command to include them in the analysis. This is an example NEXUS file fragment: 
 
-```
+```java
 # Define monophyletic clades
 begin sets;
 taxset germanic = oldnorse oldhighgerman oldprussian oldenglish;
@@ -267,7 +269,7 @@ end;
 
 An alternative is to specify a internal a taxon set first, then add an MRCAPrior for the taxon set, for example
 
-```
+```java
 taxonset Hominidae = Homo_sapiens Pan Pongo Gorilla;
 add MRCAPrior(Hominidae, Normal(mean=20,sigma=3.5), treepartition);
 ```
@@ -281,42 +283,48 @@ The arguments for MRCAPrior are
 
 By default MRCAPriors does not enforce monophyly of the clade. To enforce monophyly, use
 
-```
+```java
 set monophyletic[Hominidae.prior] = true
 ```
 
 Note that the MRCAPrior for the set `Hominidae` will be called `Hominidae.prior`.
 To set a tip prior, after setting a node prior (potentially only containing the tip node), you can set `tipsonly` to true.
 
-```
+```java
 set tipsonly[Hominidae.prior] = true
 ```
 
+# Setting BEAUti mode
 
+In BEAUti there are 2 menu items under the menu `Mode` that determine the behaviour of BEAUti: `Auto Update Fix Mean Subst Rate` and `Auto Set Clock Rate`. To change these, you can use the `mode` command like so:
 
-
-# Syntax
-
-The Beasy syntax is defined by a antlr grammar that can be found [here](https://github.com/rbouckaert/beasy/blob/master/src/beast/app/beauti/compactanalysis/CA.g4).
+```java
+// set Auto Update Fix Mean Subst Rate to true then false
+mode autoUpdateFixMeanSubstRate = true;
+mode autoUpdateFixMeanSubstRate = false;
+// set Auto Set Clock Rate to true then false
+mode autoSetClockRate = true;
+mode autoSetClockRate = false;
+```
 
 
 # Parameterised scripts
 
 If you need to run an analysis on different inputs, it is handy to import data from a file, where the filename is a parameter to `BeasyInterpreter` (similar to how BEAST deals with parameters in XML files). `BeasyInterpreter` has the `-D` input where you can define one (or more) name/value pairs that are substituted in the script. For example, when you have
 
-```
+```java
 import $(file);
 ```
 
 in the script, and start `BeasyInterpreter` like so
 
-```
+```java
 applauncher BeasyInterpreter -D file=nexus/dna.nex -in BeasyScript.bea -out beast.xml
 ```
 
 the script will be interpreted as
 
-```
+```java
 import nexus/dna.nex;
 ```
 

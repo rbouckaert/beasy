@@ -179,6 +179,12 @@ public interface CAVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRm(CAParser.RmContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CAParser#mode_}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMode_(CAParser.Mode_Context ctx);
+	/**
 	 * Visit a parse tree produced by {@link CAParser#taxonset}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

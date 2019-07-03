@@ -20,7 +20,8 @@ public class CAParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, TEMPLATETOKEN=11, IMPORTTOKEN=12, LINKTOKEN=13, UNLINKTOKEN=14, 
 		SETTOKEN=15, USETOKEN=16, ADDTOKEN=17, RENAMETOKEN=18, RMTOKEN=19, TAXONSETTOKEN=20, 
-		LINKTYPE=21, SHARETYPE=22, STRING=23, WHITESPACE=24, COMMENT=25, LINE_COMMENT=26;
+		MODETOKEN=21, LINKTYPE=22, SHARETYPE=23, MODENAME=24, STRING=25, WHITESPACE=26, 
+		COMMENT=27, LINE_COMMENT=28;
 	public static final int
 		RULE_casentence = 0, RULE_cmd = 1, RULE_template = 2, RULE_templatename = 3, 
 		RULE_use = 4, RULE_key = 5, RULE_value = 6, RULE_import_ = 7, RULE_add = 8, 
@@ -29,25 +30,25 @@ public class CAParser extends Parser {
 		RULE_unlink = 17, RULE_set = 18, RULE_inputidentifier = 19, RULE_elemntName = 20, 
 		RULE_idPattern = 21, RULE_partitionPattern = 22, RULE_inputname = 23, 
 		RULE_rename = 24, RULE_oldName = 25, RULE_newName = 26, RULE_rm = 27, 
-		RULE_taxonset = 28;
+		RULE_mode_ = 28, RULE_taxonset = 29;
 	public static final String[] ruleNames = {
 		"casentence", "cmd", "template", "templatename", "use", "key", "value", 
 		"import_", "add", "argOrUse", "subtemplate", "filename", "alignmentprovider", 
 		"arg", "link", "linktype", "sharetype", "unlink", "set", "inputidentifier", 
 		"elemntName", "idPattern", "partitionPattern", "inputname", "rename", 
-		"oldName", "newName", "rm", "taxonset"
+		"oldName", "newName", "rm", "mode_", "taxonset"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
 		null, "';'", "'='", "'('", "','", "')'", "'@'", "'['", "']'", "'{'", "'}'", 
 		"'template'", "'import'", "'link'", "'unlink'", "'set'", "'use'", "'add'", 
-		"'rename'", "'rm'", "'taxonset'", null, "'param'"
+		"'rename'", "'rm'", "'taxonset'", "'mode'", null, "'param'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, "TEMPLATETOKEN", 
 		"IMPORTTOKEN", "LINKTOKEN", "UNLINKTOKEN", "SETTOKEN", "USETOKEN", "ADDTOKEN", 
-		"RENAMETOKEN", "RMTOKEN", "TAXONSETTOKEN", "LINKTYPE", "SHARETYPE", "STRING", 
-		"WHITESPACE", "COMMENT", "LINE_COMMENT"
+		"RENAMETOKEN", "RMTOKEN", "TAXONSETTOKEN", "MODETOKEN", "LINKTYPE", "SHARETYPE", 
+		"MODENAME", "STRING", "WHITESPACE", "COMMENT", "LINE_COMMENT"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -131,20 +132,20 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(59); 
+			setState(61); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(58);
+				setState(60);
 				cmd();
 				}
 				}
-				setState(61); 
+				setState(63); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << TEMPLATETOKEN) | (1L << IMPORTTOKEN) | (1L << LINKTOKEN) | (1L << UNLINKTOKEN) | (1L << SETTOKEN) | (1L << USETOKEN) | (1L << ADDTOKEN) | (1L << RENAMETOKEN) | (1L << RMTOKEN) | (1L << TAXONSETTOKEN))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << TEMPLATETOKEN) | (1L << IMPORTTOKEN) | (1L << LINKTOKEN) | (1L << UNLINKTOKEN) | (1L << SETTOKEN) | (1L << USETOKEN) | (1L << ADDTOKEN) | (1L << RENAMETOKEN) | (1L << RMTOKEN) | (1L << TAXONSETTOKEN) | (1L << MODETOKEN))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -189,6 +190,9 @@ public class CAParser extends Parser {
 		public TaxonsetContext taxonset() {
 			return getRuleContext(TaxonsetContext.class,0);
 		}
+		public Mode_Context mode_() {
+			return getRuleContext(Mode_Context.class,0);
+		}
 		public CmdContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -214,67 +218,73 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(73);
+			setState(76);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case TEMPLATETOKEN:
 				{
-				setState(63);
+				setState(65);
 				template();
 				}
 				break;
 			case IMPORTTOKEN:
 				{
-				setState(64);
+				setState(66);
 				import_();
 				}
 				break;
 			case USETOKEN:
 				{
-				setState(65);
+				setState(67);
 				use();
 				}
 				break;
 			case SETTOKEN:
 				{
-				setState(66);
+				setState(68);
 				set();
 				}
 				break;
 			case LINKTOKEN:
 				{
-				setState(67);
+				setState(69);
 				link();
 				}
 				break;
 			case UNLINKTOKEN:
 				{
-				setState(68);
+				setState(70);
 				unlink();
 				}
 				break;
 			case RENAMETOKEN:
 				{
-				setState(69);
+				setState(71);
 				rename();
 				}
 				break;
 			case ADDTOKEN:
 				{
-				setState(70);
+				setState(72);
 				add();
 				}
 				break;
 			case RMTOKEN:
 				{
-				setState(71);
+				setState(73);
 				rm();
 				}
 				break;
 			case TAXONSETTOKEN:
 				{
-				setState(72);
+				setState(74);
 				taxonset();
+				}
+				break;
+			case MODETOKEN:
+				{
+				setState(75);
+				mode_();
 				}
 				break;
 			case T__0:
@@ -282,7 +292,7 @@ public class CAParser extends Parser {
 			default:
 				break;
 			}
-			setState(75);
+			setState(78);
 			match(T__0);
 			}
 		}
@@ -327,9 +337,9 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(77);
+			setState(80);
 			match(TEMPLATETOKEN);
-			setState(78);
+			setState(81);
 			templatename();
 			}
 		}
@@ -371,7 +381,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(80);
+			setState(83);
 			match(STRING);
 			}
 		}
@@ -430,56 +440,56 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(82);
+			setState(85);
 			match(USETOKEN);
-			setState(86);
+			setState(89);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				{
-				setState(83);
+				setState(86);
 				inputidentifier();
-				setState(84);
+				setState(87);
 				match(T__1);
 				}
 				break;
 			}
-			setState(88);
+			setState(91);
 			match(STRING);
-			setState(105);
+			setState(108);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__2) {
 				{
-				setState(89);
-				match(T__2);
-				setState(90);
-				key();
-				setState(91);
-				match(T__1);
 				setState(92);
+				match(T__2);
+				setState(93);
+				key();
+				setState(94);
+				match(T__1);
+				setState(95);
 				value();
-				setState(100);
+				setState(103);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__3) {
 					{
 					{
-					setState(93);
-					match(T__3);
-					setState(94);
-					key();
-					setState(95);
-					match(T__1);
 					setState(96);
+					match(T__3);
+					setState(97);
+					key();
+					setState(98);
+					match(T__1);
+					setState(99);
 					value();
 					}
 					}
-					setState(102);
+					setState(105);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(103);
+				setState(106);
 				match(T__4);
 				}
 			}
@@ -526,7 +536,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(107);
+			setState(110);
 			_la = _input.LA(1);
 			if ( !(_la==TAXONSETTOKEN || _la==STRING) ) {
 			_errHandler.recoverInline(this);
@@ -576,7 +586,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(109);
+			setState(112);
 			match(STRING);
 			}
 		}
@@ -631,46 +641,46 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(111);
+			setState(114);
 			match(IMPORTTOKEN);
-			setState(113);
+			setState(116);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				{
-				setState(112);
+				setState(115);
 				alignmentprovider();
 				}
 				break;
 			}
-			setState(115);
+			setState(118);
 			filename();
-			setState(127);
+			setState(130);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__2) {
 				{
-				setState(116);
+				setState(119);
 				match(T__2);
-				setState(117);
+				setState(120);
 				arg();
-				setState(122);
+				setState(125);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__3) {
 					{
 					{
-					setState(118);
+					setState(121);
 					match(T__3);
-					setState(119);
+					setState(122);
 					arg();
 					}
 					}
-					setState(124);
+					setState(127);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(125);
+				setState(128);
 				match(T__4);
 				}
 			}
@@ -723,36 +733,36 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(129);
+			setState(132);
 			match(ADDTOKEN);
-			setState(130);
+			setState(133);
 			match(STRING);
-			setState(142);
+			setState(145);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__2) {
 				{
-				setState(131);
+				setState(134);
 				match(T__2);
-				setState(132);
+				setState(135);
 				argOrUse();
-				setState(137);
+				setState(140);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__3) {
 					{
 					{
-					setState(133);
+					setState(136);
 					match(T__3);
-					setState(134);
+					setState(137);
 					argOrUse();
 					}
 					}
-					setState(139);
+					setState(142);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(140);
+				setState(143);
 				match(T__4);
 				}
 			}
@@ -800,20 +810,20 @@ public class CAParser extends Parser {
 		ArgOrUseContext _localctx = new ArgOrUseContext(_ctx, getState());
 		enterRule(_localctx, 18, RULE_argOrUse);
 		try {
-			setState(146);
+			setState(149);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(144);
+				setState(147);
 				value();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(145);
+				setState(148);
 				subtemplate();
 				}
 				break;
@@ -870,37 +880,37 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(148);
-			match(STRING);
-			setState(149);
-			match(T__2);
-			setState(150);
-			key();
 			setState(151);
-			match(T__1);
+			match(STRING);
 			setState(152);
+			match(T__2);
+			setState(153);
+			key();
+			setState(154);
+			match(T__1);
+			setState(155);
 			value();
-			setState(160);
+			setState(163);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__3) {
 				{
 				{
-				setState(153);
-				match(T__3);
-				setState(154);
-				key();
-				setState(155);
-				match(T__1);
 				setState(156);
+				match(T__3);
+				setState(157);
+				key();
+				setState(158);
+				match(T__1);
+				setState(159);
 				value();
 				}
 				}
-				setState(162);
+				setState(165);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(163);
+			setState(166);
 			match(T__4);
 			}
 		}
@@ -942,7 +952,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(165);
+			setState(168);
 			match(STRING);
 			}
 		}
@@ -984,7 +994,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(167);
+			setState(170);
 			match(STRING);
 			}
 		}
@@ -1026,7 +1036,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(169);
+			setState(172);
 			match(STRING);
 			}
 		}
@@ -1079,22 +1089,22 @@ public class CAParser extends Parser {
 		enterRule(_localctx, 28, RULE_link);
 		int _la;
 		try {
-			setState(180);
+			setState(183);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,13,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(171);
-				match(LINKTOKEN);
-				setState(172);
-				linktype();
 				setState(174);
+				match(LINKTOKEN);
+				setState(175);
+				linktype();
+				setState(177);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==T__8) {
 					{
-					setState(173);
+					setState(176);
 					partitionPattern();
 					}
 				}
@@ -1104,11 +1114,11 @@ public class CAParser extends Parser {
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(176);
+				setState(179);
 				match(LINKTOKEN);
-				setState(177);
+				setState(180);
 				sharetype();
-				setState(178);
+				setState(181);
 				inputidentifier();
 				}
 				break;
@@ -1152,7 +1162,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(182);
+			setState(185);
 			match(LINKTYPE);
 			}
 		}
@@ -1194,7 +1204,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(184);
+			setState(187);
 			match(SHARETYPE);
 			}
 		}
@@ -1247,22 +1257,22 @@ public class CAParser extends Parser {
 		enterRule(_localctx, 34, RULE_unlink);
 		int _la;
 		try {
-			setState(195);
+			setState(198);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(186);
-				match(UNLINKTOKEN);
-				setState(187);
-				linktype();
 				setState(189);
+				match(UNLINKTOKEN);
+				setState(190);
+				linktype();
+				setState(192);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==T__8) {
 					{
-					setState(188);
+					setState(191);
 					partitionPattern();
 					}
 				}
@@ -1272,11 +1282,11 @@ public class CAParser extends Parser {
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(191);
+				setState(194);
 				match(UNLINKTOKEN);
-				setState(192);
+				setState(195);
 				sharetype();
-				setState(193);
+				setState(196);
 				inputidentifier();
 				}
 				break;
@@ -1324,13 +1334,13 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(197);
-			match(SETTOKEN);
-			setState(198);
-			inputidentifier();
-			setState(199);
-			match(T__1);
 			setState(200);
+			match(SETTOKEN);
+			setState(201);
+			inputidentifier();
+			setState(202);
+			match(T__1);
+			setState(203);
 			match(STRING);
 			}
 		}
@@ -1382,37 +1392,37 @@ public class CAParser extends Parser {
 		enterRule(_localctx, 38, RULE_inputidentifier);
 		int _la;
 		try {
-			setState(217);
+			setState(220);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,20,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(202);
+				setState(205);
 				idPattern();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(204);
+				setState(207);
 				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
 				case 1:
 					{
-					setState(203);
+					setState(206);
 					elemntName();
 					}
 					break;
 				}
-				setState(206);
+				setState(209);
 				inputname();
-				setState(208);
+				setState(211);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==T__6) {
 					{
-					setState(207);
+					setState(210);
 					idPattern();
 					}
 				}
@@ -1422,27 +1432,27 @@ public class CAParser extends Parser {
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(211);
+				setState(214);
 				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
 				case 1:
 					{
-					setState(210);
+					setState(213);
 					elemntName();
 					}
 					break;
 				}
-				setState(214);
+				setState(217);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==STRING) {
 					{
-					setState(213);
+					setState(216);
 					inputname();
 					}
 				}
 
-				setState(216);
+				setState(219);
 				partitionPattern();
 				}
 				break;
@@ -1486,9 +1496,9 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(219);
+			setState(222);
 			match(STRING);
-			setState(220);
+			setState(223);
 			match(T__5);
 			}
 		}
@@ -1530,11 +1540,11 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(222);
+			setState(225);
 			match(T__6);
-			setState(223);
+			setState(226);
 			match(STRING);
-			setState(224);
+			setState(227);
 			match(T__7);
 			}
 		}
@@ -1584,9 +1594,9 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(226);
+			setState(229);
 			match(T__8);
-			setState(227);
+			setState(230);
 			_la = _input.LA(1);
 			if ( !(_la==LINKTYPE || _la==STRING) ) {
 			_errHandler.recoverInline(this);
@@ -1596,15 +1606,15 @@ public class CAParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(232);
+			setState(235);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__3) {
 				{
 				{
-				setState(228);
+				setState(231);
 				match(T__3);
-				setState(229);
+				setState(232);
 				_la = _input.LA(1);
 				if ( !(_la==LINKTYPE || _la==STRING) ) {
 				_errHandler.recoverInline(this);
@@ -1616,11 +1626,11 @@ public class CAParser extends Parser {
 				}
 				}
 				}
-				setState(234);
+				setState(237);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(235);
+			setState(238);
 			match(T__9);
 			}
 		}
@@ -1662,7 +1672,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(237);
+			setState(240);
 			match(STRING);
 			}
 		}
@@ -1714,23 +1724,23 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(239);
-			match(RENAMETOKEN);
-			setState(240);
-			linktype();
 			setState(242);
+			match(RENAMETOKEN);
+			setState(243);
+			linktype();
+			setState(245);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LINKTYPE || _la==STRING) {
 				{
-				setState(241);
+				setState(244);
 				oldName();
 				}
 			}
 
-			setState(244);
+			setState(247);
 			match(T__1);
-			setState(245);
+			setState(248);
 			newName();
 			}
 		}
@@ -1774,7 +1784,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(247);
+			setState(250);
 			_la = _input.LA(1);
 			if ( !(_la==LINKTYPE || _la==STRING) ) {
 			_errHandler.recoverInline(this);
@@ -1826,7 +1836,7 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(249);
+			setState(252);
 			_la = _input.LA(1);
 			if ( !(_la==LINKTYPE || _la==STRING) ) {
 			_errHandler.recoverInline(this);
@@ -1882,24 +1892,74 @@ public class CAParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(251);
-			match(RMTOKEN);
 			setState(254);
+			match(RMTOKEN);
+			setState(257);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,23,_ctx) ) {
 			case 1:
 				{
-				setState(252);
+				setState(255);
 				inputidentifier();
 				}
 				break;
 			case 2:
 				{
-				setState(253);
+				setState(256);
 				partitionPattern();
 				}
 				break;
 			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Mode_Context extends ParserRuleContext {
+		public TerminalNode MODETOKEN() { return getToken(CAParser.MODETOKEN, 0); }
+		public TerminalNode MODENAME() { return getToken(CAParser.MODENAME, 0); }
+		public TerminalNode STRING() { return getToken(CAParser.STRING, 0); }
+		public Mode_Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_mode_; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).enterMode_(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CAListener ) ((CAListener)listener).exitMode_(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CAVisitor ) return ((CAVisitor<? extends T>)visitor).visitMode_(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Mode_Context mode_() throws RecognitionException {
+		Mode_Context _localctx = new Mode_Context(_ctx, getState());
+		enterRule(_localctx, 56, RULE_mode_);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(259);
+			match(MODETOKEN);
+			setState(260);
+			match(MODENAME);
+			setState(261);
+			match(T__1);
+			setState(262);
+			match(STRING);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1940,28 +2000,28 @@ public class CAParser extends Parser {
 
 	public final TaxonsetContext taxonset() throws RecognitionException {
 		TaxonsetContext _localctx = new TaxonsetContext(_ctx, getState());
-		enterRule(_localctx, 56, RULE_taxonset);
+		enterRule(_localctx, 58, RULE_taxonset);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(256);
+			setState(264);
 			match(TAXONSETTOKEN);
-			setState(257);
+			setState(265);
 			match(STRING);
-			setState(258);
+			setState(266);
 			match(T__1);
-			setState(260); 
+			setState(268); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(259);
+				setState(267);
 				match(STRING);
 				}
 				}
-				setState(262); 
+				setState(270); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==STRING );
@@ -1979,92 +2039,95 @@ public class CAParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\34\u010b\4\2\t\2"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\36\u0113\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
-		"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\3\2\6\2>\n\2\r\2\16"+
-		"\2?\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3L\n\3\3\3\3\3\3\4\3\4\3"+
-		"\4\3\5\3\5\3\6\3\6\3\6\3\6\5\6Y\n\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3"+
-		"\6\3\6\7\6e\n\6\f\6\16\6h\13\6\3\6\3\6\5\6l\n\6\3\7\3\7\3\b\3\b\3\t\3"+
-		"\t\5\tt\n\t\3\t\3\t\3\t\3\t\3\t\7\t{\n\t\f\t\16\t~\13\t\3\t\3\t\5\t\u0082"+
-		"\n\t\3\n\3\n\3\n\3\n\3\n\3\n\7\n\u008a\n\n\f\n\16\n\u008d\13\n\3\n\3\n"+
-		"\5\n\u0091\n\n\3\13\3\13\5\13\u0095\n\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3"+
-		"\f\3\f\3\f\7\f\u00a1\n\f\f\f\16\f\u00a4\13\f\3\f\3\f\3\r\3\r\3\16\3\16"+
-		"\3\17\3\17\3\20\3\20\3\20\5\20\u00b1\n\20\3\20\3\20\3\20\3\20\5\20\u00b7"+
-		"\n\20\3\21\3\21\3\22\3\22\3\23\3\23\3\23\5\23\u00c0\n\23\3\23\3\23\3\23"+
-		"\3\23\5\23\u00c6\n\23\3\24\3\24\3\24\3\24\3\24\3\25\3\25\5\25\u00cf\n"+
-		"\25\3\25\3\25\5\25\u00d3\n\25\3\25\5\25\u00d6\n\25\3\25\5\25\u00d9\n\25"+
-		"\3\25\5\25\u00dc\n\25\3\26\3\26\3\26\3\27\3\27\3\27\3\27\3\30\3\30\3\30"+
-		"\3\30\7\30\u00e9\n\30\f\30\16\30\u00ec\13\30\3\30\3\30\3\31\3\31\3\32"+
-		"\3\32\3\32\5\32\u00f5\n\32\3\32\3\32\3\32\3\33\3\33\3\34\3\34\3\35\3\35"+
-		"\3\35\5\35\u0101\n\35\3\36\3\36\3\36\3\36\6\36\u0107\n\36\r\36\16\36\u0108"+
-		"\3\36\2\2\37\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64"+
-		"\668:\2\4\4\2\26\26\31\31\4\2\27\27\31\31\2\u0110\2=\3\2\2\2\4K\3\2\2"+
-		"\2\6O\3\2\2\2\bR\3\2\2\2\nT\3\2\2\2\fm\3\2\2\2\16o\3\2\2\2\20q\3\2\2\2"+
-		"\22\u0083\3\2\2\2\24\u0094\3\2\2\2\26\u0096\3\2\2\2\30\u00a7\3\2\2\2\32"+
-		"\u00a9\3\2\2\2\34\u00ab\3\2\2\2\36\u00b6\3\2\2\2 \u00b8\3\2\2\2\"\u00ba"+
-		"\3\2\2\2$\u00c5\3\2\2\2&\u00c7\3\2\2\2(\u00db\3\2\2\2*\u00dd\3\2\2\2,"+
-		"\u00e0\3\2\2\2.\u00e4\3\2\2\2\60\u00ef\3\2\2\2\62\u00f1\3\2\2\2\64\u00f9"+
-		"\3\2\2\2\66\u00fb\3\2\2\28\u00fd\3\2\2\2:\u0102\3\2\2\2<>\5\4\3\2=<\3"+
-		"\2\2\2>?\3\2\2\2?=\3\2\2\2?@\3\2\2\2@\3\3\2\2\2AL\5\6\4\2BL\5\20\t\2C"+
-		"L\5\n\6\2DL\5&\24\2EL\5\36\20\2FL\5$\23\2GL\5\62\32\2HL\5\22\n\2IL\58"+
-		"\35\2JL\5:\36\2KA\3\2\2\2KB\3\2\2\2KC\3\2\2\2KD\3\2\2\2KE\3\2\2\2KF\3"+
-		"\2\2\2KG\3\2\2\2KH\3\2\2\2KI\3\2\2\2KJ\3\2\2\2KL\3\2\2\2LM\3\2\2\2MN\7"+
-		"\3\2\2N\5\3\2\2\2OP\7\r\2\2PQ\5\b\5\2Q\7\3\2\2\2RS\7\31\2\2S\t\3\2\2\2"+
-		"TX\7\22\2\2UV\5(\25\2VW\7\4\2\2WY\3\2\2\2XU\3\2\2\2XY\3\2\2\2YZ\3\2\2"+
-		"\2Zk\7\31\2\2[\\\7\5\2\2\\]\5\f\7\2]^\7\4\2\2^f\5\16\b\2_`\7\6\2\2`a\5"+
-		"\f\7\2ab\7\4\2\2bc\5\16\b\2ce\3\2\2\2d_\3\2\2\2eh\3\2\2\2fd\3\2\2\2fg"+
-		"\3\2\2\2gi\3\2\2\2hf\3\2\2\2ij\7\7\2\2jl\3\2\2\2k[\3\2\2\2kl\3\2\2\2l"+
-		"\13\3\2\2\2mn\t\2\2\2n\r\3\2\2\2op\7\31\2\2p\17\3\2\2\2qs\7\16\2\2rt\5"+
-		"\32\16\2sr\3\2\2\2st\3\2\2\2tu\3\2\2\2u\u0081\5\30\r\2vw\7\5\2\2w|\5\34"+
-		"\17\2xy\7\6\2\2y{\5\34\17\2zx\3\2\2\2{~\3\2\2\2|z\3\2\2\2|}\3\2\2\2}\177"+
-		"\3\2\2\2~|\3\2\2\2\177\u0080\7\7\2\2\u0080\u0082\3\2\2\2\u0081v\3\2\2"+
-		"\2\u0081\u0082\3\2\2\2\u0082\21\3\2\2\2\u0083\u0084\7\23\2\2\u0084\u0090"+
-		"\7\31\2\2\u0085\u0086\7\5\2\2\u0086\u008b\5\24\13\2\u0087\u0088\7\6\2"+
-		"\2\u0088\u008a\5\24\13\2\u0089\u0087\3\2\2\2\u008a\u008d\3\2\2\2\u008b"+
-		"\u0089\3\2\2\2\u008b\u008c\3\2\2\2\u008c\u008e\3\2\2\2\u008d\u008b\3\2"+
-		"\2\2\u008e\u008f\7\7\2\2\u008f\u0091\3\2\2\2\u0090\u0085\3\2\2\2\u0090"+
-		"\u0091\3\2\2\2\u0091\23\3\2\2\2\u0092\u0095\5\16\b\2\u0093\u0095\5\26"+
-		"\f\2\u0094\u0092\3\2\2\2\u0094\u0093\3\2\2\2\u0095\25\3\2\2\2\u0096\u0097"+
-		"\7\31\2\2\u0097\u0098\7\5\2\2\u0098\u0099\5\f\7\2\u0099\u009a\7\4\2\2"+
-		"\u009a\u00a2\5\16\b\2\u009b\u009c\7\6\2\2\u009c\u009d\5\f\7\2\u009d\u009e"+
-		"\7\4\2\2\u009e\u009f\5\16\b\2\u009f\u00a1\3\2\2\2\u00a0\u009b\3\2\2\2"+
-		"\u00a1\u00a4\3\2\2\2\u00a2\u00a0\3\2\2\2\u00a2\u00a3\3\2\2\2\u00a3\u00a5"+
-		"\3\2\2\2\u00a4\u00a2\3\2\2\2\u00a5\u00a6\7\7\2\2\u00a6\27\3\2\2\2\u00a7"+
-		"\u00a8\7\31\2\2\u00a8\31\3\2\2\2\u00a9\u00aa\7\31\2\2\u00aa\33\3\2\2\2"+
-		"\u00ab\u00ac\7\31\2\2\u00ac\35\3\2\2\2\u00ad\u00ae\7\17\2\2\u00ae\u00b0"+
-		"\5 \21\2\u00af\u00b1\5.\30\2\u00b0\u00af\3\2\2\2\u00b0\u00b1\3\2\2\2\u00b1"+
-		"\u00b7\3\2\2\2\u00b2\u00b3\7\17\2\2\u00b3\u00b4\5\"\22\2\u00b4\u00b5\5"+
-		"(\25\2\u00b5\u00b7\3\2\2\2\u00b6\u00ad\3\2\2\2\u00b6\u00b2\3\2\2\2\u00b7"+
-		"\37\3\2\2\2\u00b8\u00b9\7\27\2\2\u00b9!\3\2\2\2\u00ba\u00bb\7\30\2\2\u00bb"+
-		"#\3\2\2\2\u00bc\u00bd\7\20\2\2\u00bd\u00bf\5 \21\2\u00be\u00c0\5.\30\2"+
-		"\u00bf\u00be\3\2\2\2\u00bf\u00c0\3\2\2\2\u00c0\u00c6\3\2\2\2\u00c1\u00c2"+
-		"\7\20\2\2\u00c2\u00c3\5\"\22\2\u00c3\u00c4\5(\25\2\u00c4\u00c6\3\2\2\2"+
-		"\u00c5\u00bc\3\2\2\2\u00c5\u00c1\3\2\2\2\u00c6%\3\2\2\2\u00c7\u00c8\7"+
-		"\21\2\2\u00c8\u00c9\5(\25\2\u00c9\u00ca\7\4\2\2\u00ca\u00cb\7\31\2\2\u00cb"+
-		"\'\3\2\2\2\u00cc\u00dc\5,\27\2\u00cd\u00cf\5*\26\2\u00ce\u00cd\3\2\2\2"+
-		"\u00ce\u00cf\3\2\2\2\u00cf\u00d0\3\2\2\2\u00d0\u00d2\5\60\31\2\u00d1\u00d3"+
-		"\5,\27\2\u00d2\u00d1\3\2\2\2\u00d2\u00d3\3\2\2\2\u00d3\u00dc\3\2\2\2\u00d4"+
-		"\u00d6\5*\26\2\u00d5\u00d4\3\2\2\2\u00d5\u00d6\3\2\2\2\u00d6\u00d8\3\2"+
-		"\2\2\u00d7\u00d9\5\60\31\2\u00d8\u00d7\3\2\2\2\u00d8\u00d9\3\2\2\2\u00d9"+
-		"\u00da\3\2\2\2\u00da\u00dc\5.\30\2\u00db\u00cc\3\2\2\2\u00db\u00ce\3\2"+
-		"\2\2\u00db\u00d5\3\2\2\2\u00dc)\3\2\2\2\u00dd\u00de\7\31\2\2\u00de\u00df"+
-		"\7\b\2\2\u00df+\3\2\2\2\u00e0\u00e1\7\t\2\2\u00e1\u00e2\7\31\2\2\u00e2"+
-		"\u00e3\7\n\2\2\u00e3-\3\2\2\2\u00e4\u00e5\7\13\2\2\u00e5\u00ea\t\3\2\2"+
-		"\u00e6\u00e7\7\6\2\2\u00e7\u00e9\t\3\2\2\u00e8\u00e6\3\2\2\2\u00e9\u00ec"+
-		"\3\2\2\2\u00ea\u00e8\3\2\2\2\u00ea\u00eb\3\2\2\2\u00eb\u00ed\3\2\2\2\u00ec"+
-		"\u00ea\3\2\2\2\u00ed\u00ee\7\f\2\2\u00ee/\3\2\2\2\u00ef\u00f0\7\31\2\2"+
-		"\u00f0\61\3\2\2\2\u00f1\u00f2\7\24\2\2\u00f2\u00f4\5 \21\2\u00f3\u00f5"+
-		"\5\64\33\2\u00f4\u00f3\3\2\2\2\u00f4\u00f5\3\2\2\2\u00f5\u00f6\3\2\2\2"+
-		"\u00f6\u00f7\7\4\2\2\u00f7\u00f8\5\66\34\2\u00f8\63\3\2\2\2\u00f9\u00fa"+
-		"\t\3\2\2\u00fa\65\3\2\2\2\u00fb\u00fc\t\3\2\2\u00fc\67\3\2\2\2\u00fd\u0100"+
-		"\7\25\2\2\u00fe\u0101\5(\25\2\u00ff\u0101\5.\30\2\u0100\u00fe\3\2\2\2"+
-		"\u0100\u00ff\3\2\2\2\u01019\3\2\2\2\u0102\u0103\7\26\2\2\u0103\u0104\7"+
-		"\31\2\2\u0104\u0106\7\4\2\2\u0105\u0107\7\31\2\2\u0106\u0105\3\2\2\2\u0107"+
-		"\u0108\3\2\2\2\u0108\u0106\3\2\2\2\u0108\u0109\3\2\2\2\u0109;\3\2\2\2"+
-		"\33?KXfks|\u0081\u008b\u0090\u0094\u00a2\u00b0\u00b6\u00bf\u00c5\u00ce"+
-		"\u00d2\u00d5\u00d8\u00db\u00ea\u00f4\u0100\u0108";
+		"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\4\37\t\37\3\2\6\2@"+
+		"\n\2\r\2\16\2A\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3O\n\3\3"+
+		"\3\3\3\3\4\3\4\3\4\3\5\3\5\3\6\3\6\3\6\3\6\5\6\\\n\6\3\6\3\6\3\6\3\6\3"+
+		"\6\3\6\3\6\3\6\3\6\3\6\7\6h\n\6\f\6\16\6k\13\6\3\6\3\6\5\6o\n\6\3\7\3"+
+		"\7\3\b\3\b\3\t\3\t\5\tw\n\t\3\t\3\t\3\t\3\t\3\t\7\t~\n\t\f\t\16\t\u0081"+
+		"\13\t\3\t\3\t\5\t\u0085\n\t\3\n\3\n\3\n\3\n\3\n\3\n\7\n\u008d\n\n\f\n"+
+		"\16\n\u0090\13\n\3\n\3\n\5\n\u0094\n\n\3\13\3\13\5\13\u0098\n\13\3\f\3"+
+		"\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\7\f\u00a4\n\f\f\f\16\f\u00a7\13\f\3"+
+		"\f\3\f\3\r\3\r\3\16\3\16\3\17\3\17\3\20\3\20\3\20\5\20\u00b4\n\20\3\20"+
+		"\3\20\3\20\3\20\5\20\u00ba\n\20\3\21\3\21\3\22\3\22\3\23\3\23\3\23\5\23"+
+		"\u00c3\n\23\3\23\3\23\3\23\3\23\5\23\u00c9\n\23\3\24\3\24\3\24\3\24\3"+
+		"\24\3\25\3\25\5\25\u00d2\n\25\3\25\3\25\5\25\u00d6\n\25\3\25\5\25\u00d9"+
+		"\n\25\3\25\5\25\u00dc\n\25\3\25\5\25\u00df\n\25\3\26\3\26\3\26\3\27\3"+
+		"\27\3\27\3\27\3\30\3\30\3\30\3\30\7\30\u00ec\n\30\f\30\16\30\u00ef\13"+
+		"\30\3\30\3\30\3\31\3\31\3\32\3\32\3\32\5\32\u00f8\n\32\3\32\3\32\3\32"+
+		"\3\33\3\33\3\34\3\34\3\35\3\35\3\35\5\35\u0104\n\35\3\36\3\36\3\36\3\36"+
+		"\3\36\3\37\3\37\3\37\3\37\6\37\u010f\n\37\r\37\16\37\u0110\3\37\2\2 \2"+
+		"\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<\2\4\4\2"+
+		"\26\26\33\33\4\2\30\30\33\33\2\u0118\2?\3\2\2\2\4N\3\2\2\2\6R\3\2\2\2"+
+		"\bU\3\2\2\2\nW\3\2\2\2\fp\3\2\2\2\16r\3\2\2\2\20t\3\2\2\2\22\u0086\3\2"+
+		"\2\2\24\u0097\3\2\2\2\26\u0099\3\2\2\2\30\u00aa\3\2\2\2\32\u00ac\3\2\2"+
+		"\2\34\u00ae\3\2\2\2\36\u00b9\3\2\2\2 \u00bb\3\2\2\2\"\u00bd\3\2\2\2$\u00c8"+
+		"\3\2\2\2&\u00ca\3\2\2\2(\u00de\3\2\2\2*\u00e0\3\2\2\2,\u00e3\3\2\2\2."+
+		"\u00e7\3\2\2\2\60\u00f2\3\2\2\2\62\u00f4\3\2\2\2\64\u00fc\3\2\2\2\66\u00fe"+
+		"\3\2\2\28\u0100\3\2\2\2:\u0105\3\2\2\2<\u010a\3\2\2\2>@\5\4\3\2?>\3\2"+
+		"\2\2@A\3\2\2\2A?\3\2\2\2AB\3\2\2\2B\3\3\2\2\2CO\5\6\4\2DO\5\20\t\2EO\5"+
+		"\n\6\2FO\5&\24\2GO\5\36\20\2HO\5$\23\2IO\5\62\32\2JO\5\22\n\2KO\58\35"+
+		"\2LO\5<\37\2MO\5:\36\2NC\3\2\2\2ND\3\2\2\2NE\3\2\2\2NF\3\2\2\2NG\3\2\2"+
+		"\2NH\3\2\2\2NI\3\2\2\2NJ\3\2\2\2NK\3\2\2\2NL\3\2\2\2NM\3\2\2\2NO\3\2\2"+
+		"\2OP\3\2\2\2PQ\7\3\2\2Q\5\3\2\2\2RS\7\r\2\2ST\5\b\5\2T\7\3\2\2\2UV\7\33"+
+		"\2\2V\t\3\2\2\2W[\7\22\2\2XY\5(\25\2YZ\7\4\2\2Z\\\3\2\2\2[X\3\2\2\2[\\"+
+		"\3\2\2\2\\]\3\2\2\2]n\7\33\2\2^_\7\5\2\2_`\5\f\7\2`a\7\4\2\2ai\5\16\b"+
+		"\2bc\7\6\2\2cd\5\f\7\2de\7\4\2\2ef\5\16\b\2fh\3\2\2\2gb\3\2\2\2hk\3\2"+
+		"\2\2ig\3\2\2\2ij\3\2\2\2jl\3\2\2\2ki\3\2\2\2lm\7\7\2\2mo\3\2\2\2n^\3\2"+
+		"\2\2no\3\2\2\2o\13\3\2\2\2pq\t\2\2\2q\r\3\2\2\2rs\7\33\2\2s\17\3\2\2\2"+
+		"tv\7\16\2\2uw\5\32\16\2vu\3\2\2\2vw\3\2\2\2wx\3\2\2\2x\u0084\5\30\r\2"+
+		"yz\7\5\2\2z\177\5\34\17\2{|\7\6\2\2|~\5\34\17\2}{\3\2\2\2~\u0081\3\2\2"+
+		"\2\177}\3\2\2\2\177\u0080\3\2\2\2\u0080\u0082\3\2\2\2\u0081\177\3\2\2"+
+		"\2\u0082\u0083\7\7\2\2\u0083\u0085\3\2\2\2\u0084y\3\2\2\2\u0084\u0085"+
+		"\3\2\2\2\u0085\21\3\2\2\2\u0086\u0087\7\23\2\2\u0087\u0093\7\33\2\2\u0088"+
+		"\u0089\7\5\2\2\u0089\u008e\5\24\13\2\u008a\u008b\7\6\2\2\u008b\u008d\5"+
+		"\24\13\2\u008c\u008a\3\2\2\2\u008d\u0090\3\2\2\2\u008e\u008c\3\2\2\2\u008e"+
+		"\u008f\3\2\2\2\u008f\u0091\3\2\2\2\u0090\u008e\3\2\2\2\u0091\u0092\7\7"+
+		"\2\2\u0092\u0094\3\2\2\2\u0093\u0088\3\2\2\2\u0093\u0094\3\2\2\2\u0094"+
+		"\23\3\2\2\2\u0095\u0098\5\16\b\2\u0096\u0098\5\26\f\2\u0097\u0095\3\2"+
+		"\2\2\u0097\u0096\3\2\2\2\u0098\25\3\2\2\2\u0099\u009a\7\33\2\2\u009a\u009b"+
+		"\7\5\2\2\u009b\u009c\5\f\7\2\u009c\u009d\7\4\2\2\u009d\u00a5\5\16\b\2"+
+		"\u009e\u009f\7\6\2\2\u009f\u00a0\5\f\7\2\u00a0\u00a1\7\4\2\2\u00a1\u00a2"+
+		"\5\16\b\2\u00a2\u00a4\3\2\2\2\u00a3\u009e\3\2\2\2\u00a4\u00a7\3\2\2\2"+
+		"\u00a5\u00a3\3\2\2\2\u00a5\u00a6\3\2\2\2\u00a6\u00a8\3\2\2\2\u00a7\u00a5"+
+		"\3\2\2\2\u00a8\u00a9\7\7\2\2\u00a9\27\3\2\2\2\u00aa\u00ab\7\33\2\2\u00ab"+
+		"\31\3\2\2\2\u00ac\u00ad\7\33\2\2\u00ad\33\3\2\2\2\u00ae\u00af\7\33\2\2"+
+		"\u00af\35\3\2\2\2\u00b0\u00b1\7\17\2\2\u00b1\u00b3\5 \21\2\u00b2\u00b4"+
+		"\5.\30\2\u00b3\u00b2\3\2\2\2\u00b3\u00b4\3\2\2\2\u00b4\u00ba\3\2\2\2\u00b5"+
+		"\u00b6\7\17\2\2\u00b6\u00b7\5\"\22\2\u00b7\u00b8\5(\25\2\u00b8\u00ba\3"+
+		"\2\2\2\u00b9\u00b0\3\2\2\2\u00b9\u00b5\3\2\2\2\u00ba\37\3\2\2\2\u00bb"+
+		"\u00bc\7\30\2\2\u00bc!\3\2\2\2\u00bd\u00be\7\31\2\2\u00be#\3\2\2\2\u00bf"+
+		"\u00c0\7\20\2\2\u00c0\u00c2\5 \21\2\u00c1\u00c3\5.\30\2\u00c2\u00c1\3"+
+		"\2\2\2\u00c2\u00c3\3\2\2\2\u00c3\u00c9\3\2\2\2\u00c4\u00c5\7\20\2\2\u00c5"+
+		"\u00c6\5\"\22\2\u00c6\u00c7\5(\25\2\u00c7\u00c9\3\2\2\2\u00c8\u00bf\3"+
+		"\2\2\2\u00c8\u00c4\3\2\2\2\u00c9%\3\2\2\2\u00ca\u00cb\7\21\2\2\u00cb\u00cc"+
+		"\5(\25\2\u00cc\u00cd\7\4\2\2\u00cd\u00ce\7\33\2\2\u00ce\'\3\2\2\2\u00cf"+
+		"\u00df\5,\27\2\u00d0\u00d2\5*\26\2\u00d1\u00d0\3\2\2\2\u00d1\u00d2\3\2"+
+		"\2\2\u00d2\u00d3\3\2\2\2\u00d3\u00d5\5\60\31\2\u00d4\u00d6\5,\27\2\u00d5"+
+		"\u00d4\3\2\2\2\u00d5\u00d6\3\2\2\2\u00d6\u00df\3\2\2\2\u00d7\u00d9\5*"+
+		"\26\2\u00d8\u00d7\3\2\2\2\u00d8\u00d9\3\2\2\2\u00d9\u00db\3\2\2\2\u00da"+
+		"\u00dc\5\60\31\2\u00db\u00da\3\2\2\2\u00db\u00dc\3\2\2\2\u00dc\u00dd\3"+
+		"\2\2\2\u00dd\u00df\5.\30\2\u00de\u00cf\3\2\2\2\u00de\u00d1\3\2\2\2\u00de"+
+		"\u00d8\3\2\2\2\u00df)\3\2\2\2\u00e0\u00e1\7\33\2\2\u00e1\u00e2\7\b\2\2"+
+		"\u00e2+\3\2\2\2\u00e3\u00e4\7\t\2\2\u00e4\u00e5\7\33\2\2\u00e5\u00e6\7"+
+		"\n\2\2\u00e6-\3\2\2\2\u00e7\u00e8\7\13\2\2\u00e8\u00ed\t\3\2\2\u00e9\u00ea"+
+		"\7\6\2\2\u00ea\u00ec\t\3\2\2\u00eb\u00e9\3\2\2\2\u00ec\u00ef\3\2\2\2\u00ed"+
+		"\u00eb\3\2\2\2\u00ed\u00ee\3\2\2\2\u00ee\u00f0\3\2\2\2\u00ef\u00ed\3\2"+
+		"\2\2\u00f0\u00f1\7\f\2\2\u00f1/\3\2\2\2\u00f2\u00f3\7\33\2\2\u00f3\61"+
+		"\3\2\2\2\u00f4\u00f5\7\24\2\2\u00f5\u00f7\5 \21\2\u00f6\u00f8\5\64\33"+
+		"\2\u00f7\u00f6\3\2\2\2\u00f7\u00f8\3\2\2\2\u00f8\u00f9\3\2\2\2\u00f9\u00fa"+
+		"\7\4\2\2\u00fa\u00fb\5\66\34\2\u00fb\63\3\2\2\2\u00fc\u00fd\t\3\2\2\u00fd"+
+		"\65\3\2\2\2\u00fe\u00ff\t\3\2\2\u00ff\67\3\2\2\2\u0100\u0103\7\25\2\2"+
+		"\u0101\u0104\5(\25\2\u0102\u0104\5.\30\2\u0103\u0101\3\2\2\2\u0103\u0102"+
+		"\3\2\2\2\u01049\3\2\2\2\u0105\u0106\7\27\2\2\u0106\u0107\7\32\2\2\u0107"+
+		"\u0108\7\4\2\2\u0108\u0109\7\33\2\2\u0109;\3\2\2\2\u010a\u010b\7\26\2"+
+		"\2\u010b\u010c\7\33\2\2\u010c\u010e\7\4\2\2\u010d\u010f\7\33\2\2\u010e"+
+		"\u010d\3\2\2\2\u010f\u0110\3\2\2\2\u0110\u010e\3\2\2\2\u0110\u0111\3\2"+
+		"\2\2\u0111=\3\2\2\2\33AN[inv\177\u0084\u008e\u0093\u0097\u00a5\u00b3\u00b9"+
+		"\u00c2\u00c8\u00d1\u00d5\u00d8\u00db\u00de\u00ed\u00f7\u0103\u0110";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

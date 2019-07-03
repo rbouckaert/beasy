@@ -6,7 +6,7 @@ grammar CA;
   
 casentence : cmd + ;
 
-cmd : (template | import_ | use | set | link | unlink | rename | add | rm | taxonset )? ';' ;
+cmd : (template | import_ | use | set | link | unlink | rename | add | rm | taxonset | mode_ )? ';' ;
 
 template : TEMPLATETOKEN templatename ;
 
@@ -60,6 +60,8 @@ newName : STRING | LINKTYPE ;
 
 rm : RMTOKEN (inputidentifier | partitionPattern);
 
+mode_: MODETOKEN MODENAME '=' STRING;
+
 taxonset : TAXONSETTOKEN STRING '=' STRING + ;
 
 // Lexer Rules
@@ -73,9 +75,11 @@ ADDTOKEN : 'add' ;
 RENAMETOKEN : 'rename' ;
 RMTOKEN : 'rm' ;
 TAXONSETTOKEN: 'taxonset' ;
+MODETOKEN: 'mode';
 
 LINKTYPE : 'clock' | 'tree' | 'sitemodel' ;
 SHARETYPE : 'param' ;
+MODENAME : 'autoUpdateFixMeanSubstRate' | 'autoSetClockRate';
 
 STRING :
     [a-zA-Z0-9|#*%/.\-+_&:$]+  // these chars don't need quotes

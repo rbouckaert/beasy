@@ -7,17 +7,18 @@ Use <tt>tab</tt> to complete commands (limited functionality).
 <tr><td><a href="template.html">template</a> &lt;template name>     </td><td>instantiate a template (e.g. StarBeast)</td></tr>
 <tr><td><a href="import.html">import</a> &lt;subtemplate>? file (arg1, arg2, ...)?  </td><td>import data using template &lt;subtemplate> if non-standard template is required</td></tr>
 <tr><td><a href="rm.html">rm</a> partition</td><td>remove partition</td></tr>
-<tr><td><a href="set.html">set</a> inputidentifier '=' STRING </td><td>set primitive value</td></tr>
-<tr><td><a href="use.html">use</a> (inputidentifier '=')? &lt;subtemplate> (key1=value1,key2=value2,...)?</td><td>use subtemplate (at particular input)</td></tr>
+<tr><td><a href="set.html">set</a> <a href="inputidentifier.html">inputidentifier</a> '=' STRING </td><td>set primitive value</td></tr>
+<tr><td><a href="use.html">use</a> (<a href="inputidentifier.html">inputidentifier</a> '=')? &lt;subtemplate> (key1=value1,key2=value2,...)?</td><td>use subtemplate (at particular input)</td></tr>
 <tr><td><a href="add.html">add</a> &lt;subtemplate> (value1, value2, ...) </td><td>add prior</td></tr>
 <tr><td><a href="taxonset.html">taxonset</a> name = taxon1 taxon2 ... </td><td>specify taxonset with specific name</td></tr>
 
 <tr><td><a href="link.html">link</a> (clock|site|tree)  &lt;partition>?     </td><td>link selected partitions</td></tr>
 <tr><td><a href="unlink.html">unlink</a> (clock|site|tree) &lt;partition>?     </td><td>unlink selected partitions</td></tr>
-<tr><td><a href="link.html">link</a> param  &lt;inputidentifier>?     </td><td>link selected input parameters</td></tr>
-<tr><td><a href="unlink.html">unlink</a> param &lt;inputidentifier>?     </td><td>unlink selected input parameters</td></tr>
+<tr><td><a href="link.html">link</a> param  &lt;<a href="inputidentifier.html">inputidentifier</a>>?     </td><td>link selected input parameters</td></tr>
+<tr><td><a href="unlink.html">unlink</a> param &lt;<a href="inputidentifier.html">inputidentifier</a>>?     </td><td>unlink selected input parameters</td></tr>
 <tr><td></td><td></td></tr>
 <tr></tr>
+<tr><td>mode [autoUpdateFixMeanSubstRate | autoSetClockRate] = [true|false]           </td><td>set BEAUti processing mode</td></tr>
 <tr><td>save &lt;filename>           </td><td>save current model to file</td></tr>
 <tr><td>? or help                    </td><td>show help message</td></tr>
 <tr><td>quit or end                  </td><td>exit program</td></tr>

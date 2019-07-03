@@ -69,6 +69,7 @@ public class BeasyREPL {
 		}
 	}
 
+
 	private void save(String cmd) {
 		String [] strs = cmd.trim().split("\\s+");
 		if (strs.length != 2) {

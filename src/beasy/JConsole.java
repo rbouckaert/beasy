@@ -354,9 +354,10 @@ public class JConsole extends JScrollPane
 		}
 	}
 
+
 	private void completeCommand(final String part0 ) {
 //		Log.info(part0);
-		String [] cmds = new String[]{"template", "import", "link", "unlink", "rm", "add", "set", "use", "taxonset", "rename"};
+		String [] cmds = new String[]{"template", "import", "link", "unlink", "rm", "add", "set", "use", "taxonset", "rename", "mode"};
 		String part = part0.trim();
 		
 		if (part.length() == 0) {
@@ -408,6 +409,12 @@ public class JConsole extends JScrollPane
 			return;
 		}
 
+		
+		if (part.startsWith("mode")) {
+			completeMode(part);
+			return;
+		}
+		
 		if (part.startsWith("set") || part.startsWith("use") || part.startsWith("rm")) {
 			if (part.indexOf('=') > 0) {
 				if (part.startsWith("use")) {
@@ -595,6 +602,31 @@ public class JConsole extends JScrollPane
 		}
 	}
 
+	
+	private void completeMode(String part) {
+		String [] strs = part.trim().split("\\s+");
+		if (strs.length == 1) {
+			replaceRange("mode auto", cmdStart, textLength());
+			return;
+		}
+		
+		if (strs.length == 2) {
+			String modeName = strs[1];
+			if (modeName.indexOf('=') > 0) {
+				return;
+			}
+			if (modeName.length() > 4 && "autoUpdateFixMeanSubstRate".startsWith(modeName)) {
+				replaceRange("mode autoUpdateFixMeanSubstRate = ", cmdStart, textLength());
+				return;
+			} else if (modeName.length() > 4 && "autoSetClockRate".startsWith(modeName)) {
+				replaceRange("mode autoSetClockRate = ", cmdStart, textLength());
+				return;
+			} else {
+				printHint("Choose one of autoUpdateFixMeanSubstRate or autoUpdateFixMeanSubstRate\n", Color.blue);
+				return;
+			}
+		}
+ 	}
 	
 	private void completeAdd(String part) {		
     	if (part.indexOf('(') > 0) {
