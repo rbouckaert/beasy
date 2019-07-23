@@ -1,0 +1,5 @@
+// cov-fixed-strict-yule
+template ../../Babel/templates/BinaryCovarion;
+import 'Add Alignment' $(file);
+set estimate[mutationRateScaler] = false;
+//save /tmp/cov-fixed-strict-yule.xml;

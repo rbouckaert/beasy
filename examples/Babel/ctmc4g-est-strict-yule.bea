@@ -1,0 +1,7 @@
+// ctmc4g-est-strict-yule
+template ../../Babel/templates/BinaryCTMC;
+import 'Add Alignment' $(file);
+link param frequencies@frequencies;
+link param shape;
+//save /tmp/ctmc-est-strict-yule.xml;
+

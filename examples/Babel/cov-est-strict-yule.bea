@@ -1,0 +1,4 @@
+// cov-est-strict-yule
+template ../../Babel/templates/BinaryCovarion;
+import 'Add Alignment' $(file);
+//save /tmp/cov-est-strict-yule.xml;

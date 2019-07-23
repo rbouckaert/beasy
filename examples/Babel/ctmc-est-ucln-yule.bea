@@ -1,0 +1,8 @@
+// ctmc-est-ucln-yule
+template ../../Babel/templates/BinaryCTMC;
+import 'Add Alignment' $(file);
+use RelaxedClockLogNormal;
+set gammaCategoryCount = 1;
+link param frequencies@frequencies;
+//save /tmp/ctmc-est-ucln-yule.xml;
+

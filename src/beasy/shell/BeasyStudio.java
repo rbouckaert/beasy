@@ -8,6 +8,8 @@ import jam.framework.DocumentFrame;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -530,7 +532,7 @@ public class BeasyStudio extends JSplitPane {
 				e1.printStackTrace();
 			}
 		}
-		JOptionPane.showMessageDialog(null, "Could not load JavaFX. Run with java 7 or higher, or set the JAVAFX_JAR environment variable to the location of jfxrt.jar or install jfxrt.jar at /opt/java/jre/lib/jfxrt.jar. -- exiting now");
+		JOptionPane.showMessageDialog(null, "Could not load JavaFX. Run with Java 8 (preferred) or higher, or set the JAVAFX_JAR environment variable to the location of jfxrt.jar or install jfxrt.jar at /opt/java/jre/lib/jfxrt.jar. -- exiting now");
 		System.exit(0);
 	}
 
@@ -548,6 +550,11 @@ public class BeasyStudio extends JSplitPane {
 		studio.frame = frame;
 		
 		Help.studio = studio;
+		URL url = studio.getClass().getClassLoader().getResource("beasy/shell/beasySmall.png");
+		Image image = Toolkit.getDefaultToolkit().createImage(url);
+		frame.setIconImage(image);
+		
+		
 		
 		
 		frame.setLayout(new BorderLayout());
@@ -569,7 +576,7 @@ public class BeasyStudio extends JSplitPane {
             // set up application about-menu for Mac
             // Mac-only stuff
             try {
-                URL url = BEASTClassLoader.classLoader.getResource("/beast/app/draw/icons/beauti.png");
+                url = BEASTClassLoader.classLoader.getResource("/beast/app/draw/icons/beauti.png");
                 Icon icon = null;
                 if (url != null) {
                     icon = new ImageIcon(url);

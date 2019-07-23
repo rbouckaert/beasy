@@ -1,0 +1,7 @@
+// ctmc-est-strict-yule
+template ../../Babel/templates/BinaryCTMC;
+import 'Add Alignment' $(file);
+set gammaCategoryCount = 1;
+link param frequencies@frequencies;
+//save /tmp/ctmc-est-strict-yule.xml;
+

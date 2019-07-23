@@ -1,0 +1,6 @@
+// cov-fixed-ucln-yule
+template ../../Babel/templates/BinaryCovarion;
+import 'Add Alignment' $(file);
+set estimate[mutationRateScaler] = false;
+use RelaxedClockLogNormal;
+//save /tmp/cov-fixed-ucln-yule.xml;

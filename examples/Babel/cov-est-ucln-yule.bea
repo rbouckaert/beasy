@@ -1,0 +1,5 @@
+// cov-est-ucln-yule
+template ../../Babel/templates/BinaryCovarion;
+import 'Add Alignment' $(file);
+use RelaxedClockLogNormal;
+//save /tmp/cov-est-ucln-yule.xml;
