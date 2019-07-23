@@ -1,15 +1,32 @@
 
 # Babel scripts
 
-This folder contains beasy scripts for setting
+This folder contains beasy scripts for setting up cognate based languages analyses using BEAUti template from the Babel package.
+
+
+## What they do
+
+* `ctmc-est-strict-yule.bea` sets up binary GTR model with estimated word rates, strict clock, Yule tree prior
+* `ctmc-est-ucln-yule.bea` binary GTR model with estimated word rates, relaxed clock, Yule tree prior
+* `ctmc-fixed-ucln-yule.bea` binary GTR model with fixed word rates, relaxed clock, Yule tree prior
+* `ctmc4g-est-strict-yule.bea` as ctmc-est-strict-yule.bea but with 4 category gamma rate heterogeneity
+* `ctmc4g-est-ucln-yule.bea` as ctmc-est-ucln-yule.bea but with 4 category gamma rate heterogeneity
+* `ctmc4g-fixed-strict-yule.bea` binary GTR+4G model with fixed word rates, strict clock, Yule tree prior
+* `ctmc4g-fixed-ucln-yule.bea` binary GTR+4G model with fixed word rates, relaxed clock, Yule tree prior
+* `cov-est-strict-yule.bea` covarion model with estimated word rates, strict clock, Yule tree prior
+* `cov-est-ucln-yule.bea` covarion model with estimated word rates, relaxed clock, Yule tree prior
+* `cov-fixed-strict-yule.bea` covarion model with fixed word rates, strict clock, Yule tree prior
+* `cov-fixed-ucln-yule.bea` covarion model with estimated word rates, relaxed clock, Yule tree prior
+* `sdollo-est-ucln-yule.bea` stochastic dollo model with estimated word rates, relaxed clock, Yule tree prior
 
 
 ## Install
 
 You need to install 
-* (BEAST 2)[http://beast2.org] using the 
-* (Babel)[https://github.com/rbouckaert/Babel/] package and the 
-* (Beasy)[https://github.com/rbouckaert/beasy] package.
+
+* [BEAST 2](http://beast2.org) using the 
+* [Babel](https://github.com/rbouckaert/Babel/) package and the 
+* [Beasy](https://github.com/rbouckaert/beasy) package.
 
 ## NEXUS file format
 
@@ -68,4 +85,7 @@ Use the `applauncher` to kick of the `BeasyInterpreter`. You need to define the 
 ```
 
 where `/path/to/` is the path to where the applauncher is installed on your system.
+
+It will produce an XML file with the same name as the beasy-script, but with an xml extension instead of a bea extension.
+
 
