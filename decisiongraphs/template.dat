@@ -1,10 +1,11 @@
-Sequence alignment
-	Gene tree == species tree instead of Multi Species Coalescent
+Sequence alignment(s)?
+	Gene tree == species tree instead of Multi Species Coalescent?
 		Has multiple birth/death/sampling rate changes in tree?
 			MSBDtemplate
 			Standard
 		SNP data
 			SNAPP
+			snapper (fast but accurate approximation of SNAPP)
 		Has migration?
 			Is species network instead of tree?
 				AIM
@@ -23,7 +24,7 @@ Sequence alignment
 			Interested in species delimitation?
 				STACEY
 			StarBeast2
-		goto 15
+		goto 18
 Binary cognate alignment
 	BinaryCTMC
 	BinaryCovarion
@@ -32,6 +33,8 @@ Binary cognate alignment
 	SDollo
 Demes/Discrete trait
 	Is coalescent?
+		Migration rates are function of other data?
+			Mascot + GLM
 		Has less than 4 demes?
 			MultiTypeTree
 		Has 4 or more demes

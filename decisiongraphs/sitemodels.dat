@@ -1,3 +1,47 @@
-DNA sequences
-Language sequences
-
+DNA sequence(s)?
+	First exploratory analysis?
+		Site rates may vary?
+			Gamma site model, HKY, 4 gamma categories
+		Gamma site model, HKY no gamma categories
+	Site model known from previous analysis?
+		Gamma site model with model from previous analysis
+	bModelTest: models over all reversible site models
+Amino acid sequences?
+	Gamma site model with subst model one of
+		Blosum62
+		CpREV
+		DCMut
+		Dayhoff
+		HIVb
+		HIVw
+		JTT
+		LG
+		MtArt
+		MtREV
+		MtMam
+		RtREV
+		VT
+		WAG
+		FLU
+Independent SNP sequences?
+	SNAPP site model
+Micro satellite sequenceis
+	VNTR site model
+Language sequences?
+	binary (CTMC, SDollo, or PDollo)??
+		Site rates may vary?
+			Gamma site model, 4 gamma categories
+		Gamma site model, no gamma categories
+	binary (covarion, or PDolloCovarion)??
+		Gamma site model, no gamma categories		
+	multistate ordered?
+		Gamma site model with Ordinal subst model
+		Gamma site model with NestedOrdinal subst model		
+	multistate unordered: Gamma site model with Lewis MK subst model
+Discrete trait
+	BSSV model: symmetric to start with, asymmetric if symmetric converges
+Geography on plane
+	...
+Geography on sphere
+	...
+Other: not supported?
