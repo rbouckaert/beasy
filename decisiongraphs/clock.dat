@@ -1,8 +1,10 @@
 First exploratory analysis?
-	Strict clock, followed by relaxed clock log normal if strict clock analysis converges
-	Model selection strict vs relaxed clock?
-Tree can be partitioned in areas with known differences in clock rates exist?
-	FLC: Flexible local clock model
-Log normal analysis has coefficient of variation > 0.1?
-	Random local clock -- ideal choice, if it converges
-	Relaxed clock exponential -- model selection against other clock models
+	Run with strict clock + rerun with log normal relaxed clock. Both converge?
+		Log normal analysis has coefficient of variation > 0.1?
+			Perform model selection strict vs relaxed clock (e.g. nested sampling, path sampling)
+		Use strict clock
+	Use the analysis that converges
+Relaxed clock analysis preferred from exploratory analysis?
+	Run with random local clock -- ideal choice, if it converges
+	Relaxed clock exponential -- perform model selection against other clock models
+Use strict clock
