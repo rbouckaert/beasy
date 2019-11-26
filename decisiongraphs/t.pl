@@ -48,6 +48,12 @@ for ($i = 0; $i < $n; $i++) {
 			$s[$i] =~ s/goto \d+/goto $id[$id]/;
 		}
 	}
+	if ($s[$i] =~ /@(\d+)/) {
+		$id = $1;
+		if ($id[$id] ne '') {
+			$s[$i] =~ s/@\d+/\@line $id[$id]/;
+		}
+	}
 	print "<text class=\"label\" x=\"".(40+$indent[$i]*$dx)."\" y=\"".($i*$dy+20)."\">".$s[$i]."</text>\n";
 	print "<text class=\"label\" x=\"".($i<9?"7":"0")."\" y=\"".($i*$dy+20)."\">".($i+1).".</text>\n";
 }

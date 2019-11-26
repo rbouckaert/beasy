@@ -3,28 +3,27 @@ Sequence alignment(s)?
 		Has multiple birth/death/sampling rate changes in tree?
 			MSBDtemplate
 			Standard
-		SNP data
-			SNAPP
-			snapper (fast but accurate approximation of SNAPP)
-		Has migration?
-			Is species network instead of tree?
-				AIM
-			DENIM
-		Interested in population sizes on branches?
-			*Beast
+	SNP data
+		SNAPP
+		snapper (fast but accurate approximation of SNAPP)
+	Has migration?
 		Is species network instead of tree?
-			SpeciesNetwork
-		Has species clock model?
-			Relaxed log normal?
-				SpeciesTreeRLC
-			Relaxed exponential?
-				SpeciesTreeUCED
-			Relaxed local clock?
-				SpeciesTreeRLC
-			Interested in species delimitation?
-				STACEY
-			StarBeast2
-		goto 18
+			AIM
+		DENIM
+	Interested in population sizes on branches?
+		*Beast
+	Is species network instead of tree?
+		SpeciesNetwork
+#17:	This requires one of the StarBeast2 templates -- First exploratory analysis?
+		Run with strict clock (StarBeast2) + rerun with log normal relaxed clock (SpeciesTreeRLC). Both converge?
+			Log normal analysis has coefficient of variation > 0.1?
+				Perform model selection strict vs relaxed clock (e.g. nested sampling, path sampling)
+			Use strict clock
+		Use the analysis that converges
+	Relaxed clock analysis preferred from exploratory analysis (@17)?
+		Run with random local clock (SpeciesTreeRLC) -- ideal choice, if it converges
+		Relaxed clock exponential (SpeciesTreeUCED) -- perform model selection against other clock models
+	StarBeast2 using strict clocks
 Binary cognate alignment
 	BinaryCTMC
 	BinaryCovarion

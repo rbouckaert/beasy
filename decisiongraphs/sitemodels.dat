@@ -7,25 +7,16 @@ DNA sequence(s)?
 		Gamma site model with model from previous analysis
 	bModelTest: models over all reversible site models
 Amino acid sequences?
-	Gamma site model with subst model one of
-		Blosum62
-		CpREV
-		DCMut
-		Dayhoff
-		HIVb
-		HIVw
-		JTT
-		LG
-		MtArt
-		MtREV
-		MtMam
-		RtREV
-		VT
-		WAG
-		FLU
+	Strong knowlege and preference for a model (one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG)
+		Site rates may vary?
+			Gamma site model, 4 gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG
+		Gamma site model, no gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG
+	OBAMA (Obama for Bayesian Amino-acid Model Averaging) automatically averages over all models
 Independent SNP sequences?
-	SNAPP site model
-Micro satellite sequenceis
+	Few (&lt;100) homozygote samples
+		SNAPP site model
+	snapper site model
+Micro satellite sequences?
 	VNTR site model
 Language sequences?
 	binary (CTMC, SDollo, or PDollo)??
@@ -40,8 +31,8 @@ Language sequences?
 	multistate unordered: Gamma site model with Lewis MK subst model
 Discrete trait
 	BSSV model: symmetric to start with, asymmetric if symmetric converges
-Geography on plane
-	...
-Geography on sphere
-	...
+Location trait in latitud/longitude?
+	Small range?
+		Geography by random walk on plane OR random walk on sphere (more efficient)
+	Geography by random walk on sphere
 Other: not supported?
