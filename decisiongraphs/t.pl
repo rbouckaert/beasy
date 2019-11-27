@@ -4,9 +4,9 @@ $dx = 50;
 
 $n = 0;
 while ($s = <>) {
-	if ($s =~ /^#(\d+):/) {
-		$id[$1] = $n + 1;
-		$s =~ s/^#(\d+)://;
+	if ($s =~ /{#([a-zA-Z0-9]+)}/) {
+		$id{$1} = $n + 1;
+		$s =~ s/{#([a-zA-Z0-9]+)}//;
 	}
 	$k = 0;
 	while (substr($s,$k,1) =~ /\s/) {
@@ -42,18 +42,18 @@ print '<svg xmlns="http://www.w3.org/2000/svg" height="'.($dy * $n + 50).'">
 
 
 for ($i = 0; $i < $n; $i++) {
-	if ($s[$i] =~ /goto (\d+)/) {
+	if ($s[$i] =~ /\(\+\@([a-zA-Z0-9]+)\)/) {
 		$id = $1;
-		if ($id[$id] ne '') {
-			$s[$i] =~ s/goto \d+/goto $id[$id]/;
+		if ($id{$id} ne '') {
+			$s[$i] =~ s/\(\+\@[a-zA-Z0-9]+\)/$id{$id}/;
 		}
 	}
-	if ($s[$i] =~ /@(\d+)/) {
-		$id = $1;
-		if ($id[$id] ne '') {
-			$s[$i] =~ s/@\d+/\@line $id[$id]/;
-		}
-	}
+#	if ($s[$i] =~ /@([a-zA-Z0-9]+)/) {
+#		$id = $1;
+#		if ($id{$id} ne '') {
+#			$s[$i] =~ s/@[a-zA-Z0-9]+/\@line $id{$id}/;
+#		}
+#	}
 	print "<text class=\"label\" x=\"".(40+$indent[$i]*$dx)."\" y=\"".($i*$dy+20)."\">".$s[$i]."</text>\n";
 	print "<text class=\"label\" x=\"".($i<9?"7":"0")."\" y=\"".($i*$dy+20)."\">".($i+1).".</text>\n";
 }
