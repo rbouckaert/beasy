@@ -2,6 +2,7 @@ DNA sequence(s)?
 	First exploratory analysis?
 		Site rates may vary?
 			Gamma site model, HKY, 4 gamma categories
+			bModelTest: models over all reversible site models
 		Gamma site model, HKY no gamma categories
 	Site model known from previous analysis?
 		Gamma site model with model from previous analysis

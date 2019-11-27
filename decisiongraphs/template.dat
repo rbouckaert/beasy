@@ -1,8 +1,45 @@
-Sequence alignment(s)?
+#1:Initial exploratory analysis?
+#2:	Run with strict clock (StarBeast2) + rerun with log normal relaxed clock (SpeciesTreeRLC). Both converge?
+		Log normal analysis has coefficient of variation > 0.1?
+			Perform model selection strict vs relaxed clock (e.g. nested sampling, path sampling)
+		Use strict clock
+	Use the analysis that converges
+Relaxed clock analysis preferred from exploratory analysis (@2)?
+	Run with random local clock (SpeciesTreeRLC) -- ideal choice, if it converges
+	Relaxed clock exponential (SpeciesTreeUCED) -- perform model selection against other clock models
+Add partition/data to existing analysis?
+	goto 66
+Set species tree prior?
+	goto 98	
+Has demes/discrete trait?
+	Is coalescent, but not multi-species coalescent?
+		Migration rates are function of other data?
+			Mascot + GLM
+		Has less than 4 demes?
+			MultiTypeTree
+		Has 4 or more demes
+			BASTA
+			Mascot
+			MascotBSSVS
+	Add discrete trait partition to species tree selected @12
+Language sequences?
+#24:	Binary/cognate data?
+		Perform model selection among CTMC, SDollo, PDollo, covarion, or PDolloCovarion. Is CTMC, SDollo or PDollo?
+			Site rates may vary?
+				Gamma site model, 4 gamma categories.
+			Gamma site model, no gamma categories
+		Gamma site model, no gamma categories. goto 61
+	Multistate ordered?
+		Gamma site model with Ordinal subst model goto 61
+		Gamma site model with NestedOrdinal subst model	goto 61
+	Multistate unordered: Gamma site model with Lewis MK subst model goto 61
+#12:Has sequence alignment(s)?
 	Gene tree == species tree instead of Multi Species Coalescent?
 		Has multiple birth/death/sampling rate changes in tree?
 			MSBDtemplate
 			Standard
+	Multiple gene trees, no species tree?
+		Standard template using EBSP prior
 	SNP data
 		SNAPP
 		snapper (fast but accurate approximation of SNAPP)
@@ -24,19 +61,65 @@ Sequence alignment(s)?
 		Run with random local clock (SpeciesTreeRLC) -- ideal choice, if it converges
 		Relaxed clock exponential (SpeciesTreeUCED) -- perform model selection against other clock models
 	StarBeast2 using strict clocks
-Binary cognate alignment
-	BinaryCTMC
-	BinaryCovarion
-	PDCovarion
-	PseudoDollo
-	SDollo
-Demes/Discrete trait
-	Is coalescent?
-		Migration rates are function of other data?
-			Mascot + GLM
-		Has less than 4 demes?
-			MultiTypeTree
-		Has 4 or more demes
-			BASTA
-			Mascot
-			MascotBSSVS
+goto #1
+#61:Word per partition?
+	Estimate partition mutation rate
+	Fix mutation rate to 1 for each partition and share shape parameter for gamma rate heterogeneity (if rate heterogeneity makes sense)
+Single fixed mutation rate = 1
+??
+#66:add DNA sequence(s)?
+	Site model known from previous analysis?
+		Gamma site model with model from previous analysis. goto 66
+	bModelTest: models over all reversible site models goto 66
+Add amino acid sequences?
+	Strong knowlege and preference for a model (one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG)
+		Site rates may vary?
+			Gamma site model, 4 gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG goto 66
+		Gamma site model, no gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG goto 66
+	OBAMA (Obama for Bayesian Amino-acid Model Averaging) automatically averages over all models goto 66
+Independent SNP sequences?
+	Few (&lt;100) homozygote samples
+		SNAPP site model goto 66
+	snapper site model goto 66
+Micro satellite sequences?
+	VNTR site model goto 66
+Morphological traits (discrete)
+#83:	multistate ordered?
+		Gamma site model with Ordinal subst model goto 66
+		Gamma site model with NestedOrdinal subst model	goto 66	
+	multistate unordered: Gamma site model with Lewis MK subst model goto 66
+Language sequences?
+	goto 24
+Discrete trait
+	BSSV model: symmetric to start with, asymmetric if symmetric converges goto 66
+Location trait in latitud/longitude?
+	Small range?
+		Geography by random walk on plane OR random walk on sphere (more efficient) goto 66
+	Geography by random walk on sphere goto 66
+#98:Tip dates?
+	Sampled ancestors?
+		SABirthDeath based prior
+	goto 106
+#106:Sequence samples all from different species (or languages)?
+#107:	Birth/death/sampling based prior - exploratory (first) analysis?
+		no tip dates?
+			Yule prior
+		Birth/Death model
+	Interest in extinction rate or exploratory analysis succeeded?
+		Birth/Death model
+	Interest in rate history?
+		Birth/Death skyline based prior:	
+Sequence samples all from same species (or only dialects)?
+#115:	Coalescent based prior - exploratory (first) analysis?
+		Coalescent with constant population
+	Interest in demographic reconstruction (or exploratory analysis succeeded)?
+		Bayesian skyline based prior: initial analysis?
+			number of groups = 5, make sure upper bound on populations is sensible
+		Number of groups should not exceed number of internal nodes
+Mix of samples from different species and multiple samples from same species?
+	>= 2 species, and one is outgroup?
+		Outgroup provides calibration?
+			Consider MSC (goto 107) or coalescent (goto 115)
+		Remove sequences from outgroup: BEAST does not use them, goto 98
+	Multi species coalescent (*BEAST, StarBeast2, etc.) goto 107
+All done!!!
