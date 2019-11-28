@@ -1,0 +1,2 @@
+{+@1} Initial analysis should be done with the simplest model with fewest parameters possible, and give a sense of whether there is signal in the data, an indication of run times.
+After an initial analysis, more complex models (and thus more parameters) can be added to get better fit to the data, till overparameterisation fails to capture more details.

@@ -1,9 +1,9 @@
-#1:Tip dates?
+Tip dates?	{#1}
 	Sampled ancestors?
 		SABirthDeath based prior
-	goto 6
-#6:Sequence samples all from different species (or languages)?
-#7:	Birth/death/sampling based prior - exploratory (first) analysis?
+	goto (+@6)
+Sequence samples all from different species (or languages)?	{#6}
+	Birth/death/sampling based prior - exploratory (first) analysis?	{#7}
 		no tip dates?
 			Yule prior
 		Birth/Death model
@@ -12,7 +12,7 @@
 	Interest in rate history?
 		Birth/Death skyline based prior:	
 Sequence samples all from same species (or only dialects)?
-#15:	Coalescent based prior - exploratory (first) analysis?
+	Coalescent based prior - exploratory (first) analysis?	{#15}
 		Coalescent with constant population
 	Interest in demographic reconstruction (or exploratory analysis succeeded)?
 		Bayesian skyline based prior: initial analysis?
@@ -21,7 +21,7 @@ Sequence samples all from same species (or only dialects)?
 Mix of samples from different species and multiple samples from same species?
 	>= 2 species, and one is outgroup?
 		Outgroup provides calibration?
-			Consider MSC (goto 7) or coalescent (goto 15)
-		Remove sequences from outgroup: BEAST does not use them, goto 1
-	Multi species coalescent (*BEAST, StarBeast2, etc.) goto 7
+			Consider MSC (goto (+@7)) or coalescent (goto (+@15))
+		Remove sequences from outgroup: BEAST does not use them, goto (+@1)
+	Multi species coalescent (*BEAST, StarBeast2, etc.) goto (+@7)
 BEAST cannot deal with Schrodinger sequences...

@@ -1,14 +1,14 @@
-#1:Simulator passes unit test?
-#2:	Model passes unit test?
-#3:		Operators pass unit test?
-#4:			Perform well calibrated study -- coverage OK?
+Simulator passes unit test?	{#1}
+	Model passes unit test?	{#2}
+		Operators pass unit test?	{#3}
+			Perform well calibrated study -- coverage OK?	{#4}
 				Perform sensitivity study under different models
 				Report results
 			Minimum ESS &lt; 100?
-				run MCMCs longer, goto 4
+				run MCMCs longer, goto (+@4)
 			Are tree heights recoverable?
-				Fix hasting ratios or model implementation. goto 4
-			Simulate trees with tree heights of 0.5 substitutions. goto 4
-		Fix code, goto 3
-	Fix code, goto 2
-Fix code, goto 1
+				Fix hasting ratios or model implementation. goto (+@4)
+			Simulate trees with tree heights of 0.5 substitutions. goto (+@4)
+		Fix code, goto (+@3)
+	Fix code, goto (+@2)
+Fix code, goto (+@1)
