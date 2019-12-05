@@ -23,6 +23,8 @@ Has demes/discrete trait? {#18}
 			Select BASTA template and goto {+@66} {#26}
 			Mascot and goto {+@66}  {#27}
 			MascotBSSVS and goto {+@66}  {#28}
+	Is birth death {#150}
+		multitype birth-death model and goto {+@66} {#151}
 	Add discrete trait partition to species tree selected (+@12) {#29}
 Language sequences? {#30}
 	Binary/cognate data?	{#24}
@@ -81,6 +83,8 @@ Add amino acid sequences? {#82}
 			Gamma site model, 4 gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG goto (+@66) {#86}
 		Gamma site model, no gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG goto (+@66) {#87}
 	OBAMA (Obama for Bayesian Amino-acid Model Averaging) automatically averages over all models goto (+@66) {#88}
+Add codon sequences? {#153}
+	Codon substitution models. goto (+66) {#154}
 Independent SNP sequences? {#89}
 	Few (&lt;100) homozygote samples {#90}
 		SNAPP site model goto (+@66) {#91}
@@ -99,9 +103,11 @@ Discrete trait {#103}
 Location trait in latitud/longitude? {#105}
 	Small range? {#108}
 		Geography by random walk on plane OR random walk on sphere (more efficient) goto (+@66) {#109}
+		Break-away geography goto (+@66) {#116}
 	Geography by random walk on sphere goto (+@66) {#110}
-Add allele frequency sequences? {#151}
-	PoMo substitution model {#152}
+	Break-away geography  goto (+@66) {#111}
+Add allele frequency sequences? {#96}
+	PoMo substitution model {#78}
 Tip dates?	{#98}
 	Sampled ancestors? {#112}
 		SABirthDeath based prior {#113}
@@ -115,9 +121,11 @@ Sequence samples all from different species (or languages)?	{#106}
 		Birth/Death model {#121}
 	Interest in phylodynamic/epidemiology? {#146}
 		PhyDyn {#147}
+		EpiInf {#73}
 		BDSIR {#148}
-		Stochastic Coalescent {#149}
-		SCOTTI {#150}
+		Stochastic Coalescent {#41}
+		SCOTTI {#31}
+		BADTRIP {#149}
 	Interest in rate history? {#122}
 		Birth/Death skyline based prior:	 {#123}
 Sequence samples all from same species (or only dialects)? {#124}
@@ -134,7 +142,7 @@ Mix of samples from different species and multiple samples from same species? {#
 		Remove sequences from outgroup: BEAST does not use them, goto (+@98) {#135}
 	Multi species coalescent (*BEAST, StarBeast2, etc.) goto (+@107) {#136}
 Prior on single node?	{#125}
-	Prior on timing of node?
+	Prior on timing of node? {#137}
 		Detailed information about fossil record? {#138}
 			CladeAge Prior {#139}
 		MRCAPrior {#140}
@@ -144,3 +152,30 @@ Prior on clock rate? {#143}
 	Add prior on clock rate {#144}
 Multi monophyletic prior -- constraints tree to set of monophyletic constraints defined as a Newick tree {#141}
 All done!!!	{#1000}
+
+
+Setting priors: parameter?
+	population size parameter?
+		Ask: What size population do you know can be expected (lower-upper bound with perhaps 5 orders of magnitude difference)?
+		Expected age of tree = population size (lower-upper bound with perhaps 5 orders of magnitude difference)?
+	birth rate for Yule
+		Expected age of tree = ??? (lower-upper bound with perhaps 5 orders of magnitude difference)?
+	substitution model parameter?
+		Coding DNA?
+			mean of transition rates > mean of transversion rates
+		mean of transition rates == mean of transversion rates
+	clock rate parameter?
+		rate known from previous independent (no samples re-used) analysis?
+			other timing information available?
+				use reported mean and stdev
+			use mean with larger than reported stdev
+		rate known from related species
+			use mean with larger than reported stdev
+		look up in table (nuclear DNA 10e-6 - 10e-9?, mitochondrial/chloroplast 10e-4 - 10e-7?, virus ...., bacterial , archea , ...)
+	frequencies?
+		dna
+			Dirichlet(1,1,1,1) for uniform, Dirichlet(4,4,4,4) when badly mixing 
+		amino acid
+			Dirichlet(4,..,4) seems appropriate based on empirical models
+		other: Dirichlet with parameters representing 1+counts of observations representing prior knowledge
+	parametric distribution hyper prior?
