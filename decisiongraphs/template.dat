@@ -113,25 +113,36 @@ Tip dates?	{#98}
 		SABirthDeath based prior {#113}
 	goto (+@106) {#114}
 Sequence samples all from different species (or languages)?	{#106}
-	Birth/death/sampling based prior - exploratory (first) analysis?	{#107}
+	Birth/death/sampling based prior - exploratory (first) analysis? {#107}
 		no tip dates? {#117}
 			Yule prior {#118}
 		Birth/Death model {#119}
 	Interest in extinction rate or exploratory analysis succeeded? {#120}
 		Birth/Death model {#121}
-	Interest in phylodynamic/epidemiology? {#146}
-		PhyDyn {#147}
-		EpiInf {#73}
-		BDSIR {#148}
-		Stochastic Coalescent {#41}
-		SCOTTI {#31}
-		BADTRIP {#149}
+	Interest in phylodynamic/epidemiology (R0, history of infecteds, etc.)? {#146}
+		Sufficiently large (for coalescent) populations, or structured populations?
+			Does not requires nonlinear population/migration dynamics?
+				No reassortment expected?
+					Sequence data is linked?
+						SCOTTI {#31}
+						Stochastic Coalescent {#41}
+					Use script in BADTRIP package to generate XML {#149}
+				CoalRe (estimates reassortment networks) {#156}
+			PhyDyn SEIR {#147}
+		Birth death based?
+			Include sampled ancestors?
+				Choose Epi Tree Prior (from EpiInf package) {#73}
+			All sequences are from the same date?
+				Choose 'Phylodynamics: BirthDeathSIR (contemp)' tree prior from phylodynamics package in Standard template {#148}
+			Choose 'Phylodynamics: BirthDeathSIR (serial)' tree prior from phylodynamics package in Standard template {#157}
 	Interest in rate history? {#122}
 		Birth/Death skyline based prior:	 {#123}
 Sequence samples all from same species (or only dialects)? {#124}
 	Coalescent based prior - exploratory (first) analysis?	{#115}
 		Coalescent with constant population {#126}
 	Interest in demographic reconstruction (or exploratory analysis succeeded)? {#127}
+		Sampling rate changes through time?
+			Bayesian Epoch Sampling Skyline Plot {#155}
 		Bayesian skyline based prior: initial analysis? {#128}
 			number of groups = 5, make sure upper bound on populations is sensible {#129}
 		Number of groups should not exceed number of internal nodes {#130}
