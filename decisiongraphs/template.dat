@@ -16,13 +16,12 @@ Add prior on nodes in tree? {#15}
 Has demes/discrete trait? {#18}
 	Is coalescent, but not multi-species coalescent? {#19}
 		Migration rates are function of other data? {#20}
-			Mascot + GLM {#21}
+			Select MascotBSSVS template and goto {+@66}  {#28}
 		Has less than 4 demes? {#22}
 			MultiTypeTree, if this takes too long, goto {+@25} {#23}
 		Choose one of the following {#25}
-			Select BASTA template and goto {+@66} {#26}
-			Mascot and goto {+@66}  {#27}
-			MascotBSSVS and goto {+@66}  {#28}
+			Choose Mascot template and goto {+@66}  {#27}
+			Use script to generate BASTA XML(template does not work?!?) {#26}
 	Is birth death {#150}
 		multitype birth-death model and goto {+@66} {#151}
 	Add discrete trait partition to species tree selected (+@12) {#29}
@@ -73,7 +72,7 @@ Word per partition?	{#61}
 	Fix mutation rate to 1 for each partition and share shape parameter for gamma rate heterogeneity (if rate heterogeneity makes sense) {#75}
 Single fixed mutation rate = 1 {#76}
 ?? {#77}
-add DNA sequence(s)?	{#66}
+add DNA sequence(s)? {#66}
 	Site model known from previous analysis? {#79}
 		Gamma site model with model from previous analysis. goto (+@66) {#80}
 	bModelTest: models over all reversible site models goto (+@66) {#81}
