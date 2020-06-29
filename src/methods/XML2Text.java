@@ -3,6 +3,7 @@ package methods;
 
 
 
+
 import java.io.File;
 import java.io.PrintStream;
 import java.util.*;
@@ -30,7 +31,6 @@ import beast.evolution.tree.TreeDistribution;
 import beast.evolution.tree.TreeInterface;
 import beast.util.ClassToPackageMap;
 import beast.util.XMLParser;
-import beast.util.XMLProducer;
 import methods.CitationPhrase.mode;
 import methods.Phrase.PhraseType;
 import methods.implementation.BEASTObjectMethodsText;
@@ -145,7 +145,7 @@ public class XML2Text extends Runnable {
 		m.add(new Phrase("\nThis analysis is for BEAST "));
 		m.add(CitationPhrase.createCitationPhrase("10.1371/journal.pcbi.1003537"));
 
-		XMLProducer producer = new XMLProducer();
+		// XMLProducer producer = new XMLProducer();
 		beautiDoc.scrubAll(false, false);
 		String [] packages = ClassToPackageMap.getPackagesAndVersions(beautiDoc.mcmc.get()).toArray(new String[]{});
 		if (packages.length > 0) {
@@ -213,7 +213,7 @@ public class XML2Text extends Runnable {
         }
     	if (others.size() > 0) {
     		completePhrase("\nOther information:\n");
-    		int n = getLongestPostixX(others);
+    		int n = getLongestPostfix(others);
 
 			for (List<Phrase> other : others) {
 				for (int i = 0; i < n; i++) {
@@ -374,28 +374,8 @@ public class XML2Text extends Runnable {
 	}
 
 
-	private String getLongestPostix(List<String> others) {
-		if (others.size() <= 1) {
-			return "";
-		}
- 		String postfix = "";
-		int k = others.get(0).length();
-		while (k > 0 && others.get(0).lastIndexOf(',', k - 1) > 0) {
-			k = others.get(0).lastIndexOf(',', k - 1);
-			String str = others.get(0).substring(k);
-			for (int i = 1; i < others.size(); i++) {
-				String other = others.get(i);
-				int k2 = other.length() - (others.get(0).length() - k);
-				if (k2 <= 0 || !str.equals(other.substring(k2))) {
-					return postfix;
-				}
-			}
-			postfix = str;
-		}
-		return postfix;
-	}
 
-	private int getLongestPostixX(List<List<Phrase>> others) {
+	private int getLongestPostfix(List<List<Phrase>> others) {
 		if (others.size() <= 1) {
 			return others.get(0).size();
 		}
@@ -486,9 +466,6 @@ public class XML2Text extends Runnable {
 			                		set.add(phrase);
 			                		MethodsText.partitionGroupMap.put(phrase.source, set);	                		
 			                	}
-		                	} else {
-		                		int h = 3;
-		                		h++;
 		                	}
 		                	
 	                	}

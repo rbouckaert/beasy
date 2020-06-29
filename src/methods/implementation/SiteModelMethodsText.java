@@ -4,7 +4,6 @@ import beast.app.beauti.BeautiDoc;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.parameter.RealParameter;
-import beast.evolution.substitutionmodel.SubstitutionModel;
 
 import java.util.*;
 import methods.*;

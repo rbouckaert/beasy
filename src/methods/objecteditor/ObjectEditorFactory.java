@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import beast.app.beauti.BeautiDoc;
-import beast.app.draw.InputEditor;
 import beast.core.BEASTInterface;
 import beast.core.Input;
 import beast.core.util.Log;
@@ -70,7 +69,6 @@ public class ObjectEditorFactory {
         if (input.getType() == null) {
             input.determineClass(o);
         }
-		Class type = input.getType();
 		
         Class<?> inputClass = input.getType();
         if (inputClass == null) {

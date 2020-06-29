@@ -194,7 +194,7 @@ public class XML2HTMLPane extends JPanel {
 							};
 
 							org.w3c.dom.Document doc = engine.getDocument();
-							Element el = doc.getElementById("a");
+							// Element el = doc.getElementById("a");
 							NodeList lista = doc.getElementsByTagName("a");
 							for (int i = 0; i < lista.getLength(); i++) {
 								((org.w3c.dom.events.EventTarget) lista.item(i)).addEventListener("click", listener, false);

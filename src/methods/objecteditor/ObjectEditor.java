@@ -5,6 +5,18 @@ import java.lang.reflect.InvocationTargetException;
 import beast.app.beauti.BeautiDoc;
 import beast.core.Input;
 
+/**
+ * HTML version of beast.app.draw.InputEditor.
+ * 
+ * Base class for editors that provide a GUI for manipulating an Input for a BEASTObject.
+ * The idea is that for every type of Input there will be a dedicated editor, e.g.
+ * for a String Input, there will be an edit field, for a Boolean Input, there will
+ * be a checkbox in the editor.
+ * <p/>
+ * The default just provides an edit field and uses toString() on Input to get its value.
+ * To change the behaviour, override
+ * public void init(Input<?> input, BEASTObject beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons)
+ */
 public interface ObjectEditor {
 	
 

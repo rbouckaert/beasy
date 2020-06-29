@@ -2,11 +2,9 @@ package methods;
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
-import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.util.*;
 
@@ -24,13 +22,11 @@ import javax.swing.text.StyledDocument;
 
 import beast.app.beauti.BeautiDoc;
 import beast.app.beauti.BeautiSubTemplate;
-import beast.app.beauti.BeautiPanelConfig.Partition;
 import beast.app.draw.InputEditorFactory;
 import beast.core.*;
 import beast.core.parameter.Parameter;
 import beast.core.parameter.RealParameter;
 import beast.util.Randomizer;
-import methods.Phrase.PhraseType;
 
 /** Contains information about a word or phrase in the MethodsText,
  * including a pointer to where the phrase came from 
@@ -347,11 +343,11 @@ public class Phrase {
 				b.append("<a class='pe' href='/cmd=TipDates'>" + phrase.toHTML() + "</a>");
 			} else if (phrase instanceof CitationPhrase) {
 				int counter = ((CitationPhrase)phrase).counter;
-	        	String ref = "unknown";
-				try {
-					ref = ((CitationPhrase)phrase).toReference();
-				} catch (Exception e) {
-				}
+//	        	String ref = "unknown";
+//				try {
+//					ref = ((CitationPhrase)phrase).toReference();
+//				} catch (Exception e) {
+//				}
 				b.append("<sup><a href='/cmd=CitationPhrase counter=" + counter+ "'>[" + counter + "]</a></sup>");
 //						"<div class='tooltip'><sup>"
 //						+  +

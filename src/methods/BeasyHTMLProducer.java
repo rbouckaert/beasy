@@ -42,11 +42,11 @@ public class BeasyHTMLProducer {
 				b.append("<a class='pe' href='/cmd=TipDates'>" + phrase.toHTML() + "</a>");
 			} else if (phrase instanceof CitationPhrase) {
 				int counter = ((CitationPhrase)phrase).counter;
-	        	String ref = "unknown";
-				try {
-					ref = ((CitationPhrase)phrase).toReference();
-				} catch (Exception e) {
-				}
+//	        	String ref = "unknown";
+//				try {
+//					ref = ((CitationPhrase)phrase).toReference();
+//				} catch (Exception e) {
+//				}
 				b.append("<sup><a href='/cmd=CitationPhrase counter=" + counter+ "'>[" + counter + "]</a></sup>");
 //						"<div class='tooltip'><sup>"
 //						+  +

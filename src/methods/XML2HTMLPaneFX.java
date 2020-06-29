@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import javax.swing.text.AbstractDocument.Content;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -36,16 +35,13 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Skin;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.web.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -359,7 +355,7 @@ public class XML2HTMLPaneFX extends Application {
         for (BeautiAlignmentProvider provider : providers) {
         	MenuItem action = new MenuItem();
         	action.setOnAction(e -> addPartition(provider));
-            String providerInfo = provider.toString().replaceAll("Add ", "Add partition for ");
+            //String providerInfo = provider.toString().replaceAll("Add ", "Add partition for ");
             //action.putValue(Action.SHORT_DESCRIPTION, providerInfo);
             //action.putValue(Action.LONG_DESCRIPTION, providerInfo);
             // TODO: add tooltip text

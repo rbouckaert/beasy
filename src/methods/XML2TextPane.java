@@ -14,22 +14,14 @@ import java.io.PrintStream;
 import java.util.*;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.text.StyledDocument;
 
-import beast.app.beauti.AlignmentListInputEditor;
 import beast.app.beauti.BeautiConfig;
 import beast.app.beauti.BeautiDoc;
-import beast.app.beauti.BeautiPanelConfig;
 import beast.app.beauti.BeautiSubTemplate;
 import beast.app.beauti.InputFilter;
-import beast.app.draw.BEASTObjectDialog;
-import beast.app.draw.InputEditor;
-import beast.app.draw.InputEditor.ExpandOption;
 import beast.core.BEASTInterface;
 import beast.core.Description;
-import beast.core.Input;
-import beast.core.parameter.RealParameter;
 import beast.util.XMLParser;
 import methods.CitationPhrase.mode;
 import methods.implementation.BEASTObjectMethodsText;

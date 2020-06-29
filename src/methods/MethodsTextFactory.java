@@ -2,6 +2,7 @@ package methods;
 
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import beast.app.beauti.BeautiDoc;
@@ -26,7 +27,7 @@ public class MethodsTextFactory {
         List<String> methodsTypes = PackageManager.find(MethodsText.class, new String[]{"methods"});
         for (String methodsTypeName : methodsTypes) {
             try {
-                MethodsText methodsType = (MethodsText) BEASTClassLoader.forName(methodsTypeName).newInstance();
+                MethodsText methodsType = (MethodsText) BEASTClassLoader.forName(methodsTypeName).getDeclaredConstructor().newInstance();
                 object2MethodsText.put(methodsType.type(), methodsType.getClass());
             } catch (Exception e) {
                 // TODO: handle exception
@@ -41,9 +42,9 @@ public class MethodsTextFactory {
 		if (object2MethodsText.containsKey(clazz)) {
 			Class<?> c = object2MethodsText.get(clazz);
 			try {
-				MethodsText m = (MethodsText) c.newInstance();
+				MethodsText m = (MethodsText) c.getDeclaredConstructor().newInstance();
 				return m;
-			} catch (InstantiationException | IllegalAccessException e) {
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

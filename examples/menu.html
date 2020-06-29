@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<style>
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
+}
+</style>
+
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.subnav {
+  float: left;
+  overflow: hidden;
+}
+
+.subnav .subnavbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.navbar a:hover, .subnav:hover .subnavbtn {
+  background-color: red;
+}
+
+.subnav-content {
+  display: none;
+  position: absolute;
+  left: 0;
+  background-color: red;
+  width: 100%;
+  z-index: 1;
+}
+
+.subnav-content a {
+  float: left;
+  color: white;
+  display: block;
+  text-decoration: none;
+}
+
+.subnav-content a:hover {
+  background-color: #eee;
+  color: black;
+}
+
+.subnav:hover .subnav-content {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">File <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+        <a href="#">New</a>
+        <a href="#">Load</a>
+      <a href="#">Template</a>
+      <a href="#">Set working dir</a>
+      <a href="#">Manage packages</a>
+      <a href="#">Clear class path</a>
+      <a href="#">Launch apps</a>
+      <a href="#">Save</a>
+      <a href="#">Save as</a>
+      <a href="#">Close</a>
+      <a href="#">Exit</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Mode <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+        <a href="#">Automatic set clock rate</a>
+        <a href="#">Allow parameter linking</a>
+        <a href="#">Automatic set fix mean substitution rate flag</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">View <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+        <a href="#">View all</a>
+        <a href="#">Zoom in</a>
+        <a href="#">Zoom out</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Help <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+        <a href="#">Help</a>
+        <a href="#">Messages</a>
+        <a href="#">View model</a>
+        <a href="#">About</a>
+    </div>
+  </div>
+</div>
+
+
+<div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Tutorials
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    <li><a tabindex="-1" href="#">HTML</a></li>
+    <li><a tabindex="-1" href="#">CSS</a></li>
+    <li class="dropdown-submenu">
+      <a class="test" tabindex="-1" href="#">New dropdown <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li><a tabindex="-1" href="#">2nd level dropdown</  <a href="#home">Home</a></li>
+        <li><a tabindex="-1" href="#">2nd level dropdown</a></li>
+        <li class="dropdown-submenu">
+          <a class="test" href="#">Another dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">3rd level dropdown</a></li>
+            <li><a href="#">3rd level dropdown</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+</div>
+
+<script>
+$(document).ready(function(){
+  $('.dropdown-submenu a.test').on("click", function(e){
+    $(this).next('ul').toggle();
+    e.stopPropagation();
+    e.preventDefault();
+  });
+});
+</script>
+</body>
+</html>

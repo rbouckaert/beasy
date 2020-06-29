@@ -90,7 +90,7 @@ public class ModelEditor extends BEASTObject {
 		String id = src.substring(0, src.lastIndexOf(' '));
 		String inputName = src.substring(src.lastIndexOf(' ') + 1);
 		BEASTInterface o = doc.pluginmap.get(id);
-		Input input = o.getInput(inputName);
+		Input<?> input = o.getInput(inputName);
 		String value = getAttribute("value", cmd);
 		input.setValue(value, o);
 		return false;
@@ -122,7 +122,7 @@ public class ModelEditor extends BEASTObject {
 		String id = getAttribute("source", cmd);
 		BEASTInterface o = doc.pluginmap.get(id);
 		_input.setType(Object.class);
-	    ((List)_input.get()).clear();
+	    ((List<?>)_input.get()).clear();
 	    ((List)_input.get()).add(o);
 	    
 	    editor = null;
@@ -195,10 +195,10 @@ public class ModelEditor extends BEASTObject {
         for (String _class: importerClasses) {
         	try {
         		if (!_class.startsWith(this.getClass().getName())) {
-        			PriorProvider priorProvider = (PriorProvider) BEASTClassLoader.forName(_class).newInstance();
+        			PriorProvider priorProvider = (PriorProvider) BEASTClassLoader.forName(_class).getDeclaredConstructor().newInstance();
 					priorProviders.add(priorProvider);
         		}
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
