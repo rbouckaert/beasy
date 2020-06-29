@@ -1,171 +1,161 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en"><head>
 
+<link rel="stylesheet" href="navbar_files/bootstrap.css">
+<link rel="stylesheet" href="navbar_files/bootstrap-submenu.css">
+<script src="navbar_files/jquery-2.js" defer="defer"></script>
+<script src="navbar_files/bootstrap.js" defer="defer"></script>
+<script src="navbar_files/bootstrap-submenu.js" defer="defer"></script>
+<script src="navbar_files/docs.js" defer="defer"></script>
 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<style>
-.dropdown-submenu {
-  position: relative;
-}
-
-.dropdown-submenu .dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -1px;
-}
-</style>
-
-<style>
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0;
-}
-
-.navbar {
-  overflow: hidden;
-  background-color: #333;
-}
-
-.navbar a {
-  float: left;
-  font-size: 16px;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-.subnav {
-  float: left;
-  overflow: hidden;
-}
-
-.subnav .subnavbtn {
-  font-size: 16px;
-  border: none;
-  outline: none;
-  color: white;
-  padding: 14px 16px;
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-}
-
-.navbar a:hover, .subnav:hover .subnavbtn {
-  background-color: red;
-}
-
-.subnav-content {
-  display: none;
-  position: absolute;
-  left: 0;
-  background-color: red;
-  width: 100%;
-  z-index: 1;
-}
-
-.subnav-content a {
-  float: left;
-  color: white;
-  display: block;
-  text-decoration: none;
-}
-
-.subnav-content a:hover {
-  background-color: #eee;
-  color: black;
-}
-
-.subnav:hover .subnav-content {
-  display: block;
-}
-</style>
 </head>
 <body>
 
-<div class="navbar">
-  <div class="subnav">
-    <button class="subnavbtn">File <i class="fa fa-caret-down"></i></button>
-    <div class="subnav-content">
-        <a href="#">New</a>
-        <a href="#">Load</a>
-      <a href="#">Template</a>
-      <a href="#">Set working dir</a>
-      <a href="#">Manage packages</a>
-      <a href="#">Clear class path</a>
-      <a href="#">Launch apps</a>
-      <a href="#">Save</a>
-      <a href="#">Save as</a>
-      <a href="#">Close</a>
-      <a href="#">Exit</a>
-    </div>
+<nav class="navbar navbar-default">
+
+  <div class="collapse navbar-collapse">
+    <ul class="nav navbar-nav">
+      <li class="dropdown">
+        <a tabindex="0" data-toggle="dropdown" aria-expanded="false">File<span class="caret"></span></a>
+
+        <ul class="dropdown-menu" role="menu">
+          <li><a tabindex="0" >New</a></li>
+          <li><a tabindex="0" >Load</a></li>
+          <li class="divider"></li>
+          <li><a tabindex="0" >Add spherical geography</a></li>
+          <li><a tabindex="0" >Import alignment</a></li>
+          <li class="divider"></li>
+          <li class="dropdown-submenu">
+            <a tabindex="0" data-toggle="dropdown">Templates</a>
+
+            <ul class="dropdown-menu">
+              <li><a tabindex="0">Standard</a></li>
+              <li><a tabindex="0">StarBeast</a></li>
+              <li><a tabindex="0">Fixed tree</a></li>
+              <li><a tabindex="0">Tree Set</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-submenu">
+            <a tabindex="0" data-toggle="dropdown">Set working dir</a>
+
+            <ul class="dropdown-menu">
+              <li><a tabindex="0">BEAST</a></li>
+              <li><a tabindex="0">BEASTLabs</a></li>
+              <li><a tabindex="0">FixedTreeAnalysis</a></li>
+              <li><a tabindex="0">bModelTest</a></li>
+            </ul>
+          </li>
+
+	      <li><a tabindex="0">Manage packages</a></li>
+    	  <li><a tabindex="0">Clear class path</a></li>
+      	  <li><a tabindex="0">Launch apps</a></li>
+          <li class="divider"></li>
+          <li><a tabindex="0">Save</a></li>
+          <li><a tabindex="0">Save As</a></li>
+          <li class="divider"></li>
+          <li><a tabindex="0">Close</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <a tabindex="0" data-toggle="dropdown">Mode<span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+        	<li><a href="#">Automatic set clock rate</a></li>
+        	<li><a href="#">Allow parameter linking</a></li>
+        	<li><a href="#">Automatic set fix mean substitution rate flag</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <a tabindex="0" data-toggle="dropdown">View<span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+        	
+        
+        
+        	<li><input type="checkbox" onclick="toggle(partitions-tab)" checked> Partitions</input></li>
+        	<li><input type="checkbox" onclick="toggle(tipdates-tab)" checked> Tip Dates</input></li>
+        	<li><input type="checkbox" onclick="toggle(sitemodel-tab)" checked> Site Model</input></li>
+        	<li><input type="checkbox" onclick="toggle(clockmodel-tab)" checked> Clock Model</input></li>
+        	<li><input type="checkbox" onclick="toggle(operators-tab)"> Operators</input></li>
+        	<li><input type="checkbox" onclick="toggle(initials-tab)"> Initials</input></li>
+        	<li><input type="checkbox" onclick="toggle(startingtree-tab)"> Starting tree</input></li>
+        	<li><input type="checkbox" onclick="toggle(priors-tab)" checked> Priors</input></li>
+        	<li><input type="checkbox" onclick="toggle(mcmc-tab)" checked> MCMC</input></li>
+          <li class="divider"></li>
+        	<li><a href="#">View all</a></li>
+        	<li><a href="#">Zoom in</a></li>
+        	<li><a href="#">Zoom out</a></li>
+        </ul>
+      </li>
+    </ul>
+
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a tabindex="0" data-toggle="dropdown">Help<span class="caret"></span></a>
+
+        <!-- role="menu": fix moved by arrows (Bootstrap dropdown) -->
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">Help</a></li>
+          <li><a href="#">Messages</a></li>
+          <li><a href="#">View model</a></li>
+          <li class="divider"></li></li>
+          <li><a href="#">About</a></li>
+
+        </ul>
+      </li>
+    </ul>
   </div>
-  <div class="subnav">
-    <button class="subnavbtn">Mode <i class="fa fa-caret-down"></i></button>
-    <div class="subnav-content">
-        <a href="#">Automatic set clock rate</a>
-        <a href="#">Allow parameter linking</a>
-        <a href="#">Automatic set fix mean substitution rate flag</a>
-    </div>
-  </div>
-  <div class="subnav">
-    <button class="subnavbtn">View <i class="fa fa-caret-down"></i></button>
-    <div class="subnav-content">
-        <a href="#">View all</a>
-        <a href="#">Zoom in</a>
-        <a href="#">Zoom out</a>
-    </div>
-  </div>
-  <div class="subnav">
-    <button class="subnavbtn">Help <i class="fa fa-caret-down"></i></button>
-    <div class="subnav-content">
-        <a href="#">Help</a>
-        <a href="#">Messages</a>
-        <a href="#">View model</a>
-        <a href="#">About</a>
-    </div>
-  </div>
+</nav>
+
+  
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" id="partitions-nav">
+    <a class="nav-link active" id="partitions-tab" data-toggle="tab" href="#partitions" role="tab" aria-controls="partitions" aria-selected="true">Partitions</a>
+  </li>
+  <li class="nav-item" id="tipdates-nav">
+    <a class="nav-link" id="tipdates-tab" data-toggle="tab" href="#tipdates" role="tab" aria-controls="tipdates" aria-selected="false">Tip Dates</a>
+  </li>
+  <li class="nav-item" id="sitemodel-nav">
+    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#sitemodel" role="tab" aria-controls="sitemodel" aria-selected="false">Site Model</a>
+  </li>
+
+  <li class="nav-item" id="clockmodel-nav">
+    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#clockmodel" role="tab" aria-controls="clockmodel" aria-selected="false">Clock Model</a>
+  </li>
+  <li class="nav-item" id="operators-nav">
+    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#operators" role="tab" aria-controls="operators" aria-selected="false">Operators</a>
+  </li>
+  <li class="nav-item" id="initials-nav">
+    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#initials" role="tab" aria-controls="initials" aria-selected="false">Initials</a>
+  </li>
+  <li class="nav-item" id="startingtree-nav">
+    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#startingtree" role="tab" aria-controls="startingtree" aria-selected="false">Starting tree</a>
+  </li>
+  <li class="nav-item" id="priors-nav">
+    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#priors" role="tab" aria-controls="priors" aria-selected="false">Priors</a>
+  </li>
+  <li class="nav-item" id="mcmc-nav">
+    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#mcmc" role="tab" aria-controls="mcmc" aria-selected="false">MCMC</a>
+  </li>
+
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane active" id="partitions" role="tabpanel" aria-labelledby="partitions-tab">Partitions</div>
+  <div class="tab-pane " id="tipdates" role="tabpanel" aria-labelledby="tipdates-tab">Tip Dates</div>
+  <div class="tab-pane" id="sitemodel" role="tabpanel" aria-labelledby="sitemodel-tab">Site Model</div>
+  <div class="tab-pane" id="clockmodel" role="tabpanel" aria-labelledby="clockmodel-tab">Clock Model</div>
+  <div class="tab-pane" id="operators" role="tabpanel" aria-labelledby="operators-tab">Operators</div>
+  <div class="tab-pane" id="initials" role="tabpanel" aria-labelledby="initials-tab">Initials</div>
+  <div class="tab-pane" id="startingtree" role="tabpanel" aria-labelledby="startingtree-tab">Starting Tree</div>
+  <div class="tab-pane" id="priors" role="tabpanel" aria-labelledby="priors-tab">Priors</div>
+  <div class="tab-pane" id="mcmc" role="tabpanel" aria-labelledby="mcmc-tab">MCMC</div>
 </div>
 
-
-<div class="dropdown">
-  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Tutorials
-  <span class="caret"></span></button>
-  <ul class="dropdown-menu">
-    <li><a tabindex="-1" href="#">HTML</a></li>
-    <li><a tabindex="-1" href="#">CSS</a></li>
-    <li class="dropdown-submenu">
-      <a class="test" tabindex="-1" href="#">New dropdown <span class="caret"></span></a>
-      <ul class="dropdown-menu">
-        <li><a tabindex="-1" href="#">2nd level dropdown</  <a href="#home">Home</a></li>
-        <li><a tabindex="-1" href="#">2nd level dropdown</a></li>
-        <li class="dropdown-submenu">
-          <a class="test" href="#">Another dropdown <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">3rd level dropdown</a></li>
-            <li><a href="#">3rd level dropdown</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
-</div>
+</body>
 
 <script>
-$(document).ready(function(){
-  $('.dropdown-submenu a.test').on("click", function(e){
-    $(this).next('ul').toggle();
-    e.stopPropagation();
-    e.preventDefault();
-  });
-});
+function toggle(item) {
+	alert(item);
+}
 </script>
-</body>
 </html>
