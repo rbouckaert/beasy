@@ -79,7 +79,7 @@ MODETOKEN: 'mode';
 
 LINKTYPE : 'clock' | 'tree' | 'sitemodel' ;
 SHARETYPE : 'param' ;
-MODENAME : 'autoUpdateFixMeanSubstRate' | 'autoSetClockRate';
+MODENAME : 'autoUpdateFixMeanSubstRate' | 'autoSetClockRate' | 'allowParameterLinking';
 
 STRING :
     [a-zA-Z0-9|#*%/.\-+_&:$]+  // these chars don't need quotes

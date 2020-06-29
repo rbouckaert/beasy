@@ -60,9 +60,9 @@
       <li class="dropdown">
         <a tabindex="0" data-toggle="dropdown">Mode<span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
-        	<li><a href="#">Automatic set clock rate</a></li>
-        	<li><a href="#">Allow parameter linking</a></li>
-        	<li><a href="#">Automatic set fix mean substitution rate flag</a></li>
+        	<li style="padding-left:10px;"><input id="mode-autoSetClockRate" type="checkbox" onclick="toggleMode('autoSetClockRate')" checked >Automatic set clock rate</input></li>
+        	<li style="padding-left:10px;"><input id="mode-allowParameterLinking" type="checkbox" onclick="toggleMode('allowParameterLinking')" checked="false">Allow parameter linking</input></li>
+        	<li style="padding-left:10px;"><input id="mode-autoUpdateFixMeanSubstRate" type="checkbox" onclick="toggleMode('autoUpdateFixMeanSubstRate')" checked >Automatic set fix mean substitution rate flag</input></li>
         </ul>
       </li>
 
@@ -72,19 +72,21 @@
         	
         
         
-        	<li><input type="checkbox" onclick="toggle(partitions-tab)" checked> Partitions</input></li>
-        	<li><input type="checkbox" onclick="toggle(tipdates-tab)" checked> Tip Dates</input></li>
-        	<li><input type="checkbox" onclick="toggle(sitemodel-tab)" checked> Site Model</input></li>
-        	<li><input type="checkbox" onclick="toggle(clockmodel-tab)" checked> Clock Model</input></li>
-        	<li><input type="checkbox" onclick="toggle(operators-tab)"> Operators</input></li>
-        	<li><input type="checkbox" onclick="toggle(initials-tab)"> Initials</input></li>
-        	<li><input type="checkbox" onclick="toggle(startingtree-tab)"> Starting tree</input></li>
-        	<li><input type="checkbox" onclick="toggle(priors-tab)" checked> Priors</input></li>
-        	<li><input type="checkbox" onclick="toggle(mcmc-tab)" checked> MCMC</input></li>
+        	<li style="padding-left:10px;"><input id="view-partitions" type="checkbox" onclick="toggle('partitions')" checked > Partitions</input></li>
+        	<li style="padding-left:10px;"><input id="view-tipdates" type="checkbox" onclick="toggle('tipdates')" checked> Tip Dates</input></li>
+        	<li style="padding-left:10px;"><input id="view-sitemodel" type="checkbox" onclick="toggle('sitemodel')" checked> Site Model</input></li>
+        	<li style="padding-left:10px;"><input id="view-clockmodel" type="checkbox" onclick="toggle('clockmodel')" checked> Clock Model</input></li>
+        	<li style="padding-left:10px;"><input id="view-operators" type="checkbox" onclick="toggle('operators')"> Operators</input></li>
+        	<li style="padding-left:10px;"><input id="view-initials" type="checkbox" onclick="toggle('initials')"> Initials</input></li>
+        	<li style="padding-left:10px;"><input id="view-startingtree" type="checkbox" onclick="toggle('startingtree')"> Starting tree</input></li>
+        	<li style="padding-left:10px;"><input id="view-priors" type="checkbox" onclick="toggle('priors')" checked> Priors</input></li>
+        	<li style="padding-left:10px;"><input id="view-mcmc" type="checkbox" onclick="toggle('mcmc')" checked> MCMC</input></li>
           <li class="divider"></li>
-        	<li><a href="#">View all</a></li>
+        	<li><a href="#" onclick="viewAll()">View all</a></li>
+<!--
         	<li><a href="#">Zoom in</a></li>
         	<li><a href="#">Zoom out</a></li>
+-->        	
         </ul>
       </li>
     </ul>
@@ -116,26 +118,26 @@
     <a class="nav-link" id="tipdates-tab" data-toggle="tab" href="#tipdates" role="tab" aria-controls="tipdates" aria-selected="false">Tip Dates</a>
   </li>
   <li class="nav-item" id="sitemodel-nav">
-    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#sitemodel" role="tab" aria-controls="sitemodel" aria-selected="false">Site Model</a>
+    <a class="nav-link" id="sitemodel-tab" data-toggle="tab"  href="#sitemodel" role="tab" aria-controls="sitemodel" aria-selected="false">Site Model</a>
   </li>
 
   <li class="nav-item" id="clockmodel-nav">
-    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#clockmodel" role="tab" aria-controls="clockmodel" aria-selected="false">Clock Model</a>
+    <a class="nav-link" id="clockmodel-tab" data-toggle="tab"  href="#clockmodel" role="tab" aria-controls="clockmodel" aria-selected="false">Clock Model</a>
   </li>
   <li class="nav-item" id="operators-nav">
-    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#operators" role="tab" aria-controls="operators" aria-selected="false">Operators</a>
+    <a class="nav-link" id="operators-tab" data-toggle="tab"  href="#operators" role="tab" aria-controls="operators" aria-selected="false">Operators</a>
   </li>
   <li class="nav-item" id="initials-nav">
-    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#initials" role="tab" aria-controls="initials" aria-selected="false">Initials</a>
+    <a class="nav-link" id="initials-tab" data-toggle="tab"  href="#initials" role="tab" aria-controls="initials" aria-selected="false">Initials</a>
   </li>
   <li class="nav-item" id="startingtree-nav">
-    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#startingtree" role="tab" aria-controls="startingtree" aria-selected="false">Starting tree</a>
+    <a class="nav-link" id="startingtree-tab" data-toggle="tab"  href="#startingtree" role="tab" aria-controls="startingtree" aria-selected="false">Starting tree</a>
   </li>
   <li class="nav-item" id="priors-nav">
-    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#priors" role="tab" aria-controls="priors" aria-selected="false">Priors</a>
+    <a class="nav-link" id="priors-tab" data-toggle="tab"  href="#priors" role="tab" aria-controls="priors" aria-selected="false">Priors</a>
   </li>
   <li class="nav-item" id="mcmc-nav">
-    <a class="nav-link" id="tipdates-tab" data-toggle="tab"  href="#mcmc" role="tab" aria-controls="mcmc" aria-selected="false">MCMC</a>
+    <a class="nav-link" id="mcmc-tab" data-toggle="tab"  href="#mcmc" role="tab" aria-controls="mcmc" aria-selected="false">MCMC</a>
   </li>
 
 </ul>
@@ -155,7 +157,30 @@
 
 <script>
 function toggle(item) {
-	alert(item);
+var x = $('#'+item + "-tab")[0]; //document.getElementById(item + "-tab");
+if (x.style.display === "none") {
+  x.style.display = "block";
+  x.tab('show');
+} else {
+    x.style.display = "none";
+}
+}
+
+function viewAll() {
+var i, tabs = ["partitions","tipdates","sitemodel","clockmodel","operators","initials","startingtree","priors","mcmc"];
+for (i of tabs) {
+	$('#'+i + "-tab")[0].style.display = "block";
+	$('#view-'+i)[0].checked = true;
+}
+}
+
+function toggleMode(item) {
+var x = $('#mode-'+item)[0]; 
+if (x.checked == true) {
+alert("check " + item);
+} else {
+alert("uncheck " + item);
+}
 }
 </script>
 </html>

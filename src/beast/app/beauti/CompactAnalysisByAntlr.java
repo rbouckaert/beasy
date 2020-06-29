@@ -4,6 +4,7 @@ package beast.app.beauti;
 
 
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +46,6 @@ import beast.math.distributions.MRCAPrior;
 import beast.util.BEASTClassLoader;
 import beast.util.PackageManager;
 import beasy.JConsole;
-import jdk.nashorn.internal.runtime.Context.ThrowErrorManager;
 
 public class CompactAnalysisByAntlr extends CABaseListener {
 	BeautiDoc doc = null;
@@ -1117,11 +1117,16 @@ public class CompactAnalysisByAntlr extends CABaseListener {
 			} else if (modeName.length() > 4 && "autoSetClockRate".startsWith(modeName)) {
 				doc.autoSetClockRate = Boolean.parseBoolean(value);
 				Log.warning("autoSetClockRate set to " + doc.autoSetClockRate);
+			} else if (modeName.length() > 4 && "allowParameterLinking".startsWith(modeName)) {
+				// useful for GUI version only, does not impact scripts
+				doc.allowLinking = Boolean.parseBoolean(value);
+				Log.warning("allowLinking set to " + doc.allowLinking);
 			}
 			} catch (Throwable e) {
 				Log.warning("Could not interpret command: " + ctx.getText());
 				Log.warning("Expected 'mode autoUpdateFixMeanSubstRate = true/false' or");
-				Log.warning("Expected 'mode autoSetClockRate = true/false'");
+				Log.warning("Expected 'mode autoSetClockRate = true/false' or");
+				Log.warning("Expected 'mode allowParameterLinking = true/false'");
 			}
 
 			return null;
