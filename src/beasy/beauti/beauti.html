@@ -49,27 +49,20 @@ function doIt(value, cmd) {
           <li><a tabindex="0" >New</a></li>
           <li><a tabindex="0" >Load</a></li>
           <li class="divider"></li>
-          <li><a tabindex="0" >Add spherical geography</a></li>
-          <li><a tabindex="0" >Import alignment</a></li>
+          $(imports)
           <li class="divider"></li>
           <li class="dropdown-submenu">
             <a tabindex="0" data-toggle="dropdown">Templates</a>
 
             <ul class="dropdown-menu">
-              <li><a tabindex="0">Standard</a></li>
-              <li><a tabindex="0">StarBeast</a></li>
-              <li><a tabindex="0">Fixed tree</a></li>
-              <li><a tabindex="0">Tree Set</a></li>
+              $(templates)
             </ul>
           </li>
           <li class="dropdown-submenu">
             <a tabindex="0" data-toggle="dropdown">Set working dir</a>
 
             <ul class="dropdown-menu">
-              <li><a tabindex="0">BEAST</a></li>
-              <li><a tabindex="0">BEASTLabs</a></li>
-              <li><a tabindex="0">FixedTreeAnalysis</a></li>
-              <li><a tabindex="0">bModelTest</a></li>
+              $(workingdir)
             </ul>
           </li>
 
@@ -96,24 +89,9 @@ function doIt(value, cmd) {
       <li class="dropdown">
         <a tabindex="0" data-toggle="dropdown">View<span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
-        	
-        
-        
-        	<li style="padding-left:10px;"><input id="view-partitions" type="checkbox" onclick="toggle('partitions')" checked > Partitions</input></li>
-        	<li style="padding-left:10px;"><input id="view-tipdates" type="checkbox" onclick="toggle('tipdates')" checked> Tip Dates</input></li>
-        	<li style="padding-left:10px;"><input id="view-sitemodel" type="checkbox" onclick="toggle('sitemodel')" checked> Site Model</input></li>
-        	<li style="padding-left:10px;"><input id="view-clockmodel" type="checkbox" onclick="toggle('clockmodel')" checked> Clock Model</input></li>
-        	<li style="padding-left:10px;"><input id="view-operators" type="checkbox" onclick="toggle('operators')"> Operators</input></li>
-        	<li style="padding-left:10px;"><input id="view-initials" type="checkbox" onclick="toggle('initials')"> Initials</input></li>
-        	<li style="padding-left:10px;"><input id="view-startingtree" type="checkbox" onclick="toggle('startingtree')"> Starting tree</input></li>
-        	<li style="padding-left:10px;"><input id="view-priors" type="checkbox" onclick="toggle('priors')" checked> Priors</input></li>
-        	<li style="padding-left:10px;"><input id="view-mcmc" type="checkbox" onclick="toggle('mcmc')" checked> MCMC</input></li>
+         $(viewMenu)
           <li class="divider"></li>
         	<li><a href="#" onclick="viewAll()">View all</a></li>
-<!--
-        	<li><a href="#">Zoom in</a></li>
-        	<li><a href="#">Zoom out</a></li>
--->        	
         </ul>
       </li>
     </ul>
@@ -138,46 +116,10 @@ function doIt(value, cmd) {
 
   
 <ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item" id="partitions-nav">
-    <a class="nav-link active" id="partitions-tab" data-toggle="tab" href="#partitions" role="tab" aria-controls="partitions" aria-selected="true">Partitions</a>
-  </li>
-  <li class="nav-item" id="tipdates-nav">
-    <a class="nav-link" id="tipdates-tab" data-toggle="tab" href="#tipdates" role="tab" aria-controls="tipdates" aria-selected="false">Tip Dates</a>
-  </li>
-  <li class="nav-item" id="sitemodel-nav">
-    <a class="nav-link" id="sitemodel-tab" data-toggle="tab"  href="#sitemodel" role="tab" aria-controls="sitemodel" aria-selected="false">Site Model</a>
-  </li>
-
-  <li class="nav-item" id="clockmodel-nav">
-    <a class="nav-link" id="clockmodel-tab" data-toggle="tab"  href="#clockmodel" role="tab" aria-controls="clockmodel" aria-selected="false">Clock Model</a>
-  </li>
-  <li class="nav-item" id="operators-nav">
-    <a class="nav-link" id="operators-tab" style="display:none" data-toggle="tab"  href="#operators" role="tab" aria-controls="operators" aria-selected="false">Operators</a>
-  </li>
-  <li class="nav-item" id="initials-nav">
-    <a class="nav-link" id="initials-tab" style="display:none" data-toggle="tab"  href="#initials" role="tab" aria-controls="initials" aria-selected="false">Initials</a>
-  </li>
-  <li class="nav-item" id="startingtree-nav">
-    <a class="nav-link" id="startingtree-tab" style="display:none" data-toggle="tab"  href="#startingtree" role="tab" aria-controls="startingtree" aria-selected="false">Starting tree</a>
-  </li>
-  <li class="nav-item" id="priors-nav">
-    <a class="nav-link" id="priors-tab" data-toggle="tab"  href="#priors" role="tab" aria-controls="priors" aria-selected="false">Priors</a>
-  </li>
-  <li class="nav-item" id="mcmc-nav">
-    <a class="nav-link" id="mcmc-tab" data-toggle="tab"  href="#mcmc" role="tab" aria-controls="mcmc" aria-selected="false">MCMC</a>
-  </li>
-
+ $(tabs)
 </ul>
 <div class="tab-content" id="myTabContent">
-  <div class="tab-pane active" id="partitions" role="tabpanel" aria-labelledby="partitions-tab">Partitions</div>
-  <div class="tab-pane " id="tipdates" role="tabpanel" aria-labelledby="tipdates-tab">Tip Dates</div>
-  <div class="tab-pane" id="sitemodel" role="tabpanel" aria-labelledby="sitemodel-tab">Site Model</div>
-  <div class="tab-pane" id="clockmodel" role="tabpanel" aria-labelledby="clockmodel-tab">Clock Model</div>
-  <div class="tab-pane" id="operators" role="tabpanel" aria-labelledby="operators-tab">Operators</div>
-  <div class="tab-pane" id="initials" role="tabpanel" aria-labelledby="initials-tab">Initials</div>
-  <div class="tab-pane" id="startingtree" role="tabpanel" aria-labelledby="startingtree-tab">Starting Tree</div>
-  <div class="tab-pane" id="priors" role="tabpanel" aria-labelledby="priors-tab">Priors</div>
-  <div class="tab-pane" id="mcmc" role="tabpanel" aria-labelledby="mcmc-tab">MCMC</div>
+ $(content)
 </div>
 
 </body>

@@ -4,7 +4,6 @@ package beasy.beauti;
 import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -231,26 +230,7 @@ System.out.println(response);
         
     }
 
-	
-	static String baseHTML;
-	
-	static {
-		InputStream in = BeasyBeautiServer.class.getResourceAsStream("/beauti.html"); 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        StringBuffer buf = new StringBuffer();
-        String str = null;
-        try {
-	        while (reader.ready()) {
-	            str = reader.readLine();
-	            buf.append(str);
-	            buf.append('\n');
-	        }
-	        reader.close();
-        } catch (IOException e) {
-        	e.printStackTrace();
-        }
-        baseHTML = buf.toString();
-	}
+
 			
     public static void main(String[] args) throws Exception {
 		MCMC mcmc = null;
