@@ -21,9 +21,10 @@ while ($s = <>) {
 $indent[$n] = -1;
 
 
-print '<svg xmlns="http://www.w3.org/2000/svg" height="'.($dy * $n + 50).'">
+print '<svg xmlns="http://www.w3.org/2000/svg" height="'.($dy * $n + 50).'" width="400">
 <style type="text/css">
 .label {fill:#000;stroke:none;font-family:arial;font-size:10pt;font-style: normal;}
+.target {fill:#a00;stroke:none;font-family:arial;font-size:10pt;font-style: normal;}
 .labeld {fill:#aaa;stroke:none;font-family:arial;font-size:10pt;font-style: normal;}
 .smalllabel {fill:#0000f0;font-size:8pt;font-family:arial;text-anchor:middle;alignment-baseline:centre;}
 .arrow {stroke:blue;stroke-width:2;fill:none;}
@@ -54,7 +55,13 @@ for ($i = 0; $i < $n; $i++) {
 #			$s[$i] =~ s/@[a-zA-Z0-9]+/\@line $id{$id}/;
 #		}
 #	}
-	print "<text class=\"label\" x=\"".(40+$indent[$i]*$dx)."\" y=\"".($i*$dy+20)."\">".$s[$i]."</text>\n";
+	if ($i > 0 && $indent[$i] >= $indent[$i + 1]) {
+		$c = "target";
+	} else {
+		$c = "label";
+	}
+	print "<text class=\"$c\" x=\"".(40+$indent[$i]*$dx)."\" y=\"".($i*$dy+20)."\">".$s[$i]."</text>\n";
+	
 	print "<text class=\"label\" x=\"".($i<9?"7":"0")."\" y=\"".($i*$dy+20)."\">".($i+1).".</text>\n";
 }
 

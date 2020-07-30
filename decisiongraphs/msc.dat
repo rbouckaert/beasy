@@ -1,0 +1,20 @@
+Data is alignments instead of 1 SNP per loci
+	Relaxed/random local clock on species tree
+		Need it now
+			StarBEAST2
+		StarBeast3
+	Interest in pop size on species tree		
+		*BEAST/StarBEAST2
+		StarBeast3
+	Has (significant) migration events	
+		DENIM
+		AIM
+	Has introgression and hybridisation and few taxa
+		SpeciesNetwork
+	Interest in species delimitation
+		DISSECT
+		Any of the *BEASTs + model comparison
+	StarBeast3
+Need exact inference/small data
+	SNAPP
+Snapper
