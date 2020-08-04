@@ -850,7 +850,7 @@ public class Beauti extends beast.app.beauti.Beauti implements BeautiDocListener
         for (AbstractAction a : templateActions) {
             templateMenu.add(a);
             String name = a.NAME;
-            templates.append("<li><a tabindex=\"0\" >" + name +"</a></li>\n");
+            templates.append("<li><a tabindex=\"0\" onclick=\"doCmd('template "+ name +"')\">" + name +"</a></li>\n");
         }
         templatedHTML = templatedHTML.replaceAll("\\$\\(templates\\)", templates.toString());
         
@@ -1263,8 +1263,6 @@ public class Beauti extends beast.app.beauti.Beauti implements BeautiDocListener
 	}
 
     public static void main(String[] args) {
-    	Utils6.startSplashScreen();
-    	Utils6.logToSplashScreen("Initialising BEAUti");
     	
     	// retrieve previously stored working directory
     	String currentDir = Utils.getBeautiProperty("currentDir");

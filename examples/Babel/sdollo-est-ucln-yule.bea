@@ -2,4 +2,4 @@
 template ../../Babel/templates/SDollo;
 import 'Add Alignment' $(file);
 use RelaxedClockLogNormal;
-//save /tmp/sdolloe-est-ucln-yule.xml;
+//save /tmp/sdollo-est-ucln-yule.xml;
