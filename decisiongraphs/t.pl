@@ -21,7 +21,7 @@ while ($s = <>) {
 $indent[$n] = -1;
 
 
-print '<svg xmlns="http://www.w3.org/2000/svg" height="'.($dy * $n + 50).'" width="400">
+print '<svg xmlns="http://www.w3.org/2000/svg" height="'.($dy * $n + 50).'" width="1000">
 <style type="text/css">
 .label {fill:#000;stroke:none;font-family:arial;font-size:10pt;font-style: normal;}
 .target {fill:#a00;stroke:none;font-family:arial;font-size:10pt;font-style: normal;}
@@ -43,7 +43,7 @@ print '<svg xmlns="http://www.w3.org/2000/svg" height="'.($dy * $n + 50).'" widt
 
 
 for ($i = 0; $i < $n; $i++) {
-	if ($s[$i] =~ /\(\+\@([a-zA-Z0-9\.\-\_]+)\)/) {
+	while ($s[$i] =~ /\(\+\@([a-zA-Z0-9\.\-\_]+)\)/) {
 		$id = $1;
 		if ($id{$id} ne '') {
 			$s[$i] =~ s/\(\+\@[a-zA-Z0-9\.\-\_]+\)/$id{$id}/;
