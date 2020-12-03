@@ -1,12 +1,23 @@
-Initial exploratory analysis but not SNAPP, snapper (others?)?	{#1}
-	Run with strict clock (StarBeast2) + rerun with log normal relaxed clock (SpeciesTreeRLC). Both converge?	{#2}
-		Log normal analysis has coefficient of variation > 0.1? {#3}
-			Perform model selection strict vs relaxed clock (e.g. nested sampling, path sampling) {#4}
-		Use strict clock {#5}
-	Use the analysis that converges {#6}
-Relaxed clock analysis preferred from exploratory analysis (+@2)? {#7}
-	Run with random local clock (SpeciesTreeRLC) -- ideal choice, if it converges {#8}
-	Relaxed clock exponential (SpeciesTreeUCED) -- perform model selection against other clock models {#9}
+Multi Species Coalescent analysis?
+	Initial exploratory analysis but not SNAPP, snapper (others?)?	{#1}
+		Run with strict clock (StarBeast2/3) + rerun with log normal relaxed clock (SpeciesTreeUCLN). Both converge?	{#2}
+			Log normal analysis has coefficient of variation > 0.1? {#3}
+				Perform model selection strict vs relaxed clock (e.g. nested sampling, path sampling) {#4}
+			Use strict clock {#5}
+		Use the analysis that converges {#6}
+	Relaxed clock analysis preferred from exploratory analysis (+@2)? {#7}
+		Run with random local clock (SpeciesTreeRLC) -- ideal choice, if it converges {#8}
+		Relaxed clock exponential (SpeciesTreeUCED) -- perform model selection against other clock models {#9}
+	Use strict clock
+Initial exploratory analysis {#161}
+	Run with strict clock + rerun with log normal relaxed clock (ORC). Both converge?	{#162}
+		Log normal analysis has coefficient of variation > 0.1? {#163}
+			Perform model selection strict vs relaxed clock (e.g. nested sampling, path sampling) {#164}
+		Use strict clock {#165}
+	Use the analysis that converges {#166}
+Relaxed clock analysis preferred from exploratory analysis (+@162)? {#167}
+	Run with random local clock -- ideal choice, if it converges {#168}
+	Relaxed clock exponential (ORC+exponential rate prior) -- perform model selection against other clock models {#169}
 Add partition/data to existing analysis? {#10}
 	goto (+@66) {#11}
 Set species tree prior? {#13}
