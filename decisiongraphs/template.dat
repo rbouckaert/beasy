@@ -27,14 +27,14 @@ Add prior on nodes in tree? {#15}
 Has demes/discrete trait? {#18}
 	Is coalescent, but not multi-species coalescent? {#19}
 		Migration rates are function of other data? {#20}
-			Select MascotBSSVS template and goto {+@66}  {#28}
+			Select MascotBSSVS template and goto (+@66)  {#28}
 		Has less than 4 demes? {#22}
-			MultiTypeTree, if this takes too long, goto {+@25} {#23}
+			MultiTypeTree, if this takes too long, goto (+@25) {#23}
 		Choose one of the following {#25}
-			Choose Mascot template and goto {+@66}  {#27}
+			Choose Mascot template and goto (+@66)  {#27}
 			Use script to generate BASTA XML(template does not work?!?) {#26}
 	Is birth death {#150}
-		multitype birth-death model and goto {+@66} {#151}
+		multitype birth-death model and goto (+@66) {#151}
 	Add discrete trait partition to species tree selected (+@12) {#29}
 Language sequences? {#30}
 	Binary/cognate data?	{#24}
@@ -195,7 +195,7 @@ Setting priors: parameter?
 		look up in table (nuclear DNA 10e-6 - 10e-9?, mitochondrial/chloroplast 10e-4 - 10e-7?, virus ...., bacterial , archea , ...)
 	frequencies?
 		dna
-			Dirichlet(1,1,1,1) for uniform, Dirichlet(4,4,4,4) when badly mixing 
+			Dirichlet(1,1,1,1) for uniform, Dirichlet(4,4,4,4) when badly mixing
 		amino acid
 			Dirichlet(4,..,4) seems appropriate based on empirical models
 		other: Dirichlet with parameters representing 1+counts of observations representing prior knowledge

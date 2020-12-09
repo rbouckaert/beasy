@@ -1,4 +1,5 @@
 
+$offsety = 15;
 $dy = 15;
 $dx = 50;
 
@@ -46,7 +47,7 @@ for ($i = 0; $i < $n; $i++) {
 	while ($s[$i] =~ /\(\+\@([a-zA-Z0-9\.\-\_]+)\)/) {
 		$id = $1;
 		if ($id{$id} ne '') {
-			$s[$i] =~ s/\(\+\@[a-zA-Z0-9\.\-\_]+\)/$id{$id}/;
+			$s[$i] =~ s/\(\+\@[a-zA-Z0-9\.\-\_]+\)/<a href="#$id{$id}">$id{$id}<\/a>/;
 		}
 	}
 #	if ($s[$i] =~ /@([a-zA-Z0-9]+)/) {
@@ -60,9 +61,9 @@ for ($i = 0; $i < $n; $i++) {
 	} else {
 		$c = "label";
 	}
-	print "<text class=\"$c\" x=\"".(40+$indent[$i]*$dx)."\" y=\"".($i*$dy+20)."\">".$s[$i]."</text>\n";
-	
-	print "<text class=\"label\" x=\"".($i<9?"7":"0")."\" y=\"".($i*$dy+20)."\">".($i+1).".</text>\n";
+	print "<text id=\"".($i+1)."\" class=\"$c\" x=\"".(40+$indent[$i]*$dx)."\" y=\"".($i*$dy+$offsety)."\">".$s[$i]."</text>\n";
+
+	print "<text class=\"label\" x=\"".($i<9?"7":"0")."\" y=\"".($i*$dy+$offsety)."\">".($i+1).".</text>\n";
 }
 
 
@@ -70,7 +71,7 @@ for ($i = 0; $i < $n; $i++) {
 
 	if ($indent[$i] < $indent[$i + 1]) {
 		$x = 40 + $indent[$i]*$dx + 30;
-		$y = 20 + $i*$dy + 2;
+		$y = $offsety + $i*$dy + 2;
 		if ($indent[$i] <= $indent[$i + 2]) {
 			print "<path d=\"M $x $y c 0 8,0 8, 10 8\" class=\"arrow\" marker-end=\"url(#arrow)\"/>\n";
 			$x -= 12;
@@ -79,23 +80,23 @@ for ($i = 0; $i < $n; $i++) {
 		} elsif ($indent[$i + 1] > $indent[$i + 2]) {
 			print "<path d=\"M $x $y c 0 8,0 8, 10 8\" class=\"arrow\" marker-end=\"url(#arrow)\"/>\n";
 		}
-		
+
 		$j = $i + 1;
 		while ($j < $n && $indent[$i] < $indent[$j]) {
 			$j++;
 		}
 		if ($indent[$i] == $indent[$j]) {
 			$x = 40 + $indent[$i]*$dx + 2;
-			$y1 = 20 + $i*$dy + 5;
-			$y2 = 20 + $j*$dy - $dy - 5;
+			$y1 = $offsety + $i*$dy + 5;
+			$y2 = $offsety + $j*$dy - $dy - 5;
 			print "<path d=\"M $x $y1 L $x $y2\" class=\"arrow\" marker-end=\"url(#arrow)\"/>\n";
 			$x -= 12;
 			$y1 += 9;
 			print "<text x=\"$x\" y=\"$y1\" class=\"smalllabel\">no</text>\n";
-		}		
+		}
 	} elsif ($indent[$i] == $indent[$i + 1]) {
 		$x = 40 + $indent[$i]*$dx + 30 - $dx;
-		$y = 20 + $i*$dy - 6;
+		$y = $offsety + $i*$dy - 6;
 		print "<path d=\"M $x $y c 0 16,0 16, 10 16\" class=\"arrow\" marker-end=\"url(#arrow)\"/>\n";
 		$x += 12;
 		$y += 12;
