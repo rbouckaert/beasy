@@ -9,6 +9,7 @@ public class Rule {
 	Rule [] ifTrue;
 	Rule ifFalse;
 	int go_to;
+	int indent;
 	
 	public Rule(String label, String condition, int go_to) {
 		this.label = label;

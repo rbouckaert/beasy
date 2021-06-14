@@ -41,11 +41,12 @@ public class KBParser {
         for (int i = 0; i < k; i++) {
         	String str2 = strs[i];
     		if (str2.indexOf("{#") > 0) {
-    			String label = str2.substring(str2.indexOf("{#") + 2);
+    			String label = str2.substring(str2.indexOf("{#") + 1);
+    			label = label.replaceAll("}", "").trim();
     			ruleMap.put(label, i);
     		}
     		int j = 0;
-    		while (Character.isWhitespace(str2.charAt(j))) {
+    		while (j < str2.length() && Character.isWhitespace(str2.charAt(j))) {
     			j++;
     		}
     		indent[i] = j;
@@ -54,6 +55,7 @@ public class KBParser {
         // parse single lines
         for (int i = 0; i < k; i++) {
         	rules[i] = parseRule(strs[i], rules, ruleMap);
+        	rules[i].indent = indent[i];
         }
 
         // parse rule relations
@@ -77,6 +79,7 @@ public class KBParser {
 				if (indent[j] == indent[i] + 1) {
 					options.add(rules[j]);
 				}
+				j++;
 			}
 			rule.ifTrue = options.toArray(new Rule[] {});
 			if (indent[j] == indent[i]) {
@@ -93,7 +96,7 @@ public class KBParser {
 		if (string.indexOf("{#") > 0) {
 			label = string.substring(string.indexOf("{#") + 2);
 			if (label.contains("}")) {
-				label = label.substring(0, label.indexOf("}") - 1);
+				label = label.substring(0, label.indexOf("}"));
 			}
 			condition = string.substring(0, string.indexOf("{#"));
 		} else {
@@ -101,7 +104,11 @@ public class KBParser {
 		}
 		if (condition.contains("goto")) {
 			String target = condition.substring(condition.indexOf("goto") + 5);
-			go_to = ruleMap.get(target);
+			target = "#" + target.trim().replaceAll("[\\(\\+@\\)]","").trim();
+			if (!ruleMap.containsKey(target)) {
+				throw new IllegalArgumentException("Could not find target " + target);
+			}
+			go_to = ruleMap.get(target)+1;
 			condition = condition.substring(0, condition.indexOf("goto"));
 		}
 		Rule rule = new Rule(label, condition, go_to);
