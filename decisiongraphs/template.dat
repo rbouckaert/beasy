@@ -6,7 +6,7 @@ Multi Species Coalescent analysis?
 			Use strict clock {#5}
 		Use the analysis that converges {#6}
 	Relaxed clock analysis preferred from exploratory analysis (+@2)? {#7}
-		Run with random local clock (SpeciesTreeRLC) -- ideal choice, if it converges {#8}
+		Run with random local clock (SpeciesTreeUCLN) -- ideal choice, if it converges {#8}
 		Relaxed clock exponential (SpeciesTreeUCED) -- perform model selection against other clock models {#9}
 	Use strict clock
 Initial exploratory analysis {#161}
@@ -27,14 +27,14 @@ Add prior on nodes in tree? {#15}
 Has demes/discrete trait? {#18}
 	Is coalescent, but not multi-species coalescent? {#19}
 		Migration rates are function of other data? {#20}
-			Select MascotBSSVS template and goto (+@66)  {#28}
+			Select MascotBSSVS template. goto (+@66)  {#28}
 		Has less than 4 demes? {#22}
-			MultiTypeTree, if this takes too long, goto (+@25) {#23}
+			MultiTypeTree, if this takes too long. goto (+@25) {#23}
 		Choose one of the following {#25}
-			Choose Mascot template and goto (+@66)  {#27}
+			Choose Mascot template. goto (+@66)  {#27}
 			Use script to generate BASTA XML(template does not work?!?) {#26}
 	Is birth death {#150}
-		multitype birth-death model and goto (+@66) {#151}
+		multitype birth-death model. goto (+@66) {#151}
 	Add discrete trait partition to species tree selected (+@12) {#29}
 Language sequences? {#30}
 	Binary/cognate data?	{#24}
@@ -44,9 +44,9 @@ Language sequences? {#30}
 			Gamma site model, no gamma categories {#35}
 		Gamma site model, no gamma categories. goto (+@61) {#36}
 	Multistate ordered? {#37}
-		Gamma site model with Ordinal subst model goto (+@61) {#38}
-		Gamma site model with NestedOrdinal subst model	goto (+@61) {#39}
-	Multistate unordered: Gamma site model with Lewis MK subst model goto (+@61) {#40}
+		Gamma site model with Ordinal subst model. goto (+@61) {#38}
+		Gamma site model with NestedOrdinal subst model. goto (+@61) {#39}
+	Multistate unordered: Gamma site model with Lewis MK subst model. goto (+@61) {#40}
 Has sequence alignment(s)?	{#12}
 	Consider gene tree to be the species tree (as opposed to Multi Species Coalescent, or network)? {#42}
 		Has multiple birth/death/sampling rate changes in tree? {#43}
@@ -68,7 +68,7 @@ Has sequence alignment(s)?	{#12}
 	Is species network instead of tree? {#59}
 		SpeciesNetwork {#60}
 	This requires one of the StarBeast2 templates -- First exploratory analysis?	{#17}
-		Run with strict clock (StarBeast2) + rerun with log normal relaxed clock (SpeciesTreeRLC). Both converge? {#62}
+		Run with strict clock (StarBeast2) + rerun with log normal relaxed clock (SpeciesTreeUCLN). Both converge? {#62}
 			Log normal analysis has coefficient of variation > 0.1? {#63}
 				Perform model selection strict vs relaxed clock (e.g. nested sampling, path sampling) {#64}
 			Use strict clock {#65}
@@ -76,8 +76,8 @@ Has sequence alignment(s)?	{#12}
 	Relaxed clock analysis preferred from exploratory analysis (+@17)? {#68}
 		Run with random local clock (SpeciesTreeRLC) -- ideal choice, if it converges {#69}
 		Relaxed clock exponential (SpeciesTreeUCED) -- perform model selection against other clock models {#70}
-	StarBeast2 using strict clocks {#71}
-goto #1 {#72}
+	StarBeast2 using strict clock {#71}
+goto (+@1) {#72}
 Word per partition?	{#61}
 	Estimate partition mutation rate {#74}
 	Fix mutation rate to 1 for each partition and share shape parameter for gamma rate heterogeneity (if rate heterogeneity makes sense) {#75}
@@ -86,15 +86,15 @@ Single fixed mutation rate = 1 {#76}
 add DNA sequence(s)? {#66}
 	Site model known from previous analysis? {#79}
 		Gamma site model with model from previous analysis. goto (+@66) {#80}
-	bModelTest: models over all reversible site models goto (+@66) {#81}
+	bModelTest: models over all reversible site models. goto (+@66) {#81}
 Add amino acid sequences? {#82}
 	Strong knowlege and preference for a model (one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG) {#84}
 		Site rates may vary? {#85}
-			Gamma site model, 4 gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG goto (+@66) {#86}
-		Gamma site model, no gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG goto (+@66) {#87}
-	OBAMA (Obama for Bayesian Amino-acid Model Averaging) automatically averages over all models goto (+@66) {#88}
+			Gamma site model, 4 gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG. goto (+@66) {#86}
+		Gamma site model, no gamma categories, one of Blosum62, CpREV, DCMut, Dayhoff, FLU, HIVb, HIVw, JTT, LG, MtArt, MtREV, MtMam, RtREV, VT, WAG. goto (+@66) {#87}
+	OBAMA (Obama for Bayesian Amino-acid Model Averaging) automatically averages over all models. goto (+@66) {#88}
 Add codon sequences? {#153}
-	Codon substitution models. goto (+66) {#154}
+	Codon substitution models. goto (+@66) {#154}
 Independent SNP sequences? {#89}
 	Few (&lt;100) homozygote samples {#90}
 		SNAPP site model goto (+@66) {#91}
@@ -159,7 +159,8 @@ Sequence samples all from same species (or only dialects)? {#124}
 Mix of samples from different species and multiple samples from same species? {#131}
 	>= 2 species, and one is outgroup? {#132}
 		Outgroup provides calibration? {#133}
-			Consider MSC (goto (+@107)) or coalescent (goto (+@115)) {#134}
+			Consider Multi Species Coalescent goto (+@107) {#158}
+			Consider coalescent goto (+@115) {#134}
 		Remove sequences from outgroup: BEAST does not use them, goto (+@98) {#135}
 	Multi species coalescent (*BEAST, StarBeast2, etc.) goto (+@107) {#136}
 Prior on single node?	{#125}
