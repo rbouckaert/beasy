@@ -70,7 +70,8 @@ public class KB2SVG extends Runnable {
 				if (target == n) {
 					throw new IllegalArgumentException("Could not find match for (+@" + label + ") at rule " + i + " " + rule.condition);
 				}
-				s = s.substring(0, start) + "<a href=\"#" + target +"\">go to " + target + "</a>" + s.substring(end+1);
+				target++;
+				s = s.substring(0, start) + "<a href=\"#" + target +"\">at " + target + "</a>" + s.substring(end+1);
 				start = s.indexOf("(+@");
 			}
 			if (rule.go_to >= 0) {

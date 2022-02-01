@@ -124,9 +124,11 @@ Tip dates?	{#98}
 	goto (+@106) {#114}
 Sequence samples all from different species (or languages)?	{#106}
 	Birth/death/sampling based prior - exploratory (first) analysis? {#107}
-		no tip dates? {#117}
+		No tip dates? {#117}
+			Expect birth rate variation through time? {#159}
+				Yule skyline model {#160}
 			Yule prior {#118}
-		Birth/Death model {#119}
+		Birth/Death/Sampling model {#119}
 	Interest in extinction rate or exploratory analysis succeeded? {#120}
 		Birth/Death model {#121}
 	Interest in phylodynamic/epidemiology (R0, history of infecteds, etc.)? {#146}
@@ -152,7 +154,7 @@ Sequence samples all from same species (or only dialects)? {#124}
 		Coalescent with constant population {#126}
 	Interest in demographic reconstruction (or exploratory analysis succeeded)? {#127}
 		Sampling rate changes through time?
-			Bayesian Epoch Sampling Skyline Plot {#155}
+			Bayesian Integrated Coalescent Epoch PlotS (BICEPS) {#155}
 		Bayesian skyline based prior: initial analysis? {#128}
 			number of groups = 5, make sure upper bound on populations is sensible {#129}
 		Number of groups should not exceed number of internal nodes {#130}
